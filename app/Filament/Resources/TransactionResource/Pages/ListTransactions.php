@@ -3,10 +3,13 @@
 namespace App\Filament\Resources\TransactionResource\Pages;
 
 use App\Filament\Resources\TransactionResource;
+use Filament\Forms\Components\Actions\Modal\Actions\Action;
 use Filament\Pages\Actions;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\ImportField;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Forms\Components\Select;
+use Konnco\FilamentImport\Actions\ImportField as ActionsImportField;
 
 class ListTransactions extends ListRecords
 {
@@ -17,16 +20,20 @@ class ListTransactions extends ListRecords
         return [
             ImportAction::make()
             ->fields([
-                ImportField::make('transaction_date')
+                Select::make('company_id')
+                ->label('Company')
+                ->relationship('company', 'name')->nullable()
+                ->helperText('The Name of The Company'),
+                ActionsImportField::make('transaction_date')
                 ->label('Transaction Date')
                 ->helperText('The Date of the Transaction'),
-                ImportField::make('description')
+                ActionsImportField::make('description')
                 ->label('Transaction Description')
                 ->helperText('The Description Given by Your Bank'),
-                ImportField::make('amount')
+                ActionsImportField::make('amount')
                 ->label('Transaction Amount')
                 ->helperText('The Amount of The Transaction'),
-                ImportField::make('running_balance')
+                ActionsImportField::make('running_balance')
                 ->label('Running Balance')
                 ->helperText('The Running Balance Amount of Your Account During The Transaction'),
             ])
