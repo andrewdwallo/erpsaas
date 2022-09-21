@@ -10,6 +10,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -36,12 +37,12 @@ class TransactionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('company_id'),
+                Tables\Columns\TextColumn::make('company.name', 'name'),
                 Tables\Columns\TextColumn::make('type'),
                 Tables\Columns\TextColumn::make('transaction_date'),
                 Tables\Columns\TextColumn::make('description'),
-                Tables\Columns\TextColumn::make('amount'),
-                Tables\Columns\TextColumn::make('running_balance'),
+                Tables\Columns\TextColumn::make('amount')->money('USD', 2),
+                Tables\Columns\TextColumn::make('running_balance')->money('USD', 2),
             ])
             ->filters([
                 //
