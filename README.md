@@ -61,7 +61,11 @@ php artisan migrate
 php artisan shield:install --fresh
 ```
 
-11. Follow the prompts, then login with your email and password:
+11. Follow the prompts, then login with your email and password at the following url or similar at your-url/admin:
+```
+https://erpsaas.test/admin 
+```
+
 12. In this order:
 ```
 Create A New Company (As Many As You Want)
