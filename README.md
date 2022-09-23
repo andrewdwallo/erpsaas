@@ -46,7 +46,7 @@ yarn install
 yarn run dev
 ```
 
-8. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets:
+8. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
 ```bash
 php artisan storage:link
 ```
