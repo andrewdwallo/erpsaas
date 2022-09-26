@@ -28,10 +28,10 @@ class BankResource extends Resource
             ->schema([
                 Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
                 Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
-                Forms\Components\TextInput::make('bank_type')->maxLength(255),
-                Forms\Components\TextInput::make('bank_name')->maxLength(255),
-                Forms\Components\TextInput::make('bank_phone')->tel()->maxLength(255),
-                Forms\Components\TextInput::make('bank_address')->maxLength(255),
+                Forms\Components\TextInput::make('bank_type')->maxLength(255)->label('Bank Type'),
+                Forms\Components\TextInput::make('bank_name')->maxLength(255)->label('Bank Name'),
+                Forms\Components\TextInput::make('bank_phone')->tel()->maxLength(255)->label('Phone Number'),
+                Forms\Components\TextInput::make('bank_address')->maxLength(255)->label('Address'),
             ]);
     }
 
@@ -41,10 +41,10 @@ class BankResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('company.name', 'name'),
                 Tables\Columns\TextColumn::make('department.name', 'name'),
-                Tables\Columns\TextColumn::make('bank_type'),
-                Tables\Columns\TextColumn::make('bank_name'),
-                Tables\Columns\TextColumn::make('bank_phone'),
-                Tables\Columns\TextColumn::make('bank_address'),
+                Tables\Columns\TextColumn::make('bank_type')->label('Bank Type'),
+                Tables\Columns\TextColumn::make('bank_name')->label('Bank Name'),
+                Tables\Columns\TextColumn::make('bank_phone')->label('Phone Number'),
+                Tables\Columns\TextColumn::make('bank_address')->label('Address'),
                 Tables\Columns\TextColumn::make('accounts_count')->counts('accounts')->label('Accounts'),
                 Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),
                 Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),

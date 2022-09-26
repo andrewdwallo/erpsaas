@@ -19,6 +19,7 @@
         "filament/tables": "^2.16",
         "flowframe/laravel-trend": "^0.1.1",
         "guzzlehttp/guzzle": "^7.2",
+        "hollyit/filament-static-assets": "^0.1.2",
         "jeffgreco13/filament-breezy": "^1.4",
         "konnco/filament-import": "^1.0",
         "laravel/framework": "^9.19",
@@ -58,7 +59,8 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan filament:upgrade"
+            "@php artisan filament:upgrade",
+            "@php artisan filament:cache-assets"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

@@ -28,8 +28,8 @@ class CardResource extends Resource
             ->schema([
                 Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
                 Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
-                Forms\Components\Select::make('bank_id')->relationship('bank', 'bank_name')->nullable(),
-                Forms\Components\Select::make('account_id')->relationship('account', 'account_name')->nullable(),
+                Forms\Components\Select::make('bank_id')->relationship('bank', 'bank_name')->nullable()->label('Bank Name'),
+                Forms\Components\Select::make('account_id')->relationship('account', 'account_name')->nullable()->label('Account Name'),
                 Forms\Components\TextInput::make('card_type')->nullable(),
                 Forms\Components\TextInput::make('card_name')->nullable(),
                 Forms\Components\TextInput::make('card_number')->nullable(),
