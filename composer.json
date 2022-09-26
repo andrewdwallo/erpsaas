@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "abivia/plaid": "^1.0",
         "bezhansalleh/filament-shield": "^2.2",
         "doctrine/dbal": "^3.4",
         "filament/filament": "^2.16",
@@ -23,6 +24,9 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "maatwebsite/excel": "^3.1",
+        "nordigen/nordigen-php": "^1.0",
+        "psr/simple-cache": "^2.0",
         "symfony/html-sanitizer": "^6.1",
         "yepsua/filament-themes": "^0.2.0"
     },

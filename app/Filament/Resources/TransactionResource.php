@@ -19,6 +19,7 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationGroup = 'Resource Management';
+    protected static ?int $navigationSort = 7;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -27,11 +28,23 @@ class TransactionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
-                Forms\Components\TextInput::make('type')->nullable(),
-                Forms\Components\TextInput::make('transaction_date')->nullable(),
+                Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
+                Forms\Components\Select::make('bank_id')->relationship('bank', 'name')->nullable(),
+                Forms\Components\Select::make('account_id')->relationship('account', 'name')->nullable(),
+                Forms\Components\Select::make('card_id')->relationship('card', 'name')->nullable(),
+                Forms\Components\TextInput::make('date')->nullable(),
+                Forms\Components\TextInput::make('merchant_name')->nullable(),
                 Forms\Components\TextInput::make('description')->maxLength(255),
                 Forms\Components\TextInput::make('amount')->maxLength(255),
                 Forms\Components\TextInput::make('running_balance')->maxLength(255),
+                Forms\Components\TextInput::make('available_balance')->maxLength(255),
+                Forms\Components\TextInput::make('debit_amount')->maxLength(255),
+                Forms\Components\TextInput::make('credit_amount')->maxLength(255),
+                Forms\Components\TextInput::make('iso_currency_code')->maxLength(255),
+                Forms\Components\TextInput::make('unofficial_currency_code')->maxLength(255),
+                Forms\Components\TextInput::make('category')->maxLength(255),
+                Forms\Components\TextInput::make('check_number')->maxLength(255),
+
             ]);
     }
 
@@ -40,11 +53,22 @@ class TransactionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('company.name', 'name'),
-                Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('transaction_date'),
+                Tables\Columns\TextColumn::make('department.name', 'name'),
+                Tables\Columns\TextColumn::make('bank.name', 'name'),
+                Tables\Columns\TextColumn::make('account.name', 'name'),
+                Tables\Columns\TextColumn::make('card.name', 'name'),
+                Tables\Columns\TextColumn::make('date'),
+                Tables\Columns\TextColumn::make('merchant_name'),
                 Tables\Columns\TextColumn::make('description'),
                 Tables\Columns\TextColumn::make('amount')->money('USD', 2),
                 Tables\Columns\TextColumn::make('running_balance')->money('USD', 2),
+                Tables\Columns\TextColumn::make('available_balance')->money('USD', 2),
+                Tables\Columns\TextColumn::make('debit_amount')->money('USD', 2),
+                Tables\Columns\TextColumn::make('credit_amount')->money('USD', 2),
+                Tables\Columns\TextColumn::make('iso_currency_code'),
+                Tables\Columns\TextColumn::make('unofficial_currency_code'),
+                Tables\Columns\TextColumn::make('category'),
+                Tables\Columns\TextColumn::make('check_number'),
             ])
             ->filters([
                 //

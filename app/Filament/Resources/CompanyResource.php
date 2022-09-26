@@ -22,6 +22,7 @@ class CompanyResource extends Resource
     protected static ?string $model = Company::class;
 
     protected static ?string $navigationGroup = 'Resource Management';
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -47,7 +48,12 @@ class CompanyResource extends Resource
                 Tables\Columns\TextColumn::make('website'),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('departments_count')->counts('departments')->label('Departments'),
-                Tables\Columns\TextColumn::make('employees_count')->counts('employees')->label('Employees')
+                Tables\Columns\TextColumn::make('employees_count')->counts('employees')->label('Employees'),
+                Tables\Columns\TextColumn::make('banks_count')->counts('banks')->label('Banks'),
+                Tables\Columns\TextColumn::make('accounts_count')->counts('accounts')->label('Accounts'),
+                Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),
+                Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),
+                Tables\Columns\TextColumn::make('chart_of_accounts_count')->counts('chart_of_accounts')->label('Chart of Accounts'),
             ])
             ->filters([
                 //

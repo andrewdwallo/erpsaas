@@ -15,13 +15,17 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('account_type')->nullable();
+            $table->string('account_name')->nullable();
             $table->string('account_number')->nullable()->unique();
+            $table->string('routing_number_paperless_and_electronic')->nullable();
+            $table->string('routing_number_wires')->nullable();
+            $table->string('account_opened_date')->nullable();
             $table->string('currency')->nullable()->unique();
             $table->string('starting_balance')->nullable();
-            $table->string('bank_name')->nullable();
-            $table->string('bank_phone')->nullable();
-            $table->string('bank_address')->nullable();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bank_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

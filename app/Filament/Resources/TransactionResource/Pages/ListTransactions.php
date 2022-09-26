@@ -37,6 +37,7 @@ class ListTransactions extends ListRecords
                 ->label('Running Balance')
                 ->helperText('The Running Balance Amount of Your Account During The Transaction'),
             ])
+
         ];
     }
 }

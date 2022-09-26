@@ -5,25 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Bank extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'name', 'logo'];
+    protected $fillable = [
+        'company_id',
+        'department_id',
+        'bank_type',
+        'bank_name',
+        'bank_phone',
+        'bank_address',
+    ];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function employees()
+    public function department()
     {
-        return $this->hasMany(Employee::class);
-    }
-
-    public function banks()
-    {
-        return $this->hasMany(Bank::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function accounts()
@@ -41,8 +43,8 @@ class Department extends Model
         return $this->hasMany(Transaction::class);
     }
 
-    public function chart_of_accounts()
+    public function chart_of_account()
     {
-        return $this->hasMany(ChartOfAccount::class);
+        return $this->belongsTo(ChartOfAccount::class);
     }
 }

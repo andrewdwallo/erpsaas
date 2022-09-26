@@ -15,10 +15,16 @@ return new class extends Migration
     {
         Schema::create('chart_of_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->nullable()->unique();
+            $table->string('reference_number')->nullable()->unique();
             $table->string('name')->nullable()->unique();
             $table->string('type')->nullable();
             $table->string('balance')->nullable();
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('department_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bank_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('account_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('card_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('transaction_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

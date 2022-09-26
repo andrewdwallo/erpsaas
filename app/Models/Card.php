@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChartOfAccount extends Model
+class Card extends Model
 {
     use HasFactory;
 
@@ -14,12 +14,12 @@ class ChartOfAccount extends Model
         'department_id',
         'bank_id',
         'account_id',
-        'card_id',
-        'transaction_id',
-        'reference_number',
-        'name',
-        'type',
-        'balance',
+        'cart_type',
+        'card_name',
+        'card_number',
+        'name_on_card',
+        'expiration_date',
+        'security_code',
     ];
 
     public function company()
@@ -32,23 +32,23 @@ class ChartOfAccount extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function banks()
+    public function bank()
     {
-        return $this->hasMany(Bank::class);
+        return $this->belongsTo(Bank::class);
     }
 
-    public function accounts()
+    public function account()
     {
-        return $this->hasMany(Account::class);
-    }
-
-    public function cards()
-    {
-        return $this->hasMany(Card::class);
+        return $this->belongsTo(Account::class);
     }
 
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function chart_of_account()
+    {
+        return $this->belongsTo(ChartOfAccount::class);
     }
 }
