@@ -14,7 +14,7 @@ class Card extends Model
         'department_id',
         'bank_id',
         'account_id',
-        'cart_type',
+        'card_type',
         'card_name',
         'card_number',
         'name_on_card',
@@ -45,10 +45,5 @@ class Card extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
-    }
-
-    public function chart_of_account()
-    {
-        return $this->belongsTo(ChartOfAccount::class);
     }
 }

@@ -47,10 +47,4 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class);
     }
-
-    public function chart_of_account()
-    {
-        return $this->belongsTo(ChartOfAccount::class);
-    }
-
 }

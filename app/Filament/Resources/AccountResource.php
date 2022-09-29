@@ -46,7 +46,7 @@ class AccountResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('company.name', 'name'),
                 Tables\Columns\TextColumn::make('department.name', 'name'),
-                Tables\Columns\TextColumn::make('bank.name', 'bank_name')->label('Bank Name'),
+                Tables\Columns\TextColumn::make('bank.bank_name', 'bank_name')->label('Bank Name'),
                 Tables\Columns\TextColumn::make('account_type')->label('Account Type'),
                 Tables\Columns\TextColumn::make('account_name')->label('Account Name'),
                 Tables\Columns\TextColumn::make('account_number')->label('Account Number'),

@@ -48,9 +48,4 @@ class Transaction extends Model
     {
         return $this->belongsTo(Card::class);
     }
-
-    public function chart_of_account()
-    {
-        return $this->belongsTo(ChartOfAccount::class);
-    }
 }
