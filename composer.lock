@@ -4,78 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81e23be8b8f8a5d7ef7468261360fb56",
+    "content-hash": "5bf8c0676ccf94a1ce2a782d02c2220f",
     "packages": [
-        {
-            "name": "abivia/plaid",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/abivia/plaid.git",
-                "reference": "db2d1962a03e423e6552186b2cb9db4bd646ca8d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/abivia/plaid/zipball/db2d1962a03e423e6552186b2cb9db4bd646ca8d",
-                "reference": "db2d1962a03e423e6552186b2cb9db4bd646ca8d",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^7.4",
-                "illuminate/contracts": "^9.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "nunomaduro/collision": "^6.0",
-                "orchestra/testbench": "^7.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Abivia\\Plaid\\PlaidServiceProvider"
-                    ],
-                    "aliases": {
-                        "Plaid": "Abivia\\Plaid\\Facades\\Plaid"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Abivia\\Plaid\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alan Langford",
-                    "email": "foss@abivia.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Plaid for Laravel",
-            "homepage": "https://github.com/abivia/plaid",
-            "keywords": [
-                "abivia",
-                "laravel",
-                "plaid"
-            ],
-            "support": {
-                "issues": "https://github.com/abivia/plaid/issues",
-                "source": "https://github.com/abivia/plaid/tree/1.0.1"
-            },
-            "funding": [
-                {
-                    "url": "https://ko-fi.com/P5P47JJXZ",
-                    "type": "ko-fi"
-                }
-            ],
-            "time": "2022-03-14T05:00:51+00:00"
-        },
         {
             "name": "akaunting/laravel-money",
             "version": "3.1.2",

@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "abivia/plaid": "^1.0",
         "bezhansalleh/filament-shield": "^2.2",
         "doctrine/dbal": "^3.4",
         "filament/filament": "^2.16",
