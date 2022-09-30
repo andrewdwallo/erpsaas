@@ -71,14 +71,10 @@ class AccountResource extends Resource
                 ]),
                 Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
                 Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
-                Forms\Components\TextInput::make('routing_number_paperless_and_electronic')->maxLength(255)->label('Routing Number: Paperless & Electronic'),
-                Forms\Components\TextInput::make('routing_number_wires')->maxLength(255)->label('Routing Number: Wire'),
-                Forms\Components\TextInput::make('account_opened_date')->maxLength(255)->label('Account Opened Date'),
                 Forms\Components\Select::make('currency')
                 ->options([
                     'USD' => 'USD',
                 ]),
-                Forms\Components\TextInput::make('starting_balance')->maxLength(255)->label('Starting Balance'),
             ]);
     }
 
@@ -92,11 +88,7 @@ class AccountResource extends Resource
                 Tables\Columns\TextColumn::make('account_type')->label('Account Type'),
                 Tables\Columns\TextColumn::make('account_name')->label('Account Name'),
                 Tables\Columns\TextColumn::make('account_number')->label('Account Number'),
-                Tables\Columns\TextColumn::make('routing_number_paperless_and_electronic')->label('Routing Number: P&E'),
-                Tables\Columns\TextColumn::make('routing_number_wires')->label('Routing Number: Wires'),
-                Tables\Columns\TextColumn::make('account_opened_date')->label('Account Opened Date'),
                 Tables\Columns\TextColumn::make('currency'),
-                Tables\Columns\TextColumn::make('starting_balance')->label('Starting Balance'),
                 Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),
                 Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),
             ])

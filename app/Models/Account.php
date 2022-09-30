@@ -16,11 +16,7 @@ class Account extends Model
         'account_type',
         'account_name',
         'account_number',
-        'routing_number_paperless_and_electronic',
-        'routing_number_wires',
-        'account_opened_date',
         'currency',
-        'starting_balance',
     ];
 
     protected $casts = [

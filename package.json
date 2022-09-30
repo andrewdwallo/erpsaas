@@ -16,6 +16,7 @@
         "vite": "^3.0.0"
     },
     "dependencies": {
-        "@awcodes/alpine-floating-ui": "^3.4.0"
+        "@awcodes/alpine-floating-ui": "^3.4.0",
+        "tippy.js": "^6.3.7"
     }
 }

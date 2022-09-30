@@ -77,7 +77,6 @@ class BankResource extends Resource
                 Tables\Columns\TextColumn::make('bank_address')->label('Address'),
                 Tables\Columns\TextColumn::make('accounts_count')->counts('accounts')->label('Accounts'),
                 Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),
-                Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),
             ])
             ->filters([
                 //
