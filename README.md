@@ -77,7 +77,16 @@ Create Department(s) For Company/Companies
 Create Employee(s) For Your Company/Companies
 ```
 ```
-Go To Transactions and Import A .csv or .xlsx file of your transaction statement(s) for a selected company.
+Create Bank(s) for Your Company/Companies and Departments
+```
+```
+Create Account(s) for Your Bank(s)
+```
+```
+Create Card(s) for Your Account(s)
+```
+```
+Create\Import Transaction(s) for Your Card(s)
 ```
 ```
 Make Sure The Columns of Your .csv/.xlsx file are configured in correct format with the columns being on line 1.
