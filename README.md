@@ -71,7 +71,7 @@ https://erpsaas.test/admin
 Create A New Company (As Many As You Want)
 ```
 ```
-Create A Department For Company/Companies
+Create Department(s) For Company/Companies
 ```
 ```
 Create Employee(s) For Your Company/Companies
