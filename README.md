@@ -1,10 +1,10 @@
+![Screenshot 2022-09-30 082304](https://user-images.githubusercontent.com/104294090/193270027-6f932801-53d8-44b8-84cd-4e796fb5046a.png)
+![Screenshot 2022-09-30 082341](https://user-images.githubusercontent.com/104294090/193270025-b41aaa3a-f00d-4d9d-a97d-97ca4ee32d4e.png)
+![Screenshot 2022-09-30 082408](https://user-images.githubusercontent.com/104294090/193270023-d12f8f57-73e1-4a9d-bca5-eacf7b6631a1.png)
+![Screenshot 2022-09-30 082444](https://user-images.githubusercontent.com/104294090/193270021-b792fb8d-fe77-47b2-8541-57f66ec7861a.png)
+![Screenshot 2022-09-30 082530](https://user-images.githubusercontent.com/104294090/193270020-9003caee-0b95-4ad4-ac1c-7f2a20f259a6.png)
 ![Screenshot 2022-09-30 082641](https://user-images.githubusercontent.com/104294090/193270018-f88cff1a-5169-491b-9065-75fc9c375d18.png)
 ![Screenshot 2022-09-30 082555](https://user-images.githubusercontent.com/104294090/193270019-6f06ae46-d0ee-4c75-b418-9f3d5132a66d.png)
-![Screenshot 2022-09-30 082530](https://user-images.githubusercontent.com/104294090/193270020-9003caee-0b95-4ad4-ac1c-7f2a20f259a6.png)
-![Screenshot 2022-09-30 082444](https://user-images.githubusercontent.com/104294090/193270021-b792fb8d-fe77-47b2-8541-57f66ec7861a.png)
-![Screenshot 2022-09-30 082408](https://user-images.githubusercontent.com/104294090/193270023-d12f8f57-73e1-4a9d-bca5-eacf7b6631a1.png)
-![Screenshot 2022-09-30 082341](https://user-images.githubusercontent.com/104294090/193270025-b41aaa3a-f00d-4d9d-a97d-97ca4ee32d4e.png)
-![Screenshot 2022-09-30 082304](https://user-images.githubusercontent.com/104294090/193270027-6f932801-53d8-44b8-84cd-4e796fb5046a.png)
 ![Screenshot 2022-09-30 082717](https://user-images.githubusercontent.com/104294090/193270017-02620516-7a8d-490c-bc0c-028b8af7bd7a.png)
 # ERPSAAS 
 
