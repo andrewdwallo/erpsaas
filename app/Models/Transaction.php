@@ -20,7 +20,6 @@ class Transaction extends Model
         'description',
         'amount',
         'running_balance',
-        'available_balance',
         'debit_amount',
         'credit_amount',
         'category',

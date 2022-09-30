@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->double('amount')->nullable();
             $table->string('running_balance')->nullable();
-            $table->string('available_balance')->nullable();
             $table->string('debit_amount')->nullable();
             $table->string('credit_amount')->nullable();
             $table->string('category')->nullable();
