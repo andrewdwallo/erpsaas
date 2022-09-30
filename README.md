@@ -95,3 +95,9 @@ Not All Options Have To Be Selected...
 ```
 Enjoy!
 ```
+
+## Contributing
+Contributions are needed!!
+I plan on making this a full fledged ERP System with more than an accounting Module.
+I plan on integrating Plaid for accounting automation in the future..
+Please fork this repo and submit pull requests!
