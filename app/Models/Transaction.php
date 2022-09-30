@@ -44,6 +44,11 @@ class Transaction extends Model
         return $this->belongsTo(Bank::class);
     }
 
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
     public function card()
     {
         return $this->belongsTo(Card::class);

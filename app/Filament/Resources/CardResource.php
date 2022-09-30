@@ -5,11 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CardResource\Pages;
 use App\Filament\Resources\CardResource\RelationManagers;
 use App\Models\Card;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Bank;
+use App\Models\Account;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\MultiSelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -26,10 +31,56 @@ class CardResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
-                Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
-                Forms\Components\Select::make('bank_id')->relationship('bank', 'bank_name')->nullable()->label('Bank Name'),
-                Forms\Components\Select::make('account_id')->relationship('account', 'account_name')->nullable()->label('Account Name'),
+                Forms\Components\Select::make('company_id')
+                ->label('Company')
+                ->options(Company::all()->pluck('name', 'id')->toArray())
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                Forms\Components\Select::make('department_id')
+                ->label('Department')
+                ->options(function (callable $get) {
+                    $company = Company::find($get('company_id'));
+
+                    if (! $company) {
+                        return Department::all()->pluck('name', 'id');
+                    }
+
+                    return $company->departments->pluck('name', 'id');
+                })
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                Forms\Components\Select::make('bank_id')
+                ->label('Bank Name')
+                ->options(function (callable $get) {
+                    $department = Department::find($get('department_id'));
+
+                    if (! $department) {
+                        return Bank::all()->pluck('bank_name', 'id');
+                    }
+
+                    return $department->banks->pluck('bank_name', 'id');
+                })
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                Forms\Components\Select::make('account_id')
+                ->label('Account Name')
+                ->options(function (callable $get) {
+                    $bank = Bank::find($get('bank_id'));
+
+                    if (! $bank) {
+                        return Account::all()->pluck('account_name', 'id');
+                    }
+
+                    return $bank->accounts->pluck('account_name', 'id');
+                }),
+
                 Forms\Components\TextInput::make('card_type')->nullable(),
                 Forms\Components\TextInput::make('card_name')->nullable(),
                 Forms\Components\TextInput::make('card_number')->nullable(),
@@ -56,7 +107,7 @@ class CardResource extends Resource
                 Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

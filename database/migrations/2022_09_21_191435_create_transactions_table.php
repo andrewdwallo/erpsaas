@@ -20,7 +20,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->date('date')->nullable();
+            $table->string('date')->nullable();
             $table->string('merchant_name')->nullable();
             $table->string('description')->nullable();
             $table->double('amount')->nullable();

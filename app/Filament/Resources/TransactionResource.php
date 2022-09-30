@@ -10,6 +10,12 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use App\Models\Department;
+use App\Models\Company;
+use App\Models\Bank;
+use App\Models\Account;
+use App\Models\Card;
+use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,11 +33,75 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
-                Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
-                Forms\Components\Select::make('bank_id')->relationship('bank', 'bank_name')->nullable()->label('Bank Name'),
-                Forms\Components\Select::make('account_id')->relationship('account', 'account_name')->nullable()->label('Account Name'),
-                Forms\Components\Select::make('card_id')->relationship('card', 'card_name')->nullable()->label('Card Name'),
+                Forms\Components\Select::make('company_id')
+                ->label('Company')
+                ->options(Company::all()->pluck('name', 'id')->toArray())
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                Forms\Components\Select::make('department_id')
+                ->label('Department')
+                ->options(function (callable $get) {
+                    $company = Company::find($get('company_id'));
+
+                    if (! $company) {
+                        return Department::all()->pluck('name', 'id');
+                    }
+
+                    return $company->departments->pluck('name', 'id');
+                })
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                Forms\Components\Select::make('bank_id')
+                ->label('Bank Name')
+                ->options(function (callable $get) {
+                    $department = Department::find($get('department_id'));
+
+                    if (! $department) {
+                        return Bank::all()->pluck('bank_name', 'id');
+                    }
+
+                    return $department->banks->pluck('bank_name', 'id');
+                })
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                Forms\Components\Select::make('account_id')
+                ->label('Account Name')
+                ->options(function (callable $get) {
+                    $bank = Bank::find($get('bank_id'));
+
+                    if (! $bank) {
+                        return Account::all()->pluck('account_name', 'id');
+                    }
+
+                    return $bank->accounts->pluck('account_name', 'id');
+                })
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                Forms\Components\Select::make('card_id')
+                ->label('Card Name')
+                ->options(function (callable $get) {
+                    $account = Account::find($get('account_id'));
+
+                    if (! $account) {
+                        return Card::all()->pluck('card_name', 'id');
+                    }
+
+                    return $account->cards->pluck('card_name', 'id');
+                }),
+
                 Forms\Components\TextInput::make('date')->nullable(),
                 Forms\Components\TextInput::make('merchant_name')->nullable(),
                 Forms\Components\TextInput::make('description')->maxLength(255),
@@ -71,7 +141,11 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('check_number'),
             ])
             ->filters([
-                //
+                MultiSelectFilter::make('company.name', 'name'),
+                MultiSelectFilter::make('department.name', 'name'),
+                MultiSelectFilter::make('bank.bank_name', 'bank_name')->label('Bank Name'),
+                MultiSelectFilter::make('account.account_name', 'account_name')->label('Account Name'),
+                MultiSelectFilter::make('card.card_name', 'card_name')->label('Card Name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BankResource\Pages;
 use App\Filament\Resources\BankResource\RelationManagers;
 use App\Models\Bank;
+use App\Models\Department;
+use App\Models\Company;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -26,8 +28,23 @@ class BankResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('company_id')->relationship('company', 'name')->nullable(),
-                Forms\Components\Select::make('department_id')->relationship('department', 'name')->nullable(),
+                Forms\Components\Select::make('company_id')
+                ->label('Company')
+                ->options(Company::all()->pluck('name', 'id')->toArray())
+                ->reactive()
+                ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
+
+                Forms\Components\Select::make('department_id')
+                ->label('Department')
+                ->options(function (callable $get) {
+                    $company = Company::find($get('company_id'));
+
+                    if (! $company) {
+                        return Department::all()->pluck('name', 'id');
+                    }
+
+                    return $company->departments->pluck('name', 'id');
+                }),
                 Forms\Components\TextInput::make('bank_type')->maxLength(255)->label('Bank Type'),
                 Forms\Components\TextInput::make('bank_name')->maxLength(255)->label('Bank Name'),
                 Forms\Components\TextInput::make('bank_phone')->tel()->maxLength(255)->label('Phone Number'),
