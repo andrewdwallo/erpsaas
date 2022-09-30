@@ -1,6 +1,6 @@
 # ERPSAAS 
 
-A Multi-tenant SaaS ERP Software System Package for Filament:
+An ERP Software System Package for Filament:
 
 ## Installation
 
