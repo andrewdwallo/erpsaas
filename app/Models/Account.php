@@ -25,6 +25,7 @@ class Account extends Model
 
     protected $casts = [
         'account_type' => 'array',
+        'currency' => 'array',
     ];
 
     public function company()

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('routing_number_paperless_and_electronic')->nullable();
             $table->string('routing_number_wires')->nullable();
             $table->string('account_opened_date')->nullable();
-            $table->string('currency')->nullable();
+            $table->json('currency');
             $table->string('starting_balance')->nullable();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();

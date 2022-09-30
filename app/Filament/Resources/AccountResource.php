@@ -74,7 +74,10 @@ class AccountResource extends Resource
                 Forms\Components\TextInput::make('routing_number_paperless_and_electronic')->maxLength(255)->label('Routing Number: Paperless & Electronic'),
                 Forms\Components\TextInput::make('routing_number_wires')->maxLength(255)->label('Routing Number: Wire'),
                 Forms\Components\TextInput::make('account_opened_date')->maxLength(255)->label('Account Opened Date'),
-                Forms\Components\TextInput::make('currency')->maxLength(255),
+                Forms\Components\Select::make('currency')
+                ->options([
+                    'USD' => 'USD',
+                ]),
                 Forms\Components\TextInput::make('starting_balance')->maxLength(255)->label('Starting Balance'),
             ]);
     }
