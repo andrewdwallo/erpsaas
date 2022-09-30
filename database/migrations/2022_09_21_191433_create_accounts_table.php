@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('account_type')->nullable();
+            $table->json('account_type');
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
             $table->string('routing_number_paperless_and_electronic')->nullable();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('bank_accounts');
     }
 };

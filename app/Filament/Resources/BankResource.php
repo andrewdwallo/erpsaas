@@ -45,7 +45,20 @@ class BankResource extends Resource
 
                     return $company->departments->pluck('name', 'id');
                 }),
-                Forms\Components\TextInput::make('bank_type')->maxLength(255)->label('Bank Type'),
+                Forms\Components\Select::make('bank_type')->label('Bank Type')
+                ->options([
+                    'Retail Bank' => 'Retail Bank',
+                    'Commercial Bank' => 'Commercial Bank',
+                    'Investment Bank' => 'Investment Bank',
+                    'Credit Union' => 'Credit Union',
+                    'Private Bank' => 'Private Bank',
+                    'Online Bank' => 'Online Bank',
+                    'Savings & Loan Bank' => 'Savings & Loan Bank',
+                    'Shadow Bank' => 'Shadow Bank',
+                    'Neobank' => 'Neobank',
+                    'Challenger Bank' => 'Challenger Bank',
+                ]),
+
                 Forms\Components\TextInput::make('bank_name')->maxLength(255)->label('Bank Name'),
                 Forms\Components\TextInput::make('bank_phone')->tel()->maxLength(255)->label('Phone Number'),
                 Forms\Components\TextInput::make('bank_address')->maxLength(255)->label('Address'),

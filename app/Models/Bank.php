@@ -18,6 +18,10 @@ class Bank extends Model
         'bank_address',
     ];
 
+    protected $casts = [
+        'bank_type' => 'array',
+    ];
+
     public function company()
     {
         return $this->belongsTo(Company::class);

@@ -23,6 +23,10 @@ class Account extends Model
         'starting_balance',
     ];
 
+    protected $casts = [
+        'account_type' => 'array',
+    ];
+
     public function company()
     {
         return $this->belongsTo(Company::class);

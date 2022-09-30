@@ -62,7 +62,13 @@ class AccountResource extends Resource
                     return $department->banks->pluck('bank_name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('account_type')->maxLength(255)->label('Account Type'),
+                Forms\Components\Select::make('account_type')->label('Account Type')
+                ->options([
+                    'Checking' => 'Checking',
+                    'Savings' => 'Savings',
+                    'Money Market' => 'Money Market',
+                    'Certificate of Deposit' => 'Certificate of Deposit',
+                ]),
                 Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
                 Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
                 Forms\Components\TextInput::make('routing_number_paperless_and_electronic')->maxLength(255)->label('Routing Number: Paperless & Electronic'),
