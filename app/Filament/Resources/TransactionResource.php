@@ -110,8 +110,6 @@ class TransactionResource extends Resource
                 Forms\Components\TextInput::make('available_balance')->maxLength(255),
                 Forms\Components\TextInput::make('debit_amount')->maxLength(255),
                 Forms\Components\TextInput::make('credit_amount')->maxLength(255),
-                Forms\Components\TextInput::make('iso_currency_code')->maxLength(255),
-                Forms\Components\TextInput::make('unofficial_currency_code')->maxLength(255),
                 Forms\Components\TextInput::make('category')->maxLength(255),
                 Forms\Components\TextInput::make('check_number')->maxLength(255),
 
@@ -135,8 +133,6 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('available_balance')->money('USD', 2),
                 Tables\Columns\TextColumn::make('debit_amount')->money('USD', 2),
                 Tables\Columns\TextColumn::make('credit_amount')->money('USD', 2),
-                Tables\Columns\TextColumn::make('iso_currency_code'),
-                Tables\Columns\TextColumn::make('unofficial_currency_code'),
                 Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('check_number'),
             ])

@@ -28,8 +28,6 @@ return new class extends Migration
             $table->string('available_balance')->nullable();
             $table->string('debit_amount')->nullable();
             $table->string('credit_amount')->nullable();
-            $table->string('iso_currency_code')->nullable();
-            $table->string('unofficial_currency_code')->nullable();
             $table->string('category')->nullable();
             $table->string('check_number')->nullable();
             $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();

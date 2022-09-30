@@ -23,8 +23,6 @@ class Transaction extends Model
         'available_balance',
         'debit_amount',
         'credit_amount',
-        'iso_currency_code',
-        'unofficial_currency_code',
         'category',
         'check_number',
     ];
