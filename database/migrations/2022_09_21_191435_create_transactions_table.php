@@ -21,14 +21,13 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('date')->nullable();
+            $table->string('number')->nullable();
+            $table->json('type');
+            $table->json('category');
             $table->string('merchant_name')->nullable();
             $table->string('description')->nullable();
             $table->double('amount')->nullable();
             $table->string('running_balance')->nullable();
-            $table->string('debit_amount')->nullable();
-            $table->string('credit_amount')->nullable();
-            $table->string('category')->nullable();
-            $table->string('check_number')->nullable();
             $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->foreignId('bank_id')->constrained()->cascadeOnDelete();

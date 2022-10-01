@@ -103,14 +103,35 @@ class TransactionResource extends Resource
                 }),
 
                 Forms\Components\TextInput::make('date')->nullable(),
+                Forms\Components\TextInput::make('number')->nullable(),
+                Forms\Components\Select::make('type')
+                ->options([
+                    'Income' => 'Income',
+                    'Expense' => 'Expense',
+                ]),
+                Forms\Components\Select::make('category')
+                ->options([
+                    'Consulting' => 'Consulting',
+                    'Deposit' => 'Deposit',
+                    'Expense Reimbursement' => 'Expense Reimbursement',
+                    'Interest' => 'Interest',
+                    'Investment Income' => 'Investment Income',
+                    'Other Income' => 'Other Income',
+                    'Paychecks/Salary' => 'Paychecks/Salary',
+                    'Retirement Income' => 'Retirement Income',
+                    'Sales' => 'Sales',
+                    'Services' => 'Services',
+                    'Wages Paid' => 'Wages Paid',
+                    'Home & Utilities' => 'Home & Utilities',
+                    'Transportation' => 'Transportation',
+                    'Groceries' => 'Groceries',
+                    'Health' => 'Health',
+                    'Restaurants & Dining' => 'Restaurants & Dining',
+                ]),
                 Forms\Components\TextInput::make('merchant_name')->nullable(),
                 Forms\Components\TextInput::make('description')->maxLength(255),
                 Forms\Components\TextInput::make('amount')->maxLength(255),
                 Forms\Components\TextInput::make('running_balance')->maxLength(255),
-                Forms\Components\TextInput::make('debit_amount')->maxLength(255),
-                Forms\Components\TextInput::make('credit_amount')->maxLength(255),
-                Forms\Components\TextInput::make('category')->maxLength(255),
-                Forms\Components\TextInput::make('check_number')->maxLength(255),
 
             ]);
     }
@@ -125,14 +146,13 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('account.account_name', 'account_name')->label('Account Name'),
                 Tables\Columns\TextColumn::make('card.card_name', 'card_name')->label('Card Name'),
                 Tables\Columns\TextColumn::make('date'),
+                Tables\Columns\TextColumn::make('number'),
+                Tables\Columns\TextColumn::make('type'),
+                Tables\Columns\TextColumn::make('category'),
                 Tables\Columns\TextColumn::make('merchant_name'),
                 Tables\Columns\TextColumn::make('description'),
                 Tables\Columns\TextColumn::make('amount')->money('USD', 2),
                 Tables\Columns\TextColumn::make('running_balance')->money('USD', 2),
-                Tables\Columns\TextColumn::make('debit_amount')->money('USD', 2),
-                Tables\Columns\TextColumn::make('credit_amount')->money('USD', 2),
-                Tables\Columns\TextColumn::make('category'),
-                Tables\Columns\TextColumn::make('check_number'),
             ])
             ->filters([
                 MultiSelectFilter::make('company.name', 'name'),

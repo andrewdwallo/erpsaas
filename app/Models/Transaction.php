@@ -16,14 +16,18 @@ class Transaction extends Model
         'account_id',
         'card_id',
         'date',
+        'number',
+        'type',
+        'category',
         'merchant_name',
         'description',
         'amount',
         'running_balance',
-        'debit_amount',
-        'credit_amount',
-        'category',
-        'check_number',
+    ];
+
+    protected $casts = [
+        'type' => 'array',
+        'category' => 'array',
     ];
 
     public function company()
