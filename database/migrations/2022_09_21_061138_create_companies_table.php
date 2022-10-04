@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * php artisan migrate:fresh --path=/database/migrations/2022_09_21_061138_create_companies_table.php
      *
      * @return void
      */

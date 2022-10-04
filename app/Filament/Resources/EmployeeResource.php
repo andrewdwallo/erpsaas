@@ -12,6 +12,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
@@ -57,7 +58,7 @@ class EmployeeResource extends Resource
                 Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
                 Forms\Components\FileUpload::make('photo')->image()->directory('photos')->visibility('private'),
                 Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Employee $record): ?Employee => $record)->maxLength(250),
-                Forms\Components\TextInput::make('phone')->tel()->maxLength(255),
+                Forms\Components\TextInput::make('phone')->mask(fn (TextInput\Mask $mask) => $mask->pattern('(000) 000-0000')),
                 Forms\Components\TextInput::make('address')->maxLength(250),
                 Forms\Components\Toggle::make('active')->default(true),
             ]);
@@ -72,7 +73,7 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\ImageColumn::make('photo')->size(40),
                 Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('phone'),
+                Tables\Columns\TextColumn::make('phone')->formatStateUsing(fn ($record) => vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->phone))),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\BooleanColumn::make('active')->trueIcon('heroicon-o-badge-check')->falseIcon('heroicon-o-x-circle'),
             ])

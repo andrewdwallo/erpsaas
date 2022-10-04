@@ -37,13 +37,43 @@ class Card extends Model
         return $this->belongsTo(Bank::class);
     }
 
+    public function asset()
+    {
+        return $this->belongsTo(Asset::class);
+    }
+
+    public function liability()
+    {
+        return $this->belongsTo(Liability::class);
+    }
+
+    public function expense()
+    {
+        return $this->belongsTo(Expense::class);
+    }
+
+    public function revenue()
+    {
+        return $this->belongsTo(Revenue::class);
+    }
+
+    public function equity()
+    {
+        return $this->belongsTo(Equity::class);
+    }
+
     public function account()
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function transactions()
+    public function income_transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(IncomeTransaction::class);
+    }
+
+    public function expense_transactions()
+    {
+        return $this->hasMany(ExpenseTransaction::class);
     }
 }

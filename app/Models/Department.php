@@ -21,6 +21,31 @@ class Department extends Model
         return $this->hasMany(Employee::class);
     }
 
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
+
+    public function liabilities()
+    {
+        return $this->hasMany(Liability::class);
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function revenues()
+    {
+        return $this->hasMany(Revenue::class);
+    }
+
+    public function equities()
+    {
+        return $this->hasMany(Equity::class);
+    }
+
     public function banks()
     {
         return $this->hasMany(Bank::class);
@@ -36,8 +61,13 @@ class Department extends Model
         return $this->hasMany(Card::class);
     }
 
-    public function transactions()
+    public function income_transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(IncomeTransaction::class);
+    }
+
+    public function expense_transactions()
+    {
+        return $this->hasMany(ExpenseTransaction::class);
     }
 }

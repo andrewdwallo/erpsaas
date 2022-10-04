@@ -20,8 +20,8 @@ class AccountResource extends Resource
 {
     protected static ?string $model = Account::class;
 
-    protected static ?string $navigationGroup = 'Resource Management';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Bank';
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -90,7 +90,6 @@ class AccountResource extends Resource
                 Tables\Columns\TextColumn::make('account_number')->label('Account Number'),
                 Tables\Columns\TextColumn::make('currency'),
                 Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),
-                Tables\Columns\TextColumn::make('transactions_count')->counts('transactions')->label('Transactions'),
             ])
             ->filters([
                 //
