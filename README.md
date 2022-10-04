@@ -1,11 +1,14 @@
-![Screenshot 2022-09-30 082304](https://user-images.githubusercontent.com/104294090/193270027-6f932801-53d8-44b8-84cd-4e796fb5046a.png)
-![Screenshot 2022-09-30 082341](https://user-images.githubusercontent.com/104294090/193270025-b41aaa3a-f00d-4d9d-a97d-97ca4ee32d4e.png)
-![Screenshot 2022-09-30 082408](https://user-images.githubusercontent.com/104294090/193270023-d12f8f57-73e1-4a9d-bca5-eacf7b6631a1.png)
-![Screenshot 2022-09-30 082444](https://user-images.githubusercontent.com/104294090/193270021-b792fb8d-fe77-47b2-8541-57f66ec7861a.png)
-![Screenshot 2022-09-30 082530](https://user-images.githubusercontent.com/104294090/193270020-9003caee-0b95-4ad4-ac1c-7f2a20f259a6.png)
-![Screenshot 2022-09-30 082555](https://user-images.githubusercontent.com/104294090/193270019-6f06ae46-d0ee-4c75-b418-9f3d5132a66d.png)
-![Screenshot 2022-09-30 082717](https://user-images.githubusercontent.com/104294090/193270017-02620516-7a8d-490c-bc0c-028b8af7bd7a.png)
-![Screenshot 2022-09-30 082641](https://user-images.githubusercontent.com/104294090/193270018-f88cff1a-5169-491b-9065-75fc9c375d18.png)
+![ChartOfAccountsPageGithub1](https://user-images.githubusercontent.com/104294090/193767441-db3b5cd0-80bb-4ea5-9f9d-9c1007eb91bf.png)
+![CompaniesPageGithub1](https://user-images.githubusercontent.com/104294090/193767442-13fec3f6-fd24-4057-87b2-5d3352d42af4.png)
+![DepartmentsPageGithub1](https://user-images.githubusercontent.com/104294090/193767444-218ff1b4-8eb6-4b4e-84be-72f040601052.png)
+![EmployeesPageGithub1](https://user-images.githubusercontent.com/104294090/193767445-3207f1fc-e79a-42a3-99e8-93e645def04b.png)
+![BanksPageGithub1](https://user-images.githubusercontent.com/104294090/193767439-eca66f6e-23d6-443e-bd09-f2d2fb92dc9b.png)
+![AccountsPageGithub1](https://user-images.githubusercontent.com/104294090/193767436-0bff8d27-03e9-4c06-81b6-b9c90eb69919.png)
+![CardsPageGithub1](https://user-images.githubusercontent.com/104294090/193767440-6da9c416-d227-489f-959d-e3ec2d7be17a.png)
+![IncomesTransactionPageGithub1](https://user-images.githubusercontent.com/104294090/193767450-a6b19f9c-e9bd-4b41-83ed-2aeec5b8be0a.png)
+![ExpensesTransactionPage1](https://user-images.githubusercontent.com/104294090/193767448-00fb0433-6d97-4480-a6c6-0e64b156b45b.png)
+![RevenueAccountPage1](https://user-images.githubusercontent.com/104294090/193767451-9d6d02b3-8041-4154-84a1-3e0a2a7d2398.png)
+![ExpensesAccountPage1](https://user-images.githubusercontent.com/104294090/193767446-67bebb68-7fcb-4085-8d8e-90e0179a664c.png)
 # ERPSAAS 
 
 An ERP Software System Package for Filament:
@@ -85,6 +88,9 @@ Create Department(s) For Company/Companies
 Create Employee(s) For Your Company/Companies
 ```
 ```
+Create An Asset for Your Bank First with Account Name being your Bank Name (example. Bank of America) as a Current Asset
+```
+```
 Create Bank(s) for Your Company/Companies and Departments
 ```
 ```
@@ -94,11 +100,7 @@ Create Account(s) for Your Bank(s)
 Create Card(s) for Your Account(s)
 ```
 ```
-Create\Import Transaction(s) for Your Card(s)
-```
-```
-Make Sure The Columns of Your .csv/.xlsx file are configured in correct format with the columns being on line 1.
-Not All Options Have To Be Selected...
+Create Income & Expense Transaction(s) for Your Card(s)
 ```
 ```
 Enjoy!
