@@ -21,4 +21,11 @@ class ListExpenses extends ListRecords
     {
         return false;
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            ExpenseResource\Widgets\ExpenseOverview::class,
+        ];
+    }
 }

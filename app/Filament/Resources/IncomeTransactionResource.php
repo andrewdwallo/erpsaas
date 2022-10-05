@@ -18,7 +18,9 @@ use App\Models\Company;
 use App\Models\Bank;
 use App\Models\Account;
 use App\Models\Card;
-use App\Models\Category;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TimePicker;
 use Filament\Tables\Filters\MultiSelectFilter;
 use Filament\Tables\Columns\TextColumn;
 use App\Models\Expense;
@@ -108,7 +110,7 @@ class IncomeTransactionResource extends Resource
                     return $account->cards->pluck('card_name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('date')->nullable()->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/00/0000'))->placeholder('05/25/2022'),
+                Forms\Components\DatePicker::make('date')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y'),
                 Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
                 Forms\Components\Select::make('revenue_id')->label('Revenue/Income Account')
                 ->options(Revenue::all()->pluck('name', 'id')->toArray()),
@@ -128,7 +130,7 @@ class IncomeTransactionResource extends Resource
                 Tables\Columns\TextColumn::make('bank.bank_name', 'bank_name')->label('Bank Name'),
                 Tables\Columns\TextColumn::make('account.account_name', 'account_name')->label('Bank Account Name'),
                 Tables\Columns\TextColumn::make('card.card_name', 'card_name')->label('Card Network'),
-                Tables\Columns\TextColumn::make('date')->formatStateUsing(fn ($record) => vsprintf('%d%d/%d%d/%d%d%d%d', str_split($record->date))),
+                Tables\Columns\TextColumn::make('date'),
                 Tables\Columns\TextColumn::make('number'),
                 Tables\Columns\TextColumn::make('revenue.name', 'name')->label('Account Name'),
                 Tables\Columns\TextColumn::make('merchant_name')->label('Merchant Name'),

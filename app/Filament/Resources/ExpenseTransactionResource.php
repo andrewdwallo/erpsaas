@@ -108,7 +108,7 @@ class ExpenseTransactionResource extends Resource
                     return $account->cards->pluck('card_name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('date')->nullable()->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/00/0000'))->placeholder('05/25/2022'),
+                Forms\Components\DatePicker::make('date')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y'),
                 Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
                 Forms\Components\Select::make('expense_id')->label('Expense Account')
                 ->options(Expense::all()->pluck('name', 'id')->toArray()),
@@ -128,7 +128,7 @@ class ExpenseTransactionResource extends Resource
                 Tables\Columns\TextColumn::make('bank.bank_name', 'bank_name')->label('Bank Name'),
                 Tables\Columns\TextColumn::make('account.account_name', 'account_name')->label('Bank Account Name'),
                 Tables\Columns\TextColumn::make('card.card_name', 'card_name')->label('Card Network'),
-                Tables\Columns\TextColumn::make('date')->formatStateUsing(fn ($record) => vsprintf('%d%d/%d%d/%d%d%d%d', str_split($record->date))),
+                Tables\Columns\TextColumn::make('date'),
                 Tables\Columns\TextColumn::make('number'),
                 Tables\Columns\TextColumn::make('expense.name', 'name')->label('Account Name'),
                 Tables\Columns\TextColumn::make('merchant_name')->label('Merchant Name'),

@@ -21,4 +21,11 @@ class ListRevenues extends ListRecords
     {
         return false;
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            RevenueResource\Widgets\RevenueOverview::class,
+        ];
+    }
 }

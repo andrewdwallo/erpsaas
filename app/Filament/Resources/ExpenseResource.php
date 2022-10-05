@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use App\Models\Company;
+use App\Filament\Resources\ExpenseResource\Widgets;
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -82,6 +83,13 @@ class ExpenseResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\ExpenseOverview::class,
+        ];
     }
     
     public static function getRelations(): array

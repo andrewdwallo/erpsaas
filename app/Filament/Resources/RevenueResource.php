@@ -12,6 +12,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use App\Models\Company;
 use App\Models\Department;
+use App\Filament\Resources\RevenueResource\Widgets;
 use Filament\Tables\Columns\TextColumn;
 use App\Models\IncomeTransaction;
 use App\Models\ExpenseTransaction;
@@ -89,6 +90,13 @@ class RevenueResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\RevenueOverview::class,
+        ];
     }
     
     public static function getRelations(): array
