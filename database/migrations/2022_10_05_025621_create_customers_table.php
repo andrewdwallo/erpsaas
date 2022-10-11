@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name',100);
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->int('tax_number')->nullable();
+            $table->integer('tax_number')->nullable();
             $table->string('address')->nullable();
             $table->boolean('active')->defaultTrue();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
