@@ -13,6 +13,8 @@
 
 An ERP Software System Package for Filament:
 
+Note: I will be redoing this Project shortly. Some things aren't implemented in the correct fashion to be able to do what I plan for this Project so please be aware of this. ALSO, some things will be dependent on when Version 3 of Filament is released since some of the new features align well with this Project's Plan. 
+
 ## Installation
 
 1. Git clone:
