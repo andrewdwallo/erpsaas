@@ -43,20 +43,15 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-6. Install Dependencies via Yarn:
-If yarn is not installed on your system globally install via npm:
+6. Install Dependencies: You can use one of either pnpm, npm, or yarn.
 
 ```bash
-npm install --global yarn
-```
-
-```bash
-yarn install
+pnpm install
 ```
 
 7. Run Dev:
 ```bash
-yarn run dev
+pnpm run dev
 ```
 
 8. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
