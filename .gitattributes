@@ -9,3 +9,6 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+/.yarn/releases/** binary
+/.yarn/plugins/** binary

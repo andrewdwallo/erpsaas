@@ -6,27 +6,22 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "bezhansalleh/filament-shield": "^2.2",
-        "doctrine/dbal": "^3.4",
-        "filament/filament": "^2.16",
-        "filament/forms": "^2.16",
-        "filament/notifications": "^2.16",
+        "bezhansalleh/filament-shield": "^2.2.7",
+        "doctrine/dbal": "^3.5",
+        "filament/filament": "^2.16.36",
         "filament/spatie-laravel-media-library-plugin": "^2.16",
         "filament/spatie-laravel-settings-plugin": "^2.16",
         "filament/spatie-laravel-tags-plugin": "^2.16",
         "filament/spatie-laravel-translatable-plugin": "^2.16",
-        "filament/tables": "^2.16",
         "flowframe/laravel-trend": "^0.1.1",
-        "guzzlehttp/guzzle": "^7.2",
-        "hollyit/filament-static-assets": "^0.1.2",
-        "jeffgreco13/filament-breezy": "^1.4",
-        "konnco/filament-import": "^1.0",
-        "laravel/framework": "^9.19",
+        "guzzlehttp/guzzle": "^7.5",
+        "jeffgreco13/filament-breezy": "^1.4.7",
+        "konnco/filament-import": "^1.2.6",
+        "laravel/framework": "^9.36.1",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "livewire/livewire": "^2.10",
         "maatwebsite/excel": "^3.1",
-        "psr/simple-cache": "^2.0",
-        "symfony/html-sanitizer": "^6.1",
         "yepsua/filament-themes": "^0.2.0"
     },
     "require-dev": {
@@ -36,7 +31,7 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "spatie/laravel-ignition": "^1.5.2"
     },
     "autoload": {
         "psr-4": {
