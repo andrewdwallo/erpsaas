@@ -126,7 +126,7 @@ class DepartmentPolicy
     }
 
     /**
-     * Determine whether the user can bulk restore.
+     * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
      * @param  \App\Models\Department  $department
