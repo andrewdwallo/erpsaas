@@ -1,6 +1,7 @@
 ![10](https://user-images.githubusercontent.com/104294090/198823691-dd503f53-0ff0-4c24-b8f6-5c6f4f03c32a.png)
 ![11](https://user-images.githubusercontent.com/104294090/198823738-48abf5de-e5ff-4bd7-9ecd-8eeafa24ed2d.png)
 ![12](https://user-images.githubusercontent.com/104294090/198823750-d2c0c93d-12dc-4767-b183-c0ce41d27d4b.png)
+![13](https://user-images.githubusercontent.com/104294090/198823891-4153e2fe-d516-4ee8-bd8f-e78c97acd316.png)
 ![CompaniesPageGithub1](https://user-images.githubusercontent.com/104294090/193767442-13fec3f6-fd24-4057-87b2-5d3352d42af4.png)
 ![DepartmentsPageGithub1](https://user-images.githubusercontent.com/104294090/193767444-218ff1b4-8eb6-4b4e-84be-72f040601052.png)
 ![EmployeesPageGithub1](https://user-images.githubusercontent.com/104294090/193767445-3207f1fc-e79a-42a3-99e8-93e645def04b.png)
