@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\Widgets;
 
-use App\Models\Liability;
-use Closure;
+use App\Models\Expense;
 use Filament\Tables;
 use Filament\Forms;
-use Illuminate\Contracts\View\View;
-use Livewire\Component;
 use App\Models\Company;
 use App\Models\Department;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class Liabilities extends BaseWidget
+class Expenses extends PageWidget
 {
-
-    protected static ?int $sort = 3;
     
     protected int | string | array $columnSpan = [
         'md' => 2,
@@ -25,7 +20,7 @@ class Liabilities extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        return Liability::query();
+        return Expense::query();
     }
 
     protected function getTableColumns(): array
@@ -72,8 +67,8 @@ class Liabilities extends BaseWidget
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
-                        'Current Liabilities' => 'Current Liabilities',
-                        'Noncurrent Liabilities' => 'Noncurrent Liabilities',
+                        'Direct Costs' => 'Direct Costs',
+                        'Expense' => 'Expense',
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
@@ -107,8 +102,8 @@ class Liabilities extends BaseWidget
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
-                        'Current Liabilities' => 'Current Liabilities',
-                        'Noncurrent Liabilities' => 'Noncurrent Liabilities',
+                        'Direct Costs' => 'Direct Costs',
+                        'Expense' => 'Expense',
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
@@ -152,8 +147,8 @@ class Liabilities extends BaseWidget
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
-                        'Current Liabilities' => 'Current Liabilities',
-                        'Noncurrent Liabilities' => 'Noncurrent Liabilities',
+                        'Direct Costs' => 'Direct Costs',
+                        'Expense' => 'Expense',
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),

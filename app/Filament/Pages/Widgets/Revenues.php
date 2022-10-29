@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\Widgets;
 
 use App\Models\Revenue;
-use Closure;
 use Filament\Tables;
 use Filament\Forms;
-use Illuminate\Contracts\View\View;
-use Livewire\Component;
 use App\Models\Company;
 use App\Models\Department;
-use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class Revenues extends BaseWidget
+class Revenues extends PageWidget
 {
-
-    protected static ?int $sort = 5;
     
     protected int | string | array $columnSpan = [
         'md' => 2,
