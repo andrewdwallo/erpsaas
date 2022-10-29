@@ -86,6 +86,7 @@ Create Employee(s) For Your Company/Companies
 ```
 ```
 Create An Asset for Your Bank First with Account Name being your Bank Name (example. Bank of America) as a Current Asset
+You can now Create an Asset, along with Liabilities, etc from the Dashboard Page (Chart of Accounts).
 ```
 ```
 Create Bank(s) for Your Company/Companies and Departments
