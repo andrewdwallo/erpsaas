@@ -2,7 +2,7 @@ import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import fs from 'fs'
 import { homedir } from 'os'
-import path, { resolve } from 'path'
+import { resolve } from 'path'
 
 let host = 'erpsaas.dev'
 
@@ -10,6 +10,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                'resources/filament/filament-stimulus.js',
+                'resources/filament/filament-turbo.js',
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/filament.css',

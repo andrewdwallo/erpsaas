@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 specifiers:
   '@alpinejs/focus': ^3.10.5
   '@awcodes/alpine-floating-ui': ^3.4.0
+  '@hotwired/stimulus': ^3.1.0
+  '@hotwired/turbo': ^7.2.4
   '@tailwindcss/forms': ^0.5.3
   '@tailwindcss/typography': ^0.5.7
   alpinejs: ^3.10.5
@@ -20,6 +22,8 @@ dependencies:
 
 devDependencies:
   '@alpinejs/focus': 3.10.5
+  '@hotwired/stimulus': 3.1.0
+  '@hotwired/turbo': 7.2.4
   '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.1
   '@tailwindcss/typography': 0.5.7_tailwindcss@3.2.1
   alpinejs: 3.10.5
@@ -59,6 +63,15 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@hotwired/stimulus/3.1.0:
+    resolution: {integrity: sha512-iDMHUhiEJ1xFeicyHcZQQgBzhtk5mPR0QZO3L6wtqzMsJEk2TKECuCQTGKjm+KJTHVY0dKq1dOOAWvODjpd2Mg==}
+    dev: true
+
+  /@hotwired/turbo/7.2.4:
+    resolution: {integrity: sha512-c3xlOroHp/cCZHDOuLp6uzQYEbvXBUVaal0puXoGJ9M8L/KHwZ3hQozD4dVeSN9msHWLxxtmPT1TlCN7gFhj4w==}
+    engines: {node: '>= 14'}
+    dev: true
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -161,7 +174,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.4
-      caniuse-lite: 1.0.30001426
+      caniuse-lite: 1.0.30001427
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -186,7 +199,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001426
+      caniuse-lite: 1.0.30001427
       electron-to-chromium: 1.4.284
       node-releases: 2.0.6
       update-browserslist-db: 1.0.10_browserslist@4.21.4
@@ -197,8 +210,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /caniuse-lite/1.0.30001426:
-    resolution: {integrity: sha512-n7cosrHLl8AWt0wwZw/PJZgUg3lV0gk9LMI7ikGJwhyhgsd2Nb65vKvmSexCqq/J7rbH3mFG6yZZiPR5dLPW5A==}
+  /caniuse-lite/1.0.30001427:
+    resolution: {integrity: sha512-lfXQ73oB9c8DP5Suxaszm+Ta2sr/4tf8+381GkIm1MLj/YdLf+rEDyDSRCzeltuyTVGm+/s18gdZ0q+Wmp8VsQ==}
     dev: true
 
   /chokidar/3.5.3:

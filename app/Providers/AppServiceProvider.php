@@ -25,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Filament::registerScripts([app(Vite::class)('resources/filament/filament-turbo.js')]);
+        Filament::registerScripts([app(Vite::class)('resources/filament/filament-stimulus.js')]);
         Filament::serving(function () {
             // Using Vite 
             Filament::registerTheme(
