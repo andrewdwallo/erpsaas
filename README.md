@@ -52,32 +52,37 @@ php artisan key:generate
 pnpm install
 ```
 
-7. Run Dev:
+7. Build Manifest
+```bash
+pnpm run build
+```
+
+8. Run Dev:
 ```bash
 pnpm run dev
 ```
 
-8. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
+9. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
 ```bash
 php artisan storage:link
 ```
 
-9. Migrate the database tables to your DB:
+10. Migrate the database tables to your DB:
 ```bash
 php artisan migrate
 ```
 
-10. Now run the following command to install shield (do --fresh just in case):
+11. Now run the following command to install shield (do --fresh just in case):
 ```bash
 php artisan shield:install --fresh
 ```
 
-11. Follow the prompts, then login with your email and password at the following url or similar at your-url/admin:
+12. Follow the prompts, then login with your email and password at the following url or similar at your-url/admin:
 ```
 https://erpsaas.test/admin 
 ```
 
-12. In this order:
+13. In this order:
 ```
 Create A New Company (As Many As You Want)
 ```
