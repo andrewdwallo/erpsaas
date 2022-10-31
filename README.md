@@ -16,8 +16,6 @@
 
 An ERP Software System Package for Filament:
 
-Note: I will be redoing this Project shortly. Some things aren't implemented in the correct fashion to be able to do what I plan for this Project so please be aware of this. ALSO, some things will be dependent on when Version 3 of Filament is released since some of the new features align well with this Project's Plan. 
-
 ## Installation
 
 1. Git clone:
@@ -113,7 +111,7 @@ Enjoy!
 ```
 
 ## Contributing
-Contributions are needed!!
+Please make suggestions if you don't want to contribute.
 I plan on making this a full fledged ERP System with more than an accounting Module.
 I plan on integrating Plaid for accounting automation in the future..
-Please fork this repo and submit pull requests!
+Please fork this repo and submit pull requests if you want to contribute!
