@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@alpinejs/focus': ^3.10.5
   '@awcodes/alpine-floating-ui': ^3.4.0
-  '@hotwired/stimulus': ^3.1.0
+  '@hotwired/stimulus': ^3.1.1
   '@hotwired/turbo': ^7.2.4
   '@tailwindcss/forms': ^0.5.3
   '@tailwindcss/typography': ^0.5.7
@@ -13,7 +13,7 @@ specifiers:
   postcss: ^8.4.18
   tailwindcss: ^3.2.1
   tippy.js: ^6.3.7
-  vite: ^3.2.1
+  vite: ^3.2.2
   yarn-upgrade-all: ^0.7.1
 
 dependencies:
@@ -22,16 +22,16 @@ dependencies:
 
 devDependencies:
   '@alpinejs/focus': 3.10.5
-  '@hotwired/stimulus': 3.1.0
+  '@hotwired/stimulus': 3.1.1
   '@hotwired/turbo': 7.2.4
   '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.1
   '@tailwindcss/typography': 0.5.7_tailwindcss@3.2.1
   alpinejs: 3.10.5
   autoprefixer: 10.4.13_postcss@8.4.18
-  laravel-vite-plugin: 0.7.0_vite@3.2.1
+  laravel-vite-plugin: 0.7.0_vite@3.2.2
   postcss: 8.4.18
   tailwindcss: 3.2.1_postcss@8.4.18
-  vite: 3.2.1
+  vite: 3.2.2
   yarn-upgrade-all: 0.7.1
 
 packages:
@@ -64,8 +64,8 @@ packages:
     dev: true
     optional: true
 
-  /@hotwired/stimulus/3.1.0:
-    resolution: {integrity: sha512-iDMHUhiEJ1xFeicyHcZQQgBzhtk5mPR0QZO3L6wtqzMsJEk2TKECuCQTGKjm+KJTHVY0dKq1dOOAWvODjpd2Mg==}
+  /@hotwired/stimulus/3.1.1:
+    resolution: {integrity: sha512-e0JpzIaYLsRRXevRDVs0yevabiCvieIWWCwh7VqVXjXM5AOHdjb7AjaKIj34zYFmY1N6HIRRfk915WVMYlHnDA==}
     dev: true
 
   /@hotwired/turbo/7.2.4:
@@ -577,14 +577,14 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
-  /laravel-vite-plugin/0.7.0_vite@3.2.1:
+  /laravel-vite-plugin/0.7.0_vite@3.2.2:
     resolution: {integrity: sha512-eYViSOGqqVEjQJXkXZFX7DpI5f8vGyAZ9pSoAeM5esJGsX5NtdZmJf2UfblODYcaknXd4POo/pkg0bTRt97X4A==}
     engines: {node: '>=14'}
     peerDependencies:
       vite: ^3.0.0
     dependencies:
-      vite: 3.2.1
-      vite-plugin-full-reload: 1.0.4_vite@3.2.1
+      vite: 3.2.2
+      vite-plugin-full-reload: 1.0.4_vite@3.2.2
     dev: true
 
   /lilconfig/2.0.6:
@@ -865,18 +865,18 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
-  /vite-plugin-full-reload/1.0.4_vite@3.2.1:
+  /vite-plugin-full-reload/1.0.4_vite@3.2.2:
     resolution: {integrity: sha512-9WejQII6zJ++m/YE173Zvl2jq4cqa404KNrVT+JDzDnqaGRq5UvOvA48fnsSWPIMXFV7S0dq5+sZqcSB+tKBgA==}
     peerDependencies:
       vite: ^2 || ^3
     dependencies:
       picocolors: 1.0.0
       picomatch: 2.3.1
-      vite: 3.2.1
+      vite: 3.2.2
     dev: true
 
-  /vite/3.2.1:
-    resolution: {integrity: sha512-ADtMkfHuWq4tskJsri2n2FZkORO8ZyhI+zIz7zTrDAgDEtct1jdxOg3YsZBfHhKjmMoWLOSCr+64qrEDGo/DbQ==}
+  /vite/3.2.2:
+    resolution: {integrity: sha512-pLrhatFFOWO9kS19bQ658CnRYzv0WLbsPih6R+iFeEEhDOuYgYCX2rztUViMz/uy/V8cLCJvLFeiOK7RJEzHcw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:

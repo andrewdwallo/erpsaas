@@ -33,8 +33,7 @@ class AppServiceProvider extends ServiceProvider
                 app(Vite::class)('resources/css/filament.css'),
             );
             Filament::registerNavigationGroups([
-                'Resource Management',
-                'Account Management',
+                'Company Management',
                 'Bank',
             ]);
         });
