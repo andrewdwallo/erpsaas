@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "arielmejiadev/larapex-charts": "^5.2",
         "bezhansalleh/filament-shield": "^2.2.7",
         "doctrine/dbal": "^3.5",
         "filament/filament": "^2.16.36",
@@ -16,7 +17,7 @@
         "flowframe/laravel-trend": "^0.1.1",
         "guzzlehttp/guzzle": "^7.5",
         "jeffgreco13/filament-breezy": "^1.4.7",
-        "konnco/filament-import": "^1.2.6",
+        "konnco/filament-import": "^1.2",
         "laravel/framework": "^9.36.1",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",

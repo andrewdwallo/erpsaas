@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use App\Filament\Pages\Widgets;
+use App\Filament\Pages\ChartOfAccountsWidgets;
 
 class ChartOfAccounts extends Page
 {
@@ -16,11 +16,11 @@ class ChartOfAccounts extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\Assets::class,
-            Widgets\Liabilities::class,
-            Widgets\Expenses::class,
-            Widgets\Revenues::class,
-            Widgets\Equities::class,
+            ChartOfAccountsWidgets\Assets::class,
+            ChartOfAccountsWidgets\Liabilities::class,
+            ChartOfAccountsWidgets\Expenses::class,
+            ChartOfAccountsWidgets\Revenues::class,
+            ChartOfAccountsWidgets\Equities::class,
         ];
     }
 

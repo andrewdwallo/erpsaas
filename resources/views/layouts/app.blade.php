@@ -18,6 +18,7 @@
         <!-- Scripts -->
         @livewireScripts
         @vite('resources/js/app.js')
+        <script src="{{ @asset('vendor/larapex-charts/apexcharts.js') }}"></script>
         @stack('scripts')
     </head>
 
