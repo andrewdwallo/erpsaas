@@ -193,16 +193,16 @@
         },
         {
             "name": "bezhansalleh/filament-shield",
-            "version": "2.2.9",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bezhanSalleh/filament-shield.git",
-                "reference": "805a695d1054accf095cd49b82c2fa1b6d48334f"
+                "reference": "363961c12dfc07fadf77f73997048aee22034aaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bezhanSalleh/filament-shield/zipball/805a695d1054accf095cd49b82c2fa1b6d48334f",
-                "reference": "805a695d1054accf095cd49b82c2fa1b6d48334f",
+                "url": "https://api.github.com/repos/bezhanSalleh/filament-shield/zipball/363961c12dfc07fadf77f73997048aee22034aaa",
+                "reference": "363961c12dfc07fadf77f73997048aee22034aaa",
                 "shasum": ""
             },
             "require": {
@@ -270,7 +270,7 @@
             ],
             "support": {
                 "issues": "https://github.com/bezhanSalleh/filament-shield/issues",
-                "source": "https://github.com/bezhanSalleh/filament-shield/tree/2.2.9"
+                "source": "https://github.com/bezhanSalleh/filament-shield/tree/2.3.0"
             },
             "funding": [
                 {
@@ -278,7 +278,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-10-28T01:53:08+00:00"
+            "time": "2022-11-01T16:38:53+00:00"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -2627,16 +2627,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.37.0",
+            "version": "v9.38.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "0c9675abf6d966e834b2ebeca3319f524e07a330"
+                "reference": "abf198e443e06696af3f356b44de67c0fa516107"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/0c9675abf6d966e834b2ebeca3319f524e07a330",
-                "reference": "0c9675abf6d966e834b2ebeca3319f524e07a330",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/abf198e443e06696af3f356b44de67c0fa516107",
+                "reference": "abf198e443e06696af3f356b44de67c0fa516107",
                 "shasum": ""
             },
             "require": {
@@ -2809,7 +2809,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-10-25T15:43:46+00:00"
+            "time": "2022-11-01T14:05:55+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -5682,6 +5682,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": "spatie/laravel-data",
             "time": "2022-09-16T13:34:38+00:00"
         },
         {
