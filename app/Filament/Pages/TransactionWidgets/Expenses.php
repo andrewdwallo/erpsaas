@@ -36,7 +36,7 @@ class Expenses extends PageWidget
             Tables\Columns\TextColumn::make('bank.bank_name', 'bank_name')->label('Bank Name'),
             Tables\Columns\TextColumn::make('account.account_name', 'account_name')->label('Bank Account Name'),
             Tables\Columns\TextColumn::make('card.card_name', 'card_name')->label('Card Network'),
-            Tables\Columns\TextColumn::make('date'),
+            Tables\Columns\TextColumn::make('paid_at')->label('Paid At'),
             Tables\Columns\TextColumn::make('number'),
             Tables\Columns\TextColumn::make('expense.name', 'name')->label('Account Name'),
             Tables\Columns\TextColumn::make('merchant_name')->label('Merchant Name'),
@@ -121,7 +121,7 @@ class Expenses extends PageWidget
                     return $account->cards->pluck('card_name', 'id');
                 }),
 
-                Forms\Components\DatePicker::make('date')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y'),
+                Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
                 Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
                 Forms\Components\Select::make('expense_id')->label('Expense Account')
                 ->options(Expense::all()->pluck('name', 'id')->toArray()),
@@ -201,7 +201,7 @@ class Expenses extends PageWidget
                     return $account->cards->pluck('card_name', 'id');
                 }),
 
-                Forms\Components\DatePicker::make('date')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y'),
+                Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
                 Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
                 Forms\Components\Select::make('expense_id')->label('Expense Account')
                 ->options(Expense::all()->pluck('name', 'id')->toArray()),
@@ -287,7 +287,7 @@ class Expenses extends PageWidget
                     return $account->cards->pluck('card_name', 'id');
                 }),
 
-                Forms\Components\DatePicker::make('date')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y'),
+                Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
                 Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
                 Forms\Components\Select::make('expense_id')->label('Expense Account')
                 ->options(Expense::all()->pluck('name', 'id')->toArray()),

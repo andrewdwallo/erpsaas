@@ -96,11 +96,8 @@ class Expenses extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(500)->maxValue(599),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
@@ -142,11 +139,8 @@ class Expenses extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(500)->maxValue(599),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([

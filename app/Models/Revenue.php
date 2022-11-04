@@ -9,6 +9,8 @@ class Revenue extends Model
 {
     use HasFactory;
 
+    protected $table = 'revenues';
+
     protected $fillable = [
         'company_id',
         'department_id',
@@ -16,6 +18,10 @@ class Revenue extends Model
         'name',
         'type',
         'description',
+    ];
+
+    protected $casts = [
+        'type' => 'array',
     ];
 
     public function company()

@@ -32,7 +32,6 @@ class Liabilities extends PageWidget
             Tables\Columns\TextColumn::make('name'),
             Tables\Columns\TextColumn::make('type'),
             Tables\Columns\TextColumn::make('description')->hidden(),
-            Tables\Columns\TextColumn::make('expense_transactions_sum_amount')->sum('expense_transactions', 'amount')->money('USD', 2)->label('Amount'),
         ];
     }
 
@@ -96,11 +95,8 @@ class Liabilities extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(200)->maxValue(299),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
@@ -142,11 +138,8 @@ class Liabilities extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(200)->maxValue(299),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([

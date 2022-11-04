@@ -9,6 +9,8 @@ class Liability extends Model
 {
     use HasFactory;
 
+    protected $table = 'liabilities';
+
     protected $fillable = [
         'company_id',
         'department_id',
@@ -16,6 +18,10 @@ class Liability extends Model
         'name',
         'type',
         'description',
+    ];
+
+    protected $casts = [
+        'type' => 'array',
     ];
 
     public function company()
