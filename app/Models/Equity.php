@@ -9,6 +9,8 @@ class Equity extends Model
 {
     use HasFactory;
 
+    protected $table = 'equities';
+
     protected $fillable = [
         'company_id',
         'department_id',
@@ -16,6 +18,10 @@ class Equity extends Model
         'name',
         'type',
         'description',
+    ];
+
+    protected $casts = [
+        'type' => 'array',
     ];
 
     public function company()

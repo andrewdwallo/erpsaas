@@ -95,11 +95,8 @@ class Revenues extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(400)->maxValue(499),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([
@@ -140,11 +137,8 @@ class Revenues extends PageWidget
                     return $company->departments->pluck('name', 'id');
                 }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(400)->maxValue(499),
+                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
                 Forms\Components\Select::make('type')
                     ->required()
                     ->options([

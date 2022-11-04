@@ -9,6 +9,8 @@ class Expense extends Model
 {
     use HasFactory;
 
+    protected $table = 'expenses';
+
     protected $fillable = [
         'company_id',
         'department_id',
@@ -16,6 +18,10 @@ class Expense extends Model
         'name',
         'type',
         'description',
+    ];
+
+    protected $casts = [
+        'type' => 'array',
     ];
 
     public function company()

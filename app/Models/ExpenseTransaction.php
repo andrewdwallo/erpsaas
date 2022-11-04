@@ -9,25 +9,21 @@ class ExpenseTransaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'expense_transactions';
+
     protected $fillable = [
         'company_id',
         'department_id',
         'bank_id',
         'account_id',
         'card_id',
-        'asset_id',
-        'liability_id',
         'expense_id',
-        'revenue_id',
-        'equity_id',
-        'date',
+        'asset_id',
+        'paid_at',
         'number',
-        'type',
-        'category',
         'merchant_name',
         'description',
         'amount',
-        'running_balance',
     ];
 
     public function company()
@@ -50,24 +46,9 @@ class ExpenseTransaction extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
     public function card()
     {
         return $this->belongsTo(Card::class);
-    }
-
-    public function asset()
-    {
-        return $this->belongsTo(Asset::class);
-    }
-
-    public function liability()
-    {
-        return $this->belongsTo(Liability::class);
     }
 
     public function expense()
@@ -75,13 +56,9 @@ class ExpenseTransaction extends Model
         return $this->belongsTo(Expense::class);
     }
 
-    public function equity()
+    public function asset()
     {
-        return $this->belongsTo(Equity::class);
+        return $this->belongsTo(Asset::class);
     }
-
-    public function revenue()
-    {
-        return $this->belongsTo(Revenue::class);
-    }
+    
 }
