@@ -67,6 +67,7 @@ php artisan migrate
 ```
 
 10. Now run the following command to install shield (do --fresh just in case):
+##### Note: I added the app/Policies folder to .gitignore, if you want to keep them remove it from .gitignore after finishing installation.
 ```bash
 php artisan shield:install --fresh
 ```
