@@ -30,7 +30,7 @@ git clone https://github.com/andrewdwallo/erpsaas.git
 cd erpsaas
 ```
 
-3. Install via composer: You will get an error than vite manifest cannot be found, just keep following instructions.
+3. Install via composer: You will get an error that vite manifest cannot be found, just keep following instructions.
 ```bash
 composer install
 ```
