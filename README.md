@@ -30,18 +30,9 @@ git clone https://github.com/andrewdwallo/erpsaas.git
 cd erpsaas
 ```
 
-3. Install via composer:
+3. Install via composer: You will get an error than vite manifest cannot be found, just keep following instructions.
 ```bash
 composer install
-```
-4. Copy .env.example and configure your database:
-```bash
-cp .env.example .env
-```
-
-5. Generate APP_KEY for Laravel:
-```bash
-php artisan key:generate
 ```
 
 6. Install Dependencies: You can use one of either pnpm, npm, or yarn.
@@ -55,9 +46,14 @@ pnpm install
 pnpm run build
 ```
 
-8. Run Dev:
+4. Copy .env.example and configure your database:
 ```bash
-pnpm run dev
+cp .env.example .env
+```
+
+5. Generate APP_KEY for Laravel:
+```bash
+php artisan key:generate
 ```
 
 9. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
@@ -73,6 +69,11 @@ php artisan migrate
 11. Now run the following command to install shield (do --fresh just in case):
 ```bash
 php artisan shield:install --fresh
+```
+
+8. Run Dev:
+```bash
+pnpm run dev
 ```
 
 12. Follow the prompts, then login with your email and password at the following url or similar at your-url/admin:
