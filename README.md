@@ -14,7 +14,7 @@
 ![ExpensesAccountPage1](https://user-images.githubusercontent.com/104294090/193767446-67bebb68-7fcb-4085-8d8e-90e0179a664c.png)
 # ERPSAAS 
 
-An ERP Software System Package for Filament:
+An ERP Software System using Filament:
 
 ## Installation
 
