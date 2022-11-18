@@ -35,43 +35,43 @@ cd erpsaas
 composer install
 ```
 
-6. Install Dependencies: You can use one of either pnpm, npm, or yarn.
+4. Install Dependencies: You can use one of either pnpm, npm, or yarn.
 
 ```bash
 pnpm install
 ```
 
-7. Build Manifest
+5. Build Manifest
 ```bash
 pnpm run build
 ```
 
-4. Copy .env.example and configure your database:
+6. Copy .env.example and configure your database:
 ```bash
 cp .env.example .env
 ```
 
-5. Generate APP_KEY for Laravel:
+7. Generate APP_KEY for Laravel:
 ```bash
 php artisan key:generate
 ```
 
-9. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
+8. IMPORTANT! Link your database (preferably mysql) to app storage in order to generate assets/images/csv files:
 ```bash
 php artisan storage:link
 ```
 
-10. Migrate the database tables to your DB:
+9. Migrate the database tables to your DB:
 ```bash
 php artisan migrate
 ```
 
-11. Now run the following command to install shield (do --fresh just in case):
+10. Now run the following command to install shield (do --fresh just in case):
 ```bash
 php artisan shield:install --fresh
 ```
 
-8. Run Dev:
+11. Run Dev:
 ```bash
 pnpm run dev
 ```
