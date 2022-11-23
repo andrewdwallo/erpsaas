@@ -13,8 +13,6 @@
 ![RevenueAccountPage1](https://user-images.githubusercontent.com/104294090/193767451-9d6d02b3-8041-4154-84a1-3e0a2a7d2398.png)
 ![ExpensesAccountPage1](https://user-images.githubusercontent.com/104294090/193767446-67bebb68-7fcb-4085-8d8e-90e0179a664c.png)
 ![Filament My Profile Page](https://user-images.githubusercontent.com/104294090/203485664-046bae07-46c0-4eb9-84b4-3bfcaa1f2d08.png)
-![Filament Registration Page Wizard 2](https://user-images.githubusercontent.com/104294090/203485665-d47b0cbb-fc18-4090-9928-dc0443692b75.png)
-![Filament Registration Page Wizard](https://user-images.githubusercontent.com/104294090/203485667-a429184d-38e6-4d0a-ba84-7c1dd960ed9d.png)
 
 # ERPSAAS
 
