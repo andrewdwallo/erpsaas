@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "arielmejiadev/larapex-charts": "^5.2",
         "bezhansalleh/filament-shield": "^2.2.7",
         "doctrine/dbal": "^3.5",
         "filament/filament": "^2.16.36",

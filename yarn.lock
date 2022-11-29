@@ -14,10 +14,10 @@
   "resolved" "https://registry.npmjs.org/@awcodes/alpine-floating-ui/-/alpine-floating-ui-3.4.0.tgz"
   "version" "3.4.0"
 
-"@hotwired/stimulus@^3.1.1":
-  "integrity" "sha512-e0JpzIaYLsRRXevRDVs0yevabiCvieIWWCwh7VqVXjXM5AOHdjb7AjaKIj34zYFmY1N6HIRRfk915WVMYlHnDA=="
-  "resolved" "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.1.1.tgz"
-  "version" "3.1.1"
+"@hotwired/stimulus@^3.2.0":
+  "integrity" "sha512-uAIIdg049qId0lBhyjuMBfcC5uV8JwbhNLoxEyi9vxM3MW6h+mM97G9rNT4ZZMiqnKK9XUHp9SQUrd9rSLEmpQ=="
+  "resolved" "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.2.0.tgz"
+  "version" "3.2.0"
 
 "@hotwired/turbo@^7.2.4":
   "integrity" "sha512-c3xlOroHp/cCZHDOuLp6uzQYEbvXBUVaal0puXoGJ9M8L/KHwZ3hQozD4dVeSN9msHWLxxtmPT1TlCN7gFhj4w=="
@@ -106,9 +106,9 @@
     "@vue/reactivity" "~3.1.1"
 
 "anymatch@~3.1.2":
-  "integrity" "sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg=="
-  "resolved" "https://registry.npmjs.org/anymatch/-/anymatch-3.1.2.tgz"
-  "version" "3.1.2"
+  "integrity" "sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw=="
+  "resolved" "https://registry.npmjs.org/anymatch/-/anymatch-3.1.3.tgz"
+  "version" "3.1.3"
   dependencies:
     "normalize-path" "^3.0.0"
     "picomatch" "^2.0.4"
@@ -158,9 +158,9 @@
   "version" "2.0.1"
 
 "caniuse-lite@^1.0.30001400", "caniuse-lite@^1.0.30001426":
-  "integrity" "sha512-zBUoFU0ZcxpvSt9IU66dXVT/3ctO1cy4y9cscs1szkPlcWb6pasYM144GqrUygUbT+k7cmUCW61cvskjcv0enQ=="
-  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001431.tgz"
-  "version" "1.0.30001431"
+  "integrity" "sha512-aOBHrLmTQw//WFa2rcF1If9fa3ypkC1wzqqiKHgfdrXTWcU8C4gKVZT77eQAPWN1APys3+uQ0Df07rKauXGEYA=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001434.tgz"
+  "version" "1.0.30001434"
 
 "chokidar@^3.5.3":
   "integrity" "sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw=="
@@ -216,38 +216,38 @@
   "resolved" "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.284.tgz"
   "version" "1.4.284"
 
-"esbuild-windows-64@0.15.14":
-  "integrity" "sha512-CszIGQVk/P8FOS5UgAH4hKc9zOaFo69fe+k1rqgBHx3CSK3Opyk5lwYriIamaWOVjBt7IwEP6NALz+tkVWdFog=="
-  "resolved" "https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-0.15.14.tgz"
-  "version" "0.15.14"
+"esbuild-windows-64@0.15.16":
+  "integrity" "sha512-HjW1hHRLSncnM3MBCP7iquatHVJq9l0S2xxsHHj4yzf4nm9TU4Z7k4NkeMlD/dHQ4jPlQQhwcMvwbJiOefSuZw=="
+  "resolved" "https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-0.15.16.tgz"
+  "version" "0.15.16"
 
 "esbuild@^0.15.9":
-  "integrity" "sha512-pJN8j42fvWLFWwSMG4luuupl2Me7mxciUOsMegKvwCmhEbJ2covUdFnihxm0FMIBV+cbwbtMoHgMCCI+pj1btQ=="
-  "resolved" "https://registry.npmjs.org/esbuild/-/esbuild-0.15.14.tgz"
-  "version" "0.15.14"
+  "integrity" "sha512-o6iS9zxdHrrojjlj6pNGC2NAg86ECZqIETswTM5KmJitq+R1YmahhWtMumeQp9lHqJaROGnsBi2RLawGnfo5ZQ=="
+  "resolved" "https://registry.npmjs.org/esbuild/-/esbuild-0.15.16.tgz"
+  "version" "0.15.16"
   optionalDependencies:
-    "@esbuild/android-arm" "0.15.14"
-    "@esbuild/linux-loong64" "0.15.14"
-    "esbuild-android-64" "0.15.14"
-    "esbuild-android-arm64" "0.15.14"
-    "esbuild-darwin-64" "0.15.14"
-    "esbuild-darwin-arm64" "0.15.14"
-    "esbuild-freebsd-64" "0.15.14"
-    "esbuild-freebsd-arm64" "0.15.14"
-    "esbuild-linux-32" "0.15.14"
-    "esbuild-linux-64" "0.15.14"
-    "esbuild-linux-arm" "0.15.14"
-    "esbuild-linux-arm64" "0.15.14"
-    "esbuild-linux-mips64le" "0.15.14"
-    "esbuild-linux-ppc64le" "0.15.14"
-    "esbuild-linux-riscv64" "0.15.14"
-    "esbuild-linux-s390x" "0.15.14"
-    "esbuild-netbsd-64" "0.15.14"
-    "esbuild-openbsd-64" "0.15.14"
-    "esbuild-sunos-64" "0.15.14"
-    "esbuild-windows-32" "0.15.14"
-    "esbuild-windows-64" "0.15.14"
-    "esbuild-windows-arm64" "0.15.14"
+    "@esbuild/android-arm" "0.15.16"
+    "@esbuild/linux-loong64" "0.15.16"
+    "esbuild-android-64" "0.15.16"
+    "esbuild-android-arm64" "0.15.16"
+    "esbuild-darwin-64" "0.15.16"
+    "esbuild-darwin-arm64" "0.15.16"
+    "esbuild-freebsd-64" "0.15.16"
+    "esbuild-freebsd-arm64" "0.15.16"
+    "esbuild-linux-32" "0.15.16"
+    "esbuild-linux-64" "0.15.16"
+    "esbuild-linux-arm" "0.15.16"
+    "esbuild-linux-arm64" "0.15.16"
+    "esbuild-linux-mips64le" "0.15.16"
+    "esbuild-linux-ppc64le" "0.15.16"
+    "esbuild-linux-riscv64" "0.15.16"
+    "esbuild-linux-s390x" "0.15.16"
+    "esbuild-netbsd-64" "0.15.16"
+    "esbuild-openbsd-64" "0.15.16"
+    "esbuild-sunos-64" "0.15.16"
+    "esbuild-windows-32" "0.15.16"
+    "esbuild-windows-64" "0.15.16"
+    "esbuild-windows-arm64" "0.15.16"
 
 "escalade@^3.1.1":
   "integrity" "sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw=="
