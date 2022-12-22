@@ -32,7 +32,7 @@ class Employees extends PageWidget
             Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
             Tables\Columns\ImageColumn::make('photo')->size(40),
             Tables\Columns\TextColumn::make('email'),
-            Tables\Columns\TextColumn::make('phone')->formatStateUsing(fn ($record) => vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->phone))),
+            Tables\Columns\TextColumn::make('phone'),//->formatStateUsing(fn ($record) => vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->phone))),
             Tables\Columns\TextColumn::make('address'),
             Tables\Columns\BooleanColumn::make('active')->trueIcon('heroicon-o-badge-check')->falseIcon('heroicon-o-x-circle'),
         ];
