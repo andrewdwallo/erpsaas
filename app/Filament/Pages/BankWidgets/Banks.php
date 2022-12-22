@@ -32,7 +32,7 @@ class Banks extends PageWidget
             Tables\Columns\TextColumn::make('department.name', 'name'),
             Tables\Columns\TextColumn::make('bank_type')->label('Bank Type'),
             Tables\Columns\TextColumn::make('bank_name')->label('Bank Name'),
-            Tables\Columns\TextColumn::make('bank_phone')->formatStateUsing(fn ($record) => vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->bank_phone))),
+            Tables\Columns\TextColumn::make('bank_phone'),//->formatStateUsing(fn ($record) => vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->bank_phone))),
             Tables\Columns\TextColumn::make('bank_address')->label('Address'),
             Tables\Columns\TextColumn::make('accounts_count')->counts('accounts')->label('Accounts'),
             Tables\Columns\TextColumn::make('cards_count')->counts('cards')->label('Cards'),

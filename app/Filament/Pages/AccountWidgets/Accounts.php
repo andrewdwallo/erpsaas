@@ -90,6 +90,7 @@ class Accounts extends PageWidget
                 Forms\Components\Select::make('currency')
                 ->options([
                     'USD' => 'USD',
+                    'IQD'=> 'IQD',
                 ]),
             ]),
             
@@ -140,6 +141,7 @@ class Accounts extends PageWidget
                 Forms\Components\Select::make('currency')
                 ->options([
                     'USD' => 'USD',
+                    'IQD'=> 'IQD',
                 ]),
             ])
             ])
@@ -196,6 +198,7 @@ class Accounts extends PageWidget
                 Forms\Components\Select::make('currency')
                 ->options([
                     'USD' => 'USD',
+                    'IQD'=> 'IQD',
                 ]),
             ])
         ];
