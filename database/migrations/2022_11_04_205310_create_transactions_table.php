@@ -46,7 +46,6 @@ return new class extends Migration
             $table->foreignId('asset_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
-        
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 
+use App\Models\Asset;
+use App\Models\Equity;
+use App\Models\Expense;
+use App\Models\Liability;
+use App\Models\Revenue;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Asset;
-use App\Models\Expense;
-use App\Models\Liability;
-use App\Models\Equity;
-use App\Models\Revenue;
 
 return new class extends Migration
 {
@@ -31,7 +31,6 @@ return new class extends Migration
             $table->unique(['code', 'name']);
         });
 
-
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('code');
@@ -44,7 +43,6 @@ return new class extends Migration
 
             $table->unique(['code', 'name']);
         });
-
 
         Schema::create('liabilities', function (Blueprint $table) {
             $table->id();
@@ -59,7 +57,6 @@ return new class extends Migration
             $table->unique(['code', 'name']);
         });
 
-
         Schema::create('equities', function (Blueprint $table) {
             $table->id();
             $table->string('code');
@@ -73,7 +70,6 @@ return new class extends Migration
             $table->unique(['code', 'name']);
         });
 
-
         Schema::create('revenues', function (Blueprint $table) {
             $table->id();
             $table->string('code');
@@ -86,9 +82,6 @@ return new class extends Migration
 
             $table->unique(['code', 'name']);
         });
-
-
-
 
         //Default Assets
         Asset::create([
@@ -198,8 +191,6 @@ return new class extends Migration
             'name' => 'Trademarks',
             'type' => 'Fixed Asset',
         ]);
-
-
 
         //Default Expenses
         Expense::create([
@@ -424,8 +415,6 @@ return new class extends Migration
             'type' => 'Expense',
         ]);
 
-
-
         //Default Liabilities
         Liability::create([
             'code' => '200',
@@ -547,8 +536,6 @@ return new class extends Migration
             'type' => 'Noncurrent Liabilities',
         ]);
 
-
-
         //Default Equities
         Equity::create([
             'code' => '300',
@@ -663,8 +650,6 @@ return new class extends Migration
             'name' => 'Unrealized Loss',
             'type' => 'Equity',
         ]);
-
-
 
         //Default Revenues
         Revenue::create([

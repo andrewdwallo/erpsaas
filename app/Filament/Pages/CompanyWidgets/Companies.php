@@ -3,15 +3,14 @@
 namespace App\Filament\Pages\CompanyWidgets;
 
 use App\Models\Company;
-use Filament\Tables;
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Companies extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -41,27 +40,27 @@ class Companies extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('user_id')->relationship('user', 'name')->required()->label('Owner'),
-                Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
-                Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Company $record): ?Company => $record)->maxLength(250),
-                Forms\Components\TextInput::make('website')->prefix('https://')->maxLength(250),
-                Forms\Components\TextInput::make('address')->maxLength(250),
-                Forms\Components\FileUpload::make('logo')->image()->directory('logos')
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('user_id')->relationship('user', 'name')->required()->label('Owner'),
+                    Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
+                    Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Company $record): ?Company => $record)->maxLength(250),
+                    Forms\Components\TextInput::make('website')->prefix('https://')->maxLength(250),
+                    Forms\Components\TextInput::make('address')->maxLength(250),
+                    Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+                ]),
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('user_id')->relationship('user', 'name')->required()->label('Owner'),
+                    Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
+                    Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Company $record): ?Company => $record)->maxLength(250),
+                    Forms\Components\TextInput::make('website')->prefix('https://')->maxLength(250),
+                    Forms\Components\TextInput::make('address')->maxLength(250),
+                    Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+                ]),
             ]),
-            
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('user_id')->relationship('user', 'name')->required()->label('Owner'),
-                Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
-                Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Company $record): ?Company => $record)->maxLength(250),
-                Forms\Components\TextInput::make('website')->prefix('https://')->maxLength(250),
-                Forms\Components\TextInput::make('address')->maxLength(250),
-                Forms\Components\FileUpload::make('logo')->image()->directory('logos')
-            ])
-            ])
         ];
     }
 
@@ -75,9 +74,8 @@ class Companies extends PageWidget
                 Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn (?Company $record): ?Company => $record)->maxLength(250),
                 Forms\Components\TextInput::make('website')->prefix('https://')->maxLength(250),
                 Forms\Components\TextInput::make('address')->maxLength(250),
-                Forms\Components\FileUpload::make('logo')->image()->directory('logos')
-            ])
+                Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+            ]),
         ];
     }
-
 }

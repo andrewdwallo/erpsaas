@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use App\Filament\Pages\ChartOfAccountsWidgets;
 
 class ChartOfAccounts extends Page
 {
@@ -23,6 +22,4 @@ class ChartOfAccounts extends Page
             ChartOfAccountsWidgets\Equities::class,
         ];
     }
-
-
 }

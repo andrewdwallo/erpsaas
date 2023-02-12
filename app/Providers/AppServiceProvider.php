@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Filament\Facades\Filament;
+use Filament\Navigation\UserMenuItem;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\ServiceProvider;
-use Filament\Navigation\UserMenuItem;
 
 class AppServiceProvider extends ServiceProvider
 {

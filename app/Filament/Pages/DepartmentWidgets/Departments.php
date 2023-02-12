@@ -3,15 +3,14 @@
 namespace App\Filament\Pages\DepartmentWidgets;
 
 use App\Models\Department;
-use Filament\Tables;
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Departments extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -38,21 +37,21 @@ class Departments extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')->relationship('company', 'name')->required(),
-                Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
-                Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')->relationship('company', 'name')->required(),
+                    Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
+                    Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+                ]),
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')->relationship('company', 'name')->required(),
+                    Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
+                    Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
+                ]),
             ]),
-            
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')->relationship('company', 'name')->required(),
-                Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
-                Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
-            ])
-            ])
         ];
     }
 
@@ -64,8 +63,7 @@ class Departments extends PageWidget
                 Forms\Components\Select::make('company_id')->relationship('company', 'name')->required(),
                 Forms\Components\TextInput::make('name')->required()->maxLength(100)->autofocus(),
                 Forms\Components\FileUpload::make('logo')->image()->directory('logos'),
-            ])
+            ]),
         ];
     }
-
 }

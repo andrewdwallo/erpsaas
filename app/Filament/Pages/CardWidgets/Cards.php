@@ -2,21 +2,20 @@
 
 namespace App\Filament\Pages\CardWidgets;
 
-use App\Models\Company;
-use App\Models\Department;
 use App\Models\Account;
 use App\Models\Bank;
 use App\Models\Card;
-use Filament\Tables;
+use App\Models\Company;
+use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Cards extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -45,125 +44,125 @@ class Cards extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
 
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
 
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
 
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
 
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
 
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
 
-                    return $department->banks->pluck('bank_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+                        return $department->banks->pluck('bank_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
 
-                Forms\Components\Select::make('account_id')
-                ->label('Account Name')
-                ->options(function (callable $get) {
-                    $bank = Bank::find($get('bank_id'));
+                    Forms\Components\Select::make('account_id')
+                    ->label('Account Name')
+                    ->options(function (callable $get) {
+                        $bank = Bank::find($get('bank_id'));
 
-                    if (! $bank) {
-                        return Account::all()->pluck('account_name', 'id');
-                    }
+                        if (! $bank) {
+                            return Account::all()->pluck('account_name', 'id');
+                        }
 
-                    return $bank->accounts->pluck('account_name', 'id');
-                }),
+                        return $bank->accounts->pluck('account_name', 'id');
+                    }),
 
-                Forms\Components\TextInput::make('card_name')->placeholder('MasterCard, Visa, etc...')->label('Card Network'),
-                Forms\Components\TextInput::make('card_number')->nullable()->placeholder('1111 2222 3333 4444')->label('Card Number'),
-                Forms\Components\TextInput::make('name_on_card')->label('Name On Card'),
-                Forms\Components\TextInput::make('expiration_date')->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/0000'))->placeholder('05/2025')->label('Expiration Date'),
-                Forms\Components\TextInput::make('security_code')->numeric()->mask(fn (TextInput\Mask $mask) => $mask->range()->from(100)->to(9999)->maxLength(4))->placeholder('123')->label('CVV'),
+                    Forms\Components\TextInput::make('card_name')->placeholder('MasterCard, Visa, etc...')->label('Card Network'),
+                    Forms\Components\TextInput::make('card_number')->nullable()->placeholder('1111 2222 3333 4444')->label('Card Number'),
+                    Forms\Components\TextInput::make('name_on_card')->label('Name On Card'),
+                    Forms\Components\TextInput::make('expiration_date')->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/0000'))->placeholder('05/2025')->label('Expiration Date'),
+                    Forms\Components\TextInput::make('security_code')->numeric()->mask(fn (TextInput\Mask $mask) => $mask->range()->from(100)->to(9999)->maxLength(4))->placeholder('123')->label('CVV'),
+                ]),
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
+
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
+
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
+
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
+
+                        return $department->banks->pluck('bank_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
+
+                    Forms\Components\Select::make('account_id')
+                    ->label('Account Name')
+                    ->options(function (callable $get) {
+                        $bank = Bank::find($get('bank_id'));
+
+                        if (! $bank) {
+                            return Account::all()->pluck('account_name', 'id');
+                        }
+
+                        return $bank->accounts->pluck('account_name', 'id');
+                    }),
+
+                    Forms\Components\TextInput::make('card_name')->placeholder('MasterCard, Visa, etc...')->label('Card Network'),
+                    Forms\Components\TextInput::make('card_number')->nullable()->placeholder('1111 2222 3333 4444')->label('Card Number'),
+                    Forms\Components\TextInput::make('name_on_card')->label('Name On Card'),
+                    Forms\Components\TextInput::make('expiration_date')->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/0000'))->placeholder('05/2025')->label('Expiration Date'),
+                    Forms\Components\TextInput::make('security_code')->numeric()->mask(fn (TextInput\Mask $mask) => $mask->range()->from(100)->to(9999)->maxLength(4))->placeholder('123')->label('CVV'),
+                ]),
             ]),
-            
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
-
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
-
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
-
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
-
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
-
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
-
-                    return $department->banks->pluck('bank_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null)),
-
-                Forms\Components\Select::make('account_id')
-                ->label('Account Name')
-                ->options(function (callable $get) {
-                    $bank = Bank::find($get('bank_id'));
-
-                    if (! $bank) {
-                        return Account::all()->pluck('account_name', 'id');
-                    }
-
-                    return $bank->accounts->pluck('account_name', 'id');
-                }),
-
-                Forms\Components\TextInput::make('card_name')->placeholder('MasterCard, Visa, etc...')->label('Card Network'),
-                Forms\Components\TextInput::make('card_number')->nullable()->placeholder('1111 2222 3333 4444')->label('Card Number'),
-                Forms\Components\TextInput::make('name_on_card')->label('Name On Card'),
-                Forms\Components\TextInput::make('expiration_date')->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/0000'))->placeholder('05/2025')->label('Expiration Date'),
-                Forms\Components\TextInput::make('security_code')->numeric()->mask(fn (TextInput\Mask $mask) => $mask->range()->from(100)->to(9999)->maxLength(4))->placeholder('123')->label('CVV'),
-            ])
-            ])
         ];
     }
 
@@ -227,8 +226,7 @@ class Cards extends PageWidget
                 Forms\Components\TextInput::make('name_on_card')->label('Name On Card'),
                 Forms\Components\TextInput::make('expiration_date')->mask(fn (TextInput\Mask $mask) => $mask->pattern('00/0000'))->placeholder('05/2025')->label('Expiration Date'),
                 Forms\Components\TextInput::make('security_code')->numeric()->mask(fn (TextInput\Mask $mask) => $mask->range()->from(100)->to(9999)->maxLength(4))->placeholder('123')->label('CVV'),
-            ])
+            ]),
         ];
     }
-
 }

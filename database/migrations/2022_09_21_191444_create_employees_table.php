@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Refresh a specific migration table 
+     * Refresh a specific migration table
      * php artisan migrate:refresh --path=/database/migrations/2022_09_21_061201_create_employees_table.php
      */
 
@@ -20,7 +20,7 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100);
+            $table->string('name', 100);
             $table->string('photo')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
