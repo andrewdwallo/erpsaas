@@ -7,7 +7,9 @@ use Filament\Forms\Components\TextInput;
 class PasswordGenerator extends TextInput
 {
     protected int $passwordLength = 12;
+
     protected bool $hasNumbers = true;
+
     protected bool $hasSymbols = true;
 
     protected string $view = 'components.password-generator';

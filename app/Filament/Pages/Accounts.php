@@ -3,14 +3,13 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use App\Filament\Pages\AccountWidgets;
 
 class Accounts extends Page
 {
-
     protected static string $view = 'filament.pages.accounts';
 
     protected static ?string $navigationGroup = 'Bank';
+
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';

@@ -3,13 +3,13 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use App\Filament\Pages\CompanyWidgets;
 
 class Companies extends Page
 {
     protected static string $view = 'filament.pages.companies';
 
     protected static ?string $navigationGroup = 'Company Management';
+
     protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';

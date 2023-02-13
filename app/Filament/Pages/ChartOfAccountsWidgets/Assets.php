@@ -3,17 +3,16 @@
 namespace App\Filament\Pages\ChartOfAccountsWidgets;
 
 use App\Models\Asset;
-use Filament\Tables;
-use Filament\Forms;
 use App\Models\Company;
 use App\Models\Department;
+use Filament\Forms;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Assets extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -40,82 +39,82 @@ class Assets extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
 
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
 
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
 
-                    return $company->departments->pluck('name', 'id');
-                }),
+                        return $company->departments->pluck('name', 'id');
+                    }),
 
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('type')
-                    ->required()
-                    ->options([
-                        'Current Asset' => 'Current Asset',
-                        'Fixed Asset' => 'Fixed Asset',
-                        'Tangible Asset' => 'Tangible Asset',
-                        'Intangible Asset' => 'Intangible Asset',
-                        'Operating Asset' => 'Operating Asset',
-                        'Non-Operating Asset' => 'Non-Operating Asset',
-                    ]),
-                Forms\Components\TextInput::make('description')
-                    ->maxLength(255),
+                    Forms\Components\TextInput::make('code')
+                        ->required(),
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Select::make('type')
+                        ->required()
+                        ->options([
+                            'Current Asset' => 'Current Asset',
+                            'Fixed Asset' => 'Fixed Asset',
+                            'Tangible Asset' => 'Tangible Asset',
+                            'Intangible Asset' => 'Intangible Asset',
+                            'Operating Asset' => 'Operating Asset',
+                            'Non-Operating Asset' => 'Non-Operating Asset',
+                        ]),
+                    Forms\Components\TextInput::make('description')
+                        ->maxLength(255),
+                ]),
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
+
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
+
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
+
+                        return $company->departments->pluck('name', 'id');
+                    }),
+
+                    Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(100)->maxValue(199),
+                    Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
+                    Forms\Components\Select::make('type')
+                        ->required()
+                        ->options([
+                            'Current Asset' => 'Current Asset',
+                            'Fixed Asset' => 'Fixed Asset',
+                            'Tangible Asset' => 'Tangible Asset',
+                            'Intangible Asset' => 'Intangible Asset',
+                            'Operating Asset' => 'Operating Asset',
+                            'Non-Operating Asset' => 'Non-Operating Asset',
+                        ]),
+                    Forms\Components\TextInput::make('description')
+                        ->maxLength(255),
+                ]),
             ]),
-            
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
-
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
-
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
-
-                    return $company->departments->pluck('name', 'id');
-                }),
-
-                Forms\Components\TextInput::make('code')->required()->unique()->numeric()->minValue(100)->maxValue(199),
-                Forms\Components\TextInput::make('name')->required()->maxLength(50)->unique(),
-                Forms\Components\Select::make('type')
-                    ->required()
-                    ->options([
-                        'Current Asset' => 'Current Asset',
-                        'Fixed Asset' => 'Fixed Asset',
-                        'Tangible Asset' => 'Tangible Asset',
-                        'Intangible Asset' => 'Intangible Asset',
-                        'Operating Asset' => 'Operating Asset',
-                        'Non-Operating Asset' => 'Non-Operating Asset',
-                    ]),
-                Forms\Components\TextInput::make('description')
-                    ->maxLength(255),
-            ])
-            ])
         ];
     }
 
@@ -161,8 +160,7 @@ class Assets extends PageWidget
                     ]),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
-            ])
+            ]),
         ];
     }
-
 }

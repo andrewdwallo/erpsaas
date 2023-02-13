@@ -2,19 +2,18 @@
 
 namespace App\Filament\Pages\AccountWidgets;
 
-use App\Models\Company;
-use App\Models\Department;
 use App\Models\Account;
 use App\Models\Bank;
-use Filament\Tables;
+use App\Models\Company;
+use App\Models\Department;
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Accounts extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -42,107 +41,107 @@ class Accounts extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
 
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
 
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
 
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
 
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
 
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
 
-                    return $department->banks->pluck('bank_name', 'id');
-                }),
+                        return $department->banks->pluck('bank_name', 'id');
+                    }),
 
-                Forms\Components\Select::make('account_type')->label('Account Type')
-                ->options([
-                    'Checking' => 'Checking',
-                    'Savings' => 'Savings',
-                    'Money Market' => 'Money Market',
-                    'Certificate of Deposit' => 'Certificate of Deposit',
+                    Forms\Components\Select::make('account_type')->label('Account Type')
+                    ->options([
+                        'Checking' => 'Checking',
+                        'Savings' => 'Savings',
+                        'Money Market' => 'Money Market',
+                        'Certificate of Deposit' => 'Certificate of Deposit',
+                    ]),
+                    Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
+                    Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
+                    Forms\Components\Select::make('currency')
+                    ->options([
+                        'USD' => 'USD',
+                    ]),
                 ]),
-                Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
-                Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
-                Forms\Components\Select::make('currency')
-                ->options([
-                    'USD' => 'USD',
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
+
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
+
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
+
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
+
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
+
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
+
+                        return $department->banks->pluck('bank_name', 'id');
+                    }),
+
+                    Forms\Components\Select::make('account_type')->label('Account Type')
+                    ->options([
+                        'Checking' => 'Checking',
+                        'Savings' => 'Savings',
+                        'Money Market' => 'Money Market',
+                        'Certificate of Deposit' => 'Certificate of Deposit',
+                    ]),
+                    Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
+                    Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
+                    Forms\Components\Select::make('currency')
+                    ->options([
+                        'USD' => 'USD',
+                    ]),
                 ]),
             ]),
-            
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
-
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
-
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
-
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null)),
-
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
-
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
-
-                    return $department->banks->pluck('bank_name', 'id');
-                }),
-
-                Forms\Components\Select::make('account_type')->label('Account Type')
-                ->options([
-                    'Checking' => 'Checking',
-                    'Savings' => 'Savings',
-                    'Money Market' => 'Money Market',
-                    'Certificate of Deposit' => 'Certificate of Deposit',
-                ]),
-                Forms\Components\TextInput::make('account_name')->maxLength(255)->label('Account Name'),
-                Forms\Components\TextInput::make('account_number')->maxLength(255)->label('Account Number'),
-                Forms\Components\Select::make('currency')
-                ->options([
-                    'USD' => 'USD',
-                ]),
-            ])
-            ])
         ];
     }
 
@@ -197,8 +196,7 @@ class Accounts extends PageWidget
                 ->options([
                     'USD' => 'USD',
                 ]),
-            ])
+            ]),
         ];
     }
-
 }

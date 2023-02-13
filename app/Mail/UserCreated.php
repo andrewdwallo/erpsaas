@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -35,7 +34,7 @@ class UserCreated extends Mailable
             ->markdown('emails.users.created', [
                 'name' => $this->user->name,
                 'email' => $this->user->email,
-                'link' => route('password.request')
+                'link' => route('password.request'),
             ]);
     }
 }

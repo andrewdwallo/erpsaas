@@ -2,23 +2,22 @@
 
 namespace App\Filament\Pages\TransactionWidgets;
 
-use App\Models\Company;
-use App\Models\Department;
 use App\Models\Account;
 use App\Models\Bank;
-use App\Models\Revenue;
 use App\Models\Card;
+use App\Models\Company;
+use App\Models\Department;
 use App\Models\IncomeTransaction;
-use Filament\Tables;
+use App\Models\Revenue;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables;
 use Filament\Widgets\TableWidget as PageWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class Incomes extends PageWidget
 {
-    
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 3,
     ];
@@ -49,167 +48,167 @@ class Incomes extends PageWidget
     {
         return [
             Tables\Actions\ActionGroup::make([
-            Tables\Actions\DeleteAction::make(),
-            Tables\Actions\ViewAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
 
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
 
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
 
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
 
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
 
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
 
-                    return $department->banks->pluck('bank_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+                        return $department->banks->pluck('bank_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
 
-                Forms\Components\Select::make('account_id')
-                ->label('Bank Account Name')
-                ->options(function (callable $get) {
-                    $bank = Bank::find($get('bank_id'));
+                    Forms\Components\Select::make('account_id')
+                    ->label('Bank Account Name')
+                    ->options(function (callable $get) {
+                        $bank = Bank::find($get('bank_id'));
 
-                    if (! $bank) {
-                        return Account::all()->pluck('account_name', 'id');
-                    }
+                        if (! $bank) {
+                            return Account::all()->pluck('account_name', 'id');
+                        }
 
-                    return $bank->accounts->pluck('account_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+                        return $bank->accounts->pluck('account_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
 
-                Forms\Components\Select::make('card_id')
-                ->label('Card Network')
-                ->options(function (callable $get) {
-                    $account = Account::find($get('account_id'));
+                    Forms\Components\Select::make('card_id')
+                    ->label('Card Network')
+                    ->options(function (callable $get) {
+                        $account = Account::find($get('account_id'));
 
-                    if (! $account) {
-                        return Card::all()->pluck('card_name', 'id');
-                    }
+                        if (! $account) {
+                            return Card::all()->pluck('card_name', 'id');
+                        }
 
-                    return $account->cards->pluck('card_name', 'id');
-                }),
+                        return $account->cards->pluck('card_name', 'id');
+                    }),
 
-                Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
-                Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
-                Forms\Components\Select::make('revenue_id')->label('Revenue/Income Account')
-                ->options(Revenue::all()->pluck('name', 'id')->toArray()),
-                Forms\Components\TextInput::make('merchant_name')->nullable()->label('Merchant Name'),
-                Forms\Components\TextInput::make('description')->maxLength(255)->label('Transaction Description'),
-                Forms\Components\TextInput::make('amount')->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: '$', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false)),
+                    Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
+                    Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
+                    Forms\Components\Select::make('revenue_id')->label('Revenue/Income Account')
+                    ->options(Revenue::all()->pluck('name', 'id')->toArray()),
+                    Forms\Components\TextInput::make('merchant_name')->nullable()->label('Merchant Name'),
+                    Forms\Components\TextInput::make('description')->maxLength(255)->label('Transaction Description'),
+                    Forms\Components\TextInput::make('amount')->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: '$', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false)),
+                ]),
+
+                Tables\Actions\EditAction::make()
+                ->form([
+                    Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->options(Company::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                    Forms\Components\Select::make('department_id')
+                    ->label('Department')
+                    ->options(function (callable $get) {
+                        $company = Company::find($get('company_id'));
+
+                        if (! $company) {
+                            return Department::all()->pluck('name', 'id');
+                        }
+
+                        return $company->departments->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                    Forms\Components\Select::make('bank_id')
+                    ->label('Bank Name')
+                    ->options(function (callable $get) {
+                        $department = Department::find($get('department_id'));
+
+                        if (! $department) {
+                            return Bank::all()->pluck('bank_name', 'id');
+                        }
+
+                        return $department->banks->pluck('bank_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                    Forms\Components\Select::make('account_id')
+                    ->label('Bank Account Name')
+                    ->options(function (callable $get) {
+                        $bank = Bank::find($get('bank_id'));
+
+                        if (! $bank) {
+                            return Account::all()->pluck('account_name', 'id');
+                        }
+
+                        return $bank->accounts->pluck('account_name', 'id');
+                    })
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
+                    ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
+
+                    Forms\Components\Select::make('card_id')
+                    ->label('Card Network')
+                    ->options(function (callable $get) {
+                        $account = Account::find($get('account_id'));
+
+                        if (! $account) {
+                            return Card::all()->pluck('card_name', 'id');
+                        }
+
+                        return $account->cards->pluck('card_name', 'id');
+                    }),
+
+                    Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
+                    Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
+                    Forms\Components\Select::make('revenue_id')->label('Revenue/Income Account')
+                    ->options(Revenue::all()->pluck('name', 'id')->toArray()),
+                    Forms\Components\TextInput::make('merchant_name')->nullable()->label('Merchant Name'),
+                    Forms\Components\TextInput::make('description')->maxLength(255)->label('Transaction Description'),
+                    Forms\Components\TextInput::make('amount')->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: '$', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false)),
+                ]),
             ]),
-
-            Tables\Actions\EditAction::make()
-            ->form([
-                Forms\Components\Select::make('company_id')
-                ->label('Company')
-                ->options(Company::all()->pluck('name', 'id')->toArray())
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
-
-                Forms\Components\Select::make('department_id')
-                ->label('Department')
-                ->options(function (callable $get) {
-                    $company = Company::find($get('company_id'));
-
-                    if (! $company) {
-                        return Department::all()->pluck('name', 'id');
-                    }
-
-                    return $company->departments->pluck('name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
-
-                Forms\Components\Select::make('bank_id')
-                ->label('Bank Name')
-                ->options(function (callable $get) {
-                    $department = Department::find($get('department_id'));
-
-                    if (! $department) {
-                        return Bank::all()->pluck('bank_name', 'id');
-                    }
-
-                    return $department->banks->pluck('bank_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('account_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
-
-                Forms\Components\Select::make('account_id')
-                ->label('Bank Account Name')
-                ->options(function (callable $get) {
-                    $bank = Bank::find($get('bank_id'));
-
-                    if (! $bank) {
-                        return Account::all()->pluck('account_name', 'id');
-                    }
-
-                    return $bank->accounts->pluck('account_name', 'id');
-                })
-                ->reactive()
-                ->afterStateUpdated(fn (callable $set) => $set('department_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('bank_id', null))
-                ->afterStateUpdated(fn (callable $set) => $set('card_id', null)),
-
-                Forms\Components\Select::make('card_id')
-                ->label('Card Network')
-                ->options(function (callable $get) {
-                    $account = Account::find($get('account_id'));
-
-                    if (! $account) {
-                        return Card::all()->pluck('card_name', 'id');
-                    }
-
-                    return $account->cards->pluck('card_name', 'id');
-                }),
-
-                Forms\Components\DatePicker::make('paid_at')->maxDate(now())->format('m/d/Y')->displayFormat('m/d/Y')->label('Paid At'),
-                Forms\Components\TextInput::make('number')->nullable()->numeric()->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: 'TRA-0000', thousandsSeparator: '', decimalPlaces:0, isSigned: false))->label('Transaction Number'),
-                Forms\Components\Select::make('revenue_id')->label('Revenue/Income Account')
-                ->options(Revenue::all()->pluck('name', 'id')->toArray()),
-                Forms\Components\TextInput::make('merchant_name')->nullable()->label('Merchant Name'),
-                Forms\Components\TextInput::make('description')->maxLength(255)->label('Transaction Description'),
-                Forms\Components\TextInput::make('amount')->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: '$', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false)),
-            ])
-            ])
         ];
     }
 
@@ -294,8 +293,7 @@ class Incomes extends PageWidget
                 Forms\Components\TextInput::make('merchant_name')->nullable()->label('Merchant Name'),
                 Forms\Components\TextInput::make('description')->maxLength(255)->label('Transaction Description'),
                 Forms\Components\TextInput::make('amount')->mask(fn (TextInput\Mask $mask) => $mask->money(prefix: '$', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false)),
-            ])
+            ]),
         ];
     }
-
 }

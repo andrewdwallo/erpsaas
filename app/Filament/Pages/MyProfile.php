@@ -13,17 +13,24 @@ class MyProfile extends Page
 {
     use HasBreezyTwoFactor;
 
-    protected static string $view = "filament.pages.my-profile";
+    protected static string $view = 'filament.pages.my-profile';
 
     public $user;
+
     public $userData;
+
     // Password
     public $new_password;
+
     public $new_password_confirmation;
+
     // Sanctum tokens
     public $token_name;
+
     public $abilities = [];
+
     public $plain_text_token;
+
     protected $loginColumn;
 
     public function boot()
@@ -41,25 +48,25 @@ class MyProfile extends Page
     protected function getForms(): array
     {
         return array_merge(parent::getForms(), [
-            "updateProfileForm" => $this->makeForm()
+            'updateProfileForm' => $this->makeForm()
                 ->model(config('filament-breezy.user_model'))
                 ->schema($this->getUpdateProfileFormSchema())
                 ->statePath('userData'),
 
             // Start New Section for MyProfile Account Page
-            "updateCompanyProfileForm" => $this->makeForm()
+            'updateCompanyProfileForm' => $this->makeForm()
             ->model(config('filament-breezy.user_model'))
             ->schema($this->getUpdateCompanyProfileFormSchema())
             ->statePath('userData'),
             // End New Section for MyProfile Account Page
 
-            "updatePasswordForm" => $this->makeForm()->schema(
+            'updatePasswordForm' => $this->makeForm()->schema(
                 $this->getUpdatePasswordFormSchema()
             ),
-            "createApiTokenForm" => $this->makeForm()->schema(
+            'createApiTokenForm' => $this->makeForm()->schema(
                 $this->getCreateApiTokenFormSchema()
             ),
-            "confirmTwoFactorForm" => $this->makeForm()->schema(
+            'confirmTwoFactorForm' => $this->makeForm()->schema(
                 $this->getConfirmTwoFactorFormSchema()
             ),
         ]);
@@ -82,9 +89,8 @@ class MyProfile extends Page
     public function updateProfile()
     {
         $this->user->update($this->updateProfileForm->getState());
-        $this->notify("success", __('filament-breezy::default.profile.personal_info.notify'));
+        $this->notify('success', __('filament-breezy::default.profile.personal_info.notify'));
     }
-
 
     // Start New Section for "Updating" MyProfile Account Page
     protected function getUpdateCompanyProfileFormSchema(): array
@@ -97,26 +103,25 @@ class MyProfile extends Page
         ];
     }
 
-
     public function updateCompanyProfile()
     {
         $this->user->update($this->updateCompanyProfileForm->getState());
-        $this->notify("success", __('Company Information Updated'));
+        $this->notify('success', __('Company Information Updated'));
     }
     // End New Section for "Updating" MyProfile Account Page
 
     protected function getUpdatePasswordFormSchema(): array
     {
         return [
-            Forms\Components\TextInput::make("new_password")
+            Forms\Components\TextInput::make('new_password')
                 ->label(__('filament-breezy::default.fields.new_password'))
                 ->password()
                 ->rules(app(FilamentBreezy::class)->getPasswordRules())
                 ->required(),
-            Forms\Components\TextInput::make("new_password_confirmation")
+            Forms\Components\TextInput::make('new_password_confirmation')
                 ->label(__('filament-breezy::default.fields.new_password_confirmation'))
                 ->password()
-                ->same("new_password")
+                ->same('new_password')
                 ->required(),
         ];
     }
@@ -125,12 +130,12 @@ class MyProfile extends Page
     {
         $state = $this->updatePasswordForm->getState();
         $this->user->update([
-            "password" => Hash::make($state["new_password"]),
+            'password' => Hash::make($state['new_password']),
         ]);
-        session()->forget("password_hash_web");
+        session()->forget('password_hash_web');
         Filament::auth()->login($this->user);
-        $this->notify("success", __('filament-breezy::default.profile.password.notify'));
-        $this->reset(["new_password", "new_password_confirmation"]);
+        $this->notify('success', __('filament-breezy::default.profile.password.notify'));
+        $this->reset(['new_password', 'new_password_confirmation']);
     }
 
     protected function getCreateApiTokenFormSchema(): array
@@ -149,14 +154,14 @@ class MyProfile extends Page
     {
         $state = $this->createApiTokenForm->getState();
         $indexes = $state['abilities'];
-        $abilities = config("filament-breezy.sanctum_permissions");
+        $abilities = config('filament-breezy.sanctum_permissions');
         $selected = collect($abilities)->filter(function ($item, $key) use (
             $indexes
         ) {
             return in_array($key, $indexes);
         })->toArray();
         $this->plain_text_token = Filament::auth()->user()->createToken($state['token_name'], array_values($selected))->plainTextToken;
-        $this->notify("success", __('filament-breezy::default.profile.sanctum.create.notify'));
+        $this->notify('success', __('filament-breezy::default.profile.sanctum.create.notify'));
         $this->emit('tokenCreated');
         $this->reset(['token_name']);
     }

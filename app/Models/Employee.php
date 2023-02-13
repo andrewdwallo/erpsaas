@@ -9,10 +9,10 @@ class Employee extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','email','company_id','department_id','address','photo','phone','active'];
+    protected $fillable = ['name', 'email', 'company_id', 'department_id', 'address', 'photo', 'phone', 'active'];
 
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
     ];
 
     public function company()
