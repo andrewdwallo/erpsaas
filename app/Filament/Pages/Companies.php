@@ -24,7 +24,7 @@ class Companies extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Pages\Widgets\Companies::class,
+            Widgets\Companies::class,
         ];
     }
 }

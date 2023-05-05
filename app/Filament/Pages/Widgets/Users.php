@@ -34,6 +34,7 @@ class Users extends PageWidget
                 ->view('filament.components.users.avatar-column')
                 ->label('Name')
                 ->sortable()
+                ->searchable()
                 ->grow(false),
             Tables\Columns\TextColumn::make('owned_companies')
                 ->label('Companies')

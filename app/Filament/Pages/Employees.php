@@ -5,11 +5,11 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 
-class Users extends Page
+class Employees extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static string $view = 'filament.pages.users';
+    protected static string $view = 'filament.pages.employees';
 
     protected static function shouldRegisterNavigation(): bool
     {
@@ -24,7 +24,7 @@ class Users extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\Users::class,
+            Widgets\Employees::class,
         ];
     }
 }

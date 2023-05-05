@@ -49,11 +49,13 @@ class Companies extends PageWidget
                 ->view('filament.components.companies.avatar-column')
                 ->label('Owner')
                 ->sortable()
+                ->searchable()
                 ->grow(false),
             Tables\Columns\TextColumn::make('name')
                 ->weight('semibold')
                 ->label('Company')
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
             Tables\Columns\TextColumn::make('users_count')
                 ->label('Employees')
                 ->weight('semibold')
