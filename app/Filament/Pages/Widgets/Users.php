@@ -36,10 +36,11 @@ class Users extends PageWidget
                 ->sortable()
                 ->searchable()
                 ->grow(false),
-            Tables\Columns\TextColumn::make('owned_companies')
+            Tables\Columns\TextColumn::make('owned_companies_count')
+                ->counts('ownedCompanies')
                 ->label('Companies')
                 ->weight('semibold')
-                ->getStateUsing(static fn ($record) => $record->ownedCompanies->count()),
+                ->sortable(),
         ];
     }
 }

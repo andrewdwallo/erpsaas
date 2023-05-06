@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32e2f0040dca607c8fb1baa663b1e38a",
+    "content-hash": "dabf47be9fbc6a33cc67ae9123c6f5d2",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -934,16 +934,16 @@
         },
         {
             "name": "filament/filament",
-            "version": "v2.17.32",
+            "version": "v2.17.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/app.git",
-                "reference": "40c85b5a45456e6802edf99714e8baa8dbde7f27"
+                "reference": "c62290398a1d6b03351dbab8158115efd936deaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/app/zipball/40c85b5a45456e6802edf99714e8baa8dbde7f27",
-                "reference": "40c85b5a45456e6802edf99714e8baa8dbde7f27",
+                "url": "https://api.github.com/repos/filamentphp/app/zipball/c62290398a1d6b03351dbab8158115efd936deaa",
+                "reference": "c62290398a1d6b03351dbab8158115efd936deaa",
                 "shasum": ""
             },
             "require": {
@@ -993,20 +993,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-04-30T16:44:29+00:00"
+            "time": "2023-05-05T08:37:23+00:00"
         },
         {
             "name": "filament/forms",
-            "version": "v2.17.32",
+            "version": "v2.17.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/forms.git",
-                "reference": "b486221ba0d9b23e36ccdcb3ca3b18e8f81cb6bb"
+                "reference": "b29e2f817ad63913ae1b339910726ede6696de9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/forms/zipball/b486221ba0d9b23e36ccdcb3ca3b18e8f81cb6bb",
-                "reference": "b486221ba0d9b23e36ccdcb3ca3b18e8f81cb6bb",
+                "url": "https://api.github.com/repos/filamentphp/forms/zipball/b29e2f817ad63913ae1b339910726ede6696de9a",
+                "reference": "b29e2f817ad63913ae1b339910726ede6696de9a",
                 "shasum": ""
             },
             "require": {
@@ -1051,20 +1051,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-04-30T16:44:24+00:00"
+            "time": "2023-05-04T23:08:13+00:00"
         },
         {
             "name": "filament/notifications",
-            "version": "v2.17.32",
+            "version": "v2.17.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/notifications.git",
-                "reference": "42c18bf35a634f17c61ee1f8694ec3ac440903f9"
+                "reference": "0ef9f1f3481a08f357b8e78bcb4bbcd8111a1252"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/42c18bf35a634f17c61ee1f8694ec3ac440903f9",
-                "reference": "42c18bf35a634f17c61ee1f8694ec3ac440903f9",
+                "url": "https://api.github.com/repos/filamentphp/notifications/zipball/0ef9f1f3481a08f357b8e78bcb4bbcd8111a1252",
+                "reference": "0ef9f1f3481a08f357b8e78bcb4bbcd8111a1252",
                 "shasum": ""
             },
             "require": {
@@ -1104,20 +1104,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-04-21T08:32:52+00:00"
+            "time": "2023-05-04T23:08:09+00:00"
         },
         {
             "name": "filament/support",
-            "version": "v2.17.32",
+            "version": "v2.17.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/support.git",
-                "reference": "2e02ece5a722ddc95facd3a37f3b3a4fd3d355d1"
+                "reference": "1a411197122524886c81a74c7044258d64d56308"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/support/zipball/2e02ece5a722ddc95facd3a37f3b3a4fd3d355d1",
-                "reference": "2e02ece5a722ddc95facd3a37f3b3a4fd3d355d1",
+                "url": "https://api.github.com/repos/filamentphp/support/zipball/1a411197122524886c81a74c7044258d64d56308",
+                "reference": "1a411197122524886c81a74c7044258d64d56308",
                 "shasum": ""
             },
             "require": {
@@ -1154,20 +1154,20 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-05-01T16:59:19+00:00"
+            "time": "2023-05-04T23:08:15+00:00"
         },
         {
             "name": "filament/tables",
-            "version": "v2.17.32",
+            "version": "v2.17.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/tables.git",
-                "reference": "c05ca1a1b48039c68e7a3247acb7c56ec8bee085"
+                "reference": "f9862eb6d9af85c98512924e9f0d84d6eb1ff4f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filamentphp/tables/zipball/c05ca1a1b48039c68e7a3247acb7c56ec8bee085",
-                "reference": "c05ca1a1b48039c68e7a3247acb7c56ec8bee085",
+                "url": "https://api.github.com/repos/filamentphp/tables/zipball/f9862eb6d9af85c98512924e9f0d84d6eb1ff4f5",
+                "reference": "f9862eb6d9af85c98512924e9f0d84d6eb1ff4f5",
                 "shasum": ""
             },
             "require": {
@@ -1210,7 +1210,81 @@
                 "issues": "https://github.com/filamentphp/filament/issues",
                 "source": "https://github.com/filamentphp/filament"
             },
-            "time": "2023-05-01T16:59:27+00:00"
+            "time": "2023-05-04T23:08:16+00:00"
+        },
+        {
+            "name": "flowframe/laravel-trend",
+            "version": "v0.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Flowframe/laravel-trend.git",
+                "reference": "bc43bf7840ff60aca39e856ad96f5e990fac83d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Flowframe/laravel-trend/zipball/bc43bf7840ff60aca39e856ad96f5e990fac83d7",
+                "reference": "bc43bf7840ff60aca39e856ad96f5e990fac83d7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.37|^9|^10.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.4.3"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^5.3|^6.1",
+                "orchestra/testbench": "^6.15|^7.0|^8.0",
+                "pestphp/pest": "^1.18",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "spatie/laravel-ray": "^1.23",
+                "vimeo/psalm": "^4.8|^5.6"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Flowframe\\Trend\\TrendServiceProvider"
+                    ],
+                    "aliases": {
+                        "Trend": "Flowframe\\Trend\\TrendFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Flowframe\\Trend\\": "src",
+                    "Flowframe\\Trend\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Klopstra",
+                    "email": "lars@flowframe.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily generate model trends",
+            "homepage": "https://github.com/flowframe/laravel-trend",
+            "keywords": [
+                "Flowframe",
+                "laravel",
+                "laravel-trend"
+            ],
+            "support": {
+                "issues": "https://github.com/Flowframe/laravel-trend/issues",
+                "source": "https://github.com/Flowframe/laravel-trend/tree/v0.1.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/larsklopstra",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-22T20:51:43+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -2474,19 +2548,20 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.14.0",
+            "version": "3.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "e2a279d7f47d9098e479e8b21f7fb8b8de230158"
+                "reference": "a141d430414fcb8bf797a18716b09f759a385bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/e2a279d7f47d9098e479e8b21f7fb8b8de230158",
-                "reference": "e2a279d7f47d9098e479e8b21f7fb8b8de230158",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a141d430414fcb8bf797a18716b09f759a385bed",
+                "reference": "a141d430414fcb8bf797a18716b09f759a385bed",
                 "shasum": ""
             },
             "require": {
+                "league/flysystem-local": "^3.0.0",
                 "league/mime-type-detection": "^1.0.0",
                 "php": "^8.0.2"
             },
@@ -2545,7 +2620,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.14.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.15.1"
             },
             "funding": [
                 {
@@ -2557,7 +2632,67 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-04-11T18:11:47+00:00"
+            "time": "2023-05-04T09:04:26+00:00"
+        },
+        {
+            "name": "league/flysystem-local",
+            "version": "3.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-local.git",
+                "reference": "543f64c397fefdf9cfeac443ffb6beff602796b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-local/zipball/543f64c397fefdf9cfeac443ffb6beff602796b3",
+                "reference": "543f64c397fefdf9cfeac443ffb6beff602796b3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "league/flysystem": "^3.0.0",
+                "league/mime-type-detection": "^1.0.0",
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\Local\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Local filesystem adapter for Flysystem.",
+            "keywords": [
+                "Flysystem",
+                "file",
+                "files",
+                "filesystem",
+                "local"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem-local/issues",
+                "source": "https://github.com/thephpleague/flysystem-local/tree/3.15.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-05-02T20:02:14+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -2762,6 +2897,80 @@
             "time": "2018-11-22T07:55:51+00:00"
         },
         {
+            "name": "leandrocfe/filament-apex-charts",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leandrocfe/filament-apex-charts.git",
+                "reference": "26118c0c3f81465b418ecc630c7e1a63693a7f7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leandrocfe/filament-apex-charts/zipball/26118c0c3f81465b418ecc630c7e1a63693a7f7b",
+                "reference": "26118c0c3f81465b418ecc630c7e1a63693a7f7b",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.16",
+                "illuminate/contracts": "^9.0|^10.0",
+                "livewire/livewire": "^2.11",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.13.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^6.0|^7.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0|^8.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5|^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Leandrocfe\\FilamentApexCharts\\FilamentApexChartsServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentApexCharts": "Leandrocfe\\FilamentApexCharts\\Facades\\FilamentApexCharts"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Leandrocfe\\FilamentApexCharts\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Leandro Costa Ferreira",
+                    "email": "leandrocfe@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Apex Charts integration for Filament PHP.",
+            "homepage": "https://github.com/leandrocfe/filament-apex-charts",
+            "keywords": [
+                "apexcharts",
+                "filament-apex-charts",
+                "laravel",
+                "leandrocfe"
+            ],
+            "support": {
+                "issues": "https://github.com/leandrocfe/filament-apex-charts/issues",
+                "source": "https://github.com/leandrocfe/filament-apex-charts/tree/1.0.2"
+            },
+            "time": "2023-03-14T01:34:14+00:00"
+        },
+        {
             "name": "livewire/livewire",
             "version": "v2.12.3",
             "source": {
@@ -2903,16 +3112,16 @@
         },
         {
             "name": "matomo/device-detector",
-            "version": "6.1.1",
+            "version": "6.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matomo-org/device-detector.git",
-                "reference": "a549e24350ff63e15dc691b6b21b73909b4fa9bd"
+                "reference": "7d0760e84f0b41302792a0c764fa52d3dff186f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matomo-org/device-detector/zipball/a549e24350ff63e15dc691b6b21b73909b4fa9bd",
-                "reference": "a549e24350ff63e15dc691b6b21b73909b4fa9bd",
+                "url": "https://api.github.com/repos/matomo-org/device-detector/zipball/7d0760e84f0b41302792a0c764fa52d3dff186f8",
+                "reference": "7d0760e84f0b41302792a0c764fa52d3dff186f8",
                 "shasum": ""
             },
             "require": {
@@ -2968,7 +3177,7 @@
                 "source": "https://github.com/matomo-org/matomo",
                 "wiki": "https://dev.matomo.org/"
             },
-            "time": "2023-03-16T08:19:16+00:00"
+            "time": "2023-05-04T09:30:54+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4074,16 +4283,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.16",
+            "version": "v0.11.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "151b145906804eea8e5d71fea23bfb470c904bfb"
+                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/151b145906804eea8e5d71fea23bfb470c904bfb",
-                "reference": "151b145906804eea8e5d71fea23bfb470c904bfb",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
+                "reference": "3dc5d4018dabd80bceb8fe1e3191ba8460569f0a",
                 "shasum": ""
             },
             "require": {
@@ -4144,9 +4353,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.16"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.17"
             },
-            "time": "2023-04-26T12:53:57+00:00"
+            "time": "2023-05-05T20:02:42+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -9602,16 +9811,16 @@
         },
         {
             "name": "spatie/ignition",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/ignition.git",
-                "reference": "fbcfcabc44e506e40c4d72fd4ddf465e272a600e"
+                "reference": "f747d83c6d7cb6229b462f3ddbb3a82dc0db0f78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/ignition/zipball/fbcfcabc44e506e40c4d72fd4ddf465e272a600e",
-                "reference": "fbcfcabc44e506e40c4d72fd4ddf465e272a600e",
+                "url": "https://api.github.com/repos/spatie/ignition/zipball/f747d83c6d7cb6229b462f3ddbb3a82dc0db0f78",
+                "reference": "f747d83c6d7cb6229b462f3ddbb3a82dc0db0f78",
                 "shasum": ""
             },
             "require": {
@@ -9681,20 +9890,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-04-27T08:40:07+00:00"
+            "time": "2023-05-04T13:20:26+00:00"
         },
         {
             "name": "spatie/laravel-ignition",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ignition.git",
-                "reference": "3718dfb91bc5aff340af26507a61f0f9605f81e8"
+                "reference": "802c7e27754456e45134f1a9d29ab7df4b6cb9e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/3718dfb91bc5aff340af26507a61f0f9605f81e8",
-                "reference": "3718dfb91bc5aff340af26507a61f0f9605f81e8",
+                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/802c7e27754456e45134f1a9d29ab7df4b6cb9e4",
+                "reference": "802c7e27754456e45134f1a9d29ab7df4b6cb9e4",
                 "shasum": ""
             },
             "require": {
@@ -9773,7 +9982,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-04-12T09:26:00+00:00"
+            "time": "2023-05-04T13:54:49+00:00"
         },
         {
             "name": "symfony/yaml",

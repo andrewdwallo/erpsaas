@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Users extends Page
 {
@@ -26,5 +27,10 @@ class Users extends Page
         return [
             Widgets\Users::class,
         ];
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return FilamentCompanies::userModel()::count();
     }
 }

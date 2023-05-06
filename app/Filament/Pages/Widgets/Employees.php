@@ -56,6 +56,10 @@ class Employees extends PageWidget
                 ->weight('semibold'),
             Tables\Columns\BadgeColumn::make('employeeships.role')
                 ->label('Role')
+                ->enum([
+                    'admin' => 'Administrator',
+                    'editor' => 'Editor',
+                ])
                 ->icons([
                     'heroicon-o-shield-check' => 'admin',
                     'heroicon-o-pencil' => 'editor',
