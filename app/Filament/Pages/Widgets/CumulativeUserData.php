@@ -3,9 +3,10 @@
 namespace App\Filament\Pages\Widgets;
 
 use App\Models\Company;
+use App\Models\User;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class CumulativeCompanyData extends ApexChartWidget
+class CumulativeUserData extends ApexChartWidget
 {
     protected int|string|array $columnSpan = [
         'md' => 2,
@@ -17,14 +18,14 @@ class CumulativeCompanyData extends ApexChartWidget
      *
      * @var string
      */
-    protected static string $chartId = 'cumulative-company-data';
+    protected static string $chartId = 'cumulative-user-data';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Cumulative Company Data';
+    protected static ?string $heading = 'Cumulative User Data';
 
     protected function getOptions(): array
     {
@@ -32,7 +33,7 @@ class CumulativeCompanyData extends ApexChartWidget
         $today = today();
 
         // Company data
-        $companyData = Company::selectRaw("COUNT(*) as aggregate, YEARWEEK(created_at, 3) as week")
+        $userData = User::selectRaw("COUNT(*) as aggregate, YEARWEEK(created_at, 3) as week")
             ->whereBetween('created_at', [$startOfYear, $today])
             ->groupByRaw('week')
             ->get();
@@ -42,25 +43,25 @@ class CumulativeCompanyData extends ApexChartWidget
             $weeks[$week->format('oW')] = 0;
         }
 
-        $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($companyData) {
-            $matchingData = $companyData->firstWhere('week', $week);
+        $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($userData) {
+            $matchingData = $userData->firstWhere('week', $week);
             return [$week => $matchingData ? $matchingData->aggregate : 0];
         });
 
-        $totalCompanies = $weeklyData->reduce(static function ($carry, $value) {
+        $totalUsers = $weeklyData->reduce(static function ($carry, $value) {
             $carry[] = ($carry ? end($carry) : 0) + $value;
             return $carry;
         }, []);
 
         // Calculate percentage increase and increase in companies per week
-        $newCompanies = [0];
+        $newUsers = [0];
         $weeklyGrowthRate = [0];
 
-        $cumulativeDataLength = count($totalCompanies);
+        $cumulativeDataLength = count($totalUsers);
         for ($key = 1; $key < $cumulativeDataLength; $key++) {
-            $value = $totalCompanies[$key];
-            $previousWeekValue = $totalCompanies[$key - 1];
-            $newCompanies[] = $value - $previousWeekValue;
+            $value = $totalUsers[$key];
+            $previousWeekValue = $totalUsers[$key - 1];
+            $newUsers[] = $value - $previousWeekValue;
             $weeklyGrowthRate[] = round((($value - $previousWeekValue) / $previousWeekValue) * 100, 2);
         }
 
@@ -87,14 +88,14 @@ class CumulativeCompanyData extends ApexChartWidget
                     'data' => $weeklyGrowthRate,
                 ],
                 [
-                    'name' => 'New Companies',
+                    'name' => 'New Users',
                     'type' => 'line',
-                    'data' => $newCompanies,
+                    'data' => $newUsers,
                 ],
                 [
-                    'name' => 'Total Companies',
+                    'name' => 'Total Users',
                     'type' => 'column',
-                    'data' => $totalCompanies,
+                    'data' => $totalUsers,
                 ],
             ],
             'xaxis' => [
@@ -118,7 +119,7 @@ class CumulativeCompanyData extends ApexChartWidget
                     ],
                 ],
                 [
-                    'seriesName' => 'New Companies',
+                    'seriesName' => 'New Users',
                     'decimalsInFloat' => 0,
                     'opposite' => true,
                     'labels' => [
@@ -129,7 +130,7 @@ class CumulativeCompanyData extends ApexChartWidget
                     ],
                 ],
                 [
-                    'seriesName' => 'Total Companies',
+                    'seriesName' => 'Total Users',
                     'decimalsInFloat' => 0,
                     'opposite' => true,
                     'labels' => [
@@ -151,14 +152,14 @@ class CumulativeCompanyData extends ApexChartWidget
             'markers' => [
                 'size' => 0,
             ],
-            'colors' => ['#d946ef', '#6d28d9', '#3b82f6'],
+            'colors' => ['#6d28d9', '#3b82f6', '#d946ef'],
             'fill' => [
                 'type' => 'gradient',
                 'gradient' => [
                     'shade' => 'dark',
                     'type' => 'vertical',
                     'shadeIntensity' => 0.5,
-                    'gradientToColors' => ['#d946ef', '#6d28d9', '#0ea5e9'],
+                    'gradientToColors' => ['#6d28d9', '#0ea5e9', '#d946ef'],
                     'inverseColors' => false,
                     'opacityFrom' => [0.85, 1, 0.75],
                     'opacityTo' => [0.4, 0.85, 1],
