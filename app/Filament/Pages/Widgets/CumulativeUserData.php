@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages\Widgets;
 
-use App\Models\Company;
 use App\Models\User;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 

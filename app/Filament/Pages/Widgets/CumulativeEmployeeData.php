@@ -2,9 +2,7 @@
 
 namespace App\Filament\Pages\Widgets;
 
-use App\Models\Company;
 use App\Models\Employeeship;
-use App\Models\User;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class CumulativeEmployeeData extends ApexChartWidget
