@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Widgets;
+namespace App\Filament\Pages\Widgets\Companies\Tables;
 
 use App\Models\Company;
 use Closure;

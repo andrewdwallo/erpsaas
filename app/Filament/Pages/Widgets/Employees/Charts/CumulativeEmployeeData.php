@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Widgets;
+namespace App\Filament\Pages\Widgets\Employees\Charts;
 
 use App\Models\Employeeship;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
@@ -54,12 +54,12 @@ class CumulativeEmployeeData extends ApexChartWidget
             ];
         });
 
-        $cumulativeEditors = $weeklyRoleData->reduce(function ($carry, $value) {
+        $cumulativeEditors = $weeklyRoleData->reduce(static function ($carry, $value) {
             $carry[] = ($carry ? end($carry) : 0) + $value['editors'];
             return $carry;
         }, []);
 
-        $cumulativeAdmins = $weeklyRoleData->reduce(function ($carry, $value) {
+        $cumulativeAdmins = $weeklyRoleData->reduce(static function ($carry, $value) {
             $carry[] = ($carry ? end($carry) : 0) + $value['admins'];
             return $carry;
         }, []);
@@ -85,7 +85,7 @@ class CumulativeEmployeeData extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'line',
+                'type' => 'area',
                 'height' => 350,
                 'stacked' => true,
                 'toolbar' => [

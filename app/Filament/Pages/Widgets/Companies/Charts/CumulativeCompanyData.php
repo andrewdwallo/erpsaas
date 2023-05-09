@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Pages\Widgets;
+namespace App\Filament\Pages\Widgets\Companies\Charts;
 
-use App\Models\User;
+use App\Models\Company;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class CumulativeUserData extends ApexChartWidget
+class CumulativeCompanyData extends ApexChartWidget
 {
     protected int|string|array $columnSpan = [
         'md' => 2,
@@ -17,14 +17,14 @@ class CumulativeUserData extends ApexChartWidget
      *
      * @var string
      */
-    protected static string $chartId = 'cumulative-user-data';
+    protected static string $chartId = 'cumulative-company-data';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Cumulative User Data';
+    protected static ?string $heading = 'Cumulative Company Data';
 
     protected function getOptions(): array
     {
@@ -32,7 +32,7 @@ class CumulativeUserData extends ApexChartWidget
         $today = today();
 
         // Company data
-        $userData = User::selectRaw("COUNT(*) as aggregate, YEARWEEK(created_at, 3) as week")
+        $companyData = Company::selectRaw("COUNT(*) as aggregate, YEARWEEK(created_at, 3) as week")
             ->whereBetween('created_at', [$startOfYear, $today])
             ->groupByRaw('week')
             ->get();
@@ -42,26 +42,32 @@ class CumulativeUserData extends ApexChartWidget
             $weeks[$week->format('oW')] = 0;
         }
 
-        $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($userData) {
-            $matchingData = $userData->firstWhere('week', $week);
+        $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($companyData) {
+            $matchingData = $companyData->firstWhere('week', $week);
             return [$week => $matchingData ? $matchingData->aggregate : 0];
         });
 
-        $totalUsers = $weeklyData->reduce(static function ($carry, $value) {
+        $totalCompanies = $weeklyData->reduce(static function ($carry, $value) {
             $carry[] = ($carry ? end($carry) : 0) + $value;
             return $carry;
         }, []);
 
         // Calculate percentage increase and increase in companies per week
-        $newUsers = [0];
-        $weeklyGrowthRate = [0];
+        $newCompanies = [0];
+        $weeklyPercentageChange = [0];
 
-        $cumulativeDataLength = count($totalUsers);
-        for ($key = 1; $key < $cumulativeDataLength; $key++) {
-            $value = $totalUsers[$key];
-            $previousWeekValue = $totalUsers[$key - 1];
-            $newUsers[] = $value - $previousWeekValue;
-            $weeklyGrowthRate[] = round((($value - $previousWeekValue) / $previousWeekValue) * 100, 2);
+        for ($i = 1; $i < count($totalCompanies); $i++) {
+            $newCompanies[] = $totalCompanies[$i] - $totalCompanies[$i - 1];
+            $weeklyPercentageChange[] = ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100;
+        }
+
+        // Calculate exponential smoothing for total companies
+        $alpha = 0.3; // Smoothing factor, between 0 and 1
+        $smoothedTotalCompanies = [];
+
+        $smoothedTotalCompanies[0] = $totalCompanies[0]; // Initialize the first smoothed value
+        for ($i = 1; $i < count($totalCompanies); $i++) {
+            $smoothedTotalCompanies[$i] = $alpha * $totalCompanies[$i] + (1 - $alpha) * $smoothedTotalCompanies[$i - 1];
         }
 
         $labels = collect($weeks)->keys()->map(static function ($week) {
@@ -84,17 +90,22 @@ class CumulativeUserData extends ApexChartWidget
                 [
                     'name' => 'Weekly Growth Rate',
                     'type' => 'area',
-                    'data' => $weeklyGrowthRate,
+                    'data' => $weeklyPercentageChange,
                 ],
                 [
-                    'name' => 'New Users',
+                    'name' => 'New Companies',
                     'type' => 'line',
-                    'data' => $newUsers,
+                    'data' => $newCompanies,
                 ],
                 [
-                    'name' => 'Total Users',
+                    'name' => 'Smoothed Total Companies',
+                    'type' => 'line',
+                    'data' => $smoothedTotalCompanies,
+                ],
+                [
+                    'name' => 'Total Companies',
                     'type' => 'column',
-                    'data' => $totalUsers,
+                    'data' => $totalCompanies,
                 ],
             ],
             'xaxis' => [
@@ -110,6 +121,7 @@ class CumulativeUserData extends ApexChartWidget
             'yaxis' => [
                 [
                     'seriesName' => 'Weekly Growth Rate',
+                    'decimalsInFloat' => 2,
                     'labels' => [
                         'style' => [
                             'colors' => '#9ca3af',
@@ -118,7 +130,7 @@ class CumulativeUserData extends ApexChartWidget
                     ],
                 ],
                 [
-                    'seriesName' => 'New Users',
+                    'seriesName' => 'New Companies',
                     'decimalsInFloat' => 0,
                     'opposite' => true,
                     'labels' => [
@@ -129,7 +141,18 @@ class CumulativeUserData extends ApexChartWidget
                     ],
                 ],
                 [
-                    'seriesName' => 'Total Users',
+                    'seriesName' => 'Smoothed Total Companies',
+                    'decimalsInFloat' => 0,
+                    'opposite' => true,
+                    'labels' => [
+                        'style' => [
+                            'colors' => '#9ca3af',
+                            'fontWeight' => 600,
+                        ],
+                    ],
+                ],
+                [
+                    'seriesName' => 'Total Companies',
                     'decimalsInFloat' => 0,
                     'opposite' => true,
                     'labels' => [
@@ -151,22 +174,22 @@ class CumulativeUserData extends ApexChartWidget
             'markers' => [
                 'size' => 0,
             ],
-            'colors' => ['#6d28d9', '#3b82f6', '#d946ef'],
+            'colors' => ['#d946ef', '#6d28d9', '#14b8a6', '#3b82f6'],
             'fill' => [
                 'type' => 'gradient',
                 'gradient' => [
                     'shade' => 'dark',
                     'type' => 'vertical',
                     'shadeIntensity' => 0.5,
-                    'gradientToColors' => ['#6d28d9', '#0ea5e9', '#d946ef'],
+                    'gradientToColors' => ['#d946ef', '#6d28d9', '#14b8a6', '#0ea5e9'],
                     'inverseColors' => false,
-                    'opacityFrom' => [0.85, 1, 0.75],
-                    'opacityTo' => [0.4, 0.85, 1],
+                    'opacityFrom' => [0.85, 1, 1, 0.75],
+                    'opacityTo' => [0.4, 0.85, 0.85, 1],
                     'stops' => [0, 20, 80, 100],
                 ],
             ],
             'stroke' => [
-                'width' => [2, 5, 0],
+                'width' => [2, 5, 5, 0],
                 'curve' => 'smooth',
             ],
             'plotOptions' => [

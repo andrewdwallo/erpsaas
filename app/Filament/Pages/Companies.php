@@ -25,8 +25,9 @@ class Companies extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\CumulativeCompanyData::class,
-            Widgets\Companies::class,
+            Widgets\Companies\Charts\CompanyStatsOverview::class,
+            Widgets\Companies\Charts\CumulativeCompanyData::class,
+            Widgets\Companies\Tables\Companies::class,
         ];
     }
 
