@@ -15,7 +15,7 @@ class CompanyStatsOverview extends StatsOverviewWidget
     }
 
     /**
-     * Holt's Linear Trend
+     * Holt's Linear Trend Method
      */
     protected function holtLinearTrend($data, $alpha, $beta): array
     {
@@ -31,6 +31,44 @@ class CompanyStatsOverview extends StatsOverviewWidget
         }
 
         return $forecast;
+    }
+
+    /**
+     * Adjusts the alpha and beta parameters based on the model's performance
+     */
+    protected function adjustTrendParameters($data, $alpha, $beta): array
+    {
+        $minError = PHP_INT_MAX;
+        $bestAlpha = $alpha;
+        $bestBeta = $beta;
+
+        // try different alpha and beta values within a reasonable range
+        for ($alpha = 0.1; $alpha <= 1; $alpha += 0.1) {
+            for ($beta = 0.1; $beta <= 1; $beta += 0.1) {
+                $forecast = $this->holtLinearTrend($data, $alpha, $beta);
+                $error = $this->calculateError($data, $forecast);
+                if ($error < $minError) {
+                    $minError = $error;
+                    $bestAlpha = $alpha;
+                    $bestBeta = $beta;
+                }
+            }
+        }
+
+        return [$bestAlpha, $bestBeta];
+    }
+
+    /**
+     * Calculates the sum of squared errors between the actual data and the forecast
+     */
+    protected function calculateError($data, $forecast): float
+    {
+        $error = 0;
+        for ($i = 0; $i < count($data); $i++) {
+            $error += pow($data[$i] - $forecast[$i], 2);
+        }
+
+        return $error;
     }
 
     /**
@@ -58,19 +96,19 @@ class CompanyStatsOverview extends StatsOverviewWidget
             $weeks[$week->format('oW')] = 0;
         }
 
-        // Get Weekly Data
+        // Get Weekly Data for Company Data
         $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($companyData) {
             $matchingData = $companyData->firstWhere('week', $week);
             return [$week => $matchingData ? $matchingData->aggregate : 0];
         });
 
-        // Calculate total companies
+        // Calculate total companies per week
         $totalCompanies = $weeklyData->reduce(static function ($carry, $value) {
             $carry[] = ($carry ? end($carry) : 0) + $value;
             return $carry;
         }, []);
 
-        // Calculate new companies and percentage change
+        // Calculate new companies and percentage change per week
         $newCompanies = [0];
         $weeklyPercentageChange = [0];
         for ($i = 1; $i < count($totalCompanies); $i++) {
@@ -80,16 +118,20 @@ class CompanyStatsOverview extends StatsOverviewWidget
 
         // Calculate average weekly growth rate
         $totalWeeks = $startOfYear->diffInWeeks($today);
-        $averageWeeklyGrowthRate = round(array_sum($weeklyPercentageChange) / ($totalWeeks), 2);
+        $averageWeeklyGrowthRate = round(array_sum($weeklyPercentageChange) / $totalWeeks, 2);
 
-        // Calculate Holt's forecast
         $weeklyDataArray = $weeklyData->values()->toArray();
-        $holt_forecast = $this->holtLinearTrend($weeklyDataArray, $alpha, $beta);
-        $expectedNewCompanies = round(end($holt_forecast));
 
-        // Prepare cards for return
+        // Adjust alpha and beta parameters
+        [$alpha, $beta] = $this->adjustTrendParameters($weeklyDataArray, $alpha, $beta);
+
+        // Calculate Holt's Linear Trend Forecast for next week
+        $holtForecast = $this->holtLinearTrend($weeklyDataArray, $alpha, $beta);
+        $expectedNewCompanies = round(end($holtForecast));
+
+        // Company Stats Overview Cards
         return [
-            StatsOverviewWidget\Card::make("New Companies Forecast (Holt's Trend)", $expectedNewCompanies),
+            StatsOverviewWidget\Card::make("New Companies Forecast (Holt's Linear Trend)", $expectedNewCompanies),
             StatsOverviewWidget\Card::make('Average Weekly Growth Rate', $averageWeeklyGrowthRate . '%'),
             StatsOverviewWidget\Card::make('Personal Companies', Company::sum('personal_company')),
         ];
