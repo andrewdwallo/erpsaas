@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Pages\Widgets\Companies\Charts\CumulativeTotal;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentCompanies\FilamentCompanies;
@@ -26,7 +27,8 @@ class Companies extends Page
     {
         return [
             Widgets\Companies\Charts\CompanyStatsOverview::class,
-            Widgets\Companies\Charts\CumulativeCompanyData::class,
+            Widgets\Companies\Charts\CumulativeGrowth::class,
+            Widgets\Companies\Charts\CumulativeTotal::class,
             Widgets\Companies\Tables\Companies::class,
         ];
     }

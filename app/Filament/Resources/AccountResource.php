@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
+use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class AccountResource extends Resource
 {
@@ -41,118 +41,173 @@ class AccountResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('General')
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Radio::make('type')
-                            ->label('Type')
-                            ->options(Account::getAccountTypes())
-                            ->inline()
-                            ->default('bank')
-                            ->reactive()
-                            ->afterStateUpdated(static fn (Closure $set, $state) => $state === 'card' ? $set('enabled', 'hidden'): $set('enabled', null))
-                            ->required()
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('name')
-                            ->label('Name')
-                            ->maxLength(100)
-                            ->required(),
-                        Forms\Components\TextInput::make('number')
-                            ->label('Account Number')
-                            ->unique(callback: static function (Unique $rule, $state) {
-                                $companyId = Auth::user()->currentCompany->id;
-
-                                return $rule->where('company_id', $companyId)->where('number', $state);
-                            }, ignoreRecord: true)
-                            ->maxLength(20)
-                            ->required(),
-                        Forms\Components\Select::make('currency_code')
-                            ->label('Currency')
-                            ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
-                            ->preload()
-                            ->default(Account::getDefaultCurrencyCode())
-                            ->searchable()
-                            ->reactive()
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\Select::make('currency.code')
-                                    ->label('Code')
+                        Forms\Components\Section::make('Account Information')
+                            ->schema([
+                                Forms\Components\Select::make('type')
+                                    ->label('Type')
+                                    ->options(Account::getAccountTypes())
                                     ->searchable()
-                                    ->options(Account::getCurrencyCodes())
+                                    ->default('checking')
                                     ->reactive()
-                                    ->afterStateUpdated(static function (callable $set, $state) {
-                                        $code = $state;
-                                        $name = config("money.{$code}.name");
-                                        $set('currency.name', $name);
-                                    })
+                                    ->disablePlaceholderSelection()
                                     ->required(),
-                                Forms\Components\TextInput::make('currency.name')
+                                Forms\Components\TextInput::make('name')
                                     ->label('Name')
                                     ->maxLength(100)
                                     ->required(),
-                                Forms\Components\TextInput::make('currency.rate')
-                                    ->label('Rate')
-                                    ->numeric()
-                                    ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                        ->numeric()
-                                        ->decimalPlaces(4)
-                                        ->signed(false)
-                                        ->padFractionalZeros(false)
-                                        ->normalizeZeros(false)
-                                        ->minValue(0.0001)
-                                        ->maxValue(999999.9999)
-                                        ->lazyPlaceholder(false))
-                                    ->required(),
-                            ])->createOptionAction(static function (Forms\Components\Actions\Action $action) {
-                                return $action
-                                    ->label('Add Currency')
-                                    ->modalHeading('Add Currency')
-                                    ->modalButton('Add')
-                                    ->action(static function (array $data) {
-                                        return DB::transaction(static function () use ($data) {
-                                            $code = $data['currency']['code'];
-                                            $name = $data['currency']['name'];
-                                            $rate = $data['currency']['rate'];
+                                Forms\Components\TextInput::make('number')
+                                    ->label('Account Number')
+                                    ->unique(callback: static function (Unique $rule, $state) {
+                                        $companyId = Auth::user()->currentCompany->id;
 
-                                            return (new CreateCurrencyFromAccount())->create($code, $name, $rate);
-                                        });
-                                    });
-                            }),
-                        Forms\Components\TextInput::make('opening_balance')
-                            ->label('Opening Balance')
-                            ->required()
-                            ->default('0')
-                            ->numeric()
-                            ->mask(static fn (Forms\Components\TextInput\Mask $mask, Closure $get) => $mask
-                                ->patternBlocks([
-                                    'money' => static fn (Mask $mask) => $mask
-                                        ->numeric()
-                                        ->decimalPlaces(config('money.' . $get('currency_code') . '.precision'))
-                                        ->decimalSeparator(config('money.' . $get('currency_code') . '.decimal_mark'))
-                                        ->thousandsSeparator(config('money.' . $get('currency_code') . '.thousands_separator'))
-                                        ->signed()
-                                        ->padFractionalZeros()
-                                        ->normalizeZeros(false),
-                            ])
-                            ->pattern(config('money.' . $get('currency_code') . '.symbol_first') ? config('money.' . $get('currency_code') . '.symbol') . 'money' : 'money' . config('money.' . $get('currency_code') . '.symbol'))
-                            ->lazyPlaceholder(false)),
-                        Forms\Components\Toggle::make('enabled')
-                            ->hidden(fn (Closure $get) => $get('type') === 'card')
-                            ->label('Default Account'),
-                    ])->columns(),
-                Forms\Components\Section::make('Bank')
+                                        return $rule->where('company_id', $companyId)->where('number', $state);
+                                    }, ignoreRecord: true)
+                                    ->maxLength(20)
+                                    ->validationAttribute('account number')
+                                    ->required(),
+                                ToggleButton::make('enabled')
+                                    ->label('Default Account')
+                                    ->hidden(static fn (Closure $get) => $get('type') === 'credit_card')
+                                    ->offColor('danger')
+                                    ->onColor('primary'),
+                            ])->columns(),
+                        Forms\Components\Section::make('Currency & Balance')
+                            ->schema([
+                                Forms\Components\Select::make('currency_code')
+                                    ->label('Currency')
+                                    ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
+                                    ->preload()
+                                    ->default(Account::getDefaultCurrencyCode())
+                                    ->searchable()
+                                    ->reactive()
+                                    ->required()
+                                    ->createOptionForm([
+                                        Forms\Components\Select::make('currency.code')
+                                            ->label('Code')
+                                            ->searchable()
+                                            ->options(Account::getCurrencyCodes())
+                                            ->reactive()
+                                            ->afterStateUpdated(static function (callable $set, $state) {
+                                                $code = $state;
+                                                $name = config("money.{$code}.name");
+                                                $set('currency.name', $name);
+                                            })
+                                            ->required(),
+                                        Forms\Components\TextInput::make('currency.name')
+                                            ->label('Name')
+                                            ->maxLength(100)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('currency.rate')
+                                            ->label('Rate')
+                                            ->numeric()
+                                            ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(4)
+                                                ->signed(false)
+                                                ->padFractionalZeros(false)
+                                                ->normalizeZeros(false)
+                                                ->minValue(0.0001)
+                                                ->maxValue(999999.9999)
+                                                ->lazyPlaceholder(false))
+                                            ->required(),
+                                    ])->createOptionAction(static function (Forms\Components\Actions\Action $action) {
+                                        return $action
+                                            ->label('Add Currency')
+                                            ->modalHeading('Add Currency')
+                                            ->modalButton('Add')
+                                            ->action(static function (array $data) {
+                                                return DB::transaction(static function () use ($data) {
+                                                    $code = $data['currency']['code'];
+                                                    $name = $data['currency']['name'];
+                                                    $rate = $data['currency']['rate'];
+
+                                                    return (new CreateCurrencyFromAccount())->create($code, $name, $rate);
+                                                });
+                                            });
+                                    }),
+                                Forms\Components\TextInput::make('opening_balance')
+                                    ->label('Opening Balance')
+                                    ->required()
+                                    ->default('0')
+                                    ->numeric()
+                                    ->mask(static fn (Forms\Components\TextInput\Mask $mask, Closure $get) => $mask
+                                        ->patternBlocks([
+                                            'money' => static fn (Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(config('money.' . $get('currency_code') . '.precision'))
+                                                ->decimalSeparator(config('money.' . $get('currency_code') . '.decimal_mark'))
+                                                ->thousandsSeparator(config('money.' . $get('currency_code') . '.thousands_separator'))
+                                                ->signed()
+                                                ->padFractionalZeros()
+                                                ->normalizeZeros(),
+                                    ])
+                                    ->pattern(config('money.' . $get('currency_code') . '.symbol_first') ? config('money.' . $get('currency_code') . '.symbol') . 'money' : 'money' . config('money.' . $get('currency_code') . '.symbol'))
+                                    ->lazyPlaceholder(false)),
+                            ])->columns(),
+                        Forms\Components\Tabs::make('Account Specifications')
+                            ->tabs([
+                                Forms\Components\Tabs\Tab::make('Bank Information')
+                                    ->icon('heroicon-o-credit-card')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('bank_name')
+                                            ->label('Bank Name')
+                                            ->maxLength(100),
+                                        Forms\Components\TextInput::make('bank_phone')
+                                            ->label('Bank Phone')
+                                            ->tel()
+                                            ->maxLength(20),
+                                        Forms\Components\Textarea::make('bank_address')
+                                            ->label('Bank Address')
+                                            ->columnSpanFull(),
+                                    ])->columns(),
+                                Forms\Components\Tabs\Tab::make('Additional Information')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('description')
+                                            ->label('Description')
+                                            ->maxLength(100),
+                                        Forms\Components\SpatieTagsInput::make('tags')
+                                            ->label('Tags')
+                                            ->placeholder('Enter tags...')
+                                            ->type('statuses')
+                                            ->suggestions([
+                                                'Business',
+                                                'Personal',
+                                                'College Fund',
+                                            ]),
+                                        Forms\Components\MarkdownEditor::make('notes')
+                                            ->label('Notes')
+                                            ->columnSpanFull(),
+                                    ])->columns(),
+                            ]),
+                    ])->columnSpan(['lg' => 2]),
+
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\TextInput::make('bank_name')
-                            ->label('Bank Name')
-                            ->maxLength(100),
-                        Forms\Components\TextInput::make('bank_phone')
-                            ->label('Bank Phone')
-                            ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask->pattern('(000) 000-0000'))
-                            ->maxLength(20),
-                        Forms\Components\Textarea::make('bank_address')
-                            ->label('Bank Address')
-                            ->columnSpanFull(),
-                        ])->columns(),
-            ]);
+                        Forms\Components\Section::make('Routing Information')
+                            ->schema([
+                                Forms\Components\TextInput::make('aba_routing_number')
+                                    ->label('ABA Number')
+                                    ->integer()
+                                    ->length(9),
+                                Forms\Components\TextInput::make('ach_routing_number')
+                                    ->label('ACH Number')
+                                    ->integer()
+                                    ->length(9),
+                            ]),
+                        Forms\Components\Section::make('International Bank Information')
+                            ->schema([
+                                Forms\Components\TextInput::make('bic_swift_code')
+                                    ->label('BIC/SWIFT Code')
+                                    ->maxLength(11),
+                                Forms\Components\TextInput::make('iban')
+                                    ->label('IBAN')
+                                    ->maxLength(34),
+                            ]),
+                    ])->columnSpan(['lg' => 1]),
+            ])->columns(3);
     }
 
     /**
@@ -163,23 +218,37 @@ class AccountResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Account')
                     ->searchable()
                     ->weight('semibold')
                     ->icon(static fn (Account $record) => $record->enabled ? 'heroicon-o-lock-closed' : null)
                     ->tooltip(static fn (Account $record) => $record->enabled ? 'Default Account' : null)
                     ->iconPosition('after')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('number')
-                    ->label('Account Number')
-                    ->searchable()
+                    ->description(static fn (Account $record) => $record->number ?: 'N/A')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('bank_name')
-                    ->label('Bank Name')
+                    ->label('Bank')
+                    ->placeholder('N/A')
+                    ->description(static fn (Account $record) => $record->bank_phone ?: 'N/A')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('bank_phone')
-                    ->label('Phone')
-                    ->formatStateUsing(static fn ($record) => ($record->bank_phone !== '') ? vsprintf('(%d%d%d) %d%d%d-%d%d%d%d', str_split($record->bank_phone)) : '-'),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->colors([
+                        'primary' => 'open',
+                        'success' => 'active',
+                        'secondary' => 'dormant',
+                        'warning' => 'restricted',
+                        'danger' => 'closed',
+                    ])
+                    ->icons([
+                        'heroicon-o-cash' => 'open',
+                        'heroicon-o-clock' => 'active',
+                        'heroicon-o-status-offline' => 'dormant',
+                        'heroicon-o-exclamation' => 'restricted',
+                        'heroicon-o-x-circle' => 'closed',
+                    ])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('opening_balance')
                     ->label('Current Balance')
                     ->sortable()
@@ -222,14 +291,14 @@ class AccountResource extends Resource
                     }),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -237,5 +306,5 @@ class AccountResource extends Resource
             'create' => Pages\CreateAccount::route('/create'),
             'edit' => Pages\EditAccount::route('/{record}/edit'),
         ];
-    }    
+    }
 }

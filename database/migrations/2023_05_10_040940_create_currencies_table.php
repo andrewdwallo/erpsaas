@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('thousands_separator')->default(',');
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->unique(['company_id', 'code']);

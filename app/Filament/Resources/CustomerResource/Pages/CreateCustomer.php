@@ -5,6 +5,8 @@ namespace App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
+use Squire\Models\Region;
 
 class CreateCustomer extends CreateRecord
 {
@@ -17,9 +19,10 @@ class CreateCustomer extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['company_id'] = auth()->user()->currentCompany->id;
+        $data['company_id'] = Auth::user()->currentCompany->id;
         $data['type'] = 'customer';
-        $data['created_by'] = auth()->id();
+        $data['created_by'] = Auth::id();
+
         return $data;
     }
 }

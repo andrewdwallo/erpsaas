@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('currency_code')->default('USD');
             $table->string('reference')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->index(['company_id', 'type']);

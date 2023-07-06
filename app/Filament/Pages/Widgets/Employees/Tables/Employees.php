@@ -13,10 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class Employees extends PageWidget
 {
-    protected int|string|array $columnSpan = [
-        'md' => 2,
-        'xl' => 3,
-    ];
+    protected int | string | array $columnSpan = 'full';
+
+    protected static ?int $sort = 2;
 
     protected function getTableQuery(): Builder|Relation
     {
@@ -36,6 +35,7 @@ class Employees extends PageWidget
         return [
             Tables\Filters\SelectFilter::make('name')
                 ->label('Company')
+                ->searchable()
                 ->relationship('companies', 'name', static fn (Builder $query) => $query->whereHas('users')),
         ];
     }
@@ -52,8 +52,7 @@ class Employees extends PageWidget
             Tables\Columns\TextColumn::make('companies.name')
                 ->label('Company')
                 ->sortable()
-                ->searchable()
-                ->weight('semibold'),
+                ->searchable(),
             Tables\Columns\BadgeColumn::make('employeeships.role')
                 ->label('Role')
                 ->enum([

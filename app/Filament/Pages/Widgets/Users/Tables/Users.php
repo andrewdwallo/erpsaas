@@ -39,7 +39,6 @@ class Users extends PageWidget
             Tables\Columns\TextColumn::make('owned_companies_count')
                 ->counts('ownedCompanies')
                 ->label('Companies')
-                ->weight('semibold')
                 ->sortable(),
         ];
     }

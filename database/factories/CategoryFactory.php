@@ -25,7 +25,35 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'color' => $this->faker->hexColor,
         ];
+    }
+
+    /**
+     * Indicate that the category is of income type.
+     *
+     * @return Factory<Category>
+     */
+    public function income(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => 'income',
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the category is of expense type.
+     *
+     * @return Factory<Category>
+     */
+    public function expense(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => 'expense',
+            ];
+        });
     }
 }

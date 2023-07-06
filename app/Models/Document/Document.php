@@ -40,6 +40,7 @@ class Document extends Model
         'contact_id',
         'notes',
         'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -56,6 +57,11 @@ class Document extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function tax(): BelongsTo

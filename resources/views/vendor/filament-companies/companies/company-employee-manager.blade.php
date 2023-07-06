@@ -85,9 +85,9 @@
                 {{ __('filament-companies::default.action_section_descriptions.pending_company_invitations') }}
             </x-slot>
 
-            <div class="overflow-x-auto space-y-2 bg-white rounded-xl shadow dark:border-gray-600 dark:bg-gray-800 col-span-2 mt-5 sm:col-span-1 md:col-start-2 md:mt-0">
+            <div class="overflow-x-auto space-y-2 bg-moonlight rounded-xl shadow dark:border-gray-600 dark:bg-gray-800 col-span-2 mt-5 sm:col-span-1 md:col-start-2 md:mt-0">
                 <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-100 dark:bg-gray-800">
+                    <thead class="bg-moonlight dark:bg-gray-800">
                     <tr>
                         <th colspan="3" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {{ __('filament-companies::default.fields.email') }}
@@ -136,9 +136,9 @@
             </x-slot>
 
             <!-- Company Employee List -->
-            <div class="overflow-x-auto space-y-2 bg-white rounded-xl shadow dark:border-gray-600 dark:bg-gray-800 col-span-2 mt-5 sm:col-span-1 md:col-start-2 md:mt-0">
+            <div class="overflow-x-auto space-y-2 bg-moonlight rounded-xl shadow dark:border-gray-600 dark:bg-gray-800 col-span-2 mt-5 sm:col-span-1 md:col-start-2 md:mt-0">
                 <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-white dark:bg-gray-800">
+                    <thead class="bg-moonlight dark:bg-gray-800">
                     <tr>
                         <th scope="col" colspan="3" class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             {{ __('filament-companies::default.fields.name') }}
@@ -162,12 +162,12 @@
                             <td colspan="1" class="px-6 py-4 whitespace-nowrap">
                                 <div class="space-x-2 text-right">
                                     <!-- Manage Company Employee Role -->
-                                    @if (Gate::check('addCompanyEmployee', $company) && Wallo\FilamentCompanies\FilamentCompanies::hasRoles())
-                                        <x-filament::button size="sm" outlined="true" :icon="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key == 'admin') ? 'heroicon-o-shield-check' : 'heroicon-o-pencil'" :color="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key == 'admin') ? 'primary' : 'warning'" wire:click="manageRole('{{ $user->id }}')">
+                                    @if (Gate::check('updateCompanyEmployee', $company) && Wallo\FilamentCompanies\FilamentCompanies::hasRoles())
+                                        <x-filament::button size="sm" outlined="true" :icon="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key === 'admin') ? 'heroicon-o-shield-check' : 'heroicon-o-pencil'" :color="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key === 'admin') ? 'primary' : 'warning'" wire:click="manageRole('{{ $user->id }}')">
                                             {{ Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->name }}
                                         </x-filament::button>
                                     @elseif (Wallo\FilamentCompanies\FilamentCompanies::hasRoles())
-                                        <x-filament::button size="sm" disabled="true" outlined="true" :icon="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key == 'admin') ? 'heroicon-o-shield-check' : 'heroicon-o-pencil'" color="secondary">
+                                        <x-filament::button size="sm" disabled="true" outlined="true" :icon="(Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->key === 'admin') ? 'heroicon-o-shield-check' : 'heroicon-o-pencil'" color="secondary">
                                             {{ Wallo\FilamentCompanies\FilamentCompanies::findRole($user->employeeship->role)->name }}
                                         </x-filament::button>
                                     @endif

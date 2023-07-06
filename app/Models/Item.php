@@ -32,6 +32,7 @@ class Item extends Model
         'discount_id',
         'enabled',
         'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -46,6 +47,11 @@ class Item extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function category(): BelongsTo

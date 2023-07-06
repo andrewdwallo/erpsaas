@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Tax extends Model
 {
@@ -29,6 +30,7 @@ class Tax extends Model
         'scope',
         'enabled',
         'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -42,7 +44,12 @@ class Tax extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function items(): HasMany
@@ -63,6 +70,32 @@ class Tax extends Model
     public function invoice_items(): HasMany
     {
         return $this->document_items()->where('type', 'invoice');
+    }
+
+    public static function getComputationTypes(): array
+    {
+        return [
+            'fixed' => 'Fixed',
+            'percentage' => 'Percentage',
+            'compound' => 'Compound',
+        ];
+    }
+
+    public static function getTaxTypes(): array
+    {
+        return [
+            'sales' => 'Sales',
+            'purchase' => 'Purchase',
+            'none' => 'None',
+        ];
+    }
+
+    public static function getTaxScopes(): array
+    {
+        return [
+            'product' => 'Product',
+            'service' => 'Service',
+        ];
     }
 
     protected static function newFactory(): Factory

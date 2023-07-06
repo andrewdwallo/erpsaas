@@ -7,12 +7,7 @@ use Filament\Widgets\StatsOverviewWidget;
 
 class CompanyStatsOverview extends StatsOverviewWidget
 {
-    protected int|string|array $columnSpan = 3;
-
-    protected function getColumns(): int
-    {
-        return 3;
-    }
+    protected static ?int $sort = 0;
 
     /**
      * Holt's Linear Trend Method
@@ -23,9 +18,9 @@ class CompanyStatsOverview extends StatsOverviewWidget
         $trend = $data[1] - $data[0];
 
         $forecast = [];
-        for ($i = 0; $i < count($data); $i++) {
+        foreach ($data as $iValue) {
             $prev_level = $level;
-            $level = $alpha * $data[$i] + (1 - $alpha) * ($prev_level + $trend);
+            $level = $alpha * $iValue + (1 - $alpha) * ($prev_level + $trend);
             $trend = $beta * ($level - $prev_level) + (1 - $beta) * $trend;
             $forecast[] = $level + $trend;
         }
@@ -43,14 +38,14 @@ class CompanyStatsOverview extends StatsOverviewWidget
         $bestBeta = $beta;
 
         // try different alpha and beta values within a reasonable range
-        for ($alpha = 0.1; $alpha <= 1; $alpha += 0.1) {
-            for ($beta = 0.1; $beta <= 1; $beta += 0.1) {
-                $forecast = $this->holtLinearTrend($data, $alpha, $beta);
+        for ($testAlpha = 0.1; $testAlpha <= 1; $testAlpha += 0.1) {
+            for ($testBeta = 0.1; $testBeta <= 1; $testBeta += 0.1) {
+                $forecast = $this->holtLinearTrend($data, $testAlpha, $testBeta);
                 $error = $this->calculateError($data, $forecast);
                 if ($error < $minError) {
                     $minError = $error;
-                    $bestAlpha = $alpha;
-                    $bestBeta = $beta;
+                    $bestAlpha = $testAlpha;
+                    $bestBeta = $testBeta;
                 }
             }
         }
@@ -64,8 +59,8 @@ class CompanyStatsOverview extends StatsOverviewWidget
     protected function calculateError($data, $forecast): float
     {
         $error = 0;
-        for ($i = 0; $i < count($data); $i++) {
-            $error += pow($data[$i] - $forecast[$i], 2);
+        for ($i = 0, $iMax = count($data); $i < $iMax; $i++) {
+            $error += ($data[$i] - $forecast[$i]) ** 2;
         }
 
         return $error;
@@ -99,7 +94,7 @@ class CompanyStatsOverview extends StatsOverviewWidget
         // Get Weekly Data for Company Data
         $weeklyData = collect($weeks)->mapWithKeys(static function ($value, $week) use ($companyData) {
             $matchingData = $companyData->firstWhere('week', $week);
-            return [$week => $matchingData ? $matchingData->aggregate : 0];
+            return [$week => $matchingData->aggregate ?? 0];
         });
 
         // Calculate total companies per week
@@ -111,7 +106,7 @@ class CompanyStatsOverview extends StatsOverviewWidget
         // Calculate new companies and percentage change per week
         $newCompanies = [0];
         $weeklyPercentageChange = [0];
-        for ($i = 1; $i < count($totalCompanies); $i++) {
+        for ($i = 1, $iMax = count($totalCompanies); $i < $iMax; $i++) {
             $newCompanies[] = $totalCompanies[$i] - $totalCompanies[$i - 1];
             $weeklyPercentageChange[] = ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100;
         }

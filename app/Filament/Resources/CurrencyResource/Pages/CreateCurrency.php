@@ -7,6 +7,7 @@ use App\Models\Setting\Currency;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CreateCurrency extends CreateRecord
@@ -20,34 +21,52 @@ class CreateCurrency extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['company_id'] = auth()->user()->currentCompany->id;
+        $data['company_id'] = Auth::user()->currentCompany->id;
+        $data['enabled'] = (bool)$data['enabled'];
+        $data['created_by'] = Auth::id();
 
         return $data;
     }
 
     protected function handleRecordCreation(array $data): Model
     {
-        $currentCompanyId = auth()->user()->currentCompany->id;
-        $currencyId = $data['id'] ?? null;
-        $enabledCurrenciesCount = Currency::where('company_id', $currentCompanyId)
-            ->where('enabled', '1')
-            ->where('id', '!=', $currencyId)
-            ->count();
+        return DB::transaction(function () use ($data) {
+            $currentCompanyId = auth()->user()->currentCompany->id;
 
-        if ($data['enabled'] === '1' && $enabledCurrenciesCount > 0) {
-            $this->disableOtherCurrencies($currentCompanyId, $currencyId);
-        } elseif ($data['enabled'] === '0' && $enabledCurrenciesCount < 1) {
-            $data['enabled'] = '1';
-        }
+            $enabled = (bool)($data['enabled'] ?? false); // Ensure $enabled is always a boolean
 
-        return parent::handleRecordCreation($data);
+            if ($enabled === true) {
+                $this->disableExistingRecord($currentCompanyId);
+            } else {
+                $this->ensureAtLeastOneEnabled($currentCompanyId, $enabled);
+            }
+
+            $data['enabled'] = $enabled;
+
+            return parent::handleRecordCreation($data);
+        });
     }
 
-    protected function disableOtherCurrencies($companyId, $currencyId): void
+    protected function disableExistingRecord($companyId): void
     {
-        DB::table('currencies')
-            ->where('company_id', $companyId)
-            ->where('id', '!=', $currencyId)
-            ->update(['enabled' => '0']);
+        $existingEnabledRecord = Currency::where('company_id', $companyId)
+            ->where('enabled', true)
+            ->first();
+
+        if ($existingEnabledRecord !== null) {
+            $existingEnabledRecord->enabled = false;
+            $existingEnabledRecord->save();
+        }
+    }
+
+    protected function ensureAtLeastOneEnabled($companyId, &$enabled): void
+    {
+        $enabledAccountsCount = Currency::where('company_id', $companyId)
+            ->where('enabled', true)
+            ->count();
+
+        if ($enabledAccountsCount === 0) {
+            $enabled = true;
+        }
     }
 }

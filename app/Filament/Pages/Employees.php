@@ -25,7 +25,8 @@ class Employees extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\Employees\Charts\CumulativeEmployeeData::class,
+            Widgets\Employees\Charts\CumulativeRoles::class,
+            Widgets\Employees\Charts\CumulativeGrowth::class,
             Widgets\Employees\Tables\Employees::class,
         ];
     }

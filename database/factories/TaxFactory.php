@@ -25,7 +25,9 @@ class TaxFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'rate' => $this->faker->randomFloat(4, 0, 20),
+            'computation' => $this->faker->randomElement(Tax::getComputationTypes()),
+            'scope' => $this->faker->randomElement(Tax::getTaxScopes()),
         ];
     }
 }

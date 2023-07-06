@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
+use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class CurrencyResource extends Resource
 {
@@ -38,12 +41,13 @@ class CurrencyResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('General')
+                    ->description('The default currency is used for all transactions and reports and cannot be deleted. Currency precision determines the number of decimal places to display when formatting currency amounts. The currency rate is set to 1 for the default currency and is utilized as the basis for setting exchange rates for all other currencies.')
                     ->schema([
                         Forms\Components\Select::make('code')
                             ->label('Code')
                             ->options(Currency::getCurrencyCodes())
                             ->searchable()
-                            ->placeholder('- Select Code -')
+                            ->placeholder('Select a currency code...')
                             ->reactive()
                             ->afterStateUpdated(static function (Closure $set, $state) {
                                 $code = $state;
@@ -64,14 +68,13 @@ class CurrencyResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('name')
                             ->translateLabel()
-                            ->placeholder('Enter Name')
                             ->maxLength(100)
                             ->required(),
                         Forms\Components\TextInput::make('rate')
                             ->label('Rate')
-                            ->placeholder('Enter Rate')
                             ->dehydrateStateUsing(static fn (Closure $get, $state): bool => $get('enabled') === true ? '1' : $state) // rate is 1 when enabled is true
                             ->numeric()
+                            ->reactive()
                             ->disabled(static fn (Closure $get): bool => $get('enabled') === true) // disabled is true when enabled is true
                             ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask
                                 ->numeric()
@@ -86,35 +89,32 @@ class CurrencyResource extends Resource
                         Forms\Components\Select::make('precision')
                             ->label('Precision')
                             ->searchable()
-                            ->placeholder('- Select Precision -')
+                            ->placeholder('Select the currency precision...')
                             ->options(['0', '1', '2', '3', '4'])
                             ->required(),
                         Forms\Components\TextInput::make('symbol')
                             ->label('Symbol')
-                            ->placeholder('Enter Symbol')
                             ->maxLength(5)
                             ->required(),
                         Forms\Components\Select::make('symbol_first')
                             ->label('Symbol Position')
                             ->searchable()
-                            ->boolean('Before Amount', 'After Amount', '- Select Symbol Position -')
+                            ->boolean('Before Amount', 'After Amount', 'Select the currency symbol position...')
                             ->required(),
                         Forms\Components\TextInput::make('decimal_mark')
                             ->label('Decimal Separator')
-                            ->placeholder('Enter Decimal Separator')
                             ->maxLength(1)
                             ->required(),
                         Forms\Components\TextInput::make('thousands_separator')
                             ->label('Thousands Separator')
-                            ->placeholder('Enter Thousands Separator')
                             ->maxLength(1)
                             ->required(),
-                        Forms\Components\Toggle::make('enabled')
+                        ToggleButton::make('enabled')
                             ->label('Default Currency')
                             ->reactive()
-                            ->inline()
-                            ->afterStateUpdated(static fn (Closure $set, $state) => $state ? $set('rate', '1') : $set('rate', null))
-                            ->default(false),
+                            ->offColor('danger')
+                            ->onColor('primary')
+                            ->afterStateUpdated(static fn (Closure $set, $state) => $state ? $set('rate', '1') : null),
                     ])->columns(),
             ]);
     }
@@ -209,14 +209,14 @@ class CurrencyResource extends Resource
                     }),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -224,5 +224,5 @@ class CurrencyResource extends Resource
             'create' => Pages\CreateCurrency::route('/create'),
             'edit' => Pages\EditCurrency::route('/{record}/edit'),
         ];
-    }    
+    }
 }

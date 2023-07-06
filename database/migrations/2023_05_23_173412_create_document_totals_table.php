@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('tax', 15, 4)->default(0);
             $table->decimal('total', 15, 4);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

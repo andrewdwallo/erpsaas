@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignId('discount_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('total', 15, 4);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

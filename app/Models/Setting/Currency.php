@@ -30,6 +30,8 @@ class Currency extends Model
         'thousands_separator',
         'enabled',
         'company_id',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [

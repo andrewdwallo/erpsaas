@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreignId('discount_id')->nullable()->constrained()->nullOnDelete();
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -7,13 +7,18 @@
     "require": {
         "php": "^8.1",
         "andrewdwallo/filament-companies": "^2.0",
+        "andrewdwallo/filament-selectify": "^1.0",
         "filament/filament": "^2.17",
+        "filament/spatie-laravel-tags-plugin": "^2.17",
         "flowframe/laravel-trend": "^0.1.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.8",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "leandrocfe/filament-apex-charts": "^1.0"
+        "leandrocfe/filament-apex-charts": "^1.0",
+        "squirephp/countries-en": "^3.4",
+        "squirephp/regions-en": "^3.4",
+        "squirephp/repository": "^3.4"
     },
     "require-dev": {
         "doctrine/dbal": "^3.6",

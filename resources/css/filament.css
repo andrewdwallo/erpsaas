@@ -1,1 +1,154 @@
 @import '../../vendor/filament/filament/resources/css/app.css';
+
+
+.filament-companies-navigation-menu-button {
+    @apply bg-transparent;
+}
+
+.filament-tables-container {
+    @apply rounded-xl border border-gray-300 bg-moonlight shadow-sm dark:!border-gray-700 dark:!bg-gray-800;
+}
+
+[type="text"],
+[type="email"],
+[type="url"],
+[type="password"],
+[type="number"],
+[type="date"],
+[type="datetime-local"],
+[type="month"],
+[type="search"],
+[type="tel"],
+[type="time"],
+[type="week"],
+[multiple],
+textarea,
+select,
+[type="checkbox"],
+[type="radio"],
+.filament-forms-repeater-component * {
+    @apply !shadow-none bg-moonlight;
+}
+
+div.p-2.space-y-2.bg-white.rounded-xl {
+    @apply bg-moonlight dark:!bg-gray-800;
+}
+
+.filament-tables-empty-state {
+    @apply bg-moonlight;
+}
+
+.filament-tables-row {
+    @apply transition hover:!bg-gray-100 dark:hover:!bg-gray-500/10 even:!bg-platinum dark:even:!bg-gray-900;
+}
+
+.filament-forms-markdown-editor-component-toolbar-button {
+    @apply bg-moonlight;
+}
+
+button.relative.w-full.cursor-default {
+    @apply bg-moonlight;
+}
+
+div.absolute.z-10.my-1.hidden {
+    @apply bg-moonlight;
+}
+
+textarea[id="data.notes"] {
+    @apply bg-moonlight dark:!bg-gray-700;
+}
+
+.filament-modal-window {
+    @apply bg-moonlight;
+}
+
+.filament-stats-card {
+    @apply bg-moonlight;
+}
+
+
+.filament-dropdown-panel {
+    @apply bg-moonlight;
+}
+
+.filament-forms-tabs-component {
+    @apply bg-moonlight;
+}
+
+.filament-forms-tabs-component-button-active {
+    @apply bg-moonlight;
+}
+
+.choices__inner {
+    @apply bg-moonlight;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    @apply bg-moonlight;
+}
+
+div.prose.block.h-full {
+    @apply bg-moonlight;
+}
+
+.filament-body {
+    @apply bg-platinum;
+}
+
+.filepond--root[data-style-panel-aspect-ratio] .filepond--drop-label {
+    transform: translateY(-50%) !important;
+    position: absolute;
+    top: 50%;
+}
+
+.filament-main-topbar,
+.filament-sidebar-header {
+    @apply bg-translucent dark:!bg-gray-800;
+}
+
+
+.apexcharts-title-text {
+    @apply fill-gray-600 dark:fill-gray-100 font-semibold !important;
+}
+
+.apexcharts-subtitle-text {
+    @apply fill-gray-500 dark:fill-gray-400 font-normal !important;
+}
+
+.apexcharts-legend-text {
+    @apply text-gray-500 dark:text-gray-400 font-medium !important;
+}
+
+.apexcharts-text, .apexcharts-xaxis-label, .apexcharts-yaxis-label {
+    @apply fill-gray-400 dark:fill-gray-500 font-medium !important;
+}
+
+@screen lg {
+    .filament-sidebar {
+        @apply bg-transparent dark:!bg-transparent shadow-none lg:!border-r-0 rtl:lg:!border-l-0;
+    }
+
+    .filament-sidebar-header {
+        @apply border-r rtl:border-l;
+    }
+}
+
+.filament-sidebar-group > button {
+    @apply outline-offset-8 rounded-sm;
+}
+
+.filament-sidebar nav li:not(.filament-sidebar-group) div {
+    border-top: none;
+}
+
+.filament-sidebar-group button p {
+    @apply text-primary-600 dark:!text-primary-500;
+}
+
+.filament-versions-nav-component {
+    @apply border-t-0;
+}
+
+
+

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('type'); // invoice, bill
             $table->string('document_number');
             $table->string('order_number')->nullable();
-            $table->string('status');
+            $table->string('status'); // draft, sent, paid, cancelled, approved
             $table->dateTime('document_date');
             $table->dateTime('due_date');
             $table->dateTime('paid_date')->nullable();
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->foreignId('contact_id')->nullable()->constrained()->nullOnDelete();
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->foreign('currency_code')->references('code')->on('currencies')->restrictOnDelete();

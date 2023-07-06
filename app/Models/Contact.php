@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
+use Squire\Models\Country;
+use Squire\Models\Region;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Contact extends Model
@@ -33,10 +36,7 @@ class Contact extends Model
         'currency_code',
         'reference',
         'created_by',
-    ];
-
-    protected $casts = [
-        'enabled' => 'boolean',
+        'updated_by',
     ];
 
     public function company(): BelongsTo
@@ -49,6 +49,11 @@ class Contact extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
     }
 
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
+    }
+
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_code', 'code');
@@ -57,6 +62,48 @@ class Contact extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class);
+    }
+
+    public static function getCountryOptions(): array
+    {
+        $allCountries = Country::all();
+
+        // Default countries to show at the top of the options list
+        $defaultCountryNames = ['United States', 'Canada', 'United Kingdom', 'Australia']; // replace with actual country names
+
+        $defaultCountryOptions = [];
+        $countryOptions = [];
+
+        foreach ($allCountries as $country) {
+            if (in_array($country->name, $defaultCountryNames, true)) {
+                $defaultCountryOptions[$country->name] = $country->name;
+            } else {
+                $countryOptions[$country->name] = $country->name;
+            }
+        }
+
+        // Guarantee the order of default countries
+        $orderedDefaultCountryOptions = [];
+        foreach ($defaultCountryNames as $name) {
+            if (isset($defaultCountryOptions[$name])) {
+                $orderedDefaultCountryOptions[$name] = $defaultCountryOptions[$name];
+            }
+        }
+
+        return $orderedDefaultCountryOptions + $countryOptions;
+    }
+
+    public static function getRegionOptions(string $countryName): array
+    {
+        $country = Country::where('name', $countryName)->first();
+
+        if (!$country) {
+            return [];
+        }
+
+        return Region::where('country_id', $country->id)
+            ->pluck('name', 'name')
+            ->toArray();
     }
 
     public function bills(): HasMany

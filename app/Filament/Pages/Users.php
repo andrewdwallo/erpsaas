@@ -25,7 +25,6 @@ class Users extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\Users\Charts\CumulativeUserData::class,
             Widgets\Users\Tables\Users::class,
         ];
     }

@@ -13,10 +13,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class Companies extends PageWidget
 {
-    protected int|string|array $columnSpan = [
-        'md' => 2,
-        'xl' => 3,
-    ];
+    protected int | string | array $columnSpan = 'full';
+
+    protected static ?int $sort = 3;
 
     protected function getTableQuery(): Builder|Relation
     {
@@ -36,6 +35,7 @@ class Companies extends PageWidget
         return [
             Tables\Filters\SelectFilter::make('name')
                 ->label('Owner')
+                ->searchable()
                 ->relationship('owner', 'name'),
             Tables\Filters\TernaryFilter::make('personal_company')
                 ->label('Personal Company')
@@ -52,13 +52,11 @@ class Companies extends PageWidget
                 ->searchable()
                 ->grow(false),
             Tables\Columns\TextColumn::make('name')
-                ->weight('semibold')
                 ->label('Company')
                 ->sortable()
                 ->searchable(),
             Tables\Columns\TextColumn::make('users_count')
                 ->label('Employees')
-                ->weight('semibold')
                 ->counts('users')
                 ->sortable(),
             Tables\Columns\IconColumn::make('personal_company')

@@ -26,6 +26,7 @@ class DocumentTotal extends Model
         'tax',
         'total',
         'created_by',
+        'updated_by',
     ];
 
     public function company(): BelongsTo
@@ -36,6 +37,11 @@ class DocumentTotal extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function document(): BelongsTo

@@ -63,6 +63,6 @@ return [
     |
     */
 
-    'dark_mode' => false,
+    'dark_mode' => true,
 
 ];

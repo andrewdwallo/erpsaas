@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('scope')->nullable(); // product, service, none
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -25,11 +25,22 @@ class Category extends Model
         'color',
         'enabled',
         'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
         'enabled' => 'boolean',
     ];
+
+    public static function getCategoryTypes(): array
+    {
+        return [
+            'expense' => 'Expense',
+            'income' => 'Income',
+            'item' => 'Item',
+            'other' => 'Other',
+        ];
+    }
 
     public function company(): BelongsTo
     {
@@ -39,6 +50,11 @@ class Category extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public function items(): HasMany
