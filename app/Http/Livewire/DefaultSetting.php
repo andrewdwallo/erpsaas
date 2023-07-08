@@ -7,7 +7,7 @@ use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Models\Setting\DefaultSetting as Defaults;
 use App\Models\Setting\Tax;
-use App\Traits\HandlesRecordCreation;
+use App\Traits\HandlesDefaultSettingRecordCreation;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -23,7 +23,7 @@ use Livewire\Component;
  */
 class DefaultSetting extends Component implements HasForms
 {
-    use InteractsWithForms, HandlesRecordCreation;
+    use InteractsWithForms, HandlesDefaultSettingRecordCreation;
 
     public Defaults $defaultSetting;
 

@@ -20,6 +20,7 @@ class Discount extends Model
     protected $table = 'discounts';
 
     protected $fillable = [
+        'company_id',
         'name',
         'description',
         'rate',
@@ -38,6 +39,11 @@ class Discount extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
 
     public function createdBy(): BelongsTo
     {

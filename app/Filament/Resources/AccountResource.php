@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use Akaunting\Money\Currency;
+use Akaunting\Money\Money;
 use App\Actions\Banking\CreateCurrencyFromAccount;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;

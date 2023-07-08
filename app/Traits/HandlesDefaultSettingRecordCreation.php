@@ -5,7 +5,7 @@ namespace App\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-trait HandlesRecordCreation
+trait HandlesDefaultSettingRecordCreation
 {
     abstract protected function getRelatedEntities(): array;
     abstract protected function getFormModel(): string;

@@ -53,15 +53,7 @@ class DiscountResource extends Resource
                             ->normalizeZeros()
                             ->padFractionalZeros()
                         )
-                        ->suffix(static function (callable $get) {
-                            $computation = $get('computation');
-
-                            if ($computation === 'percentage') {
-                                return '%';
-                            }
-
-                            return null;
-                        })
+                        ->suffix(static fn (callable $get) => $get('computation') === 'percentage' ? '%' : null)
                         ->default(0.0000)
                         ->required(),
                     Forms\Components\Select::make('type')
@@ -76,17 +68,33 @@ class DiscountResource extends Resource
                         ->searchable(),
                     Forms\Components\DateTimePicker::make('start_date')
                         ->label('Start Date')
-                        ->minDate(now())
-                        ->maxDate(now()->addYear())
+                        ->minDate(static function ($context, Discount|null $record = null) {
+                            if ($context === 'create') {
+                                return today()->addDay();
+                            }
+
+                            return $record?->start_date->isFuture() ? today()->addDay() : $record?->start_date;
+                        })
+                        ->maxDate(static function (callable $get, Discount|null $record = null) {
+                            $end_date = $get('end_date') ?? $record?->end_date;
+
+                            return $end_date ?: today()->addYear();
+                        })
                         ->format('Y-m-d H:i:s')
                         ->displayFormat('F d, Y H:i')
                         ->withoutSeconds()
-                        ->disabled(static fn (Discount $record) => $record->start_date->isPast())
+                        ->reactive()
+                        ->disabled(static fn ($context, Discount|null $record = null) => $context === 'edit' && $record?->start_date->isPast())
                         ->helperText(static fn (Forms\Components\DateTimePicker $component) => $component->isDisabled() ? 'Start date cannot be changed after the discount has begun.' : null),
                     Forms\Components\DateTimePicker::make('end_date')
                         ->label('End Date')
-                        ->minDate(now())
-                        ->maxDate(now()->addYears(2))
+                        ->reactive()
+                        ->minDate(static function (callable $get, Discount|null $record = null) {
+                            $start_date = $get('start_date') ?? $record?->start_date;
+
+                            return $start_date ?: today()->addDay();
+                        })
+                        ->maxDate(today()->addYear())
                         ->format('Y-m-d H:i:s')
                         ->displayFormat('F d, Y H:i')
                         ->withoutSeconds(),
