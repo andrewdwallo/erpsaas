@@ -28,6 +28,11 @@ trait HandlesDefaultSettingRecordCreation
         foreach ($relatedEntities as $field => $params) {
             [$class, $key, $type] = array_pad($params, 3, null);
 
+            if ($existingRecord === null || !isset($existingRecord->{$field})) {
+                $newData[$field] = $data[$field];
+                continue;
+            }
+
             if (isset($data[$field]) && $data[$field] !== $existingRecord->{$field}) {
                 $this->updateEnabledRecord($class, $key, $existingRecord->{$field}, $type, false);
                 $this->updateEnabledRecord($class, $key, $data[$field], $type, true);
