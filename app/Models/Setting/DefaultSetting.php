@@ -21,6 +21,8 @@ class DefaultSetting extends Model
         'currency_code',
         'sales_tax_id',
         'purchase_tax_id',
+        'sales_discount_id',
+        'purchase_discount_id',
         'income_category_id',
         'expense_category_id',
         'updated_by',
@@ -49,6 +51,16 @@ class DefaultSetting extends Model
     public function purchaseTax(): BelongsTo
     {
         return $this->belongsTo(Tax::class,'purchase_tax_id', 'id');
+    }
+
+    public function salesDiscount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class,'sales_discount_id', 'id');
+    }
+
+    public function purchaseDiscount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class,'purchase_discount_id', 'id');
     }
 
     public function incomeCategory(): BelongsTo
@@ -91,6 +103,22 @@ class DefaultSetting extends Model
     public static function getPurchaseTaxes(): array
     {
         return Tax::where('company_id', Auth::user()->currentCompany->id)
+            ->where('type', 'purchase')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public static function getSalesDiscounts(): array
+    {
+        return Discount::where('company_id', Auth::user()->currentCompany->id)
+            ->where('type', 'sales')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public static function getPurchaseDiscounts(): array
+    {
+        return Discount::where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'purchase')
             ->pluck('name', 'id')
             ->toArray();
@@ -148,6 +176,26 @@ class DefaultSetting extends Model
             ->first();
 
         return $defaultPurchaseTax->id ?? null;
+    }
+
+    public static function getDefaultSalesDiscount()
+    {
+        $defaultSalesDiscount = Discount::where('enabled', true)
+            ->where('company_id', Auth::user()->currentCompany->id)
+            ->where('type', 'sales')
+            ->first();
+
+        return $defaultSalesDiscount->id ?? null;
+    }
+
+    public static function getDefaultPurchaseDiscount()
+    {
+        $defaultPurchaseDiscount = Discount::where('enabled', true)
+            ->where('company_id', Auth::user()->currentCompany->id)
+            ->where('type', 'purchase')
+            ->first();
+
+        return $defaultPurchaseDiscount->id ?? null;
     }
 
     public static function getDefaultIncomeCategory()

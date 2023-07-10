@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('type');
             $table->string('code');
             $table->string('name');
-            $table->decimal('subtotal', 15, 4)->default(0);
-            $table->decimal('discount', 15, 4)->default(0);
-            $table->decimal('tax', 15, 4)->default(0);
-            $table->decimal('total', 15, 4);
+            $table->double('subtotal', 15, 4)->default(0);
+            $table->double('discount', 15, 4)->default(0);
+            $table->double('tax', 15, 4)->default(0);
+            $table->double('total', 15, 4);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

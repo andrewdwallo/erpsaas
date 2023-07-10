@@ -32,7 +32,6 @@ class TaxSeeder extends Seeder
             'Environmental Tax',
         ];
 
-        // Merge and shuffle the sales and purchase taxes
         $shuffledTaxes = [
             ...array_map(static fn($name) => ['name' => $name, 'type' => 'sales'], $salesTaxes),
             ...array_map(static fn($name) => ['name' => $name, 'type' => 'purchase'], $purchaseTaxes)
@@ -53,13 +52,11 @@ class TaxSeeder extends Seeder
             ]);
         }
 
-        // Set the first sales tax as enabled
         Tax::where('type', 'sales')
             ->where('company_id', $companyId)
             ->first()
             ->update(['enabled' => true]);
 
-        // Set the first purchase tax as enabled
         Tax::where('type', 'purchase')
             ->where('company_id', $companyId)
             ->first()

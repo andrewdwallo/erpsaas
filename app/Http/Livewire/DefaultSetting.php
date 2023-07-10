@@ -56,7 +56,7 @@ class DefaultSetting extends Component implements HasForms
                         ->validationAttribute('Currency')
                         ->required(),
                 ])->columns(),
-            Section::make('Taxes')
+            Section::make('Taxes & Discounts')
                 ->schema([
                     Select::make('sales_tax_id')
                         ->label('Sales Tax')
@@ -71,6 +71,20 @@ class DefaultSetting extends Component implements HasForms
                         ->default(Defaults::getDefaultPurchaseTax())
                         ->searchable()
                         ->validationAttribute('Purchase Tax')
+                        ->required(),
+                    Select::make('sales_discount_id')
+                        ->label('Sales Discount')
+                        ->options(Defaults::getSalesDiscounts())
+                        ->default(Defaults::getDefaultSalesDiscount())
+                        ->searchable()
+                        ->validationAttribute('Sales Discount')
+                        ->required(),
+                    Select::make('purchase_discount_id')
+                        ->label('Purchase Discount')
+                        ->options(Defaults::getPurchaseDiscounts())
+                        ->default(Defaults::getDefaultPurchaseDiscount())
+                        ->searchable()
+                        ->validationAttribute('Purchase Discount')
                         ->required(),
                 ])->columns(),
             Section::make('Categories')
@@ -121,6 +135,8 @@ class DefaultSetting extends Component implements HasForms
             'currency_code' => [Currency::class, 'code'],
             'sales_tax_id' => [Tax::class, 'id', 'sales'],
             'purchase_tax_id' => [Tax::class, 'id', 'purchase'],
+            'sales_discount_id' => [Tax::class, 'id', 'sales'],
+            'purchase_discount_id' => [Tax::class, 'id', 'purchase'],
             'income_category_id' => [Category::class, 'id', 'income'],
             'expense_category_id' => [Category::class, 'id', 'expense'],
         ];

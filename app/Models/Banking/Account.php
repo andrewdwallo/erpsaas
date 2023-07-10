@@ -101,22 +101,6 @@ class Account extends Model
         ];
     }
 
-    public static function getCurrencyCodes(): array
-    {
-        $codes = array_keys(Config::get('money'));
-
-        return array_combine($codes, $codes);
-    }
-
-    public static function getDefaultCurrencyCode(): ?string
-    {
-        $defaultCurrency = Currency::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
-            ->first();
-
-        return $defaultCurrency?->code;
-    }
-
     protected static function newFactory(): Factory
     {
         return AccountFactory::new();

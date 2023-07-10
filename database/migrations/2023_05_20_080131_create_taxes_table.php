@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('rate', 15, 4);
-            $table->string('computation')->default('percentage'); // percentage, fixed, compound, inclusive, withholding
-            $table->string('type')->default('sales'); // sales, purchases
-            $table->string('scope')->nullable(); // product, service, none
+            $table->double('rate', 15, 4);
+            $table->string('computation')->default('percentage');
+            $table->string('type')->default('sales');
+            $table->string('scope')->nullable();
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

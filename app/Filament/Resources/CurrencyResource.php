@@ -6,6 +6,7 @@ use App\Filament\Resources\CurrencyResource\Pages;
 use App\Filament\Resources\CurrencyResource\RelationManagers;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
+use App\Services\CurrencyService;
 use Closure;
 use Exception;
 use Filament\Forms;
@@ -15,12 +16,9 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Cache;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class CurrencyResource extends Resource
@@ -41,7 +39,7 @@ class CurrencyResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('General')
-                    ->description('The default currency is used for all transactions and reports and cannot be deleted. Currency precision determines the number of decimal places to display when formatting currency amounts. The currency rate is set to 1 for the default currency and is utilized as the basis for setting exchange rates for all other currencies.')
+                    ->description('Upon selecting a currency code, the corresponding values based on real-world currencies will auto-populate. The default currency is used for all transactions and reports and cannot be deleted. Currency precision determines the number of decimal places to display when formatting currency amounts. The currency rate is set to 1 for the default currency and is utilized as the basis for setting exchange rates for all other currencies. Alterations to default values are allowed but manage such changes wisely as any confusion or discrepancies are your responsibility.')
                     ->schema([
                         Forms\Components\Select::make('code')
                             ->label('Code')
@@ -49,22 +47,37 @@ class CurrencyResource extends Resource
                             ->searchable()
                             ->placeholder('Select a currency code...')
                             ->reactive()
+                            ->hidden(static fn (Closure $get): bool => $get('enabled'))
                             ->afterStateUpdated(static function (Closure $set, $state) {
-                                $code = $state;
-                                $name = config("money.{$code}.name");
-                                $precision = config("money.{$code}.precision");
-                                $symbol = config("money.{$code}.symbol");
-                                $symbol_first = config("money.{$code}.symbol_first");
-                                $decimal_mark = config("money.{$code}.decimal_mark");
-                                $thousands_separator = config("money.{$code}.thousands_separator");
+                                if ($state === null) {
+                                    return;
+                                }
 
-                                $set('name', $name);
-                                $set('precision', $precision);
-                                $set('symbol', $symbol);
-                                $set('symbol_first', $symbol_first);
-                                $set('decimal_mark', $decimal_mark);
-                                $set('thousands_separator', $thousands_separator);
+                                $code = $state;
+                                $currencyConfig = config("money.{$code}", []);
+                                $currencyService = app(CurrencyService::class);
+
+                                $defaultCurrency = Currency::getDefaultCurrency();
+
+                                $rate = 1;
+
+                                if ($defaultCurrency !== null) {
+                                   $rate = $currencyService->getCachedExchangeRate($defaultCurrency, $code);
+                                }
+
+                                $set('name', $currencyConfig['name'] ?? '');
+                                $set('rate', $rate);
+                                $set('precision', $currencyConfig['precision'] ?? '');
+                                $set('symbol', $currencyConfig['symbol'] ?? '');
+                                $set('symbol_first', $currencyConfig['symbol_first'] ?? '');
+                                $set('decimal_mark', $currencyConfig['decimal_mark'] ?? '');
+                                $set('thousands_separator', $currencyConfig['thousands_separator'] ?? '');
                             })
+                            ->required(),
+                        Forms\Components\TextInput::make('code')
+                            ->label('Code')
+                            ->hidden(static fn (Closure $get): bool => !$get('enabled'))
+                            ->disabled(static fn (Closure $get): bool => $get('enabled'))
                             ->required(),
                         Forms\Components\TextInput::make('name')
                             ->translateLabel()
@@ -72,19 +85,10 @@ class CurrencyResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('rate')
                             ->label('Rate')
-                            ->dehydrateStateUsing(static fn (Closure $get, $state): bool => $get('enabled') === true ? '1' : $state) // rate is 1 when enabled is true
+                            ->dehydrateStateUsing(static fn (Closure $get, $state) => $get('enabled') ? '1' : $state)
                             ->numeric()
                             ->reactive()
-                            ->disabled(static fn (Closure $get): bool => $get('enabled') === true) // disabled is true when enabled is true
-                            ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                ->numeric()
-                                ->decimalPlaces(4)
-                                ->signed(false)
-                                ->padFractionalZeros(false)
-                                ->normalizeZeros(false)
-                                ->minValue(0.0001)
-                                ->maxValue(999999.9999)
-                                ->lazyPlaceholder(false))
+                            ->disabled(static fn (Closure $get): bool => $get('enabled'))
                             ->required(),
                         Forms\Components\Select::make('precision')
                             ->label('Precision')
@@ -114,7 +118,20 @@ class CurrencyResource extends Resource
                             ->reactive()
                             ->offColor('danger')
                             ->onColor('primary')
-                            ->afterStateUpdated(static fn (Closure $set, $state) => $state ? $set('rate', '1') : null),
+                            ->afterStateUpdated(static function (Closure $set, Closure $get, $state) {
+                                $enabled = $state;
+                                $code = $get('code');
+                                $currencyService = app(CurrencyService::class);
+
+                                if ($enabled) {
+                                    $rate = 1;
+                                } else {
+                                    $defaultCurrency = Currency::getDefaultCurrency();
+                                    $rate = $defaultCurrency ? $currencyService->getCachedExchangeRate($defaultCurrency, $code) : 1;
+                                }
+
+                                $set('rate', $rate);
+                            }),
                     ])->columns(),
             ]);
     }
@@ -144,7 +161,6 @@ class CurrencyResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('rate')
                     ->label('Rate')
-                    ->formatStateUsing(static fn ($state) => str_contains($state, '.') ? rtrim(rtrim($state, '0'), '.') : null)
                     ->searchable()
                     ->sortable(),
             ])

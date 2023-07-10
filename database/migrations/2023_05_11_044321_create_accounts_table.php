@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name', 100)->index();
             $table->string('number', 20);
             $table->string('currency_code')->default('USD');
-            $table->double('opening_balance', 15, 4)->default(0.00);
+            $table->double('opening_balance', 15, 4)->default(0.0000);
             $table->string('description')->nullable();
             $table->text('notes')->nullable();
             $table->string('status')->default('open');

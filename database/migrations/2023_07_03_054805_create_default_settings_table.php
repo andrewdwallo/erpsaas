@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('currency_code')->default('USD');
             $table->foreignId('sales_tax_id')->constrained('taxes')->restrictOnDelete();
             $table->foreignId('purchase_tax_id')->constrained('taxes')->restrictOnDelete();
+            $table->foreignId('sales_discount_id')->constrained('discounts')->restrictOnDelete();
+            $table->foreignId('purchase_discount_id')->constrained('discounts')->restrictOnDelete();
             $table->foreignId('income_category_id')->constrained('categories')->restrictOnDelete();
             $table->foreignId('expense_category_id')->constrained('categories')->restrictOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

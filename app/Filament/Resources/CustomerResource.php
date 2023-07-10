@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use App\Actions\Banking\CreateCurrencyFromAccount;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Models\Setting\Currency;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
-use App\Models\Banking\Account;
 use App\Models\Contact;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -14,11 +14,8 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Squire\Models\Country;
-use Squire\Models\Region;
 
 class CustomerResource extends Resource
 {
@@ -55,8 +52,7 @@ class CustomerResource extends Resource
                                     ])
                                     ->gridDirection('column')
                                     ->default('individual')
-                                    ->columnSpan(1)
-                                    ->required(),
+                                    ->columnSpan(1),
                                 Forms\Components\Grid::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
@@ -94,7 +90,7 @@ class CustomerResource extends Resource
                             ->label('Currency')
                             ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
                             ->preload()
-                            ->default(Account::getDefaultCurrencyCode())
+                            ->default(Currency::getDefaultCurrency())
                             ->searchable()
                             ->reactive()
                             ->required()
@@ -102,7 +98,7 @@ class CustomerResource extends Resource
                                 Forms\Components\Select::make('currency.code')
                                     ->label('Code')
                                     ->searchable()
-                                    ->options(Account::getCurrencyCodes())
+                                    ->options(Currency::getCurrencyCodes())
                                     ->reactive()
                                     ->afterStateUpdated(static function (callable $set, $state) {
                                         $code = $state;

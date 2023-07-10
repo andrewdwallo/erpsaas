@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->string('entity')->default('company'); // company, individual (person)
-            $table->string('type'); // vendor, customer, employee
+            $table->string('entity')->default('individual');
+            $table->string('type');
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('tax_number')->nullable();

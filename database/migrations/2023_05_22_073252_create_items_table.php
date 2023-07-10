@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->string('type'); // product, service
+            $table->string('type');
             $table->string('name');
             $table->string('sku')->unique();
             $table->string('description')->nullable();
-            $table->decimal('sale_price', 15, 4);
-            $table->decimal('purchase_price', 15, 4);
+            $table->double('sale_price', 15, 4);
+            $table->double('purchase_price', 15, 4);
             $table->integer('quantity')->default(1);
-            $table->foreignId('category_id')->default(1)->constrained()->restrictOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('tax_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('discount_id')->nullable()->constrained()->nullOnDelete();
             $table->boolean('enabled')->default(true);

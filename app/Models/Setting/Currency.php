@@ -63,6 +63,15 @@ class Currency extends Model
         return array_combine($codes, $codes);
     }
 
+    public static function getDefaultCurrency(): ?string
+    {
+        $defaultCurrency = self::where('enabled', true)
+            ->where('company_id', Auth::user()->currentCompany->id)
+            ->first();
+
+        return $defaultCurrency->code ?? null;
+    }
+
     protected static function newFactory(): Factory
     {
         return CurrencyFactory::new();

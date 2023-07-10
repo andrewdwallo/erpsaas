@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Setting\Currency;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CurrencySeeder extends Seeder
 {
@@ -13,8 +13,13 @@ class CurrencySeeder extends Seeder
      */
     public function run(): void
     {
-        Currency::factory()
-            ->count(5)
-            ->create();
+        $companyId = DB::table('companies')->first()->id;
+        $userId = DB::table('users')->first()->id;
+
+        Currency::factory()->create([
+            'company_id' => $companyId,
+            'created_by' => $userId,
+            'updated_by' => $userId,
+        ]);
     }
 }

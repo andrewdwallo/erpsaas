@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
+use App\Models\Setting\Currency;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
 use App\Models\Banking\Account;
 use App\Models\Document\Document;
@@ -75,7 +76,7 @@ class InvoiceResource extends Resource
                                             ->label('Currency')
                                             ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
                                             ->preload()
-                                            ->default(Account::getDefaultCurrencyCode())
+                                            ->default(Currency::getDefaultCurrency())
                                             ->searchable()
                                             ->reactive()
                                             ->required(),

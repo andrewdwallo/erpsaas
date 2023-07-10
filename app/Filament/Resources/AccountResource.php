@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use Akaunting\Money\Currency;
-use Akaunting\Money\Money;
 use App\Actions\Banking\CreateCurrencyFromAccount;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Banking\Account;
+use App\Models\Setting\Currency;
 use Closure;
 use Exception;
 use Filament\Forms;
@@ -18,8 +17,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +78,7 @@ class AccountResource extends Resource
                                     ->label('Currency')
                                     ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
                                     ->preload()
-                                    ->default(Account::getDefaultCurrencyCode())
+                                    ->default(Currency::getDefaultCurrency())
                                     ->searchable()
                                     ->reactive()
                                     ->required()
@@ -89,7 +86,7 @@ class AccountResource extends Resource
                                         Forms\Components\Select::make('currency.code')
                                             ->label('Code')
                                             ->searchable()
-                                            ->options(Account::getCurrencyCodes())
+                                            ->options(Currency::getCurrencyCodes())
                                             ->reactive()
                                             ->afterStateUpdated(static function (callable $set, $state) {
                                                 $code = $state;

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('name', 100);
             $table->string('code')->index();
-            $table->decimal('rate', 15, 8);
+            $table->double('rate', 15, 8);
             $table->unsignedTinyInteger('precision')->default(2);
             $table->string('symbol')->default('$');
             $table->boolean('symbol_first')->default(true);
