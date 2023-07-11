@@ -4,9 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TaxResource\Pages;
 use App\Filament\Resources\TaxResource\RelationManagers;
-use App\Models\Setting\Category;
 use App\Models\Setting\Tax;
-use Closure;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput\Mask;
@@ -15,7 +13,9 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class TaxResource extends Resource
@@ -25,6 +25,12 @@ class TaxResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-receipt-tax';
 
     protected static ?string $navigationGroup = 'Settings';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('company_id', Auth::user()->currentCompany->id);
+    }
 
     public static function form(Form $form): Form
     {
@@ -108,10 +114,6 @@ class TaxResource extends Resource
                     ->label('Rate')
                     ->formatStateUsing(static function (Tax $record) {
                         $rate = $record->rate;
-
-                        if (str_contains($rate, '.')) {
-                            $rate = rtrim(rtrim($rate, '0'), '.');
-                        }
 
                         return $rate . ($record->computation === 'percentage' || $record->computation === 'compound' ? '%' : null);
                     })

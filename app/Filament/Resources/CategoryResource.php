@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 use App\Models\Setting\Category;
 use Exception;
@@ -22,6 +24,12 @@ class CategoryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     protected static ?string $navigationGroup = 'Settings';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('company_id', Auth::user()->currentCompany->id);
+    }
 
     public static function form(Form $form): Form
     {

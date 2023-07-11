@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DiscountResource\Pages;
 use App\Filament\Resources\DiscountResource\RelationManagers;
 use App\Models\Setting\Discount;
-use App\Models\Setting\Tax;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput\Mask;
 use Filament\Resources\Form;
@@ -13,7 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class DiscountResource extends Resource
@@ -23,6 +22,12 @@ class DiscountResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $navigationGroup = 'Settings';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('company_id', Auth::user()->currentCompany->id);
+    }
 
     public static function form(Form $form): Form
     {
@@ -127,10 +132,6 @@ class DiscountResource extends Resource
                     ->label('Rate')
                     ->formatStateUsing(static function (Discount $record) {
                         $rate = $record->rate;
-
-                        if (str_contains($rate, '.')) {
-                            $rate = rtrim(rtrim($rate, '0'), '.');
-                        }
 
                         return $rate . ($record->computation === 'percentage' ? '%' : null);
                     })

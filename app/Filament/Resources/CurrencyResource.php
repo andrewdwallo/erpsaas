@@ -18,7 +18,6 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class CurrencyResource extends Resource
@@ -31,7 +30,8 @@ class CurrencyResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('company_id', Auth::user()->currentCompany->id);
+        return parent::getEloquentQuery()
+            ->where('company_id', Auth::user()->currentCompany->id);
     }
 
     public static function form(Form $form): Form

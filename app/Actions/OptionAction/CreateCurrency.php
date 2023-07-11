@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Actions\Banking;
+namespace App\Actions\OptionAction;
 
 use App\Models\Setting\Currency;
 use Illuminate\Support\Facades\Auth;
 
-class CreateCurrencyFromAccount
+class CreateCurrency
 {
     public function create(string $code, string $name, string $rate): Currency
     {
         $companyId = Auth::user()->currentCompany->id;
 
-        $hasDefaultCurrency = Currency::where('company_id', $companyId)->where('enabled', true)->exists();
+        $defaultCurrency = Currency::getDefaultCurrency();
+
+        $hasDefaultCurrency = $defaultCurrency !== null;
 
         return Currency::create([
             'name' => $name,

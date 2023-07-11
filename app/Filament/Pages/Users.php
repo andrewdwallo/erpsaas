@@ -14,12 +14,12 @@ class Users extends Page
 
     protected static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->currentCompany->name === 'ERPSAAS';
+        return Auth::user()->currentCompany->id === 1;
     }
 
     public function mount(): void
     {
-        abort_unless(Auth::user()->currentCompany->name === 'ERPSAAS', 403);
+        abort_unless(Auth::user()->currentCompany->id === 1, 403);
     }
 
     protected function getHeaderWidgets(): array

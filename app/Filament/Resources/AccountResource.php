@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Actions\Banking\CreateCurrencyFromAccount;
+use App\Actions\OptionAction\CreateCurrency;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
+use App\Services\CurrencyService;
 use Closure;
 use Exception;
 use Filament\Forms;
@@ -33,7 +34,8 @@ class AccountResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('company_id', Auth::user()->currentCompany->id);
+        return parent::getEloquentQuery()
+            ->where('company_id', Auth::user()->currentCompany->id);
     }
 
     public static function form(Form $form): Form
@@ -89,9 +91,24 @@ class AccountResource extends Resource
                                             ->options(Currency::getCurrencyCodes())
                                             ->reactive()
                                             ->afterStateUpdated(static function (callable $set, $state) {
+                                                if ($state === null) {
+                                                    return;
+                                                }
+
                                                 $code = $state;
-                                                $name = config("money.{$code}.name");
-                                                $set('currency.name', $name);
+                                                $currencyConfig = config("money.{$code}", []);
+                                                $currencyService = app(CurrencyService::class);
+
+                                                $defaultCurrency = Currency::getDefaultCurrency();
+
+                                                $rate = 1;
+
+                                                if ($defaultCurrency !== null) {
+                                                    $rate = $currencyService->getCachedExchangeRate($defaultCurrency, $code);
+                                                }
+
+                                                $set('currency.name', $currencyConfig['name'] ?? '');
+                                                $set('currency.rate', $rate);
                                             })
                                             ->required(),
                                         Forms\Components\TextInput::make('currency.name')
@@ -101,15 +118,6 @@ class AccountResource extends Resource
                                         Forms\Components\TextInput::make('currency.rate')
                                             ->label('Rate')
                                             ->numeric()
-                                            ->mask(static fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                ->numeric()
-                                                ->decimalPlaces(4)
-                                                ->signed(false)
-                                                ->padFractionalZeros(false)
-                                                ->normalizeZeros(false)
-                                                ->minValue(0.0001)
-                                                ->maxValue(999999.9999)
-                                                ->lazyPlaceholder(false))
                                             ->required(),
                                     ])->createOptionAction(static function (Forms\Components\Actions\Action $action) {
                                         return $action
@@ -122,7 +130,7 @@ class AccountResource extends Resource
                                                     $name = $data['currency']['name'];
                                                     $rate = $data['currency']['rate'];
 
-                                                    return (new CreateCurrencyFromAccount())->create($code, $name, $rate);
+                                                    return (new CreateCurrency())->create($code, $name, $rate);
                                                 });
                                             });
                                     }),
