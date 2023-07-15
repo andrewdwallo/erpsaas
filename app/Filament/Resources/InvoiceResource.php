@@ -6,7 +6,6 @@ use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Setting\Currency;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
-use App\Models\Banking\Account;
 use App\Models\Document\Document;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -32,8 +31,7 @@ class InvoiceResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('type', 'invoice')
-            ->where('company_id', Auth::user()->currentCompany->id);
+            ->where('type', 'invoice');
     }
 
     public static function form(Form $form): Form
@@ -48,7 +46,7 @@ class InvoiceResource extends Resource
                                     ->label('Customer')
                                     ->preload()
                                     ->placeholder('Select a customer')
-                                    ->relationship('contact', 'name', static fn (Builder $query) => $query->where('type', 'customer')->where('company_id', Auth::user()->currentCompany->id))
+                                    ->relationship('contact', 'name', static fn (Builder $query) => $query->where('type', 'customer'))
                                     ->searchable()
                                     ->required()
                                     ->createOptionForm([
@@ -74,7 +72,7 @@ class InvoiceResource extends Resource
                                             ->maxLength(20),
                                         Forms\Components\Select::make('contact.currency_code')
                                             ->label('Currency')
-                                            ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
+                                            ->relationship('currency', 'name')
                                             ->preload()
                                             ->default(Currency::getDefaultCurrency())
                                             ->searchable()

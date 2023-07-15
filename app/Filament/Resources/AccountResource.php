@@ -32,12 +32,6 @@ class AccountResource extends Resource
 
     protected static ?string $navigationGroup = 'Banking';
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('company_id', Auth::user()->currentCompany->id);
-    }
-
     public static function form(Form $form): Form
     {
         return $form
@@ -78,7 +72,7 @@ class AccountResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('currency_code')
                                     ->label('Currency')
-                                    ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
+                                    ->relationship('currency', 'name')
                                     ->preload()
                                     ->default(Currency::getDefaultCurrency())
                                     ->searchable()

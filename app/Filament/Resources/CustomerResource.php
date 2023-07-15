@@ -32,9 +32,7 @@ class CustomerResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->customer()
-            ->where('company_id', Auth::user()->currentCompany->id);
+        return parent::getEloquentQuery()->customer();
     }
 
     public static function form(Form $form): Form
@@ -89,7 +87,7 @@ class CustomerResource extends Resource
                             ->nullable(),
                         Forms\Components\Select::make('currency_code')
                             ->label('Currency')
-                            ->relationship('currency', 'name', static fn (Builder $query) => $query->where('company_id', Auth::user()->currentCompany->id))
+                            ->relationship('currency', 'name')
                             ->preload()
                             ->default(Currency::getDefaultCurrency())
                             ->searchable()

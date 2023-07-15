@@ -26,12 +26,6 @@ class TaxResource extends Resource
 
     protected static ?string $navigationGroup = 'Settings';
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('company_id', Auth::user()->currentCompany->id);
-    }
-
     public static function form(Form $form): Form
     {
         return $form

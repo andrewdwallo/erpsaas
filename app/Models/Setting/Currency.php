@@ -3,13 +3,14 @@
 namespace App\Models\Setting;
 
 use App\Models\Banking\Account;
+use App\Scopes\CurrentCompanyScope;
 use Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Config;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
@@ -20,6 +21,7 @@ class Currency extends Model
     protected $table = 'currencies';
 
     protected $fillable = [
+        'company_id',
         'name',
         'code',
         'rate',
@@ -29,7 +31,6 @@ class Currency extends Model
         'decimal_mark',
         'thousands_separator',
         'enabled',
-        'company_id',
         'created_by',
         'updated_by',
     ];
@@ -39,9 +40,9 @@ class Currency extends Model
         'symbol_first' => 'boolean',
     ];
 
-    public function accounts(): HasMany
+    protected static function booted(): void
     {
-        return $this->hasMany(Account::class, 'currency_code', 'code');
+        static::addGlobalScope(new CurrentCompanyScope);
     }
 
     public function company(): BelongsTo
@@ -49,12 +50,21 @@ class Currency extends Model
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
     }
 
+    public function defaultCurrency(): HasOne
+    {
+        return $this->hasOne(DefaultSetting::class, 'currency_code', 'code');
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class, 'currency_code', 'code');
+    }
+
     public static function getCurrencyCodes(): array
     {
         $allCodes = array_keys(Config::get('money'));
 
         $storedCodes = static::query()
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->pluck('code')
             ->toArray();
 
@@ -66,7 +76,6 @@ class Currency extends Model
     public static function getDefaultCurrency(): ?string
     {
         $defaultCurrency = self::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->first();
 
         return $defaultCurrency->code ?? null;

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('type')->default('checking');
             $table->string('name', 100)->index();
             $table->string('number', 20);
-            $table->string('currency_code')->default('USD');
+            $table->string('currency_code')->nullable();
             $table->double('opening_balance', 15, 4)->default(0.0000);
             $table->string('description')->nullable();
             $table->text('notes')->nullable();
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['company_id', 'number']);
-            $table->foreign('currency_code')->references('code')->on('currencies')->restrictOnDelete();
+            $table->foreign('currency_code')->references('code')->on('currencies')->nullOnDelete();
         });
     }
 

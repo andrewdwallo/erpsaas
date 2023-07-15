@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('document_default_id')->nullable()->constrained()->nullOnDelete();
             $table->string('type');
             $table->string('document_number');
             $table->string('order_number')->nullable();
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->foreignId('tax_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('discount_id')->nullable()->constrained()->nullOnDelete();
             $table->string('reference')->nullable();
-            $table->string('currency_code')->default('USD');
+            $table->string('currency_code')->nullable();
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('contact_id')->nullable()->constrained()->nullOnDelete();
             $table->text('notes')->nullable();
@@ -33,7 +34,7 @@ return new class extends Migration
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->foreign('currency_code')->references('code')->on('currencies')->restrictOnDelete();
+            $table->foreign('currency_code')->references('code')->on('currencies')->nullOnDelete();
         });
     }
 

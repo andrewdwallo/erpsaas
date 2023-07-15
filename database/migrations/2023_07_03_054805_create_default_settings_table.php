@@ -14,18 +14,18 @@ return new class extends Migration
         Schema::create('default_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->foreignId('account_id')->constrained('accounts')->restrictOnDelete();
-            $table->string('currency_code')->default('USD');
-            $table->foreignId('sales_tax_id')->constrained('taxes')->restrictOnDelete();
-            $table->foreignId('purchase_tax_id')->constrained('taxes')->restrictOnDelete();
-            $table->foreignId('sales_discount_id')->constrained('discounts')->restrictOnDelete();
-            $table->foreignId('purchase_discount_id')->constrained('discounts')->restrictOnDelete();
-            $table->foreignId('income_category_id')->constrained('categories')->restrictOnDelete();
-            $table->foreignId('expense_category_id')->constrained('categories')->restrictOnDelete();
+            $table->foreignId('account_id')->nullable()->constrained('accounts')->nullOnDelete();
+            $table->string('currency_code')->nullable();
+            $table->foreignId('sales_tax_id')->nullable()->constrained('taxes')->nullOnDelete();
+            $table->foreignId('purchase_tax_id')->nullable()->constrained('taxes')->nullOnDelete();
+            $table->foreignId('sales_discount_id')->nullable()->constrained('discounts')->nullOnDelete();
+            $table->foreignId('purchase_discount_id')->nullable()->constrained('discounts')->nullOnDelete();
+            $table->foreignId('income_category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('expense_category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->foreign('currency_code')->references('code')->on('currencies')->restrictOnDelete();
+            $table->foreign('currency_code')->references('code')->on('currencies')->nullOnDelete();
         });
     }
 

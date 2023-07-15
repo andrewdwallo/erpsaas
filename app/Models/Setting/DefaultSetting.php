@@ -3,10 +3,10 @@
 namespace App\Models\Setting;
 
 use App\Models\Banking\Account;
+use App\Scopes\CurrentCompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DefaultSetting extends Model
@@ -28,6 +28,11 @@ class DefaultSetting extends Model
         'updated_by',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CurrentCompanyScope);
+    }
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
@@ -45,32 +50,38 @@ class DefaultSetting extends Model
 
     public function salesTax(): BelongsTo
     {
-        return $this->belongsTo(Tax::class,'sales_tax_id', 'id');
+        return $this->belongsTo(Tax::class,'sales_tax_id', 'id')
+            ->where('type', 'sales');
     }
 
     public function purchaseTax(): BelongsTo
     {
-        return $this->belongsTo(Tax::class,'purchase_tax_id', 'id');
+        return $this->belongsTo(Tax::class,'purchase_tax_id', 'id')
+            ->where('type', 'purchase');
     }
 
     public function salesDiscount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class,'sales_discount_id', 'id');
+        return $this->belongsTo(Discount::class,'sales_discount_id', 'id')
+            ->where('type', 'sales');
     }
 
     public function purchaseDiscount(): BelongsTo
     {
-        return $this->belongsTo(Discount::class,'purchase_discount_id', 'id');
+        return $this->belongsTo(Discount::class,'purchase_discount_id', 'id')
+            ->where('type', 'purchase');
     }
 
     public function incomeCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class,'income_category_id', 'id');
+        return $this->belongsTo(Category::class,'income_category_id', 'id')
+            ->where('type', 'income');
     }
 
     public function expenseCategory(): BelongsTo
     {
-        return $this->belongsTo(Category::class,'expense_category_id', 'id');
+        return $this->belongsTo(Category::class,'expense_category_id', 'id')
+            ->where('type', 'expense');
     }
 
     public function updatedBy(): BelongsTo
@@ -80,80 +91,66 @@ class DefaultSetting extends Model
 
     public static function getAccounts(): array
     {
-        return Account::where('company_id', Auth::user()->currentCompany->id)
-            ->pluck('name', 'id')
-            ->toArray();
+        return Account::pluck('name', 'id')->toArray();
     }
 
     public static function getCurrencies(): array
     {
-        return Currency::where('company_id', Auth::user()->currentCompany->id)
-            ->pluck('name', 'code')
-            ->toArray();
+        return Currency::pluck('name', 'code')->toArray();
     }
 
     public static function getSalesTaxes(): array
     {
-        return Tax::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'sales')
+        return Tax::where('type', 'sales')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getPurchaseTaxes(): array
     {
-        return Tax::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'purchase')
+        return Tax::where('type', 'purchase')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getSalesDiscounts(): array
     {
-        return Discount::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'sales')
+        return Discount::where('type', 'sales')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getPurchaseDiscounts(): array
     {
-        return Discount::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'purchase')
+        return Discount::where('type', 'purchase')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getIncomeCategories(): array
     {
-        return Category::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'income')
+        return Category::where('type', 'income')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getExpenseCategories(): array
     {
-        return Category::where('company_id', Auth::user()->currentCompany->id)
-            ->where('type', 'expense')
+        return Category::where('type', 'expense')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     public static function getDefaultAccount()
     {
-        $defaultAccount = Account::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
-            ->first();
+        $defaultAccount = Account::where('enabled', true)->first();
 
         return $defaultAccount->id ?? null;
     }
 
     public static function getDefaultCurrency()
     {
-        $defaultCurrency = Currency::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
-            ->first();
+        $defaultCurrency = Currency::where('enabled', true)->first();
 
         return $defaultCurrency->code ?? null;
     }
@@ -161,7 +158,6 @@ class DefaultSetting extends Model
     public static function getDefaultSalesTax()
     {
         $defaultSalesTax = Tax::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'sales')
             ->first();
 
@@ -171,7 +167,6 @@ class DefaultSetting extends Model
     public static function getDefaultPurchaseTax()
     {
         $defaultPurchaseTax = Tax::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'purchase')
             ->first();
 
@@ -181,7 +176,6 @@ class DefaultSetting extends Model
     public static function getDefaultSalesDiscount()
     {
         $defaultSalesDiscount = Discount::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'sales')
             ->first();
 
@@ -191,7 +185,6 @@ class DefaultSetting extends Model
     public static function getDefaultPurchaseDiscount()
     {
         $defaultPurchaseDiscount = Discount::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'purchase')
             ->first();
 
@@ -201,7 +194,6 @@ class DefaultSetting extends Model
     public static function getDefaultIncomeCategory()
     {
         $defaultIncomeCategory = Category::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'income')
             ->first();
 
@@ -211,7 +203,6 @@ class DefaultSetting extends Model
     public static function getDefaultExpenseCategory()
     {
         $defaultExpenseCategory = Category::where('enabled', true)
-            ->where('company_id', Auth::user()->currentCompany->id)
             ->where('type', 'expense')
             ->first();
 

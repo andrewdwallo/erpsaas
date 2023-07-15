@@ -24,11 +24,33 @@ class TaxFactory extends Factory
      */
     public function definition(): array
     {
+        // Common fields
         return [
             'description' => $this->faker->sentence,
             'rate' => $this->faker->randomFloat(4, 0, 20),
             'computation' => $this->faker->randomElement(Tax::getComputationTypes()),
             'scope' => $this->faker->randomElement(Tax::getTaxScopes()),
+            'enabled' => true,
         ];
+    }
+
+    public function salesTax(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'State Sales Tax',
+                'type' => 'sales',
+            ];
+        });
+    }
+
+    public function purchaseTax(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'State Purchase Tax',
+                'type' => 'purchase',
+            ];
+        });
     }
 }

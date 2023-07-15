@@ -33,7 +33,18 @@ class DefaultSetting extends Component implements HasForms
 
     public function mount():void
     {
-        $this->form->fill();
+        $this->defaultSetting = Defaults::firstOrNew();
+
+        $this->form->fill([
+            'account_id' => Defaults::getDefaultAccount(),
+            'currency_code' => Defaults::getDefaultCurrency(),
+            'sales_tax_id' => Defaults::getDefaultSalesTax(),
+            'purchase_tax_id' => Defaults::getDefaultPurchaseTax(),
+            'sales_discount_id' => Defaults::getDefaultSalesDiscount(),
+            'purchase_discount_id' => Defaults::getDefaultPurchaseDiscount(),
+            'income_category_id' => Defaults::getDefaultIncomeCategory(),
+            'expense_category_id' => Defaults::getDefaultExpenseCategory(),
+        ]);
     }
 
     protected function getFormSchema(): array
@@ -47,14 +58,14 @@ class DefaultSetting extends Component implements HasForms
                         ->default(Defaults::getDefaultAccount())
                         ->searchable()
                         ->validationAttribute('Account')
-                        ->required(),
+                        ->nullable(),
                     Select::make('currency_code')
                         ->label('Currency')
                         ->options(Defaults::getCurrencies())
                         ->default(Defaults::getDefaultCurrency())
                         ->searchable()
                         ->validationAttribute('Currency')
-                        ->required(),
+                        ->nullable(),
                 ])->columns(),
             Section::make('Taxes & Discounts')
                 ->schema([
@@ -64,28 +75,28 @@ class DefaultSetting extends Component implements HasForms
                         ->default(Defaults::getDefaultSalesTax())
                         ->searchable()
                         ->validationAttribute('Sales Tax')
-                        ->required(),
+                        ->nullable(),
                     Select::make('purchase_tax_id')
                         ->label('Purchase Tax')
                         ->options(Defaults::getPurchaseTaxes())
                         ->default(Defaults::getDefaultPurchaseTax())
                         ->searchable()
                         ->validationAttribute('Purchase Tax')
-                        ->required(),
+                        ->nullable(),
                     Select::make('sales_discount_id')
                         ->label('Sales Discount')
                         ->options(Defaults::getSalesDiscounts())
                         ->default(Defaults::getDefaultSalesDiscount())
                         ->searchable()
                         ->validationAttribute('Sales Discount')
-                        ->required(),
+                        ->nullable(),
                     Select::make('purchase_discount_id')
                         ->label('Purchase Discount')
                         ->options(Defaults::getPurchaseDiscounts())
                         ->default(Defaults::getDefaultPurchaseDiscount())
                         ->searchable()
                         ->validationAttribute('Purchase Discount')
-                        ->required(),
+                        ->nullable(),
                 ])->columns(),
             Section::make('Categories')
                 ->schema([
@@ -95,19 +106,19 @@ class DefaultSetting extends Component implements HasForms
                         ->default(Defaults::getDefaultIncomeCategory())
                         ->searchable()
                         ->validationAttribute('Income Category')
-                        ->required(),
+                        ->nullable(),
                     Select::make('expense_category_id')
                         ->label('Expense Category')
                         ->options(Defaults::getExpenseCategories())
                         ->default(Defaults::getDefaultExpenseCategory())
                         ->searchable()
                         ->validationAttribute('Expense Category')
-                        ->required(),
+                        ->nullable(),
                 ])->columns(),
         ];
     }
 
-    public function create(): void
+    public function save(): void
     {
         $data = $this->form->getState();
 

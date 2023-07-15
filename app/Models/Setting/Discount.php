@@ -4,13 +4,14 @@ namespace App\Models\Setting;
 
 use App\Models\Document\DocumentItem;
 use App\Models\Item;
-use App\Models\User;
+use App\Scopes\CurrentCompanyScope;
 use Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Discount extends Model
@@ -40,9 +41,24 @@ class Discount extends Model
         'end_date' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CurrentCompanyScope);
+    }
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function defaultSalesDiscount(): HasOne
+    {
+        return $this->hasOne(DefaultSetting::class, 'sales_discount_id');
+    }
+
+    public function defaultPurchaseDiscount(): HasOne
+    {
+        return $this->hasOne(DefaultSetting::class, 'purchase_discount_id');
     }
 
     public function createdBy(): BelongsTo

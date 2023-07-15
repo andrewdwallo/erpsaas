@@ -4,12 +4,14 @@ namespace App\Models\Setting;
 
 use App\Models\Document\Document;
 use App\Models\Item;
+use App\Scopes\CurrentCompanyScope;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Category extends Model
@@ -32,6 +34,11 @@ class Category extends Model
         'enabled' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CurrentCompanyScope);
+    }
+
     public static function getCategoryTypes(): array
     {
         return [
@@ -45,6 +52,16 @@ class Category extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function defaultIncomeCategory(): HasOne
+    {
+        return $this->hasOne(DefaultSetting::class, 'income_category_id');
+    }
+
+    public function defaultExpenseCategory(): HasOne
+    {
+        return $this->hasOne(DefaultSetting::class, 'expense_category_id');
     }
 
     public function createdBy(): BelongsTo

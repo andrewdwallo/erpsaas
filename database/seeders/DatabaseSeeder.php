@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
         };
 
         // Users for the first company (excluding the first company owner)
-        $createUsers(1, 10, 0, 0.1);
+        $createUsers(1, 5, 0, 0.1);
 
         // Second company owner
         $secondCompanyOwner = User::factory()
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
         $secondCompanyOwner->ownedCompanies->first()->update(['created_at' => $startDate->addMinutes($endDate->diffInMinutes($startDate) * 0.1)]);
 
         // Users for the second company (excluding the second company owner)
-        $createUsers(2, 20, 0.1, 0.2);
+        $createUsers(2, 5, 0.1, 0.2);
 
         // Third company owner
         $thirdCompanyOwner = User::factory()
@@ -90,22 +90,22 @@ class DatabaseSeeder extends Seeder
         $thirdCompanyOwner->ownedCompanies->first()->update(['created_at' => $startDate->addMinutes($endDate->diffInMinutes($startDate) * 0.2)]);
 
         // Users for the third company (excluding the third company owner)
-        $createUsers(3, 40, 0.2, 0.3);
+        $createUsers(3, 5, 0.2, 0.3);
 
         // Create employees for each company (each employee has a company)
-        $createUsers(4, 20, 0.3, 0.4);
-        $createUsers(5, 10, 0.4, 0.5);
-        $createUsers(6, 25, 0.5, 0.6);
-        $createUsers(7, 60, 0.6, 0.7);
-        $createUsers(8, 40, 0.7, 0.8);
-        $createUsers(9, 15, 0.8, 0.9);
-        $createUsers(10, 50, 0.9, 1);
+        $createUsers(4, 5, 0.3, 0.4);
+        $createUsers(5, 5, 0.4, 0.5);
+        $createUsers(6, 5, 0.5, 0.6);
+        $createUsers(7, 5, 0.6, 0.7);
+        $createUsers(8, 5, 0.7, 0.8);
+        $createUsers(9, 5, 0.8, 0.9);
+        $createUsers(10, 5, 0.9, 1);
 
         $this->call([
-            CurrencySeeder::class,
+            //CurrencySeeder::class,
             CategorySeeder::class,
-            TaxSeeder::class,
-            DiscountSeeder::class,
+            //TaxSeeder::class,
+            //DiscountSeeder::class,
         ]);
     }
 }

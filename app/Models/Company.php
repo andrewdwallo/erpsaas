@@ -9,9 +9,11 @@ use App\Models\Document\DocumentTotal;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Category;
 use App\Models\Setting\Discount;
+use App\Models\Setting\DocumentDefault;
 use App\Models\Setting\Tax;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
 use Wallo\FilamentCompanies\Events\CompanyCreated;
 use Wallo\FilamentCompanies\Events\CompanyDeleted;
@@ -113,6 +115,11 @@ class Company extends FilamentCompaniesCompany
     {
         return $this->contacts()->where('type', 'vendor')
             ->where('entity', 'individual');
+    }
+
+    public function document_defaults(): HasOne
+    {
+        return $this->hasOne(DocumentDefault::class);
     }
 
     public function items(): HasMany

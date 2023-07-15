@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
+use App\Models\Setting\DocumentDefault;
 use App\Models\Setting\Tax;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,6 +25,7 @@ class Document extends Model
 
     protected $fillable = [
         'company_id',
+        'document_default_id',
         'type',
         'document_number',
         'order_number',
@@ -52,6 +54,11 @@ class Document extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function documentDefault(): BelongsTo
+    {
+        return $this->belongsTo(DocumentDefault::class);
     }
 
     public function createdBy(): BelongsTo

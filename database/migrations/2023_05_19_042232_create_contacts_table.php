@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('country')->nullable();
             $table->string('website')->nullable();
-            $table->string('currency_code')->default('USD');
+            $table->string('currency_code')->nullable();
             $table->string('reference')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
@@ -34,7 +34,7 @@ return new class extends Migration
 
             $table->index(['company_id', 'type']);
             $table->unique(['company_id', 'type', 'email']);
-            $table->foreign('currency_code')->references('code')->on('currencies')->restrictOnDelete();
+            $table->foreign('currency_code')->references('code')->on('currencies')->nullOnDelete();
         });
     }
 

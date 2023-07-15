@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Models\Document\Document;
 use App\Models\Setting\Currency;
+use App\Scopes\CurrentCompanyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Http\Request;
 use Squire\Models\Country;
 use Squire\Models\Region;
 use Wallo\FilamentCompanies\FilamentCompanies;
@@ -38,6 +38,11 @@ class Contact extends Model
         'created_by',
         'updated_by',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CurrentCompanyScope);
+    }
 
     public function company(): BelongsTo
     {
@@ -124,11 +129,6 @@ class Contact extends Model
     public function scopeCustomer($query)
     {
         return $query->where('type', 'customer');
-    }
-
-    public function scopeEmployee($query)
-    {
-        return $query->where('type', 'employee');
     }
 
     public function scopeCompany($query)

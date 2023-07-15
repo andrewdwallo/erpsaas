@@ -5,7 +5,6 @@ namespace App\Providers;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Actions\Action;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
