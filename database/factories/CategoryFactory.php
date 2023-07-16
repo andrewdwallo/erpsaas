@@ -25,19 +25,21 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
+            'name' => $this->faker->word,
+            'type' => $this->faker->randomElement(['income', 'expense']),
             'color' => $this->faker->hexColor,
+            'enabled' => false,
         ];
     }
 
     /**
      * Indicate that the category is of income type.
-     *
-     * @return Factory<Category>
      */
-    public function income(): Factory
+    public function incomeCategory(string $name): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function (array $attributes) use ($name) {
             return [
+                'name' => $name,
                 'type' => 'income',
             ];
         });
@@ -45,13 +47,12 @@ class CategoryFactory extends Factory
 
     /**
      * Indicate that the category is of expense type.
-     *
-     * @return Factory<Category>
      */
-    public function expense(): Factory
+    public function expenseCategory(string $name): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function (array $attributes) use ($name) {
             return [
+                'name' => $name,
                 'type' => 'expense',
             ];
         });

@@ -14,7 +14,7 @@ class CreateCustomer extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->previousUrl;
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array

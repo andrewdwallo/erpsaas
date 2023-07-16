@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CurrencyResource\Pages;
 use App\Filament\Resources\CurrencyResource;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
+use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 
 class EditCurrency extends EditRecord
 {
+    use HandlesResourceRecordUpdate;
+
     protected static string $resource = CurrencyResource::class;
 
     protected function getActions(): array
@@ -24,7 +27,7 @@ class EditCurrency extends EditRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->previousUrl;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
@@ -38,48 +41,7 @@ class EditCurrency extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return DB::transaction(function () use ($record, $data) {
-            $currentCompanyId = auth()->user()->currentCompany->id;
-            $recordId = $record->id;
-            $enabled = (bool)($data['enabled'] ?? false);
-
-            // If the record is enabled, disable all other records for the same company
-            if ($enabled === true) {
-                $this->disableExistingRecord($currentCompanyId, $recordId);
-            }
-            // If the record is disabled, ensure at least one record remains enabled
-            elseif ($enabled === false) {
-                $this->ensureAtLeastOneEnabled($currentCompanyId, $recordId, $enabled);
-            }
-
-            $data['enabled'] = $enabled;
-
-            return parent::handleRecordUpdate($record, $data);
-        });
+        return $this->handleRecordUpdateWithUniqueField($record, $data);
     }
 
-    protected function disableExistingRecord(int $companyId, int $recordId): void
-    {
-        $existingEnabledAccount = Currency::where('company_id', $companyId)
-            ->where('enabled', true)
-            ->where('id', '!=', $recordId)
-            ->first();
-
-        if ($existingEnabledAccount !== null) {
-            $existingEnabledAccount->enabled = false;
-            $existingEnabledAccount->save();
-        }
-    }
-
-    protected function ensureAtLeastOneEnabled(int $companyId, int $recordId, bool &$enabled): void
-    {
-        $enabledAccountsCount = Currency::where('company_id', $companyId)
-            ->where('enabled', true)
-            ->where('id', '!=', $recordId)
-            ->count();
-
-        if ($enabledAccountsCount === 0) {
-            $enabled = true;
-        }
-    }
 }

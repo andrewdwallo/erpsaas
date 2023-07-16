@@ -20,7 +20,7 @@ class EditInvoice extends EditRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('index');
+        return $this->previousUrl;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array

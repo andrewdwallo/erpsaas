@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             //CurrencySeeder::class,
-            CategorySeeder::class,
+            //CategorySeeder::class,
             //TaxSeeder::class,
             //DiscountSeeder::class,
         ]);

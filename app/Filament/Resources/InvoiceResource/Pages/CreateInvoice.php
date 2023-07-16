@@ -11,6 +11,11 @@ class CreateInvoice extends CreateRecord
 {
     protected static string $resource = InvoiceResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->previousUrl;
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['company_id'] = Auth::user()->currentCompany->id;
