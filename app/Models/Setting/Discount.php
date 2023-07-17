@@ -5,6 +5,8 @@ namespace App\Models\Setting;
 use App\Models\Document\DocumentItem;
 use App\Models\Item;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\DiscountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +18,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Discount extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'discounts';
 

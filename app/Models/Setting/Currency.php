@@ -4,6 +4,8 @@ namespace App\Models\Setting;
 
 use App\Models\Banking\Account;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +18,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Currency extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'currencies';
 
@@ -58,6 +60,16 @@ class Currency extends Model
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class, 'currency_code', 'code');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public static function getCurrencyCodes(): array

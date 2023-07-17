@@ -3,13 +3,12 @@
 namespace App\Filament\Resources\TaxResource\Pages;
 
 use App\Filament\Resources\TaxResource;
-use App\Models\Setting\Tax;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EditTax extends EditRecord
 {
@@ -31,15 +30,22 @@ class EditTax extends EditRecord
 
     protected function mutateFormDataBeforeUpdate(array $data): array
     {
-        $data['company_id'] = Auth::user()->currentCompany->id;
         $data['enabled'] = (bool)$data['enabled'];
-        $data['updated_by'] = Auth::id();
 
         return $data;
     }
 
+    /**
+     * @throws Halt
+     */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return $this->handleRecordUpdateWithUniqueField($record, $data, 'type');
+        $user = Auth::user();
+
+        if (!$user) {
+            throw new Halt('No authenticated user found.');
+        }
+
+        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type');
     }
 }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('purchase_discount_id')->nullable()->constrained('discounts')->nullOnDelete();
             $table->foreignId('income_category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->foreignId('expense_category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 

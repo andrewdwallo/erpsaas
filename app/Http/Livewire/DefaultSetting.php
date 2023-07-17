@@ -7,7 +7,7 @@ use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Models\Setting\DefaultSetting as Defaults;
 use App\Models\Setting\Tax;
-use App\Traits\HandlesDefaultSettingRecordCreation;
+use App\Traits\HandlesDefaultSettingRecordUpdate;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -15,7 +15,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 /**
@@ -23,7 +22,7 @@ use Livewire\Component;
  */
 class DefaultSetting extends Component implements HasForms
 {
-    use InteractsWithForms, HandlesDefaultSettingRecordCreation;
+    use InteractsWithForms, HandlesDefaultSettingRecordUpdate;
 
     public Defaults $defaultSetting;
 
@@ -55,14 +54,12 @@ class DefaultSetting extends Component implements HasForms
                     Select::make('account_id')
                         ->label('Account')
                         ->options(Defaults::getAccounts())
-                        ->default(Defaults::getDefaultAccount())
                         ->searchable()
                         ->validationAttribute('Account')
                         ->nullable(),
                     Select::make('currency_code')
                         ->label('Currency')
                         ->options(Defaults::getCurrencies())
-                        ->default(Defaults::getDefaultCurrency())
                         ->searchable()
                         ->validationAttribute('Currency')
                         ->nullable(),
@@ -72,28 +69,24 @@ class DefaultSetting extends Component implements HasForms
                     Select::make('sales_tax_id')
                         ->label('Sales Tax')
                         ->options(Defaults::getSalesTaxes())
-                        ->default(Defaults::getDefaultSalesTax())
                         ->searchable()
                         ->validationAttribute('Sales Tax')
                         ->nullable(),
                     Select::make('purchase_tax_id')
                         ->label('Purchase Tax')
                         ->options(Defaults::getPurchaseTaxes())
-                        ->default(Defaults::getDefaultPurchaseTax())
                         ->searchable()
                         ->validationAttribute('Purchase Tax')
                         ->nullable(),
                     Select::make('sales_discount_id')
                         ->label('Sales Discount')
                         ->options(Defaults::getSalesDiscounts())
-                        ->default(Defaults::getDefaultSalesDiscount())
                         ->searchable()
                         ->validationAttribute('Sales Discount')
                         ->nullable(),
                     Select::make('purchase_discount_id')
                         ->label('Purchase Discount')
                         ->options(Defaults::getPurchaseDiscounts())
-                        ->default(Defaults::getDefaultPurchaseDiscount())
                         ->searchable()
                         ->validationAttribute('Purchase Discount')
                         ->nullable(),
@@ -103,14 +96,12 @@ class DefaultSetting extends Component implements HasForms
                     Select::make('income_category_id')
                         ->label('Income Category')
                         ->options(Defaults::getIncomeCategories())
-                        ->default(Defaults::getDefaultIncomeCategory())
                         ->searchable()
                         ->validationAttribute('Income Category')
                         ->nullable(),
                     Select::make('expense_category_id')
                         ->label('Expense Category')
                         ->options(Defaults::getExpenseCategories())
-                        ->default(Defaults::getDefaultExpenseCategory())
                         ->searchable()
                         ->validationAttribute('Expense Category')
                         ->nullable(),
@@ -122,21 +113,11 @@ class DefaultSetting extends Component implements HasForms
     {
         $data = $this->form->getState();
 
-        $data = $this->mutateFormDataBeforeCreate($data);
-
-        $this->record = $this->handleRecordCreation($data);
+        $this->record = $this->handleRecordUpdate($data);
 
         $this->form->model($this->record)->saveRelationships();
 
         $this->getSavedNotification()?->send();
-    }
-
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['company_id'] = Auth::user()->currentCompany->id;
-        $data['updated_by'] = Auth::id();
-
-        return $data;
     }
 
     protected function getRelatedEntities(): array

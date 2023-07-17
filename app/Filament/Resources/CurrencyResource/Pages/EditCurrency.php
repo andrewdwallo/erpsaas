@@ -3,14 +3,12 @@
 namespace App\Filament\Resources\CurrencyResource\Pages;
 
 use App\Filament\Resources\CurrencyResource;
-use App\Models\Banking\Account;
-use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class EditCurrency extends EditRecord
 {
@@ -32,16 +30,23 @@ class EditCurrency extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['company_id'] = Auth::user()->currentCompany->id;
         $data['enabled'] = (bool)$data['enabled'];
-        $data['updated_by'] = Auth::id();
 
         return $data;
     }
 
+    /**
+     * @throws Halt
+     */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return $this->handleRecordUpdateWithUniqueField($record, $data);
+        $user = Auth::user();
+
+        if (!$user) {
+            throw new Halt('No authenticated user found.');
+        }
+
+        return $this->handleRecordUpdateWithUniqueField($record, $data, $user);
     }
 
 }

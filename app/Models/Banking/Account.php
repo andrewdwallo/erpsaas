@@ -5,6 +5,8 @@ namespace App\Models\Banking;
 use App\Scopes\CurrentCompanyScope;
 use App\Models\Setting\Currency;
 use App\Models\Setting\DefaultSetting;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,15 +14,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Spatie\Tags\HasTags;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Account extends Model
 {
-    use HasFactory;
-    use HasTags;
+    use Blamable, CompanyOwned, HasFactory, HasTags;
 
     protected $table = 'accounts';
 

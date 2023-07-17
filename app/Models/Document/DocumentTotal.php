@@ -2,6 +2,8 @@
 
 namespace App\Models\Document;
 
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\DocumentTotalFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +13,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentTotal extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'document_totals';
 

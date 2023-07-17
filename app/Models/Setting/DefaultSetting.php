@@ -4,6 +4,8 @@ namespace App\Models\Setting;
 
 use App\Models\Banking\Account;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +13,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DefaultSetting extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'default_settings';
 
@@ -25,6 +27,7 @@ class DefaultSetting extends Model
         'purchase_discount_id',
         'income_category_id',
         'expense_category_id',
+        'created_by',
         'updated_by',
     ];
 
@@ -82,6 +85,11 @@ class DefaultSetting extends Model
     {
         return $this->belongsTo(Category::class,'expense_category_id', 'id')
             ->where('type', 'expense');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
     }
 
     public function updatedBy(): BelongsTo

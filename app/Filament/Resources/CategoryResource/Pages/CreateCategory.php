@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource;
 use App\Models\Setting\Category;
 use App\Traits\HandlesResourceRecordCreation;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,15 +23,22 @@ class CreateCategory extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['company_id'] = Auth::user()->currentCompany->id;
         $data['enabled'] = (bool)$data['enabled'];
-        $data['created_by'] = Auth::id();
 
         return $data;
     }
 
+    /**
+     * @throws Halt
+     */
     protected function handleRecordCreation(array $data): Model
     {
-        return $this->handleRecordCreationWithUniqueField($data, new Category(), 'type');
+        $user = Auth::user();
+
+        if (!$user) {
+            throw new Halt('No authenticated user found.');
+        }
+
+        return $this->handleRecordCreationWithUniqueField($data, new Category(), $user, 'type');
     }
 }

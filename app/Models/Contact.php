@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Document\Document;
 use App\Models\Setting\Currency;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +17,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Contact extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'contacts';
 

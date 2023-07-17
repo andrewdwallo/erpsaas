@@ -6,6 +6,8 @@ use App\Models\Company;
 use App\Models\Document\DocumentItem;
 use App\Models\Item;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\TaxFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +19,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Tax extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'taxes';
 

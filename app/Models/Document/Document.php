@@ -8,6 +8,8 @@ use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
 use App\Models\Setting\DocumentDefault;
 use App\Models\Setting\Tax;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +21,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Document extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'documents';
 

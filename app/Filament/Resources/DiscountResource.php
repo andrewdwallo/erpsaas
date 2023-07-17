@@ -72,7 +72,7 @@ class DiscountResource extends Resource
                                 return today()->addDay();
                             }
 
-                            return $record?->start_date->isFuture() ? today()->addDay() : $record?->start_date;
+                            return $record?->start_date?->isFuture() ? today()->addDay() : $record?->start_date;
                         })
                         ->maxDate(static function (callable $get, Discount|null $record = null) {
                             $end_date = $get('end_date') ?? $record?->end_date;
@@ -83,7 +83,7 @@ class DiscountResource extends Resource
                         ->displayFormat('F d, Y H:i')
                         ->withoutSeconds()
                         ->reactive()
-                        ->disabled(static fn ($context, Discount|null $record = null) => $context === 'edit' && $record?->start_date->isPast())
+                        ->disabled(static fn ($context, Discount|null $record = null) => $context === 'edit' && $record?->start_date?->isPast() ?? false)
                         ->helperText(static fn (Forms\Components\DateTimePicker $component) => $component->isDisabled() ? 'Start date cannot be changed after the discount has begun.' : null),
                     Forms\Components\DateTimePicker::make('end_date')
                         ->label('End Date')
@@ -148,12 +148,12 @@ class DiscountResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
                 ->label('Start Date')
-                ->formatStateUsing(static fn (Discount $record) => $record->start_date ? $record->start_date->format('F d, Y H:i') : null)
+                ->formatStateUsing(static fn (Discount $record) => $record->start_date ? $record->start_date->format('F d, Y H:i') : 'N/A')
                 ->searchable()
                 ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
                 ->label('End Date')
-                ->formatStateUsing(static fn (Discount $record) => $record->end_date ? $record->end_date->format('F d, Y H:i') : null)
+                ->formatStateUsing(static fn (Discount $record) => $record->end_date ? $record->end_date->format('F d, Y H:i') : 'N/A')
                 ->color(static fn(Discount $record) => $record->end_date?->isPast() ? 'danger' : null)
                 ->searchable()
                 ->sortable(),

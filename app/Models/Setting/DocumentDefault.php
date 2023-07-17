@@ -4,6 +4,8 @@ namespace App\Models\Setting;
 
 use App\Models\Document\Document;
 use App\Scopes\CurrentCompanyScope;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\DocumentDefaultFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +16,7 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentDefault extends Model
 {
-    use HasFactory;
+    use Blamable, CompanyOwned, HasFactory;
 
     protected $table = 'document_defaults';
 
@@ -31,6 +33,8 @@ class DocumentDefault extends Model
         'notes',
         'terms',
         'footer',
+        'created_by',
+        'updated_by',
     ];
 
     protected static function booted(): void
@@ -46,6 +50,16 @@ class DocumentDefault extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
     public static function getDocumentNumberDigits(): array
