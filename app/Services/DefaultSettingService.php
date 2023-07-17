@@ -31,8 +31,8 @@ class DefaultSettingService
             'purchase_tax_id' => $purchaseTax->id,
             'sales_discount_id' => $salesDiscount->id,
             'purchase_discount_id' => $purchaseDiscount->id,
-            'created_by' => $company->owner->id,
-            'updated_by' => $company->owner->id,
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
         ];
 
         DefaultSetting::create($defaultSettings);
