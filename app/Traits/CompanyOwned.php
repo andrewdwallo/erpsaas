@@ -9,7 +9,7 @@ trait CompanyOwned
 {
     public static function bootCompanyOwned(): void
     {
-        static::created(static function ($model) {
+        static::creating(static function ($model) {
             if (Auth::check() && Auth::user()->currentCompany) {
                 $model->company_id = Auth::user()->currentCompany->id;
             } else {
