@@ -4,9 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Actions\OptionAction\CreateCurrency;
 use App\Filament\Resources\CustomerResource\Pages;
-use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
+use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
 use App\Models\Contact;
 use Filament\Forms;
@@ -15,7 +15,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CustomerResource extends Resource
@@ -219,6 +218,21 @@ class CustomerResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function getSlug(): string
+    {
+        return '{company}/sales/customers';
+    }
+
+    public static function getUrl($name = 'index', $params = [], $isAbsolute = true): string
+    {
+        $routeBaseName = static::getRouteBaseName();
+
+        return route("{$routeBaseName}.{$name}", [
+            'company' => Auth::user()->currentCompany,
+            'record' => $params['record'] ?? null,
+        ], $isAbsolute);
     }
 
     public static function getRelations(): array

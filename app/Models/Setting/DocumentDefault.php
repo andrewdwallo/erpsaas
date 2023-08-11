@@ -21,26 +21,25 @@ class DocumentDefault extends Model
     protected $table = 'document_defaults';
 
     protected $fillable = [
-        'company_id',
         'type',
-        'document_number_prefix',
-        'document_number_digits',
-        'document_number_next',
+        'document_logo',
+        'number_prefix',
+        'number_digits',
+        'number_next',
         'payment_terms',
-        'template',
         'title',
         'subheading',
-        'notes',
         'terms',
         'footer',
+        'accent_color',
+        'template',
+        'item_column',
+        'unit_column',
+        'price_column',
+        'amount_column',
         'created_by',
         'updated_by',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new CurrentCompanyScope);
-    }
 
     public function company(): BelongsTo
     {
@@ -62,31 +61,20 @@ class DocumentDefault extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
-    public static function getDocumentNumberDigits(): array
+    public static function getAvailableNumberDigits(): array
     {
         return array_combine(range(1, 20), range(1, 20));
     }
 
-    public static function getDefaultDocumentNumberDigits(string $type = 'invoice'): int
+    public static function getDefaultNumberDigits(string $type = 'invoice'): int
     {
-        $documentNumberDigits = self::where('type', $type)->pluck('document_number_digits', 'id')->toArray();
-
-        return array_key_first($documentNumberDigits) ?? 5;
+        return static::where('type', $type)->value('number_digits') ?? 5;
     }
 
-    public static function getDefaultDocumentNumberNext(int|null $numDigits = null, string $type = 'invoice'): string
+    public static function getNextDocumentNumber(int|null $numDigits = null, string $type = 'invoice'): string
     {
-        // Fetch the latest document
         $latestDocument = Document::where('type', $type)->orderBy('id', 'desc')->first();
-
-        // If there are no documents yet, start from 1
-        if (!$latestDocument) {
-            $nextNumber = 1;
-        } else {
-            // Otherwise, increment the latest document's number
-            $nextNumber = (int)$latestDocument->document_number + 1;
-        }
-
+        $nextNumber = $latestDocument ? ((int)$latestDocument->number + 1) : 1;
         return str_pad($nextNumber, $numDigits, '0', STR_PAD_LEFT);
     }
 
@@ -105,9 +93,64 @@ class DocumentDefault extends Model
 
     public static function getDefaultPaymentTerms(string $type = 'invoice'): int
     {
-        $paymentTerms = self::where('type', $type)->pluck('payment_terms', 'id')->toArray();
+        return static::where('type', $type)->value('payment_terms') ?? 30;
+    }
 
-        return array_key_first($paymentTerms) ?? 30;
+    public static function getItemColumns(): array
+    {
+        return [
+            'items' => 'Items',
+            'products' => 'Products',
+            'services' => 'Services',
+            'other' => 'Other',
+        ];
+    }
+
+    public static function getDefaultItemColumn(string $type = 'invoice'): string
+    {
+        return static::where('type', $type)->value('item_column') ?? 'items';
+    }
+
+    public static function getUnitColumns(): array
+    {
+        return [
+            'quantity' => 'Quantity',
+            'hours' => 'Hours',
+            'other' => 'Other',
+        ];
+    }
+
+    public static function getDefaultUnitColumn(string $type = 'invoice'): string
+    {
+        return static::where('type', $type)->value('unit_column') ?? 'quantity';
+    }
+
+    public static function getPriceColumns(): array
+    {
+        return [
+            'price' => 'Price',
+            'rate' => 'Rate',
+            'other' => 'Other',
+        ];
+    }
+
+    public static function getDefaultPriceColumn(string $type = 'invoice'): string
+    {
+        return static::where('type', $type)->value('price_column') ?? 'price';
+    }
+
+    public static function getAmountColumns(): array
+    {
+        return [
+            'amount' => 'Amount',
+            'total' => 'Total',
+            'other' => 'Other',
+        ];
+    }
+
+    public static function getDefaultAmountColumn(string $type = 'invoice'): string
+    {
+        return static::where('type', $type)->value('amount_column') ?? 'amount';
     }
 
     public function getDocumentNumberAttribute(): string

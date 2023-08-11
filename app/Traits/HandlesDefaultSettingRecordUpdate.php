@@ -8,34 +8,32 @@ use Illuminate\Support\Facades\Auth;
 trait HandlesDefaultSettingRecordUpdate
 {
     abstract protected function getRelatedEntities(): array;
-    abstract protected function getFormModel(): string;
 
-    protected function handleRecordUpdate(array $data): Model
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $relatedEntities = $this->getRelatedEntities();
-        $model = $this->getFormModel();
 
-        $existingRecord = $model::where('company_id', Auth::user()->currentCompany->id)
+        $existingRecord = $record::query()->where('company_id', Auth::user()->currentCompany->id)
             ->latest()
             ->first();
 
         foreach ($relatedEntities as $field => $params) {
-            [$class, $key, $type] = array_pad($params, 3, null);
+            [$modelClass, $key, $type] = array_pad($params, 3, null);
 
             if ($existingRecord === null || !isset($existingRecord->{$field})) {
                 continue;
             }
 
             if (isset($data[$field]) && $data[$field] !== $existingRecord->{$field}) {
-                $this->updateEnabledRecord($class, $key, $existingRecord->{$field}, $type, false);
-                $this->updateEnabledRecord($class, $key, $data[$field], $type, true);
+                $this->updateEnabledRecord(new $modelClass, $key, $existingRecord->{$field}, $type, false);
+                $this->updateEnabledRecord(new $modelClass, $key, $data[$field], $type);
             }
         }
 
-        $defaults = $model::where('company_id', Auth::user()->currentCompany->id)->first();
+        $defaults = $record::query()->where('company_id', Auth::user()->currentCompany->id)->first();
 
         if ($defaults === null) {
-            $defaults = $model::create($data);
+            $defaults = $record::query()->create($data);
         } else {
             $defaults->update($data);
         }
@@ -43,9 +41,9 @@ trait HandlesDefaultSettingRecordUpdate
         return $defaults;
     }
 
-    protected function updateEnabledRecord($class, $key, $value, $type = null, $enabled = true): void
+    protected function updateEnabledRecord(Model $record, string $key, mixed $value, ?string $type = null, bool $enabled = true): void
     {
-        $query = $class::where('company_id', Auth::user()->currentCompany->id)
+        $query = $record::query()->where('company_id', Auth::user()->currentCompany->id)
             ->where('enabled', !$enabled);
 
         if ($type !== null) {

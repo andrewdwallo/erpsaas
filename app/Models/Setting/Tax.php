@@ -40,11 +40,6 @@ class Tax extends Model
         'enabled' => 'boolean',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new CurrentCompanyScope);
-    }
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id');

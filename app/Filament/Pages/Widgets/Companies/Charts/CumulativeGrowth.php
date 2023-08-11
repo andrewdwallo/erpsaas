@@ -52,7 +52,7 @@ class CumulativeGrowth extends ApexChartWidget
 
         for ($i = 1, $iMax = count($totalCompanies); $i < $iMax; $i++) {
             $newCompanies[] = $totalCompanies[$i] - $totalCompanies[$i - 1];
-            $monthlyPercentageChange[] = ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100;
+            $monthlyPercentageChange[] = $totalCompanies[$i - 1] !== 0 ? ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100 : 0;
         }
 
         $labels = collect($months)->keys()->map(static function ($month) {

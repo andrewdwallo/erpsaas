@@ -2,7 +2,6 @@
 
 namespace App\Models\Banking;
 
-use App\Scopes\CurrentCompanyScope;
 use App\Models\Setting\Currency;
 use App\Models\Setting\DefaultSetting;
 use App\Traits\Blamable;
@@ -49,11 +48,6 @@ class Account extends Model
     protected $casts = [
         'enabled' => 'boolean',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new CurrentCompanyScope);
-    }
 
     public function company(): BelongsTo
     {

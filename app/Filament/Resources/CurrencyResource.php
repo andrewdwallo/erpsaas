@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CurrencyResource\Pages;
-use App\Filament\Resources\CurrencyResource\RelationManagers;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
@@ -15,7 +14,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ToggleButton;
@@ -218,6 +216,21 @@ class CurrencyResource extends Resource
                         }
                     }),
             ]);
+    }
+
+    public static function getSlug(): string
+    {
+        return '{company}/settings/currencies';
+    }
+
+    public static function getUrl($name = 'index', $params = [], $isAbsolute = true): string
+    {
+        $routeBaseName = static::getRouteBaseName();
+
+        return route("{$routeBaseName}.{$name}", [
+            'company' => Auth::user()->currentCompany,
+            'record' => $params['record'] ?? null,
+        ], $isAbsolute);
     }
 
     public static function getRelations(): array

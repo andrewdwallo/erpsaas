@@ -15,6 +15,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
 /**
@@ -24,15 +25,13 @@ class DefaultSetting extends Component implements HasForms
 {
     use InteractsWithForms, HandlesDefaultSettingRecordUpdate;
 
-    public Defaults $defaultSetting;
-
     public $data;
 
-    public $record;
+    public Defaults $record;
 
     public function mount():void
     {
-        $this->defaultSetting = Defaults::firstOrNew();
+        $this->record = Defaults::firstOrNew();
 
         $this->form->fill([
             'account_id' => Defaults::getDefaultAccount(),
@@ -113,11 +112,14 @@ class DefaultSetting extends Component implements HasForms
     {
         $data = $this->form->getState();
 
-        $this->record = $this->handleRecordUpdate($data);
-
-        $this->form->model($this->record)->saveRelationships();
+        $this->handleRecordUpdate($this->getFormModel(), $data);
 
         $this->getSavedNotification()?->send();
+    }
+
+    protected function getFormModel(): Model
+    {
+        return $this->record;
     }
 
     protected function getRelatedEntities(): array
@@ -134,12 +136,7 @@ class DefaultSetting extends Component implements HasForms
         ];
     }
 
-    protected function getFormModel(): string
-    {
-        return Defaults::class;
-    }
-
-    protected function getSavedNotification():?Notification
+    protected function getSavedNotification(): ?Notification
     {
         $title = $this->getSavedNotificationTitle();
 

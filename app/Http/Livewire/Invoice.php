@@ -2,48 +2,49 @@
 
 namespace App\Http\Livewire;
 
+use App\Abstracts\Forms\EditFormRecord;
 use App\Models\Setting\DocumentDefault;
 use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Notifications\Notification;
+use Filament\Forms\Components\ViewField;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use Filament\Forms\Contracts\HasForms;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property ComponentContainer $form
  */
-class Invoice extends Component implements HasForms
+class Invoice extends EditFormRecord
 {
-    use InteractsWithForms;
-
     public DocumentDefault $invoice;
 
-    public $data;
-
-    public $record;
-
-    public function mount(): void
+    protected function getFormModel(): Model|string|null
     {
         $this->invoice = DocumentDefault::where('type', 'invoice')->firstOrNew();
 
-        $this->form->fill([
-            'document_number_prefix' => $this->invoice->document_number_prefix,
-            'document_number_digits' => $this->invoice->document_number_digits,
-            'document_number_next' => $this->invoice->document_number_next,
-            'payment_terms' => $this->invoice->payment_terms,
-            'template' => $this->invoice->template,
-            'title' => $this->invoice->title,
-            'subheading' => $this->invoice->subheading,
-            'notes' => $this->invoice->notes,
-            'footer' => $this->invoice->footer,
-            'terms' => $this->invoice->terms,
-        ]);
+        return $this->invoice;
+    }
+
+    public function mount(): void
+    {
+        $this->fillForm();
+    }
+
+    public function fillForm(): void
+    {
+        $data = $this->getFormModel()->attributesToArray();
+
+        unset($data['id']);
+
+        $data = $this->mutateFormDataBeforeFill($data);
+
+        $this->form->fill($data);
     }
 
     protected function getFormSchema(): array
@@ -51,109 +52,193 @@ class Invoice extends Component implements HasForms
         return [
             Section::make('General')
                 ->schema([
-                    TextInput::make('document_number_prefix')
+                    TextInput::make('number_prefix')
                         ->label('Number Prefix')
                         ->default('INV-')
-                        ->required(),
-                    Select::make('document_number_digits')
-                        ->label('Number Digits')
-                        ->options(DocumentDefault::getDocumentNumberDigits())
-                        ->default(DocumentDefault::getDefaultDocumentNumberDigits())
                         ->reactive()
-                        ->afterStateUpdated(static function (callable $set, $state) {
+                        ->required(),
+                    Select::make('number_digits')
+                        ->label('Number Digits')
+                        ->options($this->invoice->getAvailableNumberDigits())
+                        ->default($this->invoice->getDefaultNumberDigits())
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, $state) {
                             $numDigits = $state;
-                            $nextNumber = DocumentDefault::getDefaultDocumentNumberNext($numDigits);
+                            $nextNumber = $this->invoice->getNextDocumentNumber($numDigits);
 
-                            return $set('document_number_next', $nextNumber);
+                            return $set('number_next', $nextNumber);
                         })
-                        ->searchable()
-                        ->required(),
-                    TextInput::make('document_number_next')
+                        ->required()
+                        ->searchable(),
+                    TextInput::make('number_next')
                         ->label('Next Number')
-                        ->default(DocumentDefault::getDefaultDocumentNumberNext(DocumentDefault::getDefaultDocumentNumberDigits()))
-                        ->required(),
+                        ->reactive()
+                        ->required()
+                        ->default($this->invoice->getNextDocumentNumber($this->invoice->getDefaultNumberDigits())),
                     Select::make('payment_terms')
                         ->label('Payment Terms')
-                        ->options(DocumentDefault::getPaymentTerms())
-                        ->default(DocumentDefault::getDefaultPaymentTerms())
+                        ->options($this->invoice->getPaymentTerms())
+                        ->default($this->invoice->getDefaultPaymentTerms())
                         ->searchable()
-                        ->required(),
-                ])->columns(),
-            Section::make('Template')
-                ->schema([
-                    Select::make('template')
-                        ->label('Template')
-                        ->options([
-                            'default' => 'Default',
-                            'simple' => 'Simple',
-                            'modern' => 'Modern',
-                        ])
-                        ->default('default')
-                        ->searchable()
+                        ->reactive()
                         ->required(),
                 ])->columns(),
             Section::make('Content')
                 ->schema([
                     TextInput::make('title')
                         ->label('Title')
+                        ->reactive()
                         ->default('Invoice')
                         ->nullable(),
                     TextInput::make('subheading')
                         ->label('Subheading')
-                        ->nullable(),
-                    Textarea::make('notes')
-                        ->label('Notes')
+                        ->reactive()
                         ->nullable(),
                     Textarea::make('footer')
                         ->label('Footer')
+                        ->reactive()
                         ->nullable(),
                     Textarea::make('terms')
-                        ->label('Terms')
+                        ->label('Notes / Terms')
                         ->nullable()
-                        ->columnSpanFull(),
+                        ->reactive(),
                 ])->columns(),
+            Section::make('Template Settings')
+                ->description('Choose the template and edit the titles of the columns on your invoices.')
+                ->schema([
+                    Group::make()
+                        ->schema([
+                            FileUpload::make('document_logo')
+                                ->label('Logo')
+                                ->disk('public')
+                                ->directory('logos/documents')
+                                ->imageResizeMode('contain')
+                                ->imagePreviewHeight('250')
+                                ->imageCropAspectRatio('2:1')
+                                ->reactive()
+                                ->enableOpen()
+                                ->preserveFilenames()
+                                ->visibility('public')
+                                ->image(),
+                            ColorPicker::make('accent_color')
+                                ->label('Accent Color')
+                                ->reactive()
+                                ->default('#d9d9d9'),
+                            Select::make('template')
+                                ->label('Template')
+                                ->options([
+                                    'default' => 'Default',
+                                    'modern' => 'Modern',
+                                ])
+                                ->reactive()
+                                ->default('modern')
+                                ->required(),
+                            Radio::make('item_column')
+                                ->label('Items')
+                                ->options($this->invoice->getItemColumns())
+                                ->dehydrateStateUsing(static function (callable $get, $state) {
+                                    return $state === 'other' ? $get('custom_item_column') : $state;
+                                })
+                                ->afterStateHydrated(function (callable $set, callable $get, $state, Radio $component) {
+                                    if (isset($this->invoice->getItemColumns()[$state])) {
+                                        $component->state($state);
+                                    } else {
+                                        $component->state('other');
+                                        $set('custom_item_column', $state);
+                                    }
+                                })
+                                ->default($this->invoice->getDefaultItemColumn())
+                                ->reactive(),
+                            TextInput::make('custom_item_column')
+                                ->reactive()
+                                ->disableLabel()
+                                ->disabled(static fn (callable $get) => $get('item_column') !== 'other')
+                                ->nullable(),
+                            Radio::make('unit_column')
+                                ->label('Units')
+                                ->options(DocumentDefault::getUnitColumns())
+                                ->dehydrateStateUsing(static function (callable $get, $state) {
+                                    return $state === 'other' ? $get('custom_unit_column') : $state;
+                                })
+                                ->afterStateHydrated(function (callable $set, callable $get, $state, Radio $component) {
+                                    if (isset($this->invoice->getUnitColumns()[$state])) {
+                                        $component->state($state);
+                                    } else {
+                                        $component->state('other');
+                                        $set('custom_unit_column', $state);
+                                    }
+                                })
+                                ->default($this->invoice->getDefaultUnitColumn())
+                                ->reactive(),
+                            TextInput::make('custom_unit_column')
+                                ->reactive()
+                                ->disableLabel()
+                                ->disabled(static fn (callable $get) => $get('unit_column') !== 'other')
+                                ->nullable(),
+                            Radio::make('price_column')
+                                ->label('Price')
+                                ->options($this->invoice->getPriceColumns())
+                                ->dehydrateStateUsing(static function (callable $get, $state) {
+                                    return $state === 'other' ? $get('custom_price_column') : $state;
+                                })
+                                ->afterStateHydrated(function (callable $set, callable $get, $state, Radio $component) {
+                                    if (isset($this->invoice->getPriceColumns()[$state])) {
+                                        $component->state($state);
+                                    } else {
+                                        $component->state('other');
+                                        $set('custom_price_column', $state);
+                                    }
+                                })
+                                ->default($this->invoice->getDefaultPriceColumn())
+                                ->reactive(),
+                            TextInput::make('custom_price_column')
+                                ->reactive()
+                                ->disableLabel()
+                                ->disabled(static fn (callable $get) => $get('price_column') !== 'other')
+                                ->nullable(),
+                            Radio::make('amount_column')
+                                ->label('Amount')
+                                ->options($this->invoice->getAmountColumns())
+                                ->dehydrateStateUsing(static function (callable $get, $state) {
+                                    return $state === 'other' ? $get('custom_amount_column') : $state;
+                                })
+                                ->afterStateHydrated(function (callable $set, callable $get, $state, Radio $component) {
+                                    if (isset($this->invoice->getAmountColumns()[$state])) {
+                                        $component->state($state);
+                                    } else {
+                                        $component->state('other');
+                                        $set('custom_amount_column', $state);
+                                    }
+                                })
+                                ->default($this->invoice->getDefaultAmountColumn())
+                                ->reactive(),
+                            TextInput::make('custom_amount_column')
+                                ->reactive()
+                                ->disableLabel()
+                                ->disabled(static fn (callable $get) => $get('amount_column') !== 'other')
+                                ->nullable(),
+                        ])->columns(1),
+                    Group::make()
+                        ->schema([
+                            ViewField::make('preview.default')
+                                ->label('Preview')
+                                ->visible(static fn (callable $get) => $get('template') === 'default')
+                                ->view('components.invoice-layouts.default'),
+                            ViewField::make('preview.modern')
+                                ->label('Preview')
+                                ->visible(static fn (callable $get) => $get('template') === 'modern')
+                                ->view('components.invoice-layouts.modern'),
+                        ])->columnSpan(2),
+                ])->columns(3),
         ];
-    }
-
-    public function save(): void
-    {
-        $data = $this->form->getState();
-
-        $data = $this->mutateFormDataBeforeSave($data);
-
-        $this->record = $this->invoice->update($data);
-
-        $this->form->model($this->record)->saveRelationships();
-
-        $this->getSavedNotification()?->send();
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['company_id'] = Auth::user()->currentCompany->id;
         $data['type'] = 'invoice';
 
         return $data;
     }
-
-    protected function getSavedNotification():?Notification
-    {
-        $title = $this->getSavedNotificationTitle();
-
-        if (blank($title)) {
-            return null;
-        }
-
-        return Notification::make()
-            ->success()
-            ->title($title);
-    }
-
-    protected function getSavedNotificationTitle(): ?string
-    {
-        return __('filament::resources/pages/edit-record.messages.saved');
-    }
-
 
     public function render(): View
     {

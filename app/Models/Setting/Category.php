@@ -4,7 +4,6 @@ namespace App\Models\Setting;
 
 use App\Models\Document\Document;
 use App\Models\Item;
-use App\Scopes\CurrentCompanyScope;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Database\Factories\CategoryFactory;
@@ -35,11 +34,6 @@ class Category extends Model
     protected $casts = [
         'enabled' => 'boolean',
     ];
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new CurrentCompanyScope);
-    }
 
     public static function getCategoryTypes(): array
     {

@@ -42,11 +42,6 @@ class Currency extends Model
         'symbol_first' => 'boolean',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new CurrentCompanyScope);
-    }
-
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
@@ -91,6 +86,21 @@ class Currency extends Model
             ->first();
 
         return $defaultCurrency->code ?? null;
+    }
+
+    public static function convertBalance($balance, $oldCurrency, $newCurrency): float|int
+    {
+        $currencies = self::whereIn('code', [$oldCurrency, $newCurrency])->get();
+        $oldCurrency = $currencies->firstWhere('code', $oldCurrency);
+        $newCurrency = $currencies->firstWhere('code', $newCurrency);
+
+        $oldRate = $oldCurrency?->rate;
+        $newRate = $newCurrency?->rate;
+        $precision = $newCurrency?->precision;
+
+        $baseBalance = $balance / $oldRate;
+
+        return round($baseBalance * $newRate, $precision);
     }
 
     protected static function newFactory(): Factory

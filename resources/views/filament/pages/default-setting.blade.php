@@ -1,3 +1,3 @@
 <x-filament::page>
-    @livewire('default-setting')
+    @livewire('default-setting', compact('company'))
 </x-filament::page>

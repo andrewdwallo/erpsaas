@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\AccountResource\Pages;
 
 use App\Filament\Resources\AccountResource;
+use App\Models\Banking\Account;
+use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -38,7 +40,7 @@ class EditAccount extends EditRecord
     /**
      * @throws Halt
      */
-    protected function handleRecordUpdate(Model $record, array $data): Model
+    protected function handleRecordUpdate(Model|Account $record, array $data): Model|Account
     {
         $user = Auth::user();
 
@@ -46,6 +48,19 @@ class EditAccount extends EditRecord
             throw new Halt('No authenticated user found.');
         }
 
-        return $this->handleRecordUpdateWithUniqueField($record, $data, $user);
+        $oldCurrency = $record->currency_code;
+        $newCurrency = $data['currency_code'];
+
+        if ($oldCurrency !== $newCurrency) {
+            $data['opening_balance'] = Currency::convertBalance(
+                $data['opening_balance'],
+                $oldCurrency,
+                $newCurrency
+            );
+        }
+
+        $this->handleRecordUpdateWithUniqueField($record, $data, $user);
+
+        return parent::handleRecordUpdate($record, $data);
     }
 }

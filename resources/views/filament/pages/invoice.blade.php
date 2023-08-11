@@ -1,3 +1,3 @@
 <x-filament::page>
-    @livewire('invoice')
+    @livewire('invoice', compact('company'))
 </x-filament::page>

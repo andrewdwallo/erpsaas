@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Setting\Currency;
+use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
 use App\Models\Document\Document;
 use Filament\Forms;
@@ -13,8 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 
 class InvoiceResource extends Resource
 {
@@ -118,6 +117,21 @@ class InvoiceResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function getSlug(): string
+    {
+        return '{company}/sales/invoices';
+    }
+
+    public static function getUrl($name = 'index', $params = [], $isAbsolute = true): string
+    {
+        $routeBaseName = static::getRouteBaseName();
+
+        return route("{$routeBaseName}.{$name}", [
+            'company' => Auth::user()->currentCompany,
+            'record' => $params['record'] ?? null,
+        ], $isAbsolute);
     }
 
     public static function getRelations(): array

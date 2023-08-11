@@ -14,6 +14,8 @@ use App\Models\Setting\Tax;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Squire\Models\Country;
+use Squire\Models\Region;
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
 use Wallo\FilamentCompanies\Events\CompanyCreated;
 use Wallo\FilamentCompanies\Events\CompanyDeleted;
@@ -40,6 +42,14 @@ class Company extends FilamentCompaniesCompany
     protected $fillable = [
         'name',
         'personal_company',
+        'logo',
+        'address',
+        'city',
+        'zip_code',
+        'state',
+        'country',
+        'phone',
+        'email',
     ];
 
     /**

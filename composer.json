@@ -16,6 +16,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "leandrocfe/filament-apex-charts": "^1.0",
+        "spatie/laravel-view-models": "^1.5",
         "squirephp/countries-en": "^3.4",
         "squirephp/regions-en": "^3.4",
         "squirephp/repository": "^3.4"

@@ -3,8 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 use App\Models\Setting\Category;
@@ -122,6 +120,21 @@ class CategoryResource extends Resource
                         }
                     }),
             ]);
+    }
+
+    public static function getSlug(): string
+    {
+        return '{company}/settings/categories';
+    }
+
+    public static function getUrl($name = 'index', $params = [], $isAbsolute = true): string
+    {
+        $routeBaseName = static::getRouteBaseName();
+
+        return route("{$routeBaseName}.{$name}", [
+                'company' => Auth::user()->currentCompany,
+                'record' => $params['record'] ?? null,
+        ], $isAbsolute);
     }
 
     public static function getRelations(): array

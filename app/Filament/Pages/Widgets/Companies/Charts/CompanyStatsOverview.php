@@ -3,7 +3,9 @@
 namespace App\Filament\Pages\Widgets\Companies\Charts;
 
 use App\Models\Company;
+use Exception;
 use Filament\Widgets\StatsOverviewWidget;
+use InvalidArgumentException;
 
 class CompanyStatsOverview extends StatsOverviewWidget
 {
@@ -11,9 +13,14 @@ class CompanyStatsOverview extends StatsOverviewWidget
 
     /**
      * Holt's Linear Trend Method
+     * @throws Exception
      */
     protected function holtLinearTrend($data, $alpha, $beta): array
     {
+        if (count($data) < 2 || array_filter($data, 'is_numeric') !== $data) {
+            throw new InvalidArgumentException('Insufficient or invalid data for Holt\'s Linear Trend calculation', 400);
+        }
+
         $level = $data[0];
         $trend = $data[1] - $data[0];
 
@@ -30,6 +37,7 @@ class CompanyStatsOverview extends StatsOverviewWidget
 
     /**
      * Adjusts the alpha and beta parameters based on the model's performance
+     * @throws Exception
      */
     protected function adjustTrendParameters($data, $alpha, $beta): array
     {
@@ -68,6 +76,7 @@ class CompanyStatsOverview extends StatsOverviewWidget
 
     /**
      * Chart Options
+     * @throws Exception
      */
     protected function getCards(): array
     {
@@ -106,16 +115,17 @@ class CompanyStatsOverview extends StatsOverviewWidget
         // Calculate new companies and percentage change per week
         $newCompanies = [0];
         $weeklyPercentageChange = [0];
+
         for ($i = 1, $iMax = count($totalCompanies); $i < $iMax; $i++) {
             $newCompanies[] = $totalCompanies[$i] - $totalCompanies[$i - 1];
-            $weeklyPercentageChange[] = ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100;
+            $weeklyPercentageChange[] = $totalCompanies[$i - 1] !== 0 ? ($newCompanies[$i] / $totalCompanies[$i - 1]) * 100 : 0;
         }
 
-        // Calculate average weekly growth rate
-        $totalWeeks = $startOfYear->diffInWeeks($today);
-        $averageWeeklyGrowthRate = round(array_sum($weeklyPercentageChange) / $totalWeeks, 2);
-
+        // Ensure $weeklyDataArray contains at least two values and all values are numeric
         $weeklyDataArray = $weeklyData->values()->toArray();
+        if (count($weeklyDataArray) < 2 || array_filter($weeklyDataArray, 'is_numeric') !== $weeklyDataArray) {
+            throw new InvalidArgumentException('Insufficient or invalid data for Holt\'s Linear Trend calculation', 400);
+        }
 
         // Adjust alpha and beta parameters
         [$alpha, $beta] = $this->adjustTrendParameters($weeklyDataArray, $alpha, $beta);
@@ -123,6 +133,10 @@ class CompanyStatsOverview extends StatsOverviewWidget
         // Calculate Holt's Linear Trend Forecast for next week
         $holtForecast = $this->holtLinearTrend($weeklyDataArray, $alpha, $beta);
         $expectedNewCompanies = round(end($holtForecast));
+
+        // Calculate average weekly growth rate
+        $totalWeeks = $startOfYear->diffInWeeks($today);
+        $averageWeeklyGrowthRate = round(array_sum($weeklyPercentageChange) / $totalWeeks, 2);
 
         // Company Stats Overview Cards
         return [

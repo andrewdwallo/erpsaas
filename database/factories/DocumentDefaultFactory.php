@@ -25,10 +25,15 @@ class DocumentDefaultFactory extends Factory
     public function definition(): array
     {
         return [
-            'document_number_digits' => '5',
-            'document_number_next' => '1',
+            'number_digits' => '5',
+            'number_next' => '1',
             'payment_terms' => '30',
+            'accent_color' => '#007BFF',
             'template' => 'default',
+            'item_column' => 'items',
+            'unit_column' => 'quantity',
+            'price_column' => 'price',
+            'amount_column' => 'amount',
         ];
     }
 
@@ -40,7 +45,7 @@ class DocumentDefaultFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'invoice',
-                'document_number_prefix' => 'INV-',
+                'number_prefix' => 'INV-',
             ];
         });
     }
@@ -53,7 +58,7 @@ class DocumentDefaultFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'type' => 'bill',
-                'document_number_prefix' => 'BILL-',
+                'number_prefix' => 'BILL-',
             ];
         });
     }

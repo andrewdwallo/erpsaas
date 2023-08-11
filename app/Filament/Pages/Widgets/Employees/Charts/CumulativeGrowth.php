@@ -50,7 +50,7 @@ class CumulativeGrowth extends ApexChartWidget
 
         for ($i = 1, $iMax = count($totalEmployees); $i < $iMax; $i++) {
             $newEmployees[] = $totalEmployees[$i] - $totalEmployees[$i - 1];
-            $monthlyPercentageChange[] = ($newEmployees[$i] / $totalEmployees[$i - 1]) * 100;
+            $monthlyPercentageChange[] = $totalEmployees[$i - 1] !== 0 ? ($newEmployees[$i] / $totalEmployees[$i - 1]) * 100 : 0;
         }
 
         $labels = collect($months)->keys()->map(static function ($month) {

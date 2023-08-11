@@ -15,16 +15,21 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('type');
-            $table->string('document_number_prefix')->nullable();
-            $table->string('document_number_digits')->default(5);
-            $table->string('document_number_next')->default(1);
+            $table->string('document_logo')->nullable();
+            $table->string('number_prefix')->nullable();
+            $table->unsignedTinyInteger('number_digits')->default(5); // Adjusted this
+            $table->unsignedBigInteger('number_next')->default(1);   // Adjusted this to allow larger invoice numbers
             $table->string('payment_terms')->nullable();
-            $table->string('template')->default('default');
             $table->string('title')->nullable();
             $table->string('subheading')->nullable();
-            $table->text('notes')->nullable();
             $table->text('terms')->nullable();
             $table->string('footer')->nullable();
+            $table->string('accent_color')->nullable();
+            $table->string('template')->default('default');
+            $table->string('item_column')->nullable();
+            $table->string('unit_column')->nullable();
+            $table->string('price_column')->nullable();
+            $table->string('amount_column')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

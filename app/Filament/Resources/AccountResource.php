@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Actions\OptionAction\CreateCurrency;
 use App\Filament\Resources\AccountResource\Pages;
-use App\Filament\Resources\AccountResource\RelationManagers;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
@@ -77,6 +76,7 @@ class AccountResource extends Resource
                                     ->searchable()
                                     ->reactive()
                                     ->required()
+                                    ->saveRelationshipsUsing(null)
                                     ->createOptionForm([
                                         Forms\Components\Select::make('currency.code')
                                             ->label('Code')
@@ -258,8 +258,59 @@ class AccountResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('update_balance')
+                    ->hidden(static fn (Account $record) => $record->currency_code === Currency::getDefaultCurrency())
+                    ->label('Update Balance')
+                    ->icon('heroicon-o-currency-dollar')
+                    ->requiresConfirmation()
+                    ->modalSubheading('Are you sure you want to update the balance with the latest exchange rate?')
+                    ->before(static function (Tables\Actions\Action $action, Account $record) {
+                        if ($record->currency_code !== Currency::getDefaultCurrency()) {
+                            $currencyService = app(CurrencyService::class);
+                            $defaultCurrency = Currency::getDefaultCurrency();
+                            $cachedExchangeRate = $currencyService->getCachedExchangeRate($defaultCurrency, $record->currency_code);
+                            $oldExchangeRate = $record->currency->rate;
+
+                            if ($cachedExchangeRate === $oldExchangeRate) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Balance Already Up to Date')
+                                    ->body(__('The :name account balance is already up to date.', ['name' => $record->name]))
+                                    ->persistent()
+                                    ->send();
+
+                                $action->cancel();
+                            }
+                        }
+                    })
+                    ->action(static function (Account $record) {
+                        if ($record->currency_code !== Currency::getDefaultCurrency()) {
+                            $currencyService = app(CurrencyService::class);
+                            $defaultCurrency = Currency::getDefaultCurrency();
+                            $cachedExchangeRate = $currencyService->getCachedExchangeRate($defaultCurrency, $record->currency_code);
+                            $oldExchangeRate = $record->currency->rate;
+
+                            $originalBalanceInOriginalCurrency = $record->opening_balance / $oldExchangeRate;
+                            $currencyPrecision = $record->currency->precision;
+
+                            if ($cachedExchangeRate !== $oldExchangeRate) {
+                                $record->opening_balance = round($originalBalanceInOriginalCurrency * $cachedExchangeRate, $currencyPrecision);
+                                $record->currency->rate = $cachedExchangeRate;
+                                $record->currency->save();
+                                $record->save();
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Balance Updated Successfully')
+                                ->body(__('The :name account balance has been updated to reflect the current exchange rate.', ['name' => $record->name]))
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
+                    ->modalHeading('Delete Account')
+                    ->requiresConfirmation()
                     ->before(static function (Tables\Actions\DeleteAction $action, Account $record) {
                         if ($record->enabled) {
                             Notification::make()
@@ -290,6 +341,21 @@ class AccountResource extends Resource
                         }
                     }),
             ]);
+    }
+
+    public static function getSlug(): string
+    {
+        return '{company}/banking/accounts';
+    }
+
+    public static function getUrl($name = 'index', $params = [], $isAbsolute = true): string
+    {
+        $routeBaseName = static::getRouteBaseName();
+
+        return route("{$routeBaseName}.{$name}", [
+            'company' => Auth::user()->currentCompany,
+            'record' => $params['record'] ?? null,
+        ], $isAbsolute);
     }
 
     public static function getRelations(): array

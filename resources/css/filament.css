@@ -30,6 +30,27 @@ select,
     @apply !shadow-none bg-moonlight;
 }
 
+[type="text"]:disabled,
+[type="email"]:disabled,
+[type="url"]:disabled,
+[type="password"]:disabled,
+[type="number"]:disabled,
+[type="date"]:disabled,
+[type="datetime-local"]:disabled,
+[type="month"]:disabled,
+[type="search"]:disabled,
+[type="tel"]:disabled,
+[type="time"]:disabled,
+[type="week"]:disabled,
+[multiple]:disabled,
+textarea:disabled,
+select:disabled,
+[type="checkbox"]:disabled,
+[type="radio"]:disabled,
+.filament-forms-repeater-component *:disabled {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-400 border-gray-300 opacity-[0.7];
+}
+
 div.p-2.space-y-2.bg-white.rounded-xl {
     @apply bg-moonlight dark:!bg-gray-800;
 }

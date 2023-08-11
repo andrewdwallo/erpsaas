@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Company;
 use App\Models\Contact;
 use Squire\Repository;
 use Illuminate\Support\ServiceProvider;
