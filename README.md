@@ -40,8 +40,6 @@ Build your dependencies & start the local development server
     npm run build
     npm run dev
 
-You can now access the server at http://localhost:8000
-
 **Command list**
 
     git clone https://github.com/andrewdwallo/erpsaas.git
