@@ -79,7 +79,7 @@ Run the database seeder
 
 - [filamentphp/filament](https://github.com/filamentphp/filament) - A collection of beautiful full-stack components
 - [andrewdwallo/filament-companies](https://github.com/andrewdwallo/filament-companies) - A complete authentication system kit based on companies built for Filament
-- [leandrocfe/filament-apex-charts](https://github.com/leandrocfe/filament-apex-charts) - Apex Charts integration for Filament
-- [squirephp/squire](https://github.com/squirephp/squire) - A library of static Eloquent models for common fixture data
+- [akaunting/laravel-money](https://github.com/akaunting/laravel-money) - Currency formatting and conversion package for Laravel
+- [rinvex/countries](https://github.com/rinvex/countries) - A simple and lightweight package for retrieving country details with flexibility.
 
 ***Note*** : It is recommended to read the documentation for all dependencies to get yourself familiar with how the application works.
