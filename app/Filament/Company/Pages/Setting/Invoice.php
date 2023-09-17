@@ -2,11 +2,7 @@
 
 namespace App\Filament\Company\Pages\Setting;
 
-use App\Enums\DocumentAmountColumn;
-use App\Enums\DocumentItemColumn;
-use App\Enums\DocumentPriceColumn;
 use App\Enums\DocumentType;
-use App\Enums\DocumentUnitColumn;
 use App\Enums\Font;
 use App\Enums\PaymentTerms;
 use App\Enums\Template;
@@ -18,7 +14,6 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -26,14 +21,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
-use Livewire\Attributes\Locked;
 use function Filament\authorize;
 
 /**
@@ -241,6 +234,7 @@ class Invoice extends Page
                             ),
                         Select::make('template')
                             ->label('Template')
+                            ->native(false)
                             ->options(Template::class)
                             ->required(),
                         Select::make('item_name.option')

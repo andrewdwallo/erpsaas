@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Setting\CompanyProfile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -58,6 +59,7 @@ class UserFactory extends Factory
 
         return $this->has(
             Company::factory()
+                ->has(CompanyProfile::factory(), 'profile')
                 ->state(function (array $attributes, User $user) {
                     return ['name' => $user->name.'\'s Company', 'user_id' => $user->id, 'personal_company' => true];
                 }),

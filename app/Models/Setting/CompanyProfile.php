@@ -63,6 +63,18 @@ class CompanyProfile extends Model
         return country($this->country)->getName();
     }
 
+    public static function getAvailableCountryCodes(): array
+    {
+        $allCountries = countries();
+        $codes = [];
+
+        foreach ($allCountries as $code => $country) {
+            $codes[] = $code;
+        }
+
+        return $codes;
+    }
+
     public static function getAvailableCountryOptions(): array
     {
         $allCountries = countries();
