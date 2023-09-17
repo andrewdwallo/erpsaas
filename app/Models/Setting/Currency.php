@@ -2,23 +2,25 @@
 
 namespace App\Models\Setting;
 
+use Akaunting\Money\Currency as ISOCurrencies;
+use App\Casts\RateCast;
 use App\Models\Banking\Account;
-use App\Scopes\CurrentCompanyScope;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
-use Database\Factories\CurrencyFactory;
+use App\Traits\SyncsWithCompanyDefaults;
+use Database\Factories\Setting\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Currency extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable, CompanyOwned, SyncsWithCompanyDefaults, HasFactory;
 
     protected $table = 'currencies';
 
@@ -40,6 +42,7 @@ class Currency extends Model
     protected $casts = [
         'enabled' => 'boolean',
         'symbol_first' => 'boolean',
+        'rate' => RateCast::class,
     ];
 
     public function company(): BelongsTo
@@ -49,7 +52,7 @@ class Currency extends Model
 
     public function defaultCurrency(): HasOne
     {
-        return $this->hasOne(DefaultSetting::class, 'currency_code', 'code');
+        return $this->hasOne(CompanyDefault::class, 'currency_code', 'code');
     }
 
     public function accounts(): HasMany
@@ -67,40 +70,55 @@ class Currency extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
-    public static function getCurrencyCodes(): array
+    public static function getAvailableCurrencyCodes(): array
     {
-        $allCodes = array_keys(Config::get('money'));
+        $allISOCurrencies = static::getAllCurrencies();
+        $allISOCurrencyCodes = array_keys($allISOCurrencies);
 
-        $storedCodes = static::query()
+        $storedCurrencyCodes = static::query()
             ->pluck('code')
             ->toArray();
 
-        $codes = array_diff($allCodes, $storedCodes);
+        $availableCurrencyCodes = array_diff($allISOCurrencyCodes, $storedCurrencyCodes);
 
-        return array_combine($codes, $codes);
+        return array_combine($availableCurrencyCodes, $availableCurrencyCodes);
     }
 
-    public static function getDefaultCurrency(): ?string
+    public static function getAllCurrencies(): array
     {
-        $defaultCurrency = self::where('enabled', true)
+        return ISOCurrencies::getCurrencies();
+    }
+
+    public static function getDefaultCurrencyCode(): string|null
+    {
+        $defaultCurrency = static::query()
+            ->where('enabled', true)
             ->first();
 
-        return $defaultCurrency->code ?? null;
+        return $defaultCurrency?->code ?? null;
     }
 
-    public static function convertBalance($balance, $oldCurrency, $newCurrency): float|int
+    public static function convertBalance($balance, $oldCurrency, $newCurrency): int
     {
         $currencies = self::whereIn('code', [$oldCurrency, $newCurrency])->get();
         $oldCurrency = $currencies->firstWhere('code', $oldCurrency);
         $newCurrency = $currencies->firstWhere('code', $newCurrency);
 
-        $oldRate = $oldCurrency?->rate;
-        $newRate = $newCurrency?->rate;
-        $precision = $newCurrency?->precision;
+        $oldRate = DB::table('currencies')
+            ->where('code', $oldCurrency->code)
+            ->value('rate');
 
-        $baseBalance = $balance / $oldRate;
+        $newRate = DB::table('currencies')
+            ->where('code', $newCurrency->code)
+            ->value('rate');
 
-        return round($baseBalance * $newRate, $precision);
+        $precision = max($oldCurrency->precision, $newCurrency->precision);
+
+        $scale = 10 ** $precision;
+
+        $cleanBalance = (int)filter_var($balance, FILTER_SANITIZE_NUMBER_INT);
+
+        return round(($cleanBalance * $newRate * $scale) / ($oldRate * $scale));
     }
 
     protected static function newFactory(): Factory

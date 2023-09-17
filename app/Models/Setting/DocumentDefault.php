@@ -2,16 +2,24 @@
 
 namespace App\Models\Setting;
 
-use App\Models\Document\Document;
-use App\Scopes\CurrentCompanyScope;
+use App\Casts\TrimLeadingZeroCast;
+use App\Enums\DocumentAmountColumn;
+use App\Enums\DocumentItemColumn;
+use App\Enums\DocumentPriceColumn;
+use App\Enums\DocumentType;
+use App\Enums\DocumentUnitColumn;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
+use App\Enums\Template;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
-use Database\Factories\DocumentDefaultFactory;
+use Database\Factories\Setting\DocumentDefaultFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentDefault extends Model
@@ -21,34 +29,44 @@ class DocumentDefault extends Model
     protected $table = 'document_defaults';
 
     protected $fillable = [
+        'company_id',
         'type',
-        'document_logo',
+        'logo',
+        'show_logo',
         'number_prefix',
         'number_digits',
         'number_next',
         'payment_terms',
-        'title',
-        'subheading',
+        'header',
+        'subheader',
         'terms',
         'footer',
         'accent_color',
+        'font',
         'template',
-        'item_column',
-        'unit_column',
-        'price_column',
-        'amount_column',
+        'item_name',
+        'unit_name',
+        'price_name',
+        'amount_name',
         'created_by',
         'updated_by',
+    ];
+
+    protected $casts = [
+        'show_logo' => 'boolean',
+        'number_next' => TrimLeadingZeroCast::class,
+        'payment_terms' => PaymentTerms::class,
+        'font' => Font::class,
+        'template' => Template::class,
+        'item_name' => AsArrayObject::class,
+        'unit_name' => AsArrayObject::class,
+        'price_name' => AsArrayObject::class,
+        'amount_name' => AsArrayObject::class,
     ];
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
-    }
-
-    public function documents(): HasMany
-    {
-        return $this->hasMany(Document::class);
     }
 
     public function createdBy(): BelongsTo
@@ -61,42 +79,140 @@ class DocumentDefault extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
-    public static function getAvailableNumberDigits(): array
+    public function scopeType(Builder $query, string|DocumentType $type): Builder
+    {
+        return $query->where($this->qualifyColumn('type'), $type);
+    }
+
+    public function scopeInvoice(Builder $query): Builder
+    {
+        return $query->scopes(['type' => [DocumentType::Invoice]]);
+    }
+
+    public function scopeBill(Builder $query): Builder
+    {
+        return $query->scopes(['type' => [DocumentType::Bill]]);
+    }
+
+    public static function availableNumberDigits(): array
     {
         return array_combine(range(1, 20), range(1, 20));
     }
 
-    public static function getDefaultNumberDigits(string $type = 'invoice'): int
+    public static function getNumberNext(?bool $padded = null, ?bool $format = null, ?string $prefix = null, int|string|null $digits = null, int|string|null $next = null, ?string $type = null): string
     {
-        return static::where('type', $type)->value('number_digits') ?? 5;
+        $initializeAttributes = new static;
+
+        [$number_prefix, $number_digits, $number_next] = $initializeAttributes->initializeAttributes($prefix, $digits, $next, $type);
+
+        if ($format) {
+            return $number_prefix . static::getPaddedNumberNext($number_next, $number_digits);
+        }
+
+        if ($padded) {
+            return static::getPaddedNumberNext($number_next, $number_digits);
+        }
+
+        return $number_next;
     }
 
-    public static function getNextDocumentNumber(int|null $numDigits = null, string $type = 'invoice'): string
+    public function initializeAttributes(?string $prefix, int|string|null $digits, int|string|null $next, ?string $type): array
     {
-        $latestDocument = Document::where('type', $type)->orderBy('id', 'desc')->first();
-        $nextNumber = $latestDocument ? ((int)$latestDocument->number + 1) : 1;
-        return str_pad($nextNumber, $numDigits, '0', STR_PAD_LEFT);
+        $number_prefix = $prefix ?? $this->getAttributeFromArray('number_prefix');
+        $number_digits = $digits ?? $this->getAttributeFromArray('number_digits');
+        $number_next = $next ?? $this->getAttributeFromArray('number_next');
+
+        if ($type) {
+            $attributes = static::getAttributesByType($type);
+
+            $number_prefix = $attributes['number_prefix'] ?? $number_prefix;
+            $number_digits = $attributes['number_digits'] ?? $number_digits;
+            $number_next = $attributes['number_next'] ?? $number_next;
+        }
+
+        return [$number_prefix, $number_digits, $number_next];
     }
 
-    public static function getPaymentTerms(): array
+
+
+    public static function getAttributesByType(?string $type): array
     {
-        return [
-            0 => 'Due on Receipt',
-            7 => 'Net 7',
-            10 => 'Net 10',
-            15 => 'Net 15',
-            30 => 'Net 30',
-            60 => 'Net 60',
-            90 => 'Net 90',
-        ];
+        $model = new static;
+        $attributes = $model->newQuery()->type($type)->first();
+
+        return $attributes ? $attributes->toArray() : [];
     }
 
-    public static function getDefaultPaymentTerms(string $type = 'invoice'): int
+    /**
+     * Get the next number with padding for dynamic display purposes.
+     * Even if number_next is a string, it will be cast to an integer.
+     */
+    public static function getPaddedNumberNext(int|string|null $number_next, int|string|null $number_digits): string
     {
-        return static::where('type', $type)->value('payment_terms') ?? 30;
+        return str_pad($number_next, $number_digits, '0', STR_PAD_LEFT);
     }
 
-    public static function getItemColumns(): array
+    public function getItemNameOptionAttribute(): ?string
+    {
+        return $this->item_name['option'] ?? null;
+    }
+
+    public function getItemNameCustomAttribute(): ?string
+    {
+        return $this->item_name['custom'] ?? null;
+    }
+
+    public function getItemNameOptions(): array
+    {
+        return $this->item_name ?? [];
+    }
+
+    public function getUnitNameOptionAttribute(): ?string
+    {
+        return $this->unit_name['option'] ?? null;
+    }
+
+    public function getUnitNameCustomAttribute(): ?string
+    {
+        return $this->unit_name['custom'] ?? null;
+    }
+
+    public function getUnitNameOptions(): array
+    {
+        return $this->unit_name ?? [];
+    }
+
+    public function getPriceNameOptionAttribute(): ?string
+    {
+        return $this->price_name['option'] ?? null;
+    }
+
+    public function getPriceNameCustomAttribute(): ?string
+    {
+        return $this->price_name['custom'] ?? null;
+    }
+
+    public function getPriceNameOptions(): array
+    {
+        return $this->price_name ?? [];
+    }
+
+    public function getAmountNameOptionAttribute(): ?string
+    {
+        return $this->amount_name['option'] ?? null;
+    }
+
+    public function getAmountNameCustomAttribute(): ?string
+    {
+        return $this->amount_name['custom'] ?? null;
+    }
+
+    public function getAmountNameOptions(): array
+    {
+        return $this->amount_name ?? [];
+    }
+
+    public static function getAvailableItemNameOptions(): array
     {
         return [
             'items' => 'Items',
@@ -106,12 +222,7 @@ class DocumentDefault extends Model
         ];
     }
 
-    public static function getDefaultItemColumn(string $type = 'invoice'): string
-    {
-        return static::where('type', $type)->value('item_column') ?? 'items';
-    }
-
-    public static function getUnitColumns(): array
+    public static function getAvailableUnitNameOptions(): array
     {
         return [
             'quantity' => 'Quantity',
@@ -120,12 +231,7 @@ class DocumentDefault extends Model
         ];
     }
 
-    public static function getDefaultUnitColumn(string $type = 'invoice'): string
-    {
-        return static::where('type', $type)->value('unit_column') ?? 'quantity';
-    }
-
-    public static function getPriceColumns(): array
+    public static function getAvailablePriceNameOptions(): array
     {
         return [
             'price' => 'Price',
@@ -134,28 +240,13 @@ class DocumentDefault extends Model
         ];
     }
 
-    public static function getDefaultPriceColumn(string $type = 'invoice'): string
-    {
-        return static::where('type', $type)->value('price_column') ?? 'price';
-    }
-
-    public static function getAmountColumns(): array
+    public static function getAvailableAmountNameOptions(): array
     {
         return [
             'amount' => 'Amount',
             'total' => 'Total',
             'other' => 'Other',
         ];
-    }
-
-    public static function getDefaultAmountColumn(string $type = 'invoice'): string
-    {
-        return static::where('type', $type)->value('amount_column') ?? 'amount';
-    }
-
-    public function getDocumentNumberAttribute(): string
-    {
-        return $this->document_number_prefix . str_pad($this->document_number_next, $this->document_number_digits, '0', STR_PAD_LEFT);
     }
 
     protected static function newFactory(): Factory

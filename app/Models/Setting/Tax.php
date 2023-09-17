@@ -2,24 +2,24 @@
 
 namespace App\Models\Setting;
 
-use App\Models\Company;
-use App\Models\Document\DocumentItem;
-use App\Models\Item;
-use App\Scopes\CurrentCompanyScope;
+use App\Casts\RateCast;
+use App\Enums\TaxComputation;
+use App\Enums\TaxScope;
+use App\Enums\TaxType;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
-use Database\Factories\TaxFactory;
+use App\Traits\SyncsWithCompanyDefaults;
+use Database\Factories\Setting\TaxFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Tax extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable, CompanyOwned, SyncsWithCompanyDefaults, HasFactory;
 
     protected $table = 'taxes';
 
@@ -37,22 +37,26 @@ class Tax extends Model
     ];
 
     protected $casts = [
+        'rate' => RateCast::class,
+        'computation' => TaxComputation::class,
+        'type' => TaxType::class,
+        'scope' => TaxScope::class,
         'enabled' => 'boolean',
     ];
 
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class, 'company_id');
+        return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
     }
 
     public function defaultSalesTax(): HasOne
     {
-        return $this->hasOne(DefaultSetting::class, 'sales_tax_id');
+        return $this->hasOne(CompanyDefault::class, 'sales_tax_id');
     }
 
     public function defaultPurchaseTax(): HasOne
     {
-        return $this->hasOne(DefaultSetting::class, 'purchase_tax_id');
+        return $this->hasOne(CompanyDefault::class, 'purchase_tax_id');
     }
 
     public function createdBy(): BelongsTo
@@ -63,52 +67,6 @@ class Tax extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(Item::class);
-    }
-
-    public function document_items(): HasMany
-    {
-        return $this->hasMany(DocumentItem::class);
-    }
-
-    public function bill_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'bill');
-    }
-
-    public function invoice_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'invoice');
-    }
-
-    public static function getComputationTypes(): array
-    {
-        return [
-            'fixed' => 'Fixed',
-            'percentage' => 'Percentage',
-            'compound' => 'Compound',
-        ];
-    }
-
-    public static function getTaxTypes(): array
-    {
-        return [
-            'sales' => 'Sales',
-            'purchase' => 'Purchase',
-            'none' => 'None',
-        ];
-    }
-
-    public static function getTaxScopes(): array
-    {
-        return [
-            'product' => 'Product',
-            'service' => 'Service',
-        ];
     }
 
     protected static function newFactory(): Factory

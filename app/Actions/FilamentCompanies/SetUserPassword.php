@@ -5,7 +5,6 @@ namespace App\Actions\FilamentCompanies;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Fortify\Rules\Password;
 use Wallo\FilamentCompanies\Contracts\SetsUserPasswords;
 
 class SetUserPassword implements SetsUserPasswords
@@ -16,7 +15,7 @@ class SetUserPassword implements SetsUserPasswords
     public function set(User $user, array $input): void
     {
         Validator::make($input, [
-            'password' => ['required', 'string', new Password, 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ])->validateWithBag('setPassword');
 
         $user->forceFill([

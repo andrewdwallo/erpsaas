@@ -8,19 +8,20 @@ class CreateCurrency
 {
     public function create(string $code, string $name, string $rate): Currency
     {
-        $defaultCurrency = Currency::getDefaultCurrency();
+        $defaultCurrency = Currency::getDefaultCurrencyCode();
 
         $hasDefaultCurrency = $defaultCurrency !== null;
+        $currency_code = currency($code);
 
         return Currency::create([
             'name' => $name,
             'code' => $code,
             'rate' => $rate,
-            'precision' => config("money.{$code}.precision"),
-            'symbol' => config("money.{$code}.symbol"),
-            'symbol_first' => config("money.{$code}.symbol_first"),
-            'decimal_mark' => config("money.{$code}.decimal_mark"),
-            'thousands_separator' => config("money.{$code}.thousands_separator"),
+            'precision' => $currency_code->getPrecision(),
+            'symbol' => $currency_code->getSymbol(),
+            'symbol_first' => $currency_code->isSymbolFirst(),
+            'decimal_mark' => $currency_code->getDecimalMark(),
+            'thousands_separator' => $currency_code->getThousandsSeparator(),
             'enabled' => !$hasDefaultCurrency,
         ]);
     }

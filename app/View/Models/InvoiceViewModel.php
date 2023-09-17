@@ -2,11 +2,19 @@
 
 namespace App\View\Models;
 
+use App\Enums\DocumentAmountColumn;
+use App\Enums\DocumentItemColumn;
+use App\Enums\DocumentPriceColumn;
+use App\Enums\DocumentUnitColumn;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
 use App\Models\Setting\DocumentDefault;
-use Spatie\ViewModels\ViewModel;
+use Filament\Panel\Concerns\HasFont;
 
-class InvoiceViewModel extends ViewModel
+class InvoiceViewModel
 {
+    use HasFont;
+
     public DocumentDefault $invoice;
 
     public ?array $data = [];
@@ -17,9 +25,14 @@ class InvoiceViewModel extends ViewModel
         $this->data = $data;
     }
 
-    public function document_logo(): ?string
+    public function logo(): ?string
     {
-        return $this->data['document_logo'] ?? $this->invoice->document_logo ?? $this->invoice->company->logo ?? null;
+        return $this->invoice->logo ?? null;
+    }
+
+    public function show_logo(): bool
+    {
+        return $this->data['show_logo'] ?? $this->invoice->show_logo ?? false;
     }
 
     // Company related methods
@@ -30,27 +43,32 @@ class InvoiceViewModel extends ViewModel
 
     public function company_address(): ?string
     {
-        return $this->invoice->company->address ?? null;
+        return $this->invoice->company->profile->address ?? null;
     }
 
     public function company_phone(): ?string
     {
-        return $this->invoice->company->phone ?? null;
+        return $this->invoice->company->profile->phone_number ?? null;
     }
 
     public function company_city(): ?string
     {
-        return $this->invoice->company->city ?? null;
+        return $this->invoice->company->profile->city ?? null;
     }
 
     public function company_state(): ?string
     {
-        return $this->invoice->company->state ?? null;
+        return $this->invoice->company->profile->state ?? null;
     }
 
     public function company_zip(): ?string
     {
-        return $this->invoice->company->zip_code ?? null;
+        return $this->invoice->company->profile->zip_code ?? null;
+    }
+
+    public function company_country(): ?string
+    {
+        return $this->invoice->company->profile->getCountryName();
     }
 
     // Invoice numbering related methods
@@ -61,17 +79,17 @@ class InvoiceViewModel extends ViewModel
 
     public function number_digits(): int
     {
-        return $this->data['number_digits'] ?? $this->invoice->number_digits ?? $this->invoice->getDefaultNumberDigits();
+        return $this->data['number_digits'] ?? $this->invoice->number_digits ?? 5;
     }
 
-    public function number_next(): int
+    public function number_next(): string
     {
-        return $this->data['number_next'] ?? $this->invoice->number_next ?? $this->invoice->getNextDocumentNumber($this->number_digits());
+        return $this->data['number_next'] ?? $this->invoice->number_next;
     }
 
     public function invoice_number(): string
     {
-        return $this->number_prefix() . str_pad($this->number_next(), $this->number_digits(), "0", STR_PAD_LEFT);
+        return DocumentDefault::getNumberNext(padded: true, format: true, prefix: $this->number_prefix(), digits: $this->number_digits(), next: $this->number_next());
     }
 
     // Invoice date related methods
@@ -82,29 +100,45 @@ class InvoiceViewModel extends ViewModel
 
     public function payment_terms(): string
     {
-        return $this->data['payment_terms'] ?? $this->invoice->payment_terms ?? $this->invoice->getDefaultPaymentTerms();
+        return $this->data['payment_terms'] ?? $this->invoice->payment_terms ?? PaymentTerms::DEFAULT;
     }
 
     public function invoice_due_date(): string
     {
-        return now()->addDays($this->payment_terms())->format('M d, Y');
+        $enumPaymentTerms = PaymentTerms::tryFrom($this->payment_terms());
+        $days = $enumPaymentTerms ? $enumPaymentTerms->getDays() : 0;
+
+        return now()->addDays($days)->format('M d, Y');
     }
 
     // Invoice header related methods
-    public function title(): string
+    public function header(): string
     {
-        return $this->data['title'] ?? $this->invoice->title ?? 'Invoice';
+        return $this->data['header'] ?? $this->invoice->header ?? 'Invoice';
     }
 
-    public function subheading(): ?string
+    public function subheader(): ?string
     {
-        return $this->data['subheading'] ?? $this->invoice->subheading ?? null;
+        return $this->data['subheader'] ?? $this->invoice->subheader ?? null;
     }
 
     // Invoice styling
     public function accent_color(): string
     {
-        return $this->data['accent_color'] ?? $this->invoice->accent_color ?? '#6366F1';
+        return $this->data['accent_color'] ?? $this->invoice->accent_color;
+    }
+
+    public function fontFamily(): string
+    {
+        if ($this->data['font']) {
+            return Font::from($this->data['font'])->getLabel();
+        }
+
+        if ($this->invoice->font) {
+            return $this->invoice->font->getLabel();
+        }
+
+        return Font::from(Font::DEFAULT)->getLabel();
     }
 
     public function footer(): string
@@ -118,40 +152,62 @@ class InvoiceViewModel extends ViewModel
     }
 
     // Invoice column related methods
-    public function item_column(): string
+    public function item_name(): string
     {
-        $item_column = $this->data['item_column'] ?? $this->invoice->item_column ?? $this->invoice->getDefaultItemColumn();
-        return isset($this->invoice->getItemColumns()[$item_column]) ? ucfirst($item_column) : $item_column;
+        $custom_item_name = $this->data['item_name']['custom'] ?? null;
+
+        if ($custom_item_name) {
+            return $custom_item_name;
+        }
+
+        return ucwords($this->data['item_name']['option']) ?? ucwords($this->invoice->item_name_option) ?? $this->invoice->item_name_custom ?? 'Items';
     }
 
-    public function unit_column(): string
+    public function unit_name(): string
     {
-        $unit_column = $this->data['unit_column'] ?? $this->invoice->unit_column ?? $this->invoice->getDefaultUnitColumn();
-        return isset($this->invoice->getUnitColumns()[$unit_column]) ? ucfirst($unit_column) : $unit_column;
+        $custom_unit_name = $this->data['unit_name']['custom'] ?? null;
+
+        if ($custom_unit_name) {
+            return $custom_unit_name;
+        }
+
+        return ucwords($this->data['unit_name']['option']) ?? ucwords($this->invoice->unit_name_option) ?? $this->invoice->unit_name_custom ?? 'Quantity';
     }
 
-    public function price_column(): string
+    public function price_name(): string
     {
-        $price_column = $this->data['price_column'] ?? $this->invoice->price_column ?? $this->invoice->getDefaultPriceColumn();
-        return isset($this->invoice->getPriceColumns()[$price_column]) ? ucfirst($price_column) : $price_column;
+        $custom_price_name = $this->data['price_name']['custom'] ?? null;
+
+        if ($custom_price_name) {
+            return $custom_price_name;
+        }
+
+        return ucwords($this->data['price_name']['option']) ?? ucwords($this->invoice->price_name_option) ?? $this->invoice->price_name_custom ?? 'Price';
     }
 
-    public function amount_column(): string
+    public function amount_name(): string
     {
-        $amount_column = $this->data['amount_column'] ?? $this->invoice->amount_column ?? $this->invoice->getDefaultAmountColumn();
-        return isset($this->invoice->getAmountColumns()[$amount_column]) ? ucfirst($amount_column) : $amount_column;
+        $custom_amount_name = $this->data['amount_name']['custom'] ?? $this->invoice->amount_name_custom ?? null;
+
+        if ($custom_amount_name) {
+            return $custom_amount_name;
+        }
+
+        return ucwords($this->data['amount_name']['option']) ?? ucwords($this->invoice->amount_name_option) ?? 'Amount';
     }
 
     public function buildViewData(): array
     {
         return [
-            'document_logo' => $this->document_logo(),
+            'logo' => $this->logo(),
+            'show_logo' => $this->show_logo(),
             'company_name' => $this->company_name(),
             'company_address' => $this->company_address(),
             'company_phone' => $this->company_phone(),
             'company_city' => $this->company_city(),
             'company_state' => $this->company_state(),
             'company_zip' => $this->company_zip(),
+            'company_country' => $this->company_country(),
             'number_prefix' => $this->number_prefix(),
             'number_digits' => $this->number_digits(),
             'number_next' => $this->number_next(),
@@ -159,15 +215,17 @@ class InvoiceViewModel extends ViewModel
             'invoice_date' => $this->invoice_date(),
             'payment_terms' => $this->payment_terms(),
             'invoice_due_date' => $this->invoice_due_date(),
-            'title' => $this->title(),
-            'subheading' => $this->subheading(),
+            'header' => $this->header(),
+            'subheader' => $this->subheader(),
             'accent_color' => $this->accent_color(),
+            'font_family' => $this->fontFamily(),
+            'font_html' => $this->font($this->fontFamily())->getFontHtml(),
             'footer' => $this->footer(),
             'terms' => $this->terms(),
-            'item_column' => $this->item_column(),
-            'unit_column' => $this->unit_column(),
-            'price_column' => $this->price_column(),
-            'amount_column' => $this->amount_column(),
+            'item_name' => $this->item_name(),
+            'unit_name' => $this->unit_name(),
+            'price_name' => $this->price_name(),
+            'amount_name' => $this->amount_name(),
         ];
     }
 }

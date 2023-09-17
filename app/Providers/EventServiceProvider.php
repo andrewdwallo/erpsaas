@@ -2,11 +2,17 @@
 
 namespace App\Providers;
 
-use App\Observers\CompanyObserver;
-use App\Models\Company;
+use App\Events\CompanyDefaultEvent;
+use App\Events\CompanyDefaultUpdated;
+use App\Listeners\ConfigureCompanyDefault;
+use App\Listeners\CreateCompanyDefaults;
+use App\Listeners\SyncAssociatedModels;
+use App\Listeners\SyncWithCompanyDefaults;
+use Filament\Events\TenantSet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Wallo\FilamentCompanies\Events\CompanyCreated;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +24,18 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        CompanyDefaultEvent::class => [
+            SyncWithCompanyDefaults::class,
+        ],
+        CompanyDefaultUpdated::class => [
+            SyncAssociatedModels::class,
+        ],
+        TenantSet::class => [
+            ConfigureCompanyDefault::class,
+        ],
+        CompanyCreated::class => [
+            CreateCompanyDefaults::class,
         ],
     ];
 
@@ -36,11 +54,4 @@ class EventServiceProvider extends ServiceProvider
     {
         return false;
     }
-
-    /**
-     * The model observers for the application.
-     */
-    protected $observers = [
-        Company::class => [CompanyObserver::class],
-    ];
 }

@@ -2,23 +2,24 @@
 
 namespace App\Models\Setting;
 
-use App\Models\Document\DocumentItem;
-use App\Models\Item;
-use App\Scopes\CurrentCompanyScope;
+use App\Casts\RateCast;
+use App\Enums\DiscountComputation;
+use App\Enums\DiscountScope;
+use App\Enums\DiscountType;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
-use Database\Factories\DiscountFactory;
+use App\Traits\SyncsWithCompanyDefaults;
+use Database\Factories\Setting\DiscountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Discount extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable, CompanyOwned, SyncsWithCompanyDefaults, HasFactory;
 
     protected $table = 'discounts';
 
@@ -38,9 +39,13 @@ class Discount extends Model
     ];
 
     protected $casts = [
-        'enabled' => 'boolean',
+        'rate' => RateCast::class,
+        'computation' => DiscountComputation::class,
+        'type' => DiscountType::class,
+        'scope' => DiscountScope::class,
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'enabled' => 'boolean',
     ];
 
     public function company(): BelongsTo
@@ -50,12 +55,12 @@ class Discount extends Model
 
     public function defaultSalesDiscount(): HasOne
     {
-        return $this->hasOne(DefaultSetting::class, 'sales_discount_id');
+        return $this->hasOne(CompanyDefault::class, 'sales_discount_id');
     }
 
     public function defaultPurchaseDiscount(): HasOne
     {
-        return $this->hasOne(DefaultSetting::class, 'purchase_discount_id');
+        return $this->hasOne(CompanyDefault::class, 'purchase_discount_id');
     }
 
     public function createdBy(): BelongsTo
@@ -66,51 +71,6 @@ class Discount extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(Item::class);
-    }
-
-    public function document_items(): HasMany
-    {
-        return $this->hasMany(DocumentItem::class);
-    }
-
-    public function bill_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'bill');
-    }
-
-    public function invoice_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'invoice');
-    }
-
-    public static function getComputationTypes(): array
-    {
-        return [
-            'percentage' => 'Percentage',
-            'fixed' => 'Fixed',
-        ];
-    }
-
-    public static function getDiscountTypes(): array
-    {
-        return [
-            'sales' => 'Sales',
-            'purchase' => 'Purchase',
-            'none' => 'None',
-        ];
-    }
-
-    public static function getDiscountScopes(): array
-    {
-        return [
-            'product' => 'Product',
-            'service' => 'Service',
-        ];
     }
 
     protected static function newFactory(): Factory

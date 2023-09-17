@@ -29,7 +29,7 @@ trait HandlesResourceRecordCreation
 
                 $data['enabled'] = $enabled;
 
-                return tap($model)->create($data);
+                return $model::create($data);
             });
         } catch (ValidationException) {
             throw new Halt('Invalid data provided. Please check the form and try again.');

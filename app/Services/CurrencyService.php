@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -10,16 +9,14 @@ class CurrencyService
 {
     public function getExchangeRate($from, $to)
     {
-        $date = Carbon::today()->format('Y-m-d');
-
-        $req_url = 'https://api.exchangerate.host/convert?from=' . $from . '&to=' . $to . '&date=' . $date;
+        $req_url = 'https://api.exchangerate.host/latest?base=' . $from . '&symbols=' . $to;
 
         $response = Http::get($req_url);
 
         if ($response->successful()) {
             $responseData = $response->json();
-            if ($responseData['success'] === true) {
-                return $responseData['info']['rate'];
+            if (isset($responseData['rates'][$to])) {
+                return $responseData['rates'][$to];
             }
         }
 

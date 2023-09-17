@@ -2,23 +2,21 @@
 
 namespace App\Models\Banking;
 
+use App\Casts\MoneyCast;
 use App\Models\Setting\Currency;
-use App\Models\Setting\DefaultSetting;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
-use Database\Factories\AccountFactory;
+use Database\Factories\Banking\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Tags\HasTags;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Account extends Model
 {
-    use Blamable, CompanyOwned, HasFactory, HasTags;
+    use Blamable, CompanyOwned, HasTags, HasFactory;
 
     protected $table = 'accounts';
 
@@ -47,21 +45,12 @@ class Account extends Model
 
     protected $casts = [
         'enabled' => 'boolean',
+        'opening_balance' => MoneyCast::class,
     ];
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
-    }
-
-    public function defaultAccount(): HasOne
-    {
-        return $this->hasOne(DefaultSetting::class, 'account_id');
-    }
-
-    public function owner(): BelongsTo
-    {
-        return $this->company->owner;
     }
 
     public function currency(): BelongsTo
@@ -77,11 +66,6 @@ class Account extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
-    }
-
-    public function default_settings(): HasMany
-    {
-        return $this->hasMany(DefaultSetting::class, 'account_id', 'id');
     }
 
     public static function getAccountTypes(): array

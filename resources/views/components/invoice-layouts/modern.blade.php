@@ -1,28 +1,36 @@
 @php
-    $data = $this->form->getState();
-    $viewModel = new \App\View\Models\InvoiceViewModel($this->invoice, $data);
+    $data = $this->form->getRawState();
+    $viewModel = new \App\View\Models\InvoiceViewModel($this->record, $data);
     $viewSpecial = $viewModel->buildViewData();
     extract($viewSpecial);
 @endphp
 
+{!! $font_html !!}
+
+<style>
+    .paper {
+        font-family: '{{ $font_family }}', sans-serif;
+    }
+</style>
+
 <div class="print-template flex justify-center p-6">
-    <div class="paper bg-white dark:bg-gray-900 p-8 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] w-[612px] h-[791px]">
+    <div class="paper bg-[#ffffff] dark:bg-gray-950 p-8 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] w-[612px] h-[791px]">
 
         <!-- Colored Header with Logo -->
         <div class="flex">
             <div class="text-white py-3 flex items-start justify-start bg-gray-800" style="height: 80px; width: 85%;">
-                @if($document_logo)
+                @if($logo && $show_logo)
                     <div class="text-left">
-                        <img src="{{ \Illuminate\Support\Facades\URL::asset($document_logo) }}" alt="logo" style="width: 120px; height: auto">
+                        <img src="{{ \Illuminate\Support\Facades\URL::asset($logo) }}" alt="logo" style="width: 120px; height: auto">
                     </div>
                 @endif
             </div>
 
             <!-- Ribbon Container -->
             <div class="text-white flex flex-col justify-end p-2" style="background: {{ $accent_color }}; width: 30%; height: 120px; margin-left: -15%;">
-                @if($title)
+                @if($header)
                     <div class="text-center align-bottom">
-                        <h1 class="text-3xl font-bold">{{ $title }}</h1>
+                        <h1 class="text-3xl font-bold">{{ $header }}</h1>
                     </div>
                 @endif
             </div>
@@ -35,6 +43,7 @@
                 @if($company_address && $company_city && $company_state && $company_zip)
                     <p>{{ $company_address }}</p>
                     <p>{{ $company_city }}, {{ $company_state }} {{ $company_zip }}</p>
+                    <p>{{ $company_country }}</p>
                 @endif
             </div>
 
@@ -81,12 +90,12 @@
         <div class="mb-8">
             <table class="w-full border-collapse text-sm">
                 <thead style="background: {{ $accent_color }};">
-                <tr class="text-white">
+                <tr class="text-[#ffffff]">
                     <th class="text-left p-2 w-1/12">No</th>
-                    <th class="text-left p-2 w-7/12">{{ $item_column }}</th>
-                    <th class="text-left p-2 w-1/6">{{ $unit_column }}</th>
-                    <th class="text-left p-2 w-1/6">{{ $price_column }}</th>
-                    <th class="text-left p-2 w-1/6">{{ $amount_column }}</th>
+                    <th class="text-left p-2 w-7/12">{{ $item_name }}</th>
+                    <th class="text-left p-2 w-1/6">{{ $unit_name }}</th>
+                    <th class="text-left p-2 w-1/6">{{ $price_name }}</th>
+                    <th class="text-left p-2 w-1/6">{{ $amount_name }}</th>
                 </tr>
                 </thead>
                 <tbody class="text-xs">
@@ -150,15 +159,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-

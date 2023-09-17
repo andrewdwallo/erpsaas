@@ -1,19 +1,27 @@
 @php
-    $data = $this->form->getState();
-    $viewModel = new \App\View\Models\InvoiceViewModel($this->invoice, $data);
+    $data = $this->form->getRawState();
+    $viewModel = new \App\View\Models\InvoiceViewModel($this->record, $data);
     $viewSpecial = $viewModel->buildViewData();
     extract($viewSpecial);
 @endphp
 
+{!! $font_html !!}
+
+<style>
+    .paper {
+        font-family: '{{ $font_family }}', sans-serif;
+    }
+</style>
+
 <div class="print-template flex justify-center p-6">
-    <div class="paper bg-white dark:bg-gray-900 p-8 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] w-[612px] h-[791px]">
+    <div class="paper bg-[#ffffff] dark:bg-gray-950 p-8 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] w-[612px] h-[791px]">
 
         <!-- Header: Logo on the left and Company details on the right -->
         <div class="flex mb-4">
             <div class="w-2/5">
-                @if($document_logo)
+                @if($logo && $show_logo)
                     <div class="text-left">
-                        <img src="{{ \Illuminate\Support\Facades\URL::asset($document_logo) }}" alt="logo" style="width: 120px; height: auto">
+                        <img src="{{ \Illuminate\Support\Facades\URL::asset($logo) }}" alt="logo" style="width: 120px; height: auto">
                     </div>
                 @endif
             </div>
@@ -25,6 +33,7 @@
                     @if($company_address && $company_city && $company_state && $company_zip)
                         <p>{{ $company_address }}</p>
                         <p>{{ $company_city }}, {{ $company_state }} {{ $company_zip }}</p>
+                        <p>{{ $company_country }}</p>
                     @endif
                 </div>
             </div>
@@ -37,9 +46,9 @@
         <div class="flex mb-4">
             <div class="w-2/5">
                 <div class="text-left">
-                    <h1 class="text-3xl font-semibold text-gray-800 dark:text-white">{{ $title }}</h1>
-                    @if ($subheading)
-                        <p class="text-sm text-gray-600 dark:text-gray-100">{{ $subheading }}</p>
+                    <h1 class="text-3xl font-semibold text-gray-800 dark:text-white">{{ $header }}</h1>
+                    @if ($subheader)
+                        <p class="text-sm text-gray-600 dark:text-gray-100">{{ $subheader }}</p>
                     @endif
                 </div>
             </div>
@@ -75,10 +84,10 @@
             <table class="w-full border-collapse text-sm">
                 <thead>
                     <tr style="color: {{ $accent_color }}">
-                        <th class="text-left p-2 w-1/2">{{ $item_column }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $unit_column }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $price_column }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $amount_column }}</th>
+                        <th class="text-left p-2 w-1/2">{{ $item_name }}</th>
+                        <th class="text-center p-2 w-1/6">{{ $unit_name }}</th>
+                        <th class="text-center p-2 w-1/6">{{ $price_name }}</th>
+                        <th class="text-center p-2 w-1/6">{{ $amount_name }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,9 +130,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-

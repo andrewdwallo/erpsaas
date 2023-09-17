@@ -2,28 +2,33 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentType;
 use App\Models\Banking\Account;
-use App\Models\Document\Document;
-use App\Models\Document\DocumentItem;
-use App\Models\Document\DocumentTotal;
-use App\Models\Setting\Currency;
+use App\Models\Setting\Appearance;
 use App\Models\Setting\Category;
+use App\Models\Setting\CompanyDefault;
+use App\Models\Setting\CompanyProfile;
+use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
 use App\Models\Setting\DocumentDefault;
 use App\Models\Setting\Tax;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Squire\Models\Country;
-use Squire\Models\Region;
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
 use Wallo\FilamentCompanies\Events\CompanyCreated;
 use Wallo\FilamentCompanies\Events\CompanyDeleted;
 use Wallo\FilamentCompanies\Events\CompanyUpdated;
 
-class Company extends FilamentCompaniesCompany
+class Company extends FilamentCompaniesCompany implements HasAvatar
 {
     use HasFactory;
+
+    public function getFilamentAvatarUrl(): string
+    {
+        return $this->owner->profile_photo_url;
+    }
 
     /**
      * The attributes that should be cast.
@@ -42,14 +47,6 @@ class Company extends FilamentCompaniesCompany
     protected $fillable = [
         'name',
         'personal_company',
-        'logo',
-        'address',
-        'city',
-        'zip_code',
-        'state',
-        'country',
-        'phone',
-        'email',
     ];
 
     /**
@@ -65,120 +62,53 @@ class Company extends FilamentCompaniesCompany
 
     public function accounts(): HasMany
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(Account::class, 'company_id');
     }
 
-    public function currencies(): HasMany
+    public function appearance(): HasOne
     {
-        return $this->hasMany(Currency::class);
+        return $this->hasOne(Appearance::class, 'company_id');
     }
 
     public function categories(): HasMany
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class, 'company_id');
     }
 
-    public function taxes(): HasMany
+    public function currencies(): HasMany
     {
-        return $this->hasMany(Tax::class);
+        return $this->hasMany(Currency::class, 'company_id');
+    }
+
+    public function default(): HasOne
+    {
+        return $this->hasOne(CompanyDefault::class, 'company_id');
+    }
+
+    public function defaultBill(): HasOne
+    {
+        return $this->hasOne(DocumentDefault::class, 'company_id')
+            ->where('type', DocumentType::Bill);
+    }
+
+    public function defaultInvoice(): HasOne
+    {
+        return $this->hasOne(DocumentDefault::class, 'company_id')
+            ->where('type', DocumentType::Invoice);
     }
 
     public function discounts(): HasMany
     {
-        return $this->hasMany(Discount::class);
+        return $this->hasMany(Discount::class, 'company_id');
     }
 
-    public function contacts(): HasMany
+    public function profile(): HasOne
     {
-        return $this->hasMany(Contact::class);
+        return $this->hasOne(CompanyProfile::class, 'company_id');
     }
 
-    public function customers(): HasMany
+    public function taxes(): HasMany
     {
-        return $this->contacts()->where('type', 'customer');
-    }
-
-    public function company_customers(): HasMany
-    {
-        return $this->contacts()->where('type', 'customer')
-            ->where('entity', 'company');
-    }
-
-    public function individual_customers(): HasMany
-    {
-        return $this->contacts()->where('type', 'customer')
-            ->where('entity', 'individual');
-    }
-
-    public function vendors(): HasMany
-    {
-        return $this->contacts()->where('type', 'vendor');
-    }
-
-    public function company_vendors(): HasMany
-    {
-        return $this->contacts()->where('type', 'vendor')
-            ->where('entity', 'company');
-    }
-
-    public function individual_vendors(): HasMany
-    {
-        return $this->contacts()->where('type', 'vendor')
-            ->where('entity', 'individual');
-    }
-
-    public function document_defaults(): HasOne
-    {
-        return $this->hasOne(DocumentDefault::class);
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(Item::class);
-    }
-
-    public function documents(): HasMany
-    {
-        return $this->hasMany(Document::class);
-    }
-
-    public function document_items(): HasMany
-    {
-        return $this->hasMany(DocumentItem::class);
-    }
-
-    public function document_totals(): HasMany
-    {
-        return $this->hasMany(DocumentTotal::class);
-    }
-
-    public function bills(): HasMany
-    {
-        return $this->documents()->where('type', 'bill');
-    }
-
-    public function invoices(): HasMany
-    {
-        return $this->documents()->where('type', 'invoice');
-    }
-
-    public function bill_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'bill');
-    }
-
-    public function bill_totals(): HasMany
-    {
-        return $this->document_totals()->where('type', 'bill');
-    }
-
-    public function invoice_items(): HasMany
-    {
-        return $this->document_items()->where('type', 'invoice');
-    }
-
-    public function invoice_totals(): HasMany
-    {
-        return $this->document_totals()->where('type', 'invoice');
+        return $this->hasMany(Tax::class, 'company_id');
     }
 }
