@@ -1,5 +1,7 @@
 # ERPSAAS
 
+![Screenshot 2023-09-17 at 5 31 58 PM](https://github.com/andrewdwallo/erpsaas/assets/104294090/647333c0-978c-4e24-92a8-30ee4932c092)
+
 ![Screenshot 2023-09-17 at 5 29 08 PM](https://github.com/andrewdwallo/erpsaas/assets/104294090/121326e6-8e43-4c4c-8f5b-650fc159b2d0)
 
 This repo is currently a work in progress — PRs and issues welcome!
