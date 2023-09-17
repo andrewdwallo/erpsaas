@@ -27,6 +27,8 @@ use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use function Filament\authorize;
 
 /**
@@ -209,14 +211,19 @@ class Invoice extends Page
                         FileUpload::make('logo')
                             ->label('Logo')
                             ->disk('public')
-                            ->directory('logos/documents')
+                            ->directory('logos/document')
                             ->imageResizeMode('contain')
                             ->imagePreviewHeight('250')
                             ->imageCropAspectRatio('2:1')
+                            ->getUploadedFileNameForStorageUsing(
+                                static fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
+                                    ->prepend(Auth::user()->currentCompany->id . '_'),
+                            )
                             ->openable()
-                            ->preserveFilenames()
+                            ->maxSize(2048)
+                            ->image()
                             ->visibility('public')
-                            ->image(),
+                            ->acceptedFileTypes(['image/png', 'image/jpeg']),
                         Checkbox::make('show_logo')
                             ->label('Show Logo'),
                         ColorPicker::make('accent_color')
