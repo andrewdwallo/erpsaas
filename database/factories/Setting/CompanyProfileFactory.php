@@ -3,6 +3,7 @@
 namespace Database\Factories\Setting;
 
 use App\Enums\EntityType;
+use App\Events\CompanyGenerated;
 use App\Models\Setting\CompanyProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -42,6 +43,8 @@ class CompanyProfileFactory extends Factory
             $companyProfile->timezone = $this->faker->randomElement(CompanyProfile::getTimezoneOptions($companyProfile->country));
             $companyProfile->state = $this->faker->randomElement(CompanyProfile::getStateOptions($companyProfile->country));
             $companyProfile->save();
+
+            event(new CompanyGenerated($companyProfile->company->owner, $companyProfile->company, $companyProfile->country));
         });
     }
 }

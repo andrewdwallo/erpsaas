@@ -36,4 +36,24 @@ class CurrencyFactory extends Factory
             'enabled' => true,
         ];
     }
+
+    /**
+     * Define a state for a specific currency.
+     */
+    public function forCurrency(string $code): Factory
+    {
+        $currency = currency($code);
+
+        return $this->state([
+            'name' => $currency->getName(),
+            'code' => $currency->getCurrency(),
+            'rate' => $currency->getRate(),
+            'precision' => $currency->getPrecision(),
+            'symbol' => $currency->getSymbol(),
+            'symbol_first' => $currency->isSymbolFirst(),
+            'decimal_mark' => $currency->getDecimalMark(),
+            'thousands_separator' => $currency->getThousandsSeparator(),
+            'enabled' => true,
+        ]);
+    }
 }

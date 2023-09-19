@@ -2,9 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Models\Company;
+use App\Events\CompanyGenerated;
 use App\Services\CompanyDefaultService;
-use Wallo\FilamentCompanies\Events\CompanyCreated;
 
 class CreateCompanyDefaults
 {
@@ -19,14 +18,16 @@ class CreateCompanyDefaults
     /**
      * Handle the event.
      */
-    public function handle(CompanyCreated $event): void
+    public function handle(CompanyGenerated $event): void
     {
-        /** @var Company $company */
         $company = $event->company;
+        $country = $event->country;
+
+        $currencyCode = $country ? country($country)->getCurrency()['iso_4217_code'] : 'USD';
 
         $user = $company->owner;
 
         $companyDefaultService = new CompanyDefaultService();
-        $companyDefaultService->createCompanyDefaults($company, $user);
+        $companyDefaultService->createCompanyDefaults($company, $user, $currencyCode);
     }
 }

@@ -8,11 +8,11 @@ trait SyncsWithCompanyDefaults
 {
     public static function bootSyncsWithCompanyDefaults(): void
     {
-        static::creating(static function ($model) {
+        static::created(static function ($model) {
             event(new CompanyDefaultEvent($model));
         });
 
-        static::updating(static function ($model) {
+        static::updated(static function ($model) {
             event(new CompanyDefaultEvent($model));
         });
     }

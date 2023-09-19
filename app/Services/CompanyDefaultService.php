@@ -12,16 +12,15 @@ use App\Models\Setting\Discount;
 use App\Models\Setting\DocumentDefault;
 use App\Models\Setting\Tax;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CompanyDefaultService
 {
-    public function createCompanyDefaults(Company $company, User $user): void
+    public function createCompanyDefaults(Company $company, User $user, string $currencyCode): void
     {
-        DB::transaction(function () use ($company, $user) {
+        DB::transaction(function () use ($company, $user, $currencyCode) {
             $categories = $this->createCategories($company, $user);
-            $currency = $this->createCurrency($company, $user);
+            $currency = $this->createCurrency($company, $user, $currencyCode);
             $salesTax = $this->createSalesTax($company, $user);
             $purchaseTax = $this->createPurchaseTax($company, $user);
             $salesDiscount = $this->createSalesDiscount($company, $user);
@@ -42,7 +41,7 @@ class CompanyDefaultService
                 'updated_by' => $user->id,
             ];
 
-            CompanyDefault::updateOrInsert(['company_id' => $company->id], $companyDefaults);
+            CompanyDefault::firstOrCreate(['company_id' => $company->id], $companyDefaults);
         }, 5);
     }
 
@@ -93,9 +92,9 @@ class CompanyDefaultService
         ];
     }
 
-    private function createCurrency(Company $company, User $user)
+    private function createCurrency(Company $company, User $user, string $currencyCode)
     {
-        return Currency::factory()->create([
+        return Currency::factory()->forCurrency($currencyCode)->create([
             'company_id' => $company->id,
             'created_by' => $user->id,
             'updated_by' => $user->id,

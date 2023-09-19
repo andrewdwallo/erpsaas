@@ -3,6 +3,7 @@
 namespace App\Filament\Company\Pages;
 
 use App\Enums\EntityType;
+use App\Events\CompanyGenerated;
 use App\Models\Setting\CompanyProfile;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -69,6 +70,8 @@ class CreateCompany extends FilamentCreateCompany
         $user?->switchCompany($company);
 
         $name = $data['name'];
+
+        CompanyGenerated::dispatch($user, $company, $data['profile']['country']);
 
         $this->companyCreated($name);
 

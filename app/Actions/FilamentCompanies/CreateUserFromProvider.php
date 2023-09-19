@@ -46,7 +46,7 @@ class CreateUserFromProvider implements CreatesUserFromProvider
                     $this->createsConnectedAccounts->create($user, $provider, $providerUser)
                 );
 
-                $this->createCompany($user);
+                // $this->createCompany($user); // Commented out to prevent creating a company for a Socialite user
             });
         });
     }

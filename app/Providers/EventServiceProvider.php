@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\CompanyDefaultEvent;
 use App\Events\CompanyDefaultUpdated;
+use App\Events\CompanyGenerated;
 use App\Listeners\ConfigureCompanyDefault;
 use App\Listeners\CreateCompanyDefaults;
 use App\Listeners\SyncAssociatedModels;
@@ -12,7 +13,6 @@ use Filament\Events\TenantSet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Wallo\FilamentCompanies\Events\CompanyCreated;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -34,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
         TenantSet::class => [
             ConfigureCompanyDefault::class,
         ],
-        CompanyCreated::class => [
+        CompanyGenerated::class => [
             CreateCompanyDefaults::class,
         ],
     ];
