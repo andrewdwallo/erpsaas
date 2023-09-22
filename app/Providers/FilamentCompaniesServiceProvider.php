@@ -81,7 +81,6 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Indigo,
             ])
-            ->sidebarCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/company/theme.css')
             ->tenant(Company::class)
             ->tenantProfile(CompanySettings::class)

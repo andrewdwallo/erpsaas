@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\DocumentType;
 use App\Models\Banking\Account;
+use App\Models\Common\Contact;
+use App\Models\Core\Department;
 use App\Models\Setting\Appearance;
 use App\Models\Setting\Category;
 use App\Models\Setting\CompanyDefault;
@@ -75,6 +77,11 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         return $this->hasMany(Category::class, 'company_id');
     }
 
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class, 'company_id');
+    }
+
     public function currencies(): HasMany
     {
         return $this->hasMany(Currency::class, 'company_id');
@@ -95,6 +102,11 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     {
         return $this->hasOne(DocumentDefault::class, 'company_id')
             ->where('type', DocumentType::Invoice);
+    }
+
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class, 'company_id');
     }
 
     public function discounts(): HasMany

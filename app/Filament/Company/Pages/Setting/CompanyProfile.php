@@ -3,8 +3,6 @@
 namespace App\Filament\Company\Pages\Setting;
 
 use App\Enums\EntityType;
-use App\Events\CompanyDefaultUpdated;
-use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Component;
@@ -191,21 +189,21 @@ class CompanyProfile extends Page
                 Select::make('state')
                     ->label('State / Province')
                     ->searchable()
-                    ->native(false)
                     ->options(static fn (Get $get) => CompanyProfileModel::getStateOptions($get('country')))
                     ->nullable(),
                 Select::make('timezone')
                     ->label('Timezone')
-                    ->native(false)
+                    ->searchable()
                     ->options(static fn (Get $get) => CompanyProfileModel::getTimezoneOptions($get('country')))
                     ->nullable(),
                 TextInput::make('address')
                     ->label('Street Address')
                     ->maxLength(255)
                     ->nullable(),
-                TextInput::make('city')
+                Select::make('city_id')
                     ->label('City / Town')
-                    ->maxLength(255)
+                    ->searchable()
+                    ->options(static fn (Get $get) => CompanyProfileModel::getCityOptions($get('country'), $get('state')))
                     ->nullable(),
                 TextInput::make('zip_code')
                     ->label('Zip Code')

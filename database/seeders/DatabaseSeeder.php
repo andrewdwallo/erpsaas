@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Setting\Currency;
+use App\Enums\ContactType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -62,6 +59,15 @@ class DatabaseSeeder extends Seeder
 
                 // Generate random created_at date for the company_user pivot table (for employees)
                 $user->companies->first()?->users()->updateExistingPivot($user->id, ['created_at' => $userCreatedAt]);
+
+                // Create a contact for the user
+                $user->companies->first()?->contacts()->create([
+                    'type' => ContactType::Employee,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'created_by' => $user->id,
+                    'updated_by' => $user->id,
+                ]);
             }
         };
 

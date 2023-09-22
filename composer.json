@@ -18,7 +18,9 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "rinvex/countries": "^9.0"
+        "squirephp/countries-en": "^3.4",
+        "squirephp/regions-en": "^3.4",
+        "squirephp/timezones-en": "^3.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -34,7 +36,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

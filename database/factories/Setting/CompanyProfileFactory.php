@@ -26,7 +26,6 @@ class CompanyProfileFactory extends Factory
     {
         return [
             'address' => $this->faker->streetAddress,
-            'city' => $this->faker->city,
             'zip_code' => $this->faker->postcode,
             'country' => $this->faker->randomElement(CompanyProfile::getAvailableCountryCodes()),
             'phone_number' => $this->faker->e164PhoneNumber,

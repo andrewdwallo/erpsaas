@@ -9,7 +9,6 @@ use App\Enums\PrimaryColor;
 use App\Enums\RecordsPerPage;
 use App\Enums\TableSortDirection;
 use App\Models\Company;
-use Filament\Actions\Action;
 use Filament\Actions\MountableAction;
 use Filament\Events\TenantSet;
 use Filament\Facades\Filament;
@@ -53,10 +52,11 @@ class ConfigureCompanyDefault
 
         FilamentColor::swap($defaultColor);
 
-        Filament::getDefaultPanel()
+        Filament::getPanel('company')
             ->font($defaultFont)
             ->brandName($company->name)
             ->topNavigation($hasTopNavigation)
+            ->sidebarCollapsibleOnDesktop(!$hasTopNavigation)
             ->maxContentWidth($maxContentWidth);
     }
 }

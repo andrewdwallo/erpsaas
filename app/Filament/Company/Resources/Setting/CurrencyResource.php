@@ -3,22 +3,24 @@
 namespace App\Filament\Company\Resources\Setting;
 
 use App\Filament\Company\Resources\Setting\CurrencyResource\Pages;
-use App\Filament\Company\Resources\Setting\CurrencyResource\RelationManagers;
+use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
+use App\Traits\ChecksForeignKeyConstraints;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Wallo\FilamentSelectify\Components\ButtonGroup;
+use Illuminate\Database\Eloquent\Collection;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class CurrencyResource extends Resource
 {
+    use ChecksForeignKeyConstraints;
+
     protected static ?string $model = Currency::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
@@ -160,10 +162,69 @@ class CurrencyResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(static function (Tables\Actions\DeleteAction $action, Currency $record) {
+                        $defaultCurrency = $record->enabled;
+                        $modelsToCheck = [
+                            Account::class,
+                        ];
+
+                        $isUsed = self::isForeignKeyUsed('currency_code', $record->code, $modelsToCheck);
+
+                        if ($defaultCurrency) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Action Denied')
+                                ->body(__('The :name currency is currently set as the default currency and cannot be deleted. Please set a different currency as your default before attempting to delete this one.', ['name' => $record->name]))
+                                ->persistent()
+                                ->send();
+
+                            $action->cancel();
+                        } elseif ($isUsed) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Action Denied')
+                                ->body(__('The :name currency is currently in use by one or more accounts and cannot be deleted. Please remove this currency from all accounts before attempting to delete it.', ['name' => $record->name]))
+                                ->persistent()
+                                ->send();
+
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->before(static function (Tables\Actions\DeleteBulkAction $action, Collection $records) {
+                        foreach ($records as $record) {
+                            $defaultCurrency = $record->enabled;
+                            $modelsToCheck = [
+                                Account::class,
+                            ];
+
+                            $isUsed = self::isForeignKeyUsed('currency_code', $record->code, $modelsToCheck);
+
+                            if ($defaultCurrency) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Action Denied')
+                                    ->body(__('The :name currency is currently set as the default currency and cannot be deleted. Please set a different currency as your default before attempting to delete this one.', ['name' => $record->name]))
+                                    ->persistent()
+                                    ->send();
+
+                                $action->cancel();
+                            } elseif ($isUsed) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Action Denied')
+                                    ->body(__('The :name currency is currently in use by one or more accounts and cannot be deleted. Please remove this currency from all accounts before attempting to delete it.', ['name' => $record->name]))
+                                    ->persistent()
+                                    ->send();
+
+                                $action->cancel();
+                            }
+                        }
+                    }),
                 ]),
             ])
             ->emptyStateActions([

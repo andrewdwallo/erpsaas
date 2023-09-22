@@ -21,9 +21,12 @@ class CreateCompanyDefaults
     public function handle(CompanyGenerated $event): void
     {
         $company = $event->company;
-        $country = $event->country;
+        $countryCode = $event->country;
 
-        $currencyCode = $country ? country($country)->getCurrency()['iso_4217_code'] : 'USD';
+        $currencyId = country($countryCode)?->getCurrency();
+
+        $currencyData = currency($currencyId);
+        $currencyCode = $currencyData->getCurrency();
 
         $user = $company->owner;
 
