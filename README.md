@@ -67,7 +67,7 @@ Default login information:
     email: admin@gmail.com
     password: password
 
-Run the database seeder
+While your application is running, run the database seeder
 
     php artisan db:seed
 
