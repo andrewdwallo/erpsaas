@@ -7,13 +7,12 @@ use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
 use App\Traits\ChecksForeignKeyConstraints;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\{Forms, Tables};
 use Illuminate\Database\Eloquent\Collection;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
@@ -36,43 +35,43 @@ class CurrencyResource extends Resource
                 Forms\Components\Section::make('General')
                     ->schema([
                         Forms\Components\Select::make('code')
-                        ->label('Code')
-                        ->options(Currency::getAvailableCurrencyCodes())
-                        ->searchable()
-                        ->placeholder('Select a currency code...')
-                        ->live()
-                        ->required()
-                        ->hidden(static fn (Forms\Get $get): bool => $get('enabled'))
-                        ->afterStateUpdated(static function (Forms\Set $set, $state) {
-                            if ($state === null) {
-                                return;
-                            }
+                            ->label('Code')
+                            ->options(Currency::getAvailableCurrencyCodes())
+                            ->searchable()
+                            ->placeholder('Select a currency code...')
+                            ->live()
+                            ->required()
+                            ->hidden(static fn (Forms\Get $get): bool => $get('enabled'))
+                            ->afterStateUpdated(static function (Forms\Set $set, $state) {
+                                if ($state === null) {
+                                    return;
+                                }
 
-                            $code = $state;
+                                $code = $state;
 
-                            $allCurrencies = Currency::getAllCurrencies();
+                                $allCurrencies = Currency::getAllCurrencies();
 
-                            $selectedCurrencyCode = $allCurrencies[$code] ?? [];
+                                $selectedCurrencyCode = $allCurrencies[$code] ?? [];
 
-                            $currencyService = app(CurrencyService::class);
-                            $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
-                            $rate = 1;
+                                $currencyService = app(CurrencyService::class);
+                                $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
+                                $rate = 1;
 
-                            if ($defaultCurrencyCode !== null) {
-                                $rate = $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code);
-                            }
+                                if ($defaultCurrencyCode !== null) {
+                                    $rate = $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code);
+                                }
 
-                            $set('name', $selectedCurrencyCode['name'] ?? '');
-                            $set('rate', $rate);
-                            $set('precision', $selectedCurrencyCode['precision'] ?? '');
-                            $set('symbol', $selectedCurrencyCode['symbol'] ?? '');
-                            $set('symbol_first', $selectedCurrencyCode['symbol_first'] ?? '');
-                            $set('decimal_mark', $selectedCurrencyCode['decimal_mark'] ?? '');
-                            $set('thousands_separator', $selectedCurrencyCode['thousands_separator'] ?? '');
-                        }),
+                                $set('name', $selectedCurrencyCode['name'] ?? '');
+                                $set('rate', $rate);
+                                $set('precision', $selectedCurrencyCode['precision'] ?? '');
+                                $set('symbol', $selectedCurrencyCode['symbol'] ?? '');
+                                $set('symbol_first', $selectedCurrencyCode['symbol_first'] ?? '');
+                                $set('decimal_mark', $selectedCurrencyCode['decimal_mark'] ?? '');
+                                $set('thousands_separator', $selectedCurrencyCode['thousands_separator'] ?? '');
+                            }),
                         Forms\Components\TextInput::make('code')
                             ->label('Code')
-                            ->hidden(static fn (Forms\Get $get): bool => !$get('enabled'))
+                            ->hidden(static fn (Forms\Get $get): bool => ! $get('enabled'))
                             ->disabled(static fn (Forms\Get $get): bool => $get('enabled'))
                             ->required(),
                         Forms\Components\TextInput::make('name')
@@ -122,6 +121,10 @@ class CurrencyResource extends Resource
                                 if ($enabled) {
                                     $rate = 1;
                                 } else {
+                                    if ($code === null) {
+                                        return;
+                                    }
+
                                     $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
                                     $rate = $defaultCurrencyCode ? $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code) : 1;
                                 }
@@ -195,36 +198,36 @@ class CurrencyResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->before(static function (Tables\Actions\DeleteBulkAction $action, Collection $records) {
-                        foreach ($records as $record) {
-                            $defaultCurrency = $record->enabled;
-                            $modelsToCheck = [
-                                Account::class,
-                            ];
+                        ->before(static function (Tables\Actions\DeleteBulkAction $action, Collection $records) {
+                            foreach ($records as $record) {
+                                $defaultCurrency = $record->enabled;
+                                $modelsToCheck = [
+                                    Account::class,
+                                ];
 
-                            $isUsed = self::isForeignKeyUsed('currency_code', $record->code, $modelsToCheck);
+                                $isUsed = self::isForeignKeyUsed('currency_code', $record->code, $modelsToCheck);
 
-                            if ($defaultCurrency) {
-                                Notification::make()
-                                    ->danger()
-                                    ->title('Action Denied')
-                                    ->body(__('The :name currency is currently set as the default currency and cannot be deleted. Please set a different currency as your default before attempting to delete this one.', ['name' => $record->name]))
-                                    ->persistent()
-                                    ->send();
+                                if ($defaultCurrency) {
+                                    Notification::make()
+                                        ->danger()
+                                        ->title('Action Denied')
+                                        ->body(__('The :name currency is currently set as the default currency and cannot be deleted. Please set a different currency as your default before attempting to delete this one.', ['name' => $record->name]))
+                                        ->persistent()
+                                        ->send();
 
-                                $action->cancel();
-                            } elseif ($isUsed) {
-                                Notification::make()
-                                    ->danger()
-                                    ->title('Action Denied')
-                                    ->body(__('The :name currency is currently in use by one or more accounts and cannot be deleted. Please remove this currency from all accounts before attempting to delete it.', ['name' => $record->name]))
-                                    ->persistent()
-                                    ->send();
+                                    $action->cancel();
+                                } elseif ($isUsed) {
+                                    Notification::make()
+                                        ->danger()
+                                        ->title('Action Denied')
+                                        ->body(__('The :name currency is currently in use by one or more accounts and cannot be deleted. Please remove this currency from all accounts before attempting to delete it.', ['name' => $record->name]))
+                                        ->persistent()
+                                        ->send();
 
-                                $action->cancel();
+                                    $action->cancel();
+                                }
                             }
-                        }
-                    }),
+                        }),
                 ]),
             ])
             ->emptyStateActions([

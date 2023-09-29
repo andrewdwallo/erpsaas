@@ -37,7 +37,7 @@ enum PrimaryColor: string implements HasColor
 
     public const DEFAULT = self::Indigo->value;
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Slate => Color::Slate,

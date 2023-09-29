@@ -2,48 +2,24 @@
 
 namespace App\Providers;
 
-use App\Actions\FilamentCompanies\AddCompanyEmployee;
-use App\Actions\FilamentCompanies\CreateConnectedAccount;
-use App\Actions\FilamentCompanies\CreateNewUser;
-use App\Actions\FilamentCompanies\CreateUserFromProvider;
-use App\Actions\FilamentCompanies\DeleteCompany;
-use App\Actions\FilamentCompanies\DeleteUser;
-use App\Actions\FilamentCompanies\HandleInvalidState;
-use App\Actions\FilamentCompanies\InviteCompanyEmployee;
-use App\Actions\FilamentCompanies\RemoveCompanyEmployee;
-use App\Actions\FilamentCompanies\ResolveSocialiteUser;
-use App\Actions\FilamentCompanies\SetUserPassword;
-use App\Actions\FilamentCompanies\UpdateCompanyName;
-use App\Actions\FilamentCompanies\UpdateConnectedAccount;
-use App\Actions\FilamentCompanies\UpdateUserPassword;
-use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
+use App\Actions\FilamentCompanies\{AddCompanyEmployee, CreateConnectedAccount, CreateNewUser, CreateUserFromProvider, DeleteCompany, DeleteUser, HandleInvalidState, InviteCompanyEmployee, RemoveCompanyEmployee, ResolveSocialiteUser, SetUserPassword, UpdateCompanyName, UpdateConnectedAccount, UpdateUserPassword, UpdateUserProfileInformation};
 use App\Filament\Company\Pages\CreateCompany;
-use Illuminate\Support\Facades\Auth;
-use Wallo\FilamentCompanies\Actions\GenerateRedirectForProvider;
-use Wallo\FilamentCompanies\Pages\Auth\Login;
-use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
-use Filament\Navigation\MenuItem;
-use Wallo\FilamentCompanies\Pages\Auth\Register;
 use App\Models\Company;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\PanelProvider;
+use Filament\Http\Middleware\{Authenticate, DisableBladeIconComponents, DispatchServingFilamentEvent};
+use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\{Pages, Panel, PanelProvider, Widgets};
+use Illuminate\Cookie\Middleware\{AddQueuedCookiesToResponse, EncryptCookies};
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\Middleware\{AuthenticateSession, StartSession};
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Wallo\FilamentCompanies\FilamentCompanies;
+use Wallo\FilamentCompanies\Actions\GenerateRedirectForProvider;
+use Wallo\FilamentCompanies\Pages\Auth\{Login, Register};
+use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
 use Wallo\FilamentCompanies\Pages\User\Profile;
-use Wallo\FilamentCompanies\Providers;
-use Wallo\FilamentCompanies\Socialite;
+use Wallo\FilamentCompanies\{FilamentCompanies, Providers, Socialite};
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {

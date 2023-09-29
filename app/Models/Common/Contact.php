@@ -5,20 +5,18 @@ namespace App\Models\Common;
 use App\Enums\ContactType;
 use App\Models\Core\Department;
 use App\Models\Setting\Currency;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Common\ContactFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Contact extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'contacts';
 
@@ -30,7 +28,7 @@ class Contact extends Model
         'address',
         'city_id',
         'zip_code',
-        'state',
+        'state_id',
         'country',
         'timezone',
         'language',

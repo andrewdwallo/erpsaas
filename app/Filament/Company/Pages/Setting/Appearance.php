@@ -2,18 +2,10 @@
 
 namespace App\Filament\Company\Pages\Setting;
 
-use App\Enums\Font;
-use App\Enums\MaxContentWidth;
-use App\Enums\ModalWidth;
-use App\Enums\PrimaryColor;
-use App\Enums\RecordsPerPage;
-use App\Enums\TableSortDirection;
+use App\Enums\{Font, MaxContentWidth, ModalWidth, PrimaryColor, RecordsPerPage, TableSortDirection};
 use App\Models\Setting\Appearance as AppearanceModel;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
+use Filament\Actions\{Action, ActionGroup};
+use Filament\Forms\Components\{Component, Section, Select};
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
@@ -22,8 +14,8 @@ use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
-use Wallo\FilamentSelectify\Components\ButtonGroup;
-use Wallo\FilamentSelectify\Components\ToggleButton;
+use Wallo\FilamentSelectify\Components\{ButtonGroup, ToggleButton};
+
 use function Filament\authorize;
 
 /**
@@ -146,13 +138,14 @@ class Appearance extends Page
                     ->allowHtml()
                     ->selectablePlaceholder(false)
                     ->rule('required')
-                    ->options(collect(PrimaryColor::cases())
-                        ->mapWithKeys(static fn ($case) => [
-                            $case->value => "<span class='flex items-center gap-x-4'>
+                    ->options(
+                        collect(PrimaryColor::cases())
+                            ->mapWithKeys(static fn ($case) => [
+                                $case->value => "<span class='flex items-center gap-x-4'>
                                 <span class='rounded-full w-4 h-4' style='background:rgb(" . $case->getColor()[600] . ")'></span>
-                                <span>" . str($case->value)->title() . "</span>
-                                </span>"
-                        ]),
+                                <span>" . str($case->value)->title() . '</span>
+                                </span>',
+                            ]),
                     ),
                 Select::make('font')
                     ->label('Font')
@@ -160,10 +153,11 @@ class Appearance extends Page
                     ->selectablePlaceholder(false)
                     ->rule('required')
                     ->allowHtml()
-                    ->options(collect(Font::cases())
-                        ->mapWithKeys(static fn ($case) => [
-                            $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>"
-                        ]),
+                    ->options(
+                        collect(Font::cases())
+                            ->mapWithKeys(static fn ($case) => [
+                                $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>",
+                            ]),
                     ),
             ])->columns();
     }

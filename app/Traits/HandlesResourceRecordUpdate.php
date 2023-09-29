@@ -5,8 +5,7 @@ namespace App\Traits;
 use App\Models\User;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -16,14 +15,14 @@ trait HandlesResourceRecordUpdate
     /**
      * @throws Halt
      */
-    protected function handleRecordUpdateWithUniqueField(Model $record, array $data, User $user, string|null $uniqueField = null): Model
+    protected function handleRecordUpdateWithUniqueField(Model $record, array $data, User $user, ?string $uniqueField = null): Model
     {
         try {
             return DB::transaction(function () use ($user, $uniqueField, $record, $data) {
                 $companyId = $user->currentCompany->id;
                 $oldValue = $uniqueField ? $record->{$uniqueField} : null;
                 $newValue = $uniqueField ? $data[$uniqueField] : null;
-                $enabled = (bool)($data['enabled'] ?? false);
+                $enabled = (bool) ($data['enabled'] ?? false);
 
                 if ($oldValue !== $newValue && $record->enabled) {
                     $this->toggleRecord($companyId, $record, $uniqueField, $oldValue, false, true);
@@ -70,7 +69,7 @@ trait HandlesResourceRecordUpdate
             ->where('id', '!=', $record->id)
             ->where('enabled', $enabled);
 
-        if($uniqueField){
+        if ($uniqueField) {
             $query->where($uniqueField, $value);
         }
 

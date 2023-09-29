@@ -4,11 +4,9 @@ namespace App\Models\Banking;
 
 use App\Casts\MoneyCast;
 use App\Models\Setting\Currency;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Banking\AccountFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Tags\HasTags;
@@ -16,7 +14,10 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Account extends Model
 {
-    use Blamable, CompanyOwned, HasTags, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
+    use HasTags;
 
     protected $table = 'accounts';
 

@@ -3,27 +3,21 @@
 namespace App\Filament\Company\Pages\Setting;
 
 use App\Enums\EntityType;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
+use App\Models\Locale\{City, Country, State, Timezone};
+use App\Models\Setting\CompanyProfile as CompanyProfileModel;
+use Filament\Actions\{Action, ActionGroup};
+use Filament\Forms\Components\{Component, DatePicker, FileUpload, Group, Section, Select, TextInput};
+use Filament\Forms\{Form, Get, Set};
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
-use App\Models\Setting\CompanyProfile as CompanyProfileModel;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 use function Filament\authorize;
 
 /**
@@ -171,7 +165,7 @@ class CompanyProfile extends Page
                             ->label('Phone Number')
                             ->tel()
                             ->nullable(),
-                    ])->columns(1)
+                    ])->columns(1),
             ])->columns();
     }
 
@@ -184,17 +178,23 @@ class CompanyProfile extends Page
                     ->native(false)
                     ->live()
                     ->searchable()
-                    ->options(CompanyProfileModel::getAvailableCountryOptions())
+                    ->options(Country::getAvailableCountryOptions())
+                    ->afterStateUpdated(static function (Set $set) {
+                        $set('state_id', null);
+                        $set('timezone', null);
+                        $set('city_id', null);
+                    })
                     ->required(),
-                Select::make('state')
+                Select::make('state_id')
                     ->label('State / Province')
                     ->searchable()
-                    ->options(static fn (Get $get) => CompanyProfileModel::getStateOptions($get('country')))
+                    ->live()
+                    ->options(static fn (Get $get) => State::getStateOptions($get('country')))
                     ->nullable(),
                 Select::make('timezone')
                     ->label('Timezone')
                     ->searchable()
-                    ->options(static fn (Get $get) => CompanyProfileModel::getTimezoneOptions($get('country')))
+                    ->options(static fn (Get $get) => Timezone::getTimezoneOptions($get('country')))
                     ->nullable(),
                 TextInput::make('address')
                     ->label('Street Address')
@@ -203,7 +203,7 @@ class CompanyProfile extends Page
                 Select::make('city_id')
                     ->label('City / Town')
                     ->searchable()
-                    ->options(static fn (Get $get) => CompanyProfileModel::getCityOptions($get('country'), $get('state')))
+                    ->options(static fn (Get $get) => City::getCityOptions($get('country'), $get('state_id')))
                     ->nullable(),
                 TextInput::make('zip_code')
                     ->label('Zip Code')

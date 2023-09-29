@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Company;
 use App\Models\Setting\CompanyProfile;
-use App\Models\User;
+use App\Models\{Company, User};
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Wallo\FilamentCompanies\Features;
@@ -61,7 +60,7 @@ class UserFactory extends Factory
             Company::factory()
                 ->has(CompanyProfile::factory(), 'profile')
                 ->state(function (array $attributes, User $user) {
-                    return ['name' => $user->name.'\'s Company', 'user_id' => $user->id, 'personal_company' => true];
+                    return ['name' => $user->name . '\'s Company', 'user_id' => $user->id, 'personal_company' => true];
                 }),
             'ownedCompanies'
         );

@@ -22,7 +22,7 @@ class CreateCategory extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -34,7 +34,7 @@ class CreateCategory extends CreateRecord
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found');
         }
 

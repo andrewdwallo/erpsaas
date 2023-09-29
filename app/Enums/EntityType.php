@@ -26,5 +26,4 @@ enum EntityType: string implements HasLabel
             self::Nonprofit => 'Nonprofit',
         };
     }
-
 }

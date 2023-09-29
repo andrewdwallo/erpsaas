@@ -30,7 +30,7 @@ class EditCurrency extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -42,7 +42,7 @@ class EditCurrency extends EditRecord
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found');
         }
 

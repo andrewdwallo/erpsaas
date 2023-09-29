@@ -17,7 +17,7 @@ class ResolveSocialiteUser implements ResolvesSocialiteUsers
         $user = Socialite::driver($provider)->user();
 
         if (FilamentCompaniesSocialite::generatesMissingEmails()) {
-            $user->email = $user->getEmail() ?? ("{$user->id}@{$provider}".config('app.domain'));
+            $user->email = $user->getEmail() ?? ("{$user->id}@{$provider}" . config('app.domain'));
         }
 
         return $user;

@@ -2,23 +2,16 @@
 
 namespace App\Filament\Company\Resources\Setting;
 
-use App\Enums\TaxComputation;
-use App\Enums\TaxScope;
-use App\Enums\TaxType;
+use App\Enums\{TaxComputation, TaxScope, TaxType};
 use App\Filament\Company\Resources\Setting\TaxResource\Pages;
-use App\Filament\Company\Resources\Setting\TaxResource\RelationManagers;
-use App\Models\Setting\Category;
 use App\Models\Setting\Tax;
 use Closure;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\{Forms, Tables};
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class TaxResource extends Resource
@@ -45,9 +38,9 @@ class TaxResource extends Resource
                             ->rule(static function (Forms\Get $get, Forms\Components\Component $component): Closure {
                                 return static function (string $attribute, $value, Closure $fail) use ($get, $component) {
                                     $existingCategory = Tax::where('company_id', auth()->user()->currentCompany->id)
-                                                                ->where('name', $value)
-                                                                ->where('type', $get('type'))
-                                                                ->first();
+                                        ->where('name', $value)
+                                        ->where('type', $get('type'))
+                                        ->first();
 
                                     if ($existingCategory && $existingCategory->getKey() !== $component->getRecord()?->getKey()) {
                                         $type = $get('type')->getLabel();
@@ -154,10 +147,11 @@ class TaxResource extends Resource
                                     ->danger()
                                     ->title('Action Denied')
                                     ->body(static function () use ($defaultTaxNames) {
-                                        $message = __('The following taxes are currently set as your default and cannot be deleted. Please set a different tax as your default before attempting to delete these ones.') . "<br><br>";
-                                        $message .= implode("<br>", array_map(static function ($name) {
-                                            return "&bull; " . $name;
+                                        $message = __('The following taxes are currently set as your default and cannot be deleted. Please set a different tax as your default before attempting to delete these ones.') . '<br><br>';
+                                        $message .= implode('<br>', array_map(static function ($name) {
+                                            return '&bull; ' . $name;
                                         }, $defaultTaxNames));
+
                                         return $message;
                                     })
                                     ->persistent()

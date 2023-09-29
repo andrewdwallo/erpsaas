@@ -2,12 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enums\Font;
-use App\Enums\MaxContentWidth;
-use App\Enums\ModalWidth;
-use App\Enums\PrimaryColor;
-use App\Enums\RecordsPerPage;
-use App\Enums\TableSortDirection;
+use App\Enums\{Font, MaxContentWidth, ModalWidth, PrimaryColor, RecordsPerPage, TableSortDirection};
 use App\Models\Company;
 use Filament\Actions\MountableAction;
 use Filament\Events\TenantSet;
@@ -56,7 +51,7 @@ class ConfigureCompanyDefault
             ->font($defaultFont)
             ->brandName($company->name)
             ->topNavigation($hasTopNavigation)
-            ->sidebarCollapsibleOnDesktop(!$hasTopNavigation)
+            ->sidebarCollapsibleOnDesktop(! $hasTopNavigation)
             ->maxContentWidth($maxContentWidth);
     }
 }

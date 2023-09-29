@@ -6,31 +6,16 @@ use App\Enums\DocumentType;
 use App\Models\Banking\Account;
 use App\Models\Common\Contact;
 use App\Models\Core\Department;
-use App\Models\Setting\Appearance;
-use App\Models\Setting\Category;
-use App\Models\Setting\CompanyDefault;
-use App\Models\Setting\CompanyProfile;
-use App\Models\Setting\Currency;
-use App\Models\Setting\Discount;
-use App\Models\Setting\DocumentDefault;
-use App\Models\Setting\Tax;
+use App\Models\Setting\{Appearance, Category, CompanyDefault, CompanyProfile, Currency, Discount, DocumentDefault, Tax};
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\{HasMany, HasOne};
 use Wallo\FilamentCompanies\Company as FilamentCompaniesCompany;
-use Wallo\FilamentCompanies\Events\CompanyCreated;
-use Wallo\FilamentCompanies\Events\CompanyDeleted;
-use Wallo\FilamentCompanies\Events\CompanyUpdated;
+use Wallo\FilamentCompanies\Events\{CompanyCreated, CompanyDeleted, CompanyUpdated};
 
 class Company extends FilamentCompaniesCompany implements HasAvatar
 {
     use HasFactory;
-
-    public function getFilamentAvatarUrl(): string
-    {
-        return $this->owner->profile_photo_url;
-    }
 
     /**
      * The attributes that should be cast.
@@ -61,6 +46,11 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         'updated' => CompanyUpdated::class,
         'deleted' => CompanyDeleted::class,
     ];
+
+    public function getFilamentAvatarUrl(): string
+    {
+        return $this->owner->profile_photo_url;
+    }
 
     public function accounts(): HasMany
     {

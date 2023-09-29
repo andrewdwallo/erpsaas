@@ -4,11 +4,8 @@ namespace App\Filament\Company\Pages\Setting;
 
 use App\Events\CompanyDefaultUpdated;
 use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
+use Filament\Actions\{Action, ActionGroup};
+use Filament\Forms\Components\{Component, Section, Select};
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
@@ -17,6 +14,7 @@ use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
+
 use function Filament\authorize;
 
 /**

@@ -2,11 +2,9 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\Company;
-use App\Models\User;
+use App\Models\{Company, User};
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Gate, Validator};
 use Wallo\FilamentCompanies\Contracts\CreatesCompanies;
 use Wallo\FilamentCompanies\Events\AddingCompany;
 use Wallo\FilamentCompanies\FilamentCompanies;

@@ -3,25 +3,17 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\MenuItem;
-use Filament\Navigation\NavigationItem;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\PanelProvider;
+use Filament\Http\Middleware\{DisableBladeIconComponents, DispatchServingFilamentEvent};
+use Filament\Navigation\{MenuItem, NavigationItem};
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\{Pages, Panel, PanelProvider, Widgets};
+use Illuminate\Cookie\Middleware\{AddQueuedCookiesToResponse, EncryptCookies};
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\Middleware\{AuthenticateSession, StartSession};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Wallo\FilamentCompanies\Pages\User\PersonalAccessTokens;
-use Wallo\FilamentCompanies\Pages\User\Profile;
+use Wallo\FilamentCompanies\Pages\User\{PersonalAccessTokens, Profile};
 
 class UserPanelProvider extends PanelProvider
 {

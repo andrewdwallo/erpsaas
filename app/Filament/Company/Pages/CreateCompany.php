@@ -4,13 +4,11 @@ namespace App\Filament\Company\Pages;
 
 use App\Enums\EntityType;
 use App\Events\CompanyGenerated;
-use App\Models\Setting\CompanyProfile;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use App\Models\Locale\Country;
+use Filament\Forms\Components\{Select, TextInput};
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\{Auth, Gate};
 use Wallo\FilamentCompanies\Events\AddingCompany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Company\CreateCompany as FilamentCreateCompany;
@@ -39,7 +37,7 @@ class CreateCompany extends FilamentCreateCompany
                     ->label('Country')
                     ->native(false)
                     ->searchable()
-                    ->options(CompanyProfile::getAvailableCountryOptions())
+                    ->options(Country::getAvailableCountryOptions())
                     ->required(),
             ])
             ->model(FilamentCompanies::companyModel())

@@ -3,22 +3,19 @@
 namespace App\Models\Setting;
 
 use App\Enums\EntityType;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Models\Locale\Country;
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Setting\CompanyProfileFactory;
-use DateTime;
-use DateTimeZone;
-use Exception;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Squire\Models\Timezone;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class CompanyProfile extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'company_profiles';
 
@@ -28,7 +25,7 @@ class CompanyProfile extends Model
         'address',
         'city_id',
         'zip_code',
-        'state',
+        'state_id',
         'country',
         'timezone',
         'phone_number',
@@ -62,96 +59,9 @@ class CompanyProfile extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
-
     public function getCountryName(): string
     {
-        return country($this->country)?->getName();
-    }
-
-    public static function getAvailableCountryCodes(): array
-    {
-        return countries()->pluck('iso2')->toArray();
-    }
-
-    public static function getAvailableCountryOptions(): array
-    {
-        $countries = countries();
-
-        return $countries->mapWithKeys(static function ($country): array {
-            return [$country['iso2'] => $country['name'] . ' ' . $country['emoji']];
-        })->toArray();
-    }
-
-    public static function getAvailableCountryNames(): array
-    {
-        return countries()->pluck('name')->toArray();
-    }
-
-    public static function getAvailableCountryEmojis(): array
-    {
-        return countries()->pluck('emoji')->toArray();
-    }
-
-    public static function getStateOptions(?string $countryCode = null): array
-    {
-        if (empty($countryCode)) {
-            return [];
-        }
-
-        $states = states($countryCode);
-
-        return $states->mapWithKeys(static function ($state): array {
-            return [$state['state_code'] => $state['name']];
-        })->toArray();
-    }
-
-    public static function getCityOptions(?string $countryCode = null, ?string $stateCode = null): array
-    {
-        if (empty($countryCode) || empty($stateCode)) {
-            return [];
-        }
-
-        $cities = cities($countryCode, $stateCode);
-
-        return $cities->mapWithKeys(static function ($city): array {
-            return [$city['id'] => $city['name']];
-        })->toArray();
-    }
-
-    public static function getTimezoneOptions(?string $countryCode = null): array
-    {
-        if (empty($countryCode)) {
-            return [];
-        }
-
-        // convert countryCode to lowercase
-        $countryCode = strtolower($countryCode);
-
-        $timezones = Timezone::where('country_id', $countryCode)->get();
-
-        if (!$timezones->isEmpty()) {
-            return $timezones->mapWithKeys(static function ($timezone): array {
-                $localTime = self::getLocalTime($timezone->code);
-                $parts = explode('/', $timezone->code);
-                $cityName = str_replace('_', ' ', end($parts));
-                $offsetInSeconds = $timezone->getOffset(now());
-                $hours = floor($offsetInSeconds / 3600);
-                $minutes = floor(($offsetInSeconds / 60) % 60);
-                $gmtOffsetName = sprintf("UTC%+d:%02d", $hours, $minutes);
-
-                return [$timezone->code => $cityName . ' (' . $gmtOffsetName . ') ' . $localTime];
-            })->toArray();
-        }
-
-        return [];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function getLocalTime(string $timezone): string
-    {
-        return (new DateTime('now', new DateTimeZone($timezone)))->format('g:i A');
+        return Country::findByIsoCode2($this->country)?->name ?? '';
     }
 
     protected static function newFactory(): Factory

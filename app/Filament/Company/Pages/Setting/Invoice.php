@@ -2,25 +2,11 @@
 
 namespace App\Filament\Company\Pages\Setting;
 
-use App\Enums\DocumentType;
-use App\Enums\Font;
-use App\Enums\PaymentTerms;
-use App\Enums\Template;
+use App\Enums\{DocumentType, Font, PaymentTerms, Template};
 use App\Models\Setting\DocumentDefault as InvoiceModel;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ViewField;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
+use Filament\Actions\{Action, ActionGroup};
+use Filament\Forms\Components\{Checkbox, ColorPicker, Component, FileUpload, Group, Section, Select, TextInput, Textarea, ViewField};
+use Filament\Forms\{Form, Get};
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
@@ -29,6 +15,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 use function Filament\authorize;
 
 /**
@@ -234,10 +221,11 @@ class Invoice extends Page
                             ->selectablePlaceholder(false)
                             ->rule('required')
                             ->allowHtml()
-                            ->options(collect(Font::cases())
-                                ->mapWithKeys(static fn ($case) => [
-                                    $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>"
-                                ]),
+                            ->options(
+                                collect(Font::cases())
+                                    ->mapWithKeys(static fn ($case) => [
+                                        $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>",
+                                    ]),
                             ),
                         Select::make('template')
                             ->label('Template')

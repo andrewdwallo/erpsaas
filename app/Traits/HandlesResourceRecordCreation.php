@@ -15,11 +15,11 @@ trait HandlesResourceRecordCreation
     /**
      * @throws Halt
      */
-    protected function handleRecordCreationWithUniqueField(array $data, Model $model, User $user, string|null $uniqueField = null, ?string $uniqueFieldValue = null): Model
+    protected function handleRecordCreationWithUniqueField(array $data, Model $model, User $user, ?string $uniqueField = null, ?string $uniqueFieldValue = null): Model
     {
         try {
             return DB::transaction(function () use ($data, $user, $model, $uniqueField, $uniqueFieldValue) {
-                $enabled = (bool)($data['enabled'] ?? false);
+                $enabled = (bool) ($data['enabled'] ?? false);
 
                 if ($enabled === true) {
                     $this->disableExistingRecord($user->currentCompany->id, $model, $uniqueField, $uniqueFieldValue);
@@ -40,12 +40,12 @@ trait HandlesResourceRecordCreation
         }
     }
 
-    protected function disableExistingRecord(int $companyId, Model $model, string|null $uniqueField = null, string|null $uniqueFieldValue = null): void
+    protected function disableExistingRecord(int $companyId, Model $model, ?string $uniqueField = null, ?string $uniqueFieldValue = null): void
     {
         $query = $model::query()->where('company_id', $companyId)
             ->where('enabled', true);
 
-        if($uniqueField && $uniqueFieldValue){
+        if ($uniqueField && $uniqueFieldValue) {
             $query->where($uniqueField, $uniqueFieldValue);
         }
 
@@ -57,12 +57,12 @@ trait HandlesResourceRecordCreation
         }
     }
 
-    protected function ensureAtLeastOneEnabled(int $companyId, Model $model, bool &$enabled, string|null $uniqueField = null, string|null $uniqueFieldValue = null): void
+    protected function ensureAtLeastOneEnabled(int $companyId, Model $model, bool &$enabled, ?string $uniqueField = null, ?string $uniqueFieldValue = null): void
     {
         $query = $model::query()->where('company_id', $companyId)
             ->where('enabled', true);
 
-        if($uniqueField && $uniqueFieldValue){
+        if ($uniqueField && $uniqueFieldValue) {
             $query->where($uniqueField, $uniqueFieldValue);
         }
 

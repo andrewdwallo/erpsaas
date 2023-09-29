@@ -3,15 +3,8 @@
 namespace App\Services;
 
 use App\Enums\CategoryType;
-use App\Models\Company;
-use App\Models\Setting\Appearance;
-use App\Models\Setting\Category;
-use App\Models\Setting\CompanyDefault;
-use App\Models\Setting\Currency;
-use App\Models\Setting\Discount;
-use App\Models\Setting\DocumentDefault;
-use App\Models\Setting\Tax;
-use App\Models\User;
+use App\Models\Setting\{Appearance, Category, CompanyDefault, Currency, Discount, DocumentDefault, Tax};
+use App\Models\{Company, User};
 use Illuminate\Support\Facades\DB;
 
 class CompanyDefaultService
@@ -64,9 +57,9 @@ class CompanyDefaultService
 
         foreach ($shuffledCategories as $category) {
             $enabled = false;
-            if (!$incomeEnabled && $category['type'] === CategoryType::Income->value) {
+            if (! $incomeEnabled && $category['type'] === CategoryType::Income->value) {
                 $enabled = $incomeEnabled = true;
-            } elseif (!$expenseEnabled && $category['type'] === CategoryType::Expense->value) {
+            } elseif (! $expenseEnabled && $category['type'] === CategoryType::Expense->value) {
                 $enabled = $expenseEnabled = true;
             }
 
@@ -160,5 +153,4 @@ class CompanyDefaultService
             'updated_by' => $user->id,
         ]);
     }
-
 }

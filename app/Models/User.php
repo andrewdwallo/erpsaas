@@ -3,10 +3,7 @@
 namespace App\Models;
 
 use App\Models\Core\Department;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasAvatar;
-use Filament\Models\Contracts\HasDefaultTenant;
-use Filament\Models\Contracts\HasTenants;
+use Filament\Models\Contracts\{FilamentUser, HasAvatar, HasDefaultTenant, HasTenants};
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,51 +12,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
-use Wallo\FilamentCompanies\HasCompanies;
-use Wallo\FilamentCompanies\HasConnectedAccounts;
-use Wallo\FilamentCompanies\HasProfilePhoto;
-use Wallo\FilamentCompanies\SetsProfilePhotoFromUrl;
+use Wallo\FilamentCompanies\{HasCompanies, HasConnectedAccounts, HasProfilePhoto, SetsProfilePhotoFromUrl};
 
 /** @property Company $currentCompany */
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
     use HasCompanies;
     use HasConnectedAccounts;
+    use HasFactory;
+    use HasProfilePhoto;
     use Notifiable;
     use SetsProfilePhotoFromUrl;
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return true;
-    }
-
-    public function getTenants(Panel $panel): array|Collection
-    {
-        return $this->allCompanies();
-    }
-
-    public function canAccessTenant(Model $tenant): bool
-    {
-        return $this->belongsToCompany($tenant);
-    }
-
-    public function getDefaultTenant(Panel $panel): ?Model
-    {
-        return $this->currentCompany;
-    }
-
-    public function getFilamentAvatarUrl(): string
-    {
-        return $this->profile_photo_url;
-    }
-
-    public function managers(): HasMany
-    {
-        return $this->hasMany(Department::class, 'manager_id');
-    }
 
     /**
      * The attributes that are mass assignable.
@@ -97,4 +61,34 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function getTenants(Panel $panel): array | Collection
+    {
+        return $this->allCompanies();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->belongsToCompany($tenant);
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->currentCompany;
+    }
+
+    public function getFilamentAvatarUrl(): string
+    {
+        return $this->profile_photo_url;
+    }
+
+    public function managers(): HasMany
+    {
+        return $this->hasMany(Department::class, 'manager_id');
+    }
 }

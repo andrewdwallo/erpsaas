@@ -5,7 +5,6 @@ namespace App\Filament\Company\Resources\Setting\CurrencyResource\Pages;
 use App\Filament\Company\Resources\Setting\CurrencyResource;
 use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordCreation;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +23,7 @@ class CreateCurrency extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -36,7 +35,7 @@ class CreateCurrency extends CreateRecord
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found');
         }
 

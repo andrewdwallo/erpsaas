@@ -2,14 +2,11 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\Company;
-use App\Models\User;
+use App\Models\{Company, User};
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as ProviderUserContract;
-use Wallo\FilamentCompanies\Contracts\CreatesConnectedAccounts;
-use Wallo\FilamentCompanies\Contracts\CreatesUserFromProvider;
-use Wallo\FilamentCompanies\Features;
-use Wallo\FilamentCompanies\Socialite;
+use Wallo\FilamentCompanies\Contracts\{CreatesConnectedAccounts, CreatesUserFromProvider};
+use Wallo\FilamentCompanies\{Features, Socialite};
 
 class CreateUserFromProvider implements CreatesUserFromProvider
 {
@@ -65,7 +62,7 @@ class CreateUserFromProvider implements CreatesUserFromProvider
     {
         $user->ownedCompanies()->save(Company::forceCreate([
             'user_id' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Company",
+            'name' => explode(' ', $user->name, 2)[0] . "'s Company",
             'personal_company' => true,
         ]));
     }

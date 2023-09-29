@@ -2,12 +2,7 @@
 
 namespace App\View\Models;
 
-use App\Enums\DocumentAmountColumn;
-use App\Enums\DocumentItemColumn;
-use App\Enums\DocumentPriceColumn;
-use App\Enums\DocumentUnitColumn;
-use App\Enums\Font;
-use App\Enums\PaymentTerms;
+use App\Enums\{Font, PaymentTerms};
 use App\Models\Setting\DocumentDefault;
 use Filament\Panel\Concerns\HasFont;
 

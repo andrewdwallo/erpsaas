@@ -2,9 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enums\CategoryType;
-use App\Enums\DiscountType;
-use App\Enums\TaxType;
+use App\Enums\{CategoryType, DiscountType, TaxType};
 use App\Events\CompanyDefaultEvent;
 use App\Models\Setting\CompanyDefault;
 use Illuminate\Support\Facades\DB;
@@ -33,13 +31,13 @@ class SyncWithCompanyDefaults
     {
         $model = $event->model;
 
-        if (!$model->getAttribute('enabled') || !auth()->check() || !auth()->user()->currentCompany) {
+        if (! $model->getAttribute('enabled') || ! auth()->check() || ! auth()->user()->currentCompany) {
             return;
         }
 
         $companyId = auth()->user()->currentCompany->id;
 
-        if (!$companyId) {
+        if (! $companyId) {
             return;
         }
 
@@ -90,5 +88,4 @@ class SyncWithCompanyDefaults
             $type === CategoryType::Expense => $default->expense_category_id = $key,
         };
     }
-
 }

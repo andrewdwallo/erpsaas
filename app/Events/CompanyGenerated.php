@@ -2,17 +2,19 @@
 
 namespace App\Events;
 
-use App\Models\Company;
-use App\Models\User;
+use App\Models\{Company, User};
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class CompanyGenerated
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public User $user;
+
     public Company $company;
+
     public string $country;
 
     /**

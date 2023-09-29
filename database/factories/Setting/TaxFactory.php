@@ -2,9 +2,7 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\TaxComputation;
-use App\Enums\TaxScope;
-use App\Enums\TaxType;
+use App\Enums\{TaxComputation, TaxScope, TaxType};
 use App\Models\Setting\Tax;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -2,11 +2,8 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\Company;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\Models\{Company, User};
+use Illuminate\Support\Facades\{DB, Hash, Validator};
 use Wallo\FilamentCompanies\Contracts\CreatesNewUsers;
 use Wallo\FilamentCompanies\Features;
 
@@ -44,7 +41,7 @@ class CreateNewUser implements CreatesNewUsers
     {
         $user->ownedCompanies()->save(Company::forceCreate([
             'user_id' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Company",
+            'name' => explode(' ', $user->name, 2)[0] . "'s Company",
             'personal_company' => true,
         ]));
     }

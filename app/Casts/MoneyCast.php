@@ -26,7 +26,7 @@ class MoneyCast implements CastsAttributes
 
         $currency_code = $model->currency_code ?? Currency::getDefaultCurrencyCode();
 
-        if (!$currency_code) {
+        if (! $currency_code) {
             throw new UnexpectedValueException('Currency code is not set');
         }
 

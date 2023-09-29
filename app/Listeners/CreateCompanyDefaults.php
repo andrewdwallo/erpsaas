@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CompanyGenerated;
+use App\Models\Locale\Country;
 use App\Services\CompanyDefaultService;
 
 class CreateCompanyDefaults
@@ -23,10 +24,7 @@ class CreateCompanyDefaults
         $company = $event->company;
         $countryCode = $event->country;
 
-        $currencyId = country($countryCode)?->getCurrency();
-
-        $currencyData = currency($currencyId);
-        $currencyCode = $currencyData->getCurrency();
+        $currencyCode = Country::where('iso_code_2', $countryCode)->pluck('currency_code')->first();
 
         $user = $company->owner;
 

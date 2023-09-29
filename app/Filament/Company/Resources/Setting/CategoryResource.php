@@ -7,12 +7,11 @@ use App\Filament\Company\Resources\Setting\CategoryResource\Pages;
 use App\Models\Setting\Category;
 use Closure;
 use Exception;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\{Forms, Tables};
 use Illuminate\Database\Eloquent\Collection;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
@@ -40,9 +39,9 @@ class CategoryResource extends Resource
                             ->rule(static function (Forms\Get $get, Forms\Components\Component $component): Closure {
                                 return static function (string $attribute, $value, Closure $fail) use ($get, $component) {
                                     $existingCategory = Category::where('company_id', auth()->user()->currentCompany->id)
-                                                                ->where('name', $value)
-                                                                ->where('type', $get('type'))
-                                                                ->first();
+                                        ->where('name', $value)
+                                        ->where('type', $get('type'))
+                                        ->first();
 
                                     if ($existingCategory && $existingCategory->getKey() !== $component->getRecord()?->getKey()) {
                                         $type = ucwords($get('type'));
@@ -125,10 +124,11 @@ class CategoryResource extends Resource
                                     ->danger()
                                     ->title('Action Denied')
                                     ->body(static function () use ($defaultCategoryNames) {
-                                        $message = __('The following categories are currently set as your default and cannot be deleted. Please set a different category as your default before attempting to delete these ones.') . "<br><br>";
-                                        $message .= implode("<br>", array_map(static function ($name) {
-                                            return "&bull; " . $name;
+                                        $message = __('The following categories are currently set as your default and cannot be deleted. Please set a different category as your default before attempting to delete these ones.') . '<br><br>';
+                                        $message .= implode('<br>', array_map(static function ($name) {
+                                            return '&bull; ' . $name;
                                         }, $defaultCategoryNames));
+
                                         return $message;
                                     })
                                     ->persistent()

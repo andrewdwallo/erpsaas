@@ -5,7 +5,6 @@ namespace App\Filament\Company\Resources\Setting\DiscountResource\Pages;
 use App\Filament\Company\Resources\Setting\DiscountResource;
 use App\Models\Setting\Discount;
 use App\Traits\HandlesResourceRecordCreation;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +22,7 @@ class CreateDiscount extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -35,7 +34,7 @@ class CreateDiscount extends CreateRecord
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found');
         }
 

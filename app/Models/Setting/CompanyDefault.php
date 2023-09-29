@@ -2,28 +2,20 @@
 
 namespace App\Models\Setting;
 
-use App\Enums\CategoryType;
-use App\Enums\DiscountType;
-use App\Enums\Font;
-use App\Enums\MaxContentWidth;
-use App\Enums\ModalWidth;
-use App\Enums\PrimaryColor;
-use App\Enums\RecordsPerPage;
-use App\Enums\TableSortDirection;
-use App\Enums\TaxType;
+use App\Enums\{CategoryType, DiscountType, TaxType};
 use App\Models\Banking\Account;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Setting\CompanyDefaultFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class CompanyDefault extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'company_defaults';
 

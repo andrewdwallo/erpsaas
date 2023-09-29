@@ -2,13 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\CompanyDefaultEvent;
-use App\Events\CompanyDefaultUpdated;
-use App\Events\CompanyGenerated;
-use App\Listeners\ConfigureCompanyDefault;
-use App\Listeners\CreateCompanyDefaults;
-use App\Listeners\SyncAssociatedModels;
-use App\Listeners\SyncWithCompanyDefaults;
+use App\Events\{CompanyDefaultEvent, CompanyDefaultUpdated, CompanyGenerated};
+use App\Listeners\{ConfigureCompanyDefault, CreateCompanyDefaults, SyncAssociatedModels, SyncWithCompanyDefaults};
 use Filament\Events\TenantSet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;

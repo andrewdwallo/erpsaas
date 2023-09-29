@@ -29,7 +29,7 @@ class EditDiscount extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -41,7 +41,7 @@ class EditDiscount extends EditRecord
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found');
         }
 

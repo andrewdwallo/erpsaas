@@ -3,19 +3,18 @@
 namespace App\Models\Core;
 
 use App\Models\Common\Contact;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Core\DepartmentFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Department extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'departments';
 
@@ -38,7 +37,6 @@ class Department extends Model
     {
         return $this->belongsTo(Contact::class, 'manager_id');
     }
-
 
     public function parent(): BelongsTo
     {

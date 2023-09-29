@@ -1,12 +1,6 @@
 <?php
 
-use App\Enums\DocumentAmountColumn;
-use App\Enums\DocumentItemColumn;
-use App\Enums\DocumentPriceColumn;
-use App\Enums\DocumentUnitColumn;
-use App\Enums\Font;
-use App\Enums\PaymentTerms;
-use App\Enums\Template;
+use App\Enums\{Font, PaymentTerms, Template};
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

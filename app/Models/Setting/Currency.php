@@ -5,22 +5,20 @@ namespace App\Models\Setting;
 use Akaunting\Money\Currency as ISOCurrencies;
 use App\Casts\RateCast;
 use App\Models\Banking\Account;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
-use App\Traits\SyncsWithCompanyDefaults;
+use App\Traits\{Blamable, CompanyOwned, SyncsWithCompanyDefaults};
 use Database\Factories\Setting\CurrencyFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
 use Illuminate\Support\Facades\DB;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Currency extends Model
 {
-    use Blamable, CompanyOwned, SyncsWithCompanyDefaults, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
+    use SyncsWithCompanyDefaults;
 
     protected $table = 'currencies';
 
@@ -89,7 +87,7 @@ class Currency extends Model
         return ISOCurrencies::getCurrencies();
     }
 
-    public static function getDefaultCurrencyCode(): string|null
+    public static function getDefaultCurrencyCode(): ?string
     {
         $defaultCurrency = static::query()
             ->where('enabled', true)
@@ -116,7 +114,7 @@ class Currency extends Model
 
         $scale = 10 ** $precision;
 
-        $cleanBalance = (int)filter_var($balance, FILTER_SANITIZE_NUMBER_INT);
+        $cleanBalance = (int) filter_var($balance, FILTER_SANITIZE_NUMBER_INT);
 
         return round(($cleanBalance * $newRate * $scale) / ($oldRate * $scale));
     }

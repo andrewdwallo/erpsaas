@@ -32,7 +32,7 @@ class EditAccount extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['enabled'] = (bool)$data['enabled'];
+        $data['enabled'] = (bool) $data['enabled'];
 
         return $data;
     }
@@ -40,11 +40,11 @@ class EditAccount extends EditRecord
     /**
      * @throws Halt
      */
-    protected function handleRecordUpdate(Account|Model $record, array $data): Model|Account
+    protected function handleRecordUpdate(Account | Model $record, array $data): Model | Account
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             throw new Halt('No authenticated user found.');
         }
 

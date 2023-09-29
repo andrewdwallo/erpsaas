@@ -2,24 +2,19 @@
 
 namespace App\Models\Setting;
 
-use App\Enums\Font;
-use App\Enums\MaxContentWidth;
-use App\Enums\ModalWidth;
-use App\Enums\PrimaryColor;
-use App\Enums\RecordsPerPage;
-use App\Enums\TableSortDirection;
-use App\Traits\Blamable;
-use App\Traits\CompanyOwned;
+use App\Enums\{Font, MaxContentWidth, ModalWidth, PrimaryColor, RecordsPerPage, TableSortDirection};
+use App\Traits\{Blamable, CompanyOwned};
 use Database\Factories\Setting\AppearanceFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Appearance extends Model
 {
-    use Blamable, CompanyOwned, HasFactory;
+    use Blamable;
+    use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'appearances';
 

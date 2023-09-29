@@ -4,17 +4,12 @@ namespace App\Providers;
 
 use App\Enums\PrimaryColor;
 use Closure;
-use Filament\Forms\Components\Field;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
+use Filament\Forms\Components\{Select, TextInput};
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\RawJs;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
+use Illuminate\Support\{ServiceProvider, Str};
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Notifications::alignment(Alignment::Center);
 
-        TextColumn::macro('currency', function (string|Closure|null $currency = null, bool|null $convert = null): static {
+        TextColumn::macro('currency', function (string | Closure | null $currency = null, ?bool $convert = null): static {
             $this->formatStateUsing(static function (TextColumn $column, $state) use ($currency, $convert): ?string {
                 if (blank($state)) {
                     return null;
@@ -48,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        TextInput::macro('currency', function (string|Closure|null $currency = null): static {
+        TextInput::macro('currency', function (string | Closure | null $currency = null): static {
             $this->extraAttributes(['wire:key' => Str::random()])
                 ->prefix(static function (TextInput $component) use ($currency) {
                     $currency = $component->evaluate($currency);
@@ -66,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
                     $thousands_separator = currency($currency)->getThousandsSeparator();
                     $precision = currency($currency)->getPrecision();
 
-                    $jsCode = "\$money(\$input, '" . $decimal_mark . "', '" . $thousands_separator . "', " . $precision . ");";
+                    $jsCode = "\$money(\$input, '" . $decimal_mark . "', '" . $thousands_separator . "', " . $precision . ');';
 
                     return RawJs::make($jsCode);
                 });
@@ -74,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
             return $this;
         });
 
-        Select::macro('color', function (string|Closure|null $color = null): static {
+        Select::macro('color', function (string | Closure | null $color = null): static {
             $this->options(
                 collect(PrimaryColor::caseValues())
                     ->mapWithKeys(static function ($color) {

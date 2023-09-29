@@ -2,11 +2,9 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasIcon;
-use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Contracts\{HasColor, HasIcon, HasLabel};
 
-enum TaxType: string implements HasLabel, HasColor, HasIcon
+enum TaxType: string implements HasColor, HasIcon, HasLabel
 {
     case Sales = 'sales';
     case Purchase = 'purchase';
@@ -14,10 +12,10 @@ enum TaxType: string implements HasLabel, HasColor, HasIcon
 
     public function getLabel(): ?string
     {
-        return$this->name;
+        return $this->name;
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Sales => 'success',

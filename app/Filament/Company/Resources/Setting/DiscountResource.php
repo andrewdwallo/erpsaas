@@ -2,21 +2,14 @@
 
 namespace App\Filament\Company\Resources\Setting;
 
-use App\Enums\DiscountComputation;
-use App\Enums\DiscountScope;
-use App\Enums\DiscountType;
+use App\Enums\{DiscountComputation, DiscountScope, DiscountType};
 use App\Filament\Company\Resources\Setting\DiscountResource\Pages;
-use App\Filament\Company\Resources\Setting\DiscountResource\RelationManagers;
-use App\Models\Setting\Category;
 use App\Models\Setting\Discount;
 use Closure;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\{Forms, Tables};
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class DiscountResource extends Resource
@@ -43,9 +36,9 @@ class DiscountResource extends Resource
                             ->rule(static function (Forms\Get $get, Forms\Components\Component $component): Closure {
                                 return static function (string $attribute, $value, Closure $fail) use ($get, $component) {
                                     $existingCategory = Discount::where('company_id', auth()->user()->currentCompany->id)
-                                                                ->where('name', $value)
-                                                                ->where('type', $get('type'))
-                                                                ->first();
+                                        ->where('name', $value)
+                                        ->where('type', $get('type'))
+                                        ->first();
 
                                     if ($existingCategory && $existingCategory->getKey() !== $component->getRecord()?->getKey()) {
                                         $type = $get('type')->getLabel();
@@ -88,14 +81,14 @@ class DiscountResource extends Resource
                         Forms\Components\DateTimePicker::make('start_date')
                             ->label('Start Date')
                             ->native(false)
-                            ->minDate(static function ($context, Discount|null $record = null) {
+                            ->minDate(static function ($context, ?Discount $record = null) {
                                 if ($context === 'create') {
                                     return today()->addDay();
                                 }
 
                                 return $record?->start_date?->isFuture() ? today()->addDay() : $record?->start_date;
                             })
-                            ->maxDate(static function (callable $get, Discount|null $record = null) {
+                            ->maxDate(static function (callable $get, ?Discount $record = null) {
                                 $end_date = $get('end_date') ?? $record?->end_date;
 
                                 return $end_date ?: today()->addYear();
@@ -104,13 +97,13 @@ class DiscountResource extends Resource
                             ->displayFormat('F d, Y H:i')
                             ->seconds(false)
                             ->live()
-                            ->disabled(static fn ($context, Discount|null $record = null) => $context === 'edit' && $record?->start_date?->isPast() ?? false)
+                            ->disabled(static fn ($context, ?Discount $record = null) => $context === 'edit' && $record?->start_date?->isPast() ?? false)
                             ->helperText(static fn (Forms\Components\DateTimePicker $component) => $component->isDisabled() ? 'Start date cannot be changed after the discount has begun.' : null),
                         Forms\Components\DateTimePicker::make('end_date')
                             ->label('End Date')
                             ->native(false)
                             ->live()
-                            ->minDate(static function (callable $get, Discount|null $record = null) {
+                            ->minDate(static function (callable $get, ?Discount $record = null) {
                                 $start_date = $get('start_date') ?? $record?->start_date;
 
                                 return $start_date ?: today()->addDay();
@@ -121,7 +114,7 @@ class DiscountResource extends Resource
                             ->seconds(false),
                         ToggleButton::make('enabled')
                             ->label('Default'),
-                ])->columns(),
+                    ])->columns(),
             ]);
     }
 
@@ -159,7 +152,7 @@ class DiscountResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')
                     ->label('End Date')
                     ->formatStateUsing(static fn (Discount $record) => $record->end_date ? $record->end_date->format('F d, Y H:i') : 'N/A')
-                    ->color(static fn(Discount $record) => $record->end_date?->isPast() ? 'danger' : null)
+                    ->color(static fn (Discount $record) => $record->end_date?->isPast() ? 'danger' : null)
                     ->searchable()
                     ->sortable(),
             ])

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentNumber implements DocumentNumberInterface
 {
-    public function getNextNumber(?Model $model, ?string $type, int|string $number, string $prefix, int|string $digits, bool|null $padded = false): string
+    public function getNextNumber(?Model $model, ?string $type, int | string $number, string $prefix, int | string $digits, ?bool $padded = false): string
     {
         if ($model) {
             $numberNext = $model?->newQuery()
-            ->where('type', $type)
-            ->value($number);
+                ->where('type', $type)
+                ->value($number);
         } else {
             $numberNext = $number;
         }

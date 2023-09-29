@@ -4,11 +4,10 @@ namespace App\Filament\Company\Resources\Core;
 
 use App\Filament\Company\Resources\Core\DepartmentResource\Pages;
 use App\Models\Core\Department;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\{Forms, Tables};
 
 class DepartmentResource extends Resource
 {
@@ -49,7 +48,7 @@ class DepartmentResource extends Resource
                                     ->label('Description')
                                     ->autosize()
                                     ->nullable(),
-                        ])->columns(1),
+                            ])->columns(1),
                     ])->columns(),
             ]);
     }

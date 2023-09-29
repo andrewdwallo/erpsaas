@@ -2,16 +2,13 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\Company;
-use App\Models\User;
+use App\Models\{Company, User};
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Gate, Validator};
 use Wallo\FilamentCompanies\Contracts\AddsCompanyEmployees;
-use Wallo\FilamentCompanies\Events\AddingCompanyEmployee;
-use Wallo\FilamentCompanies\Events\CompanyEmployeeAdded;
+use Wallo\FilamentCompanies\Events\{AddingCompanyEmployee, CompanyEmployeeAdded};
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Rules\Role;
 
@@ -22,7 +19,7 @@ class AddCompanyEmployee implements AddsCompanyEmployees
      *
      * @throws AuthorizationException
      */
-    public function add(User $user, Company $company, string $email, string|null $role = null): void
+    public function add(User $user, Company $company, string $email, ?string $role = null): void
     {
         Gate::forUser($user)->authorize('addCompanyEmployee', $company);
 
@@ -33,7 +30,8 @@ class AddCompanyEmployee implements AddsCompanyEmployees
         AddingCompanyEmployee::dispatch($company, $newCompanyEmployee);
 
         $company->users()->attach(
-            $newCompanyEmployee, ['role' => $role]
+            $newCompanyEmployee,
+            ['role' => $role]
         );
 
         CompanyEmployeeAdded::dispatch($company, $newCompanyEmployee);

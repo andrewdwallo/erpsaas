@@ -3,11 +3,9 @@
 namespace App\Enums;
 
 use Filament\Support\Colors\Color;
-use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasIcon;
-use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Contracts\{HasColor, HasIcon, HasLabel};
 
-enum ContactType: string implements HasLabel, HasColor, HasIcon
+enum ContactType: string implements HasColor, HasIcon, HasLabel
 {
     case Employee = 'employee';
     case Customer = 'customer';
@@ -19,7 +17,7 @@ enum ContactType: string implements HasLabel, HasColor, HasIcon
         return $this->name;
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Employee => Color::Green,

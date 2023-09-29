@@ -4,20 +4,16 @@ namespace App\Filament\Company\Resources\Banking;
 
 use App\Actions\OptionAction\CreateCurrency;
 use App\Filament\Company\Resources\Banking\AccountResource\Pages;
-use App\Filament\Company\Resources\Banking\AccountResource\RelationManagers;
 use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
 use App\Utilities\CurrencyConverter;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Filament\{Forms, Tables};
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Validation\Rules\Unique;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
@@ -134,7 +130,7 @@ class AccountResource extends Resource
                                 Forms\Components\TextInput::make('opening_balance')
                                     ->label('Opening Balance')
                                     ->required()
-                                    ->currency(static fn (Forms\Get $get) => $get('currency_code'))
+                                    ->currency(static fn (Forms\Get $get) => $get('currency_code')),
                             ])->columns(),
                         Forms\Components\Tabs::make('Account Specifications')
                             ->tabs([
@@ -282,10 +278,10 @@ class AccountResource extends Resource
                             if ($cachedExchangeRate !== $oldExchangeRate) {
 
                                 $scale = 10 ** $record->currency->precision;
-                                $cleanedBalance = (int)filter_var($record->opening_balance, FILTER_SANITIZE_NUMBER_INT);
+                                $cleanedBalance = (int) filter_var($record->opening_balance, FILTER_SANITIZE_NUMBER_INT);
 
                                 $newBalance = ($cachedExchangeRate / $oldExchangeRate) * $cleanedBalance;
-                                $newBalanceInt = (int)round($newBalance, $scale);
+                                $newBalanceInt = (int) round($newBalance, $scale);
 
                                 $record->opening_balance = money($newBalanceInt, $record->currency_code)->getValue();
                                 $record->currency->rate = $cachedExchangeRate;

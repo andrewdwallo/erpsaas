@@ -2,14 +2,11 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\Company;
-use App\Models\User;
+use App\Models\{Company, User};
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Gate, Mail, Validator};
 use Illuminate\Validation\Rule;
 use Wallo\FilamentCompanies\Contracts\InvitesCompanyEmployees;
 use Wallo\FilamentCompanies\Events\InvitingCompanyEmployee;
@@ -24,7 +21,7 @@ class InviteCompanyEmployee implements InvitesCompanyEmployees
      *
      * @throws AuthorizationException
      */
-    public function invite(User $user, Company $company, string $email, string|null $role = null): void
+    public function invite(User $user, Company $company, string $email, ?string $role = null): void
     {
         Gate::forUser($user)->authorize('addCompanyEmployee', $company);
 

@@ -22,7 +22,7 @@ class CreateCurrency
             'symbol_first' => $currency_code->isSymbolFirst(),
             'decimal_mark' => $currency_code->getDecimalMark(),
             'thousands_separator' => $currency_code->getThousandsSeparator(),
-            'enabled' => !$hasDefaultCurrency,
+            'enabled' => ! $hasDefaultCurrency,
         ]);
     }
 }

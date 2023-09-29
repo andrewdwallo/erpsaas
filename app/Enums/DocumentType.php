@@ -2,10 +2,9 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\HasIcon;
-use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Contracts\{HasIcon, HasLabel};
 
-enum DocumentType: string implements HasLabel, HasIcon
+enum DocumentType: string implements HasIcon, HasLabel
 {
     case Invoice = 'invoice';
     case Bill = 'bill';

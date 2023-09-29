@@ -4,9 +4,7 @@ namespace App\Listeners;
 
 use App\Events\CompanyDefaultUpdated;
 use App\Models\Setting\CompanyDefault;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
 
 class SyncAssociatedModels

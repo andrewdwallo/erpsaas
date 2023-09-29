@@ -4,10 +4,8 @@ namespace App\Models;
 
 use App\Models\Common\Contact;
 use App\Models\Core\Department;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Wallo\FilamentCompanies\Employeeship as FilamentCompaniesEmployeeship;
-use Wallo\FilamentCompanies\FilamentCompanies;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Wallo\FilamentCompanies\{Employeeship as FilamentCompaniesEmployeeship, FilamentCompanies};
 
 class Employeeship extends FilamentCompaniesEmployeeship
 {

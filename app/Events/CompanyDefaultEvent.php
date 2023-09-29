@@ -9,7 +9,9 @@ use Illuminate\Queue\SerializesModels;
 
 class CompanyDefaultEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public Model $model;
 
