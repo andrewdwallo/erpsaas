@@ -228,20 +228,6 @@ class Appearance extends Page
             }
         }
 
-        // If the primary color or font has changed, we need to update the associated models accent_color column.
-        if (array_key_exists('primary_color', $diff) || array_key_exists('font', $diff)) {
-            $primaryColorToHex = PrimaryColor::from($data['primary_color'])->getHexCode();
-            $font = Font::from($data['font'])->value;
-            $this->record->company->defaultBill()->update([
-                'accent_color' => $primaryColorToHex,
-                'font' => $font,
-            ]);
-            $this->record->company->defaultInvoice()->update([
-                'accent_color' => $primaryColorToHex,
-                'font' => $font,
-            ]);
-        }
-
         $record->update($data);
 
         return $record;
