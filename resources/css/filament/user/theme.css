@@ -1,0 +1,17 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config './tailwind.config.js';
+
+.fi-body {
+    @apply bg-platinum;
+}
+
+.fi-topbar > nav {
+    @apply bg-translucent;
+}
+
+.fi-sidebar-header {
+    @apply bg-translucent;
+}
+
+

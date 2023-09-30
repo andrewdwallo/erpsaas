@@ -22,9 +22,6 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->colors([
-                'primary' => Color::Indigo,
-            ])
             ->userMenuItems([
                 'profile' => MenuItem::make()
                     ->label('Profile')
@@ -41,6 +38,10 @@ class UserPanelProvider extends PanelProvider
                     ->icon('heroicon-o-key')
                     ->url(static fn () => url(PersonalAccessTokens::getUrl())),
             ])
+            ->colors([
+                'primary' => Color::Indigo,
+            ])
+            ->viteTheme('resources/css/filament/user/theme.css')
             ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\\Filament\\User\\Resources')
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\\Filament\\User\\Pages')
             ->pages([
