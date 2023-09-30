@@ -136,7 +136,7 @@ id,name,iso_code_3,iso_code_2,numeric_code,phone_code,capital,currency_code,nati
 136,Isle of Man,IMN,IM,833,44,"Douglas, Isle of Man",GBP,Isle of Man,Manx,54.25,-4.5,🇮🇲
 137,Marshall Islands,MHL,MH,584,692,Majuro,USD,M̧ajeļ,Marshallese,9,168,🇲🇭
 138,Martinique,MTQ,MQ,474,596,Fort-de-France,EUR,Martinique,"Martiniquais, Martinican",14.666667,-61,🇲🇶
-139,Mauritania,MRT,MR,478,222,Nouakchott,MRO,موريتانيا,Mauritanian,20,-12,🇲🇷
+139,Mauritania,MRT,MR,478,222,Nouakchott,MRU,موريتانيا,Mauritanian,20,-12,🇲🇷
 140,Mauritius,MUS,MU,480,230,Port Louis,MUR,Maurice,Mauritian,-20.28333333,57.55,🇲🇺
 141,Mayotte,MYT,YT,175,262,Mamoudzou,EUR,Mayotte,Mahoran,-12.83333333,45.16666666,🇾🇹
 142,Mexico,MEX,MX,484,52,Ciudad de México,MXN,México,Mexican,23,-102,🇲🇽
@@ -191,7 +191,7 @@ id,name,iso_code_3,iso_code_2,numeric_code,phone_code,capital,currency_code,nati
 190,Saint-Martin,MAF,MF,663,590,Marigot,EUR,Saint-Martin,Saint-Martinoise,18.08333333,-63.95,🇲🇫
 191,Samoa,WSM,WS,882,685,Apia,WST,Samoa,Samoan,-13.58333333,-172.3333333,🇼🇸
 192,San Marino,SMR,SM,674,378,San Marino,EUR,San Marino,Sammarinese,43.76666666,12.41666666,🇸🇲
-193,Sao Tome and Principe,STP,ST,678,239,Sao Tome,STD,São Tomé e Príncipe,Sao Tomean,1,7,🇸🇹
+193,Sao Tome and Principe,STP,ST,678,239,Sao Tome,STN,São Tomé e Príncipe,Sao Tomean,1,7,🇸🇹
 194,Saudi Arabia,SAU,SA,682,966,Riyadh,SAR,المملكة العربية السعودية,"Saudi, Saudi Arabian",25,45,🇸🇦
 195,Senegal,SEN,SN,686,221,Dakar,XOF,Sénégal,Senegalese,14,-14,🇸🇳
 196,Serbia,SRB,RS,688,381,Belgrade,RSD,Србија,Serbian,44,21,🇷🇸
