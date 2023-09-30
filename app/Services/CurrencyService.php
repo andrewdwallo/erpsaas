@@ -8,14 +8,17 @@ class CurrencyService
 {
     public function getExchangeRate($from, $to)
     {
-        $req_url = 'https://api.exchangerate.host/latest?base=' . $from . '&symbols=' . $to;
+        $api_key = config('services.currency_api.key');
+        $base_url = config('services.currency_api.base_url');
+
+        $req_url = "{$base_url}/{$api_key}/pair/{$from}/{$to}";
 
         $response = Http::get($req_url);
 
         if ($response->successful()) {
             $responseData = $response->json();
-            if (isset($responseData['rates'][$to])) {
-                return $responseData['rates'][$to];
+            if (isset($responseData['conversion_rate'])) {
+                return $responseData['conversion_rate'];
             }
         }
 
