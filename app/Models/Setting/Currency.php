@@ -10,7 +10,6 @@ use Database\Factories\Setting\CurrencyFactory;
 use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
-use Illuminate\Support\Facades\DB;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Currency extends Model
@@ -102,21 +101,14 @@ class Currency extends Model
         $oldCurrency = $currencies->firstWhere('code', $oldCurrency);
         $newCurrency = $currencies->firstWhere('code', $newCurrency);
 
-        $oldRate = DB::table('currencies')
-            ->where('code', $oldCurrency->code)
-            ->value('rate');
-
-        $newRate = DB::table('currencies')
-            ->where('code', $newCurrency->code)
-            ->value('rate');
-
-        $precision = max($oldCurrency->precision, $newCurrency->precision);
-
-        $scale = 10 ** $precision;
+        $oldRate = $oldCurrency->rate;
+        $newRate = $newCurrency->rate;
 
         $cleanBalance = (int) filter_var($balance, FILTER_SANITIZE_NUMBER_INT);
 
-        return round(($cleanBalance * $newRate * $scale) / ($oldRate * $scale));
+        $convertedBalance = ($cleanBalance / $oldRate) * $newRate;
+
+        return round($convertedBalance);
     }
 
     protected static function newFactory(): Factory

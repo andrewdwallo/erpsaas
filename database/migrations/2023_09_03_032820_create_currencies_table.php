@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('symbol')->default('$');
             $table->boolean('symbol_first')->default(true);
             $table->string('decimal_mark')->default('.');
-            $table->string('thousands_separator')->default(',');
+            $table->string('thousands_separator')->nullable();
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

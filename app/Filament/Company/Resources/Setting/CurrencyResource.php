@@ -7,10 +7,10 @@ use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Services\CurrencyService;
 use App\Traits\ChecksForeignKeyConstraints;
+use Closure;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
 use Filament\{Forms, Tables};
 use Illuminate\Database\Eloquent\Collection;
@@ -41,28 +41,23 @@ class CurrencyResource extends Resource
                             ->placeholder('Select a currency code...')
                             ->live()
                             ->required()
-                            ->hidden(static fn (Forms\Get $get): bool => $get('enabled'))
+                            ->hidden(static fn (Forms\Get $get, $state): bool => $get('enabled') && $state !== null)
                             ->afterStateUpdated(static function (Forms\Set $set, $state) {
                                 if ($state === null) {
                                     return;
                                 }
 
+                                $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
+                                $currencyService = app(CurrencyService::class);
+
                                 $code = $state;
-
                                 $allCurrencies = Currency::getAllCurrencies();
-
                                 $selectedCurrencyCode = $allCurrencies[$code] ?? [];
 
-                                $currencyService = app(CurrencyService::class);
-                                $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
-                                $rate = 1;
-
-                                if ($defaultCurrencyCode !== null) {
-                                    $rate = $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code);
-                                }
+                                $rate = $defaultCurrencyCode ? $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code) : 1;
 
                                 $set('name', $selectedCurrencyCode['name'] ?? '');
-                                $set('rate', $rate);
+                                $set('rate', $rate ?? '');
                                 $set('precision', $selectedCurrencyCode['precision'] ?? '');
                                 $set('symbol', $selectedCurrencyCode['symbol'] ?? '');
                                 $set('symbol_first', $selectedCurrencyCode['symbol_first'] ?? '');
@@ -71,7 +66,7 @@ class CurrencyResource extends Resource
                             }),
                         Forms\Components\TextInput::make('code')
                             ->label('Code')
-                            ->hidden(static fn (Forms\Get $get): bool => ! $get('enabled'))
+                            ->hidden(static fn (Forms\Get $get): bool => !($get('enabled') && $get('code') !== null))
                             ->disabled(static fn (Forms\Get $get): bool => $get('enabled'))
                             ->required(),
                         Forms\Components\TextInput::make('name')
@@ -80,14 +75,14 @@ class CurrencyResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('rate')
                             ->label('Rate')
-                            ->dehydrateStateUsing(static fn (Forms\Get $get, $state): float => $get('enabled') ? '1.0' : (float) $state)
                             ->numeric()
+                            ->rule('gt:0')
                             ->live()
-                            ->disabled(static fn (Forms\Get $get): bool => $get('enabled'))
                             ->required(),
                         Forms\Components\Select::make('precision')
                             ->label('Precision')
-                            ->searchable()
+                            ->native(false)
+                            ->selectablePlaceholder(false)
                             ->placeholder('Select a precision...')
                             ->options(['0', '1', '2', '3', '4'])
                             ->required(),
@@ -97,8 +92,10 @@ class CurrencyResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('symbol_first')
                             ->label('Symbol Position')
-                            ->searchable()
-                            ->boolean('Before Amount', 'After Amount', 'Select the currency symbol position...')
+                            ->native(false)
+                            ->selectablePlaceholder(false)
+                            ->formatStateUsing(static fn($state) => isset($state) ? (int) $state : null)
+                            ->boolean('Before Amount', 'After Amount', 'Select a symbol position...')
                             ->required(),
                         Forms\Components\TextInput::make('decimal_mark')
                             ->label('Decimal Separator')
@@ -107,29 +104,39 @@ class CurrencyResource extends Resource
                         Forms\Components\TextInput::make('thousands_separator')
                             ->label('Thousands Separator')
                             ->maxLength(1)
-                            ->required(),
+                            ->rule(static function (Forms\Get $get): Closure {
+                                return static function ($attribute, $value, Closure $fail) use ($get) {
+                                    $decimalMark = $get('decimal_mark');
+
+                                    if ($value === $decimalMark) {
+                                        $fail('The thousands separator and decimal separator must be different.');
+                                    }
+                                };
+                            })
+                            ->nullable(),
                         ToggleButton::make('enabled')
                             ->label('Default Currency')
                             ->live()
-                            ->offColor(Color::Red)
-                            ->onColor(Color::Indigo)
+                            ->offColor('danger')
+                            ->onColor('primary')
                             ->afterStateUpdated(static function (Forms\Set $set, Forms\Get $get, $state) {
-                                $enabled = $state;
+                                $enabledState = (bool)$state;
                                 $code = $get('code');
+
+                                $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
                                 $currencyService = app(CurrencyService::class);
 
-                                if ($enabled) {
-                                    $rate = 1;
+                                if ($enabledState) {
+                                    $set('rate', 1);
                                 } else {
                                     if ($code === null) {
                                         return;
                                     }
 
-                                    $defaultCurrencyCode = Currency::getDefaultCurrencyCode();
-                                    $rate = $defaultCurrencyCode ? $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code) : 1;
-                                }
+                                    $rate = $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code);
 
-                                $set('rate', $rate);
+                                    $set('rate', $rate ?? '');
+                                }
                             }),
                     ])->columns(),
             ]);

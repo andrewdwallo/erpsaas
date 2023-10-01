@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use App\Events\{CompanyDefaultEvent, CompanyDefaultUpdated, CompanyGenerated};
-use App\Listeners\{ConfigureCompanyDefault, CreateCompanyDefaults, SyncAssociatedModels, SyncWithCompanyDefaults};
+use App\Events\{CompanyDefaultEvent, CompanyDefaultUpdated, CompanyGenerated, DefaultCurrencyChanged};
+use App\Listeners\{ConfigureCompanyDefault,
+    CreateCompanyDefaults,
+    SyncAssociatedModels,
+    SyncWithCompanyDefaults,
+    UpdateCurrencyRates};
 use Filament\Events\TenantSet;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -31,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CompanyGenerated::class => [
             CreateCompanyDefaults::class,
+        ],
+        DefaultCurrencyChanged::class => [
+            UpdateCurrencyRates::class,
         ],
     ];
 

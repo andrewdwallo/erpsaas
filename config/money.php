@@ -1464,6 +1464,17 @@ return [
             'thousands_separator' => ',',
         ],
 
+        'STN' => [
+            'name' => 'Dobra',
+            'code' => 930,
+            'precision' => 2,
+            'subunit' => 100,
+            'symbol' => 'Db',
+            'symbol_first' => false,
+            'decimal_mark' => '.',
+            'thousands_separator' => ',',
+        ],
+
         'SVC' => [
             'name' => 'El Salvador Colon',
             'code' => 222,

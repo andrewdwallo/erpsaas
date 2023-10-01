@@ -2,7 +2,9 @@
 
 namespace App\Filament\Company\Resources\Setting\CurrencyResource\Pages;
 
+use App\Events\DefaultCurrencyChanged;
 use App\Filament\Company\Resources\Setting\CurrencyResource;
+use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -38,12 +40,16 @@ class EditCurrency extends EditRecord
     /**
      * @throws Halt
      */
-    protected function handleRecordUpdate(Model $record, array $data): Model
+    protected function handleRecordUpdate(Model|Currency $record, array $data): Model|Currency
     {
         $user = Auth::user();
 
         if (! $user) {
             throw new Halt('No authenticated user found');
+        }
+
+        if ($data['enabled'] && ! $record->enabled) {
+            event(new DefaultCurrencyChanged($record));
         }
 
         return $this->handleRecordUpdateWithUniqueField($record, $data, $user);
