@@ -57,15 +57,15 @@ class SyncAssociatedModels
         }
     }
 
-    private function updateEnabledStatus(BelongsTo $relation, $newId): void
+    private function updateEnabledStatus(BelongsTo $relation, $newValue): void
     {
         if ($relation->exists()) {
             $previousDefault = $relation->getResults();
             $previousDefault->update(['enabled' => false]);
         }
 
-        if ($newId !== null) {
-            $newDefault = $relation->getRelated()->newQuery()->find($newId);
+        if ($newValue !== null) {
+            $newDefault = $relation->getRelated()->newQuery()->where($relation->getOwnerKeyName(), $newValue)->first();
             $newDefault?->update(['enabled' => true]);
         }
     }

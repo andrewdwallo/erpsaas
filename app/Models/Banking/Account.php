@@ -4,7 +4,7 @@ namespace App\Models\Banking;
 
 use App\Casts\MoneyCast;
 use App\Models\Setting\Currency;
-use App\Traits\{Blamable, CompanyOwned};
+use App\Traits\{Blamable, CompanyOwned, SyncsWithCompanyDefaults};
 use Database\Factories\Banking\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +18,7 @@ class Account extends Model
     use CompanyOwned;
     use HasFactory;
     use HasTags;
+    use SyncsWithCompanyDefaults;
 
     protected $table = 'accounts';
 

@@ -256,6 +256,17 @@ class AccountResource extends Resource
                             $cachedExchangeRate = $currencyService->getCachedExchangeRate($defaultCurrency, $record->currency_code);
                             $oldExchangeRate = $record->currency->rate;
 
+                            if ($cachedExchangeRate === null) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Exchange Rate Unavailable')
+                                    ->body(__('The exchange rate for this account is currently unavailable. Please try again later.'))
+                                    ->persistent()
+                                    ->send();
+
+                                $action->cancel();
+                            }
+
                             if ($cachedExchangeRate === $oldExchangeRate) {
                                 Notification::make()
                                     ->warning()
