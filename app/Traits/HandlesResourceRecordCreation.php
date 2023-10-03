@@ -3,73 +3,39 @@
 namespace App\Traits;
 
 use App\Models\User;
-use Filament\Support\Exceptions\Halt;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-use Throwable;
+use Illuminate\Database\Eloquent\{Builder, Model};
 
 trait HandlesResourceRecordCreation
 {
-    /**
-     * @throws Halt
-     */
-    protected function handleRecordCreationWithUniqueField(array $data, Model $model, User $user, ?string $uniqueField = null, ?string $uniqueFieldValue = null): Model
+    protected function handleRecordCreationWithUniqueField(array $data, Model $model, User $user, ?string $uniqueField = null): Model
     {
-        try {
-            return DB::transaction(function () use ($data, $user, $model, $uniqueField, $uniqueFieldValue) {
-                $enabled = (bool) ($data['enabled'] ?? false);
+        $companyId = $user->currentCompany->id;
+        $shouldBeEnabled = (bool) ($data['enabled'] ?? false);
 
-                if ($enabled === true) {
-                    $this->disableExistingRecord($user->currentCompany->id, $model, $uniqueField, $uniqueFieldValue);
-                } else {
-                    $this->ensureAtLeastOneEnabled($user->currentCompany->id, $model, $enabled, $uniqueField, $uniqueFieldValue);
-                }
-
-                $data['enabled'] = $enabled;
-
-                return $model::create($data);
-            });
-        } catch (ValidationException) {
-            throw new Halt('Invalid data provided. Please check the form and try again.');
-        } catch (AuthorizationException) {
-            throw new Halt('You are not authorized to perform this action.');
-        } catch (Throwable) {
-            throw new Halt('An unexpected error occurred. Please try again.');
-        }
-    }
-
-    protected function disableExistingRecord(int $companyId, Model $model, ?string $uniqueField = null, ?string $uniqueFieldValue = null): void
-    {
-        $query = $model::query()->where('company_id', $companyId)
+        $query = $model::query()
+            ->where('company_id', $companyId)
             ->where('enabled', true);
 
-        if ($uniqueField && $uniqueFieldValue) {
-            $query->where($uniqueField, $uniqueFieldValue);
+        if ($uniqueField && array_key_exists($uniqueField, $data)) {
+            $query->where($uniqueField, $data[$uniqueField]);
         }
 
-        $existingEnabledRecord = $query->first();
+        $this->toggleRecords($query, $shouldBeEnabled);
 
-        if ($existingEnabledRecord !== null) {
-            $existingEnabledRecord->enabled = false;
-            $existingEnabledRecord->save();
-        }
+        $data['enabled'] = $shouldBeEnabled;
+        $instance = $model->newInstance($data);
+        $instance->save();
+
+        return $instance;
     }
 
-    protected function ensureAtLeastOneEnabled(int $companyId, Model $model, bool &$enabled, ?string $uniqueField = null, ?string $uniqueFieldValue = null): void
+    private function toggleRecords(Builder $query, bool &$shouldBeEnabled): void
     {
-        $query = $model::query()->where('company_id', $companyId)
-            ->where('enabled', true);
-
-        if ($uniqueField && $uniqueFieldValue) {
-            $query->where($uniqueField, $uniqueFieldValue);
-        }
-
-        $otherEnabledRecord = $query->first();
-
-        if ($otherEnabledRecord === null) {
-            $enabled = true;
+        if ($shouldBeEnabled) {
+            $existingEnabledRecord = $query->first();
+            $existingEnabledRecord?->update(['enabled' => false]);
+        } elseif ($query->doesntExist()) {
+            $shouldBeEnabled = true;
         }
     }
 }
