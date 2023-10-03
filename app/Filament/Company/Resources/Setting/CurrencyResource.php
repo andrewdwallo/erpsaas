@@ -43,7 +43,12 @@ class CurrencyResource extends Resource
                             ->required()
                             ->hidden(static fn (Forms\Get $get, $state): bool => $get('enabled') && $state !== null)
                             ->afterStateUpdated(static function (Forms\Set $set, $state) {
+                                $fields = ['name', 'rate', 'precision', 'symbol', 'symbol_first', 'decimal_mark', 'thousands_separator'];
+
                                 if ($state === null) {
+                                    foreach ($fields as $field) {
+                                        $set($field, null);
+                                    }
                                     return;
                                 }
 
@@ -56,18 +61,15 @@ class CurrencyResource extends Resource
 
                                 $rate = $defaultCurrencyCode ? $currencyService->getCachedExchangeRate($defaultCurrencyCode, $code) : 1;
 
-                                $set('name', $selectedCurrencyCode['name'] ?? '');
-                                $set('rate', $rate ?? '');
-                                $set('precision', $selectedCurrencyCode['precision'] ?? '');
-                                $set('symbol', $selectedCurrencyCode['symbol'] ?? '');
-                                $set('symbol_first', $selectedCurrencyCode['symbol_first'] ?? '');
-                                $set('decimal_mark', $selectedCurrencyCode['decimal_mark'] ?? '');
-                                $set('thousands_separator', $selectedCurrencyCode['thousands_separator'] ?? '');
+                                foreach ($fields as $field) {
+                                    $set($field, $selectedCurrencyCode[$field] ?? ($field === 'rate' ? $rate : ''));
+                                }
                             }),
                         Forms\Components\TextInput::make('code')
                             ->label('Code')
-                            ->hidden(static fn (Forms\Get $get): bool => !($get('enabled') && $get('code') !== null))
+                            ->hidden(static fn (Forms\Get $get): bool => ! ($get('enabled') && $get('code') !== null))
                             ->disabled(static fn (Forms\Get $get): bool => $get('enabled'))
+                            ->dehydrated()
                             ->required(),
                         Forms\Components\TextInput::make('name')
                             ->label('Name')
@@ -94,7 +96,7 @@ class CurrencyResource extends Resource
                             ->label('Symbol Position')
                             ->native(false)
                             ->selectablePlaceholder(false)
-                            ->formatStateUsing(static fn($state) => isset($state) ? (int) $state : null)
+                            ->formatStateUsing(static fn ($state) => isset($state) ? (int) $state : null)
                             ->boolean('Before Amount', 'After Amount', 'Select a symbol position...')
                             ->required(),
                         Forms\Components\TextInput::make('decimal_mark')
@@ -120,7 +122,7 @@ class CurrencyResource extends Resource
                             ->offColor('danger')
                             ->onColor('primary')
                             ->afterStateUpdated(static function (Forms\Set $set, Forms\Get $get, $state) {
-                                $enabledState = (bool)$state;
+                                $enabledState = (bool) $state;
                                 $code = $get('code');
 
                                 $defaultCurrencyCode = Currency::getDefaultCurrencyCode();

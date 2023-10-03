@@ -41,4 +41,11 @@ enum PaymentTerms: string implements HasLabel
             self::Net90 => 90,
         };
     }
+
+    public function getDueDate(): string
+    {
+        $days = $this->getDays() ?? 0;
+
+        return now()->addDays($days)->format('M d, Y');
+    }
 }

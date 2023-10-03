@@ -40,7 +40,7 @@ class EditCurrency extends EditRecord
     /**
      * @throws Halt
      */
-    protected function handleRecordUpdate(Model|Currency $record, array $data): Model|Currency
+    protected function handleRecordUpdate(Model | Currency $record, array $data): Model | Currency
     {
         $user = Auth::user();
 

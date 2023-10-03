@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('type');
             $table->string('logo')->nullable();
             $table->boolean('show_logo')->default(false);
-            $table->string('number_prefix');
+            $table->string('number_prefix')->nullable();
             $table->unsignedTinyInteger('number_digits')->default(5);
             $table->unsignedBigInteger('number_next')->default(1);
             $table->string('payment_terms')->default(PaymentTerms::DEFAULT);
-            $table->string('header');
+            $table->string('header')->nullable();
             $table->string('subheader')->nullable();
             $table->text('terms')->nullable();
             $table->text('footer')->nullable();

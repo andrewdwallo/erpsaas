@@ -6,7 +6,7 @@ use App\Enums\{DocumentType, Font, PaymentTerms, Template};
 use App\Models\Setting\DocumentDefault as InvoiceModel;
 use Filament\Actions\{Action, ActionGroup};
 use Filament\Forms\Components\{Checkbox, ColorPicker, Component, FileUpload, Group, Section, Select, TextInput, Textarea, ViewField};
-use Filament\Forms\{Form, Get};
+use Filament\Forms\{Form, Get, Set};
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
@@ -119,6 +119,7 @@ class Invoice extends Page
     public function form(Form $form): Form
     {
         return $form
+            ->live()
             ->schema([
                 $this->getGeneralSection(),
                 $this->getContentSection(),
@@ -135,17 +136,15 @@ class Invoice extends Page
             ->schema([
                 TextInput::make('number_prefix')
                     ->label('Number Prefix')
-                    ->live()
-                    ->required(),
+                    ->nullable(),
                 Select::make('number_digits')
                     ->label('Number Digits')
                     ->options(InvoiceModel::availableNumberDigits())
+                    ->selectablePlaceholder(false)
                     ->native(false)
-                    ->live()
-                    ->required(),
+                    ->rule('required'),
                 TextInput::make('number_next')
                     ->label('Next Number')
-                    ->live()
                     ->maxLength(static fn (Get $get) => $get('number_digits'))
                     ->suffix(static function (Get $get, $state) {
                         $number_prefix = $get('number_prefix');
@@ -154,13 +153,13 @@ class Invoice extends Page
 
                         return InvoiceModel::getNumberNext(true, true, $number_prefix, $number_digits, $number_next);
                     })
-                    ->required(),
+                    ->rule('required'),
                 Select::make('payment_terms')
                     ->label('Payment Terms')
                     ->options(PaymentTerms::class)
+                    ->selectablePlaceholder(false)
                     ->native(false)
-                    ->live()
-                    ->required(),
+                    ->rule('required'),
             ])->columns();
     }
 
@@ -170,19 +169,15 @@ class Invoice extends Page
             ->schema([
                 TextInput::make('header')
                     ->label('Header')
-                    ->live()
-                    ->required(),
+                    ->nullable(),
                 TextInput::make('subheader')
                     ->label('Subheader')
-                    ->live()
                     ->nullable(),
                 Textarea::make('terms')
                     ->label('Terms')
-                    ->live()
                     ->nullable(),
                 Textarea::make('footer')
                     ->label('Footer / Notes')
-                    ->live()
                     ->nullable(),
             ])->columns();
     }
@@ -193,7 +188,6 @@ class Invoice extends Page
             ->description('Choose the template and edit the column names.')
             ->schema([
                 Group::make()
-                    ->live()
                     ->schema([
                         FileUpload::make('logo')
                             ->label('Logo')
@@ -231,12 +225,24 @@ class Invoice extends Page
                             ->label('Template')
                             ->native(false)
                             ->options(Template::class)
-                            ->required(),
+                            ->selectablePlaceholder(false)
+                            ->rule('required'),
                         Select::make('item_name.option')
                             ->label('Item Name')
                             ->native(false)
-                            ->required()
-                            ->options(InvoiceModel::getAvailableItemNameOptions()),
+                            ->options(InvoiceModel::getAvailableItemNameOptions())
+                            ->selectablePlaceholder(false)
+                            ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
+                                if ($state !== 'other' && $old === 'other' && filled($get('item_name.custom'))) {
+                                    $set('item_name.old_custom', $get('item_name.custom'));
+                                    $set('item_name.custom', null);
+                                }
+
+                                if ($state === 'other' && $old !== 'other') {
+                                    $set('item_name.custom', $get('item_name.old_custom'));
+                                }
+                            })
+                            ->rule('required'),
                         TextInput::make('item_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('item_name.option') !== 'other')
@@ -244,8 +250,19 @@ class Invoice extends Page
                         Select::make('unit_name.option')
                             ->label('Unit Name')
                             ->native(false)
-                            ->required()
-                            ->options(InvoiceModel::getAvailableUnitNameOptions()),
+                            ->options(InvoiceModel::getAvailableUnitNameOptions())
+                            ->selectablePlaceholder(false)
+                            ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
+                                if ($state !== 'other' && $old === 'other' && filled($get('unit_name.custom'))) {
+                                    $set('unit_name.old_custom', $get('unit_name.custom'));
+                                    $set('unit_name.custom', null);
+                                }
+
+                                if ($state === 'other' && $old !== 'other') {
+                                    $set('unit_name.custom', $get('unit_name.old_custom'));
+                                }
+                            })
+                            ->rule('required'),
                         TextInput::make('unit_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('unit_name.option') !== 'other')
@@ -253,8 +270,19 @@ class Invoice extends Page
                         Select::make('price_name.option')
                             ->label('Price Name')
                             ->native(false)
-                            ->required()
-                            ->options(InvoiceModel::getAvailablePriceNameOptions()),
+                            ->options(InvoiceModel::getAvailablePriceNameOptions())
+                            ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
+                                if ($state !== 'other' && $old === 'other' && filled($get('price_name.custom'))) {
+                                    $set('price_name.old_custom', $get('price_name.custom'));
+                                    $set('price_name.custom', null);
+                                }
+
+                                if ($state === 'other' && $old !== 'other') {
+                                    $set('price_name.custom', $get('price_name.old_custom'));
+                                }
+                            })
+                            ->selectablePlaceholder(false)
+                            ->rule('required'),
                         TextInput::make('price_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('price_name.option') !== 'other')
@@ -262,8 +290,19 @@ class Invoice extends Page
                         Select::make('amount_name.option')
                             ->label('Amount Name')
                             ->native(false)
-                            ->required()
-                            ->options(InvoiceModel::getAvailableAmountNameOptions()),
+                            ->options(InvoiceModel::getAvailableAmountNameOptions())
+                            ->selectablePlaceholder(false)
+                            ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
+                                if ($state !== 'other' && $old === 'other' && filled($get('amount_name.custom'))) {
+                                    $set('amount_name.old_custom', $get('amount_name.custom'));
+                                    $set('amount_name.custom', null);
+                                }
+
+                                if ($state === 'other' && $old !== 'other') {
+                                    $set('amount_name.custom', $get('amount_name.old_custom'));
+                                }
+                            })
+                            ->rule('required'),
                         TextInput::make('amount_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('amount_name.option') !== 'other')

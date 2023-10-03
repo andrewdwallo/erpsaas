@@ -95,15 +95,12 @@ class InvoiceViewModel
 
     public function payment_terms(): string
     {
-        return $this->data['payment_terms'] ?? $this->invoice->payment_terms ?? PaymentTerms::DEFAULT;
+        return $this->data['payment_terms'] ?? $this->invoice->payment_terms?->value ?? PaymentTerms::DEFAULT;
     }
 
     public function invoice_due_date(): string
     {
-        $enumPaymentTerms = PaymentTerms::tryFrom($this->payment_terms());
-        $days = $enumPaymentTerms ? $enumPaymentTerms->getDays() : 0;
-
-        return now()->addDays($days)->format('M d, Y');
+        return PaymentTerms::tryFrom($this->payment_terms())?->getDueDate();
     }
 
     // Invoice header related methods
@@ -146,49 +143,38 @@ class InvoiceViewModel
         return $this->data['terms'] ?? $this->invoice->terms ?? 'Payment is due within thirty (30) days from the date of invoice. Any discrepancies should be reported within fourteen (14) days of receipt.';
     }
 
+    public function getItemColumnName(string $column, string $default): string
+    {
+        $custom = $this->data[$column]['custom'] ?? $this->invoice->{$column . '_custom'} ?? null;
+
+        if ($custom) {
+            return $custom;
+        }
+
+        $option = $this->data[$column]['option'] ?? $this->invoice->{$column . '_option'} ?? null;
+
+        return $option ? ucwords($option) : $default;
+    }
+
     // Invoice column related methods
     public function item_name(): string
     {
-        $custom_item_name = $this->data['item_name']['custom'] ?? null;
-
-        if ($custom_item_name) {
-            return $custom_item_name;
-        }
-
-        return ucwords($this->data['item_name']['option']) ?? ucwords($this->invoice->item_name_option) ?? $this->invoice->item_name_custom ?? 'Items';
+        return $this->getItemColumnName('item_name', 'Items');
     }
 
     public function unit_name(): string
     {
-        $custom_unit_name = $this->data['unit_name']['custom'] ?? null;
-
-        if ($custom_unit_name) {
-            return $custom_unit_name;
-        }
-
-        return ucwords($this->data['unit_name']['option']) ?? ucwords($this->invoice->unit_name_option) ?? $this->invoice->unit_name_custom ?? 'Quantity';
+        return $this->getItemColumnName('unit_name', 'Quantity');
     }
 
     public function price_name(): string
     {
-        $custom_price_name = $this->data['price_name']['custom'] ?? null;
-
-        if ($custom_price_name) {
-            return $custom_price_name;
-        }
-
-        return ucwords($this->data['price_name']['option']) ?? ucwords($this->invoice->price_name_option) ?? $this->invoice->price_name_custom ?? 'Price';
+        return $this->getItemColumnName('price_name', 'Price');
     }
 
     public function amount_name(): string
     {
-        $custom_amount_name = $this->data['amount_name']['custom'] ?? $this->invoice->amount_name_custom ?? null;
-
-        if ($custom_amount_name) {
-            return $custom_amount_name;
-        }
-
-        return ucwords($this->data['amount_name']['option']) ?? ucwords($this->invoice->amount_name_option) ?? 'Amount';
+        return $this->getItemColumnName('amount_name', 'Amount');
     }
 
     public function buildViewData(): array
@@ -208,7 +194,6 @@ class InvoiceViewModel
             'number_next' => $this->number_next(),
             'invoice_number' => $this->invoice_number(),
             'invoice_date' => $this->invoice_date(),
-            'payment_terms' => $this->payment_terms(),
             'invoice_due_date' => $this->invoice_due_date(),
             'header' => $this->header(),
             'subheader' => $this->subheader(),
