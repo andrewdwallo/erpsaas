@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Contracts\CurrencyHandler;
 use App\Events\DefaultCurrencyChanged;
+use App\Facades\Forex;
 use App\Models\Setting\Currency;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +30,9 @@ readonly class UpdateCurrencyRates
                 $defaultCurrency->update(['rate' => 1]);
             }
 
-            $this->updateOtherCurrencyRates($defaultCurrency);
+            if (Forex::isEnabled()) {
+                $this->updateOtherCurrencyRates($defaultCurrency);
+            }
         });
     }
 
