@@ -6,11 +6,11 @@ use App\Enums\EntityType;
 use App\Events\CompanyGenerated;
 use App\Models\Company;
 use App\Models\Locale\Country;
+use App\Models\Setting\Localization;
 use App\Utilities\Currency\CurrencyAccessor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -46,19 +46,7 @@ class CreateCompany extends FilamentCreateCompany
                 Select::make('locale.language')
                     ->label('Language')
                     ->searchable()
-                    ->options(static fn (Get $get) => Country::getLanguagesByCountryCode($get('profile.country')))
-                    ->getSearchResultsUsing(static function (string $search) {
-                        $allLanguages = Country::getLanguagesByCountryCode();
-
-                        return array_filter($allLanguages, static function ($language) use ($search) {
-                            return stripos($language, $search) !== false;
-                        });
-                    })
-                    ->getOptionLabelUsing(static function ($value) {
-                        $allLanguages = Country::getLanguagesByCountryCode();
-
-                        return $allLanguages[$value] ?? $value;
-                    })
+                    ->options(Localization::getAllLanguages())
                     ->required(),
                 Select::make('currencies.code')
                     ->label('Currency')
