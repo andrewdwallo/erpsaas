@@ -126,7 +126,7 @@ Once enabled, the "Live Currency" feature provides access to a dedicated page in
 
 ## Automatic Translation
 
-The application now supports automatic translation using machine translation services like AWS, using the [andrewdwallo/transmatic](https://github.com/andrewdwallo/transmatic) package. This feature enhances the application's accessibility to a global audience. The application is currently configured to support English, Arabic, German, Spanish, French, Indonesian, Italian, Dutch, Portuguese, Turkish, and Chinese. The application's default language is English.
+The application now supports automatic translation, leveraging machine translation services provided by AWS, as facilitated by the [andrewdwallo/transmatic](https://github.com/andrewdwallo/transmatic) package. This integration significantly enhances the application's accessibility for a global audience. The application currently offers support for several languages, including English, Arabic, German, Spanish, French, Indonesian, Italian, Dutch, Portuguese, Turkish, and Chinese, with English as the default language.
 
 ### Configuration & Usage
 
