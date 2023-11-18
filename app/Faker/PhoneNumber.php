@@ -9,7 +9,7 @@ class PhoneNumber extends BasePhoneNumber
 {
     public function phoneNumberForCountryCode(string $countryCode): string
     {
-        $phoneCode = Country::where('iso_code_2', $countryCode)->first()->phone_code;
+        $phoneCode = Country::where('id', $countryCode)->pluck('phone_code')->first();
 
         $filteredFormats = array_filter(
             static::$e164Formats,

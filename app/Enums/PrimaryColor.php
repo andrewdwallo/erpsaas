@@ -5,10 +5,11 @@ namespace App\Enums;
 use App\Enums\Concerns\Utilities;
 use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
 use Spatie\Color\Rgb;
 use UnexpectedValueException;
 
-enum PrimaryColor: string implements HasColor
+enum PrimaryColor: string implements HasColor, HasLabel
 {
     use Utilities;
 
@@ -63,6 +64,11 @@ enum PrimaryColor: string implements HasColor
             self::Pink => Color::Pink,
             self::Rose => Color::Rose,
         };
+    }
+
+    public function getLabel(): ?string
+    {
+        return ucfirst(translate($this->value));
     }
 
     /**

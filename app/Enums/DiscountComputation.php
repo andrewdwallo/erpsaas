@@ -9,8 +9,10 @@ enum DiscountComputation: string implements HasLabel
     case Percentage = 'percentage';
     case Fixed = 'fixed';
 
+    public const DEFAULT = self::Percentage->value;
+
     public function getLabel(): ?string
     {
-        return $this->name;
+        return translate($this->name);
     }
 }

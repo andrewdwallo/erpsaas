@@ -2,8 +2,11 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
-use Illuminate\Support\Facades\{DB, Hash, Validator};
+use App\Models\Company;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Wallo\FilamentCompanies\Contracts\CreatesNewUsers;
 use Wallo\FilamentCompanies\Features;
 

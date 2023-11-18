@@ -2,20 +2,30 @@
 
 namespace App\Models\Setting;
 
-use Akaunting\Money\Currency as ISOCurrencies;
-use App\Casts\RateCast;
+use App\Casts\CurrencyRateCast;
+use App\Facades\Forex;
 use App\Models\Banking\Account;
-use App\Traits\{Blamable, CompanyOwned, SyncsWithCompanyDefaults};
+use App\Models\History\AccountHistory;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
+use App\Traits\HasDefault;
+use App\Traits\SyncsWithCompanyDefaults;
+use App\Utilities\Currency\CurrencyAccessor;
 use Database\Factories\Setting\CurrencyFactory;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Currency extends Model
 {
     use Blamable;
     use CompanyOwned;
+    use HasDefault;
     use HasFactory;
     use SyncsWithCompanyDefaults;
 
@@ -39,8 +49,26 @@ class Currency extends Model
     protected $casts = [
         'enabled' => 'boolean',
         'symbol_first' => 'boolean',
-        'rate' => RateCast::class,
+        'rate' => CurrencyRateCast::class,
     ];
+
+    protected $appends = ['live_rate'];
+
+    protected function liveRate(): Attribute
+    {
+        return Attribute::get(static function (mixed $value, array $attributes): ?float {
+            $baseCurrency = CurrencyAccessor::getDefaultCurrency();
+            $targetCurrency = $attributes['code'];
+
+            if ($baseCurrency === $targetCurrency) {
+                return 1;
+            }
+
+            $exchangeRate = Forex::getCachedExchangeRate($baseCurrency, $targetCurrency);
+
+            return $exchangeRate ?? null;
+        });
+    }
 
     public function company(): BelongsTo
     {
@@ -57,6 +85,11 @@ class Currency extends Model
         return $this->hasMany(Account::class, 'currency_code', 'code');
     }
 
+    public function accountHistories(): HasMany
+    {
+        return $this->hasMany(AccountHistory::class, 'currency_code', 'code');
+    }
+
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'created_by');
@@ -65,50 +98,6 @@ class Currency extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
-    }
-
-    public static function getAvailableCurrencyCodes(): array
-    {
-        $allISOCurrencies = static::getAllCurrencies();
-        $allISOCurrencyCodes = array_keys($allISOCurrencies);
-
-        $storedCurrencyCodes = static::query()
-            ->pluck('code')
-            ->toArray();
-
-        $availableCurrencyCodes = array_diff($allISOCurrencyCodes, $storedCurrencyCodes);
-
-        return array_combine($availableCurrencyCodes, $availableCurrencyCodes);
-    }
-
-    public static function getAllCurrencies(): array
-    {
-        return ISOCurrencies::getCurrencies();
-    }
-
-    public static function getDefaultCurrencyCode(): ?string
-    {
-        $defaultCurrency = static::query()
-            ->where('enabled', true)
-            ->first();
-
-        return $defaultCurrency?->code ?? null;
-    }
-
-    public static function convertBalance($balance, $oldCurrency, $newCurrency): int
-    {
-        $currencies = self::whereIn('code', [$oldCurrency, $newCurrency])->get();
-        $oldCurrency = $currencies->firstWhere('code', $oldCurrency);
-        $newCurrency = $currencies->firstWhere('code', $newCurrency);
-
-        $oldRate = $oldCurrency->rate;
-        $newRate = $newCurrency->rate;
-
-        $cleanBalance = (int) filter_var($balance, FILTER_SANITIZE_NUMBER_INT);
-
-        $convertedBalance = ($cleanBalance / $oldRate) * $newRate;
-
-        return round($convertedBalance);
     }
 
     protected static function newFactory(): Factory

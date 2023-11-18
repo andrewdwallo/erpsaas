@@ -2,7 +2,8 @@
 
 namespace App\View\Models;
 
-use App\Enums\{Font, PaymentTerms};
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
 use App\Models\Setting\DocumentDefault;
 use Filament\Panel\Concerns\HasFont;
 
@@ -48,12 +49,12 @@ class InvoiceViewModel
 
     public function company_city(): ?string
     {
-        return $this->invoice->company->profile->city ?? null;
+        return $this->invoice->company->profile->city->name ?? null;
     }
 
     public function company_state(): ?string
     {
-        return $this->invoice->company->profile->state ?? null;
+        return $this->invoice->company->profile->state->name ?? null;
     }
 
     public function company_zip(): ?string
@@ -63,7 +64,7 @@ class InvoiceViewModel
 
     public function company_country(): ?string
     {
-        return $this->invoice->company->profile->getCountryName();
+        return $this->invoice->company->profile->state->country->name ?? null;
     }
 
     // Invoice numbering related methods
@@ -90,7 +91,7 @@ class InvoiceViewModel
     // Invoice date related methods
     public function invoice_date(): string
     {
-        return now()->format('M d, Y');
+        return $this->invoice->company->locale->date_format->getLabel();
     }
 
     public function payment_terms(): string
@@ -100,7 +101,9 @@ class InvoiceViewModel
 
     public function invoice_due_date(): string
     {
-        return PaymentTerms::tryFrom($this->payment_terms())?->getDueDate();
+        $dateFormat = $this->invoice->company->locale->date_format->value;
+
+        return PaymentTerms::from($this->payment_terms())->getDueDate($dateFormat);
     }
 
     // Invoice header related methods
@@ -133,14 +136,14 @@ class InvoiceViewModel
         return Font::from(Font::DEFAULT)->getLabel();
     }
 
-    public function footer(): string
+    public function footer(): ?string
     {
-        return $this->data['footer'] ?? $this->invoice->footer ?? 'Thank you for your business!';
+        return $this->data['footer'] ?? $this->invoice->footer ?? null;
     }
 
-    public function terms(): string
+    public function terms(): ?string
     {
-        return $this->data['terms'] ?? $this->invoice->terms ?? 'Payment is due within thirty (30) days from the date of invoice. Any discrepancies should be reported within fourteen (14) days of receipt.';
+        return $this->data['terms'] ?? $this->invoice->terms ?? null;
     }
 
     public function getItemColumnName(string $column, string $default): string
@@ -153,7 +156,7 @@ class InvoiceViewModel
 
         $option = $this->data[$column]['option'] ?? $this->invoice->{$column . '_option'} ?? null;
 
-        return $option ? ucwords($option) : $default;
+        return $option ? $this->invoice->getLabelOptionFor($column, $option) : translate($default);
     }
 
     // Invoice column related methods

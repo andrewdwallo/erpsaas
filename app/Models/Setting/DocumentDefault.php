@@ -3,13 +3,19 @@
 namespace App\Models\Setting;
 
 use App\Casts\TrimLeadingZeroCast;
-use App\Enums\{DocumentType, Font, PaymentTerms, Template};
-use App\Traits\{Blamable, CompanyOwned};
+use App\Enums\DocumentType;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
+use App\Enums\Template;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\Setting\DocumentDefaultFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\{Builder, Model};
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentDefault extends Model
@@ -142,101 +148,68 @@ class DocumentDefault extends Model
         return str_pad($number_next, $number_digits, '0', STR_PAD_LEFT);
     }
 
-    public function getItemNameOptionAttribute(): ?string
-    {
-        return $this->item_name['option'] ?? null;
-    }
-
-    public function getItemNameCustomAttribute(): ?string
-    {
-        return $this->item_name['custom'] ?? null;
-    }
-
-    public function getItemNameOptions(): array
-    {
-        return $this->item_name ?? [];
-    }
-
-    public function getUnitNameOptionAttribute(): ?string
-    {
-        return $this->unit_name['option'] ?? null;
-    }
-
-    public function getUnitNameCustomAttribute(): ?string
-    {
-        return $this->unit_name['custom'] ?? null;
-    }
-
-    public function getUnitNameOptions(): array
-    {
-        return $this->unit_name ?? [];
-    }
-
-    public function getPriceNameOptionAttribute(): ?string
-    {
-        return $this->price_name['option'] ?? null;
-    }
-
-    public function getPriceNameCustomAttribute(): ?string
-    {
-        return $this->price_name['custom'] ?? null;
-    }
-
-    public function getPriceNameOptions(): array
-    {
-        return $this->price_name ?? [];
-    }
-
-    public function getAmountNameOptionAttribute(): ?string
-    {
-        return $this->amount_name['option'] ?? null;
-    }
-
-    public function getAmountNameCustomAttribute(): ?string
-    {
-        return $this->amount_name['custom'] ?? null;
-    }
-
-    public function getAmountNameOptions(): array
-    {
-        return $this->amount_name ?? [];
-    }
-
     public static function getAvailableItemNameOptions(): array
     {
-        return [
+        $options = [
             'items' => 'Items',
             'products' => 'Products',
             'services' => 'Services',
             'other' => 'Other',
         ];
+
+        return array_map(translate(...), $options);
     }
 
     public static function getAvailableUnitNameOptions(): array
     {
-        return [
+        $options = [
             'quantity' => 'Quantity',
             'hours' => 'Hours',
             'other' => 'Other',
         ];
+
+        return array_map(translate(...), $options);
     }
 
     public static function getAvailablePriceNameOptions(): array
     {
-        return [
+        $options = [
             'price' => 'Price',
             'rate' => 'Rate',
             'other' => 'Other',
         ];
+
+        return array_map(translate(...), $options);
     }
 
     public static function getAvailableAmountNameOptions(): array
     {
-        return [
+        $options = [
             'amount' => 'Amount',
             'total' => 'Total',
             'other' => 'Other',
         ];
+
+        return array_map(translate(...), $options);
+    }
+
+    public function getLabelOptionFor(string $optionType, ?string $optionValue)
+    {
+        $optionValue = $optionValue ?? $this->{$optionType}['option'];
+
+        if (! $optionValue) {
+            return null;
+        }
+
+        $options = match ($optionType) {
+            'item_name' => static::getAvailableItemNameOptions(),
+            'unit_name' => static::getAvailableUnitNameOptions(),
+            'price_name' => static::getAvailablePriceNameOptions(),
+            'amount_name' => static::getAvailableAmountNameOptions(),
+            default => [],
+        };
+
+        return $options[$optionValue] ?? null;
     }
 
     protected static function newFactory(): Factory

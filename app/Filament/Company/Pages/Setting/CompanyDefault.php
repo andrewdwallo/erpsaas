@@ -3,16 +3,25 @@
 namespace App\Filament\Company\Pages\Setting;
 
 use App\Events\CompanyDefaultUpdated;
+use App\Models\Banking\Account;
 use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
-use Filament\Actions\{Action, ActionGroup};
-use Filament\Forms\Components\{Component, Section, Select};
+use App\Models\Setting\Currency;
+use App\Models\Setting\Discount;
+use App\Models\Setting\Tax;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Livewire\Attributes\Locked;
 
 use function Filament\authorize;
@@ -26,20 +35,31 @@ class CompanyDefault extends Page
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
 
-    protected static ?string $navigationLabel = 'Default';
-
     protected static ?string $navigationGroup = 'Settings';
+
+    protected static ?string $title = 'Default';
 
     protected static ?string $slug = 'settings/default';
 
-    protected ?string $heading = 'Default';
-
     protected static string $view = 'filament.company.pages.setting.company-default';
 
+    /**
+     * @var array<string, mixed> | null
+     */
     public ?array $data = [];
 
     #[Locked]
     public ?CompanyDefaultModel $record = null;
+
+    public function getTitle(): string | Htmlable
+    {
+        return translate(static::$title);
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return translate(static::$title);
+    }
 
     public function mount(): void
     {
@@ -56,19 +76,7 @@ class CompanyDefault extends Page
     {
         $data = $this->record->attributesToArray();
 
-        $data = $this->mutateFormDataBeforeFill($data);
-
         $this->form->fill($data);
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return $data;
     }
 
     public function save(): void
@@ -76,42 +84,20 @@ class CompanyDefault extends Page
         try {
             $data = $this->form->getState();
 
-            $data = $this->mutateFormDataBeforeSave($data);
-
             $this->handleRecordUpdate($this->record, $data);
 
         } catch (Halt $exception) {
             return;
         }
 
-        $this->getSavedNotification()?->send();
-
-        if ($redirectUrl = $this->getRedirectUrl()) {
-            $this->redirect($redirectUrl);
-        }
+        $this->getSavedNotification()->send();
     }
 
-    protected function getSavedNotification(): ?Notification
+    protected function getSavedNotification(): Notification
     {
-        $title = $this->getSavedNotificationTitle();
-
-        if (blank($title)) {
-            return null;
-        }
-
         return Notification::make()
             ->success()
-            ->title($this->getSavedNotificationTitle());
-    }
-
-    protected function getSavedNotificationTitle(): ?string
-    {
-        return __('filament-panels::pages/tenancy/edit-tenant-profile.notifications.saved.title');
-    }
-
-    protected function getRedirectUrl(): ?string
-    {
-        return null;
+            ->title(__('filament-panels::resources/pages/edit-record.notifications.saved.title'));
     }
 
     public function form(Form $form): Form
@@ -132,18 +118,25 @@ class CompanyDefault extends Page
         return Section::make('General')
             ->schema([
                 Select::make('account_id')
-                    ->label('Account')
+                    ->localizeLabel()
                     ->relationship('account', 'name')
+                    ->getOptionLabelFromRecordUsing(function (Account $record) {
+                        $name = $record->name;
+                        $currency = $this->renderBadgeOptionLabel($record->currency_code);
+
+                        return "{$name} ⁓ {$currency}";
+                    })
+                    ->allowHtml()
                     ->saveRelationshipsUsing(null)
                     ->selectablePlaceholder(false)
                     ->searchable()
                     ->preload(),
                 Select::make('currency_code')
-                    ->label('Currency')
-                    ->relationship('currency', 'code')
+                    ->softRequired()
+                    ->localizeLabel('Currency')
+                    ->relationship('currency', 'name')
+                    ->getOptionLabelFromRecordUsing(static fn (Currency $record) => "{$record->code} {$record->symbol} - {$record->name}")
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
                     ->searchable()
                     ->preload(),
             ])->columns();
@@ -154,37 +147,68 @@ class CompanyDefault extends Page
         return Section::make('Taxes & Discounts')
             ->schema([
                 Select::make('sales_tax_id')
-                    ->label('Sales Tax')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('salesTax', 'name')
+                    ->getOptionLabelFromRecordUsing(function (Tax $record) {
+                        $currencyCode = $this->record->currency_code;
+
+                        $rate = rateFormat($record->rate, $record->computation->value, $currencyCode);
+
+                        $rateBadge = $this->renderBadgeOptionLabel($rate);
+
+                        return "{$record->name} ⁓ {$rateBadge}";
+                    })
+                    ->allowHtml()
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
                 Select::make('purchase_tax_id')
-                    ->label('Purchase Tax')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('purchaseTax', 'name')
+                    ->getOptionLabelFromRecordUsing(function (Tax $record) {
+                        $currencyCode = $this->record->currency_code;
+
+                        $rate = rateFormat($record->rate, $record->computation->value, $currencyCode);
+
+                        $rateBadge = $this->renderBadgeOptionLabel($rate);
+
+                        return "{$record->name} ⁓ {$rateBadge}";
+                    })
+                    ->allowHtml()
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
                 Select::make('sales_discount_id')
-                    ->label('Sales Discount')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('salesDiscount', 'name')
+                    ->getOptionLabelFromRecordUsing(function (Discount $record) {
+                        $currencyCode = $this->record->currency_code;
+
+                        $rate = rateFormat($record->rate, $record->computation->value, $currencyCode);
+
+                        $rateBadge = $this->renderBadgeOptionLabel($rate);
+
+                        return "{$record->name} ⁓ {$rateBadge}";
+                    })
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
-                    ->searchable()
-                    ->preload(),
+                    ->allowHtml()
+                    ->searchable(),
                 Select::make('purchase_discount_id')
-                    ->label('Purchase Discount')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('purchaseDiscount', 'name')
+                    ->getOptionLabelFromRecordUsing(function (Discount $record) {
+                        $currencyCode = $this->record->currency_code;
+                        $rate = rateFormat($record->rate, $record->computation->value, $currencyCode);
+
+                        $rateBadge = $this->renderBadgeOptionLabel($rate);
+
+                        return "{$record->name} ⁓ {$rateBadge}";
+                    })
+                    ->allowHtml()
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
             ])->columns();
     }
 
@@ -193,22 +217,25 @@ class CompanyDefault extends Page
         return Section::make('Categories')
             ->schema([
                 Select::make('income_category_id')
-                    ->label('Income Category')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('incomeCategory', 'name')
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
-                    ->searchable()
+                    ->required()
                     ->preload(),
                 Select::make('expense_category_id')
-                    ->label('Expense Category')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->relationship('expenseCategory', 'name')
                     ->saveRelationshipsUsing(null)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
                     ->searchable()
                     ->preload(),
             ])->columns();
+    }
+
+    public function renderBadgeOptionLabel(string $label, string $color = 'primary', string $size = 'sm'): string
+    {
+        return Blade::render('<x-filament::badge color="' . $color . '" size="' . $size . '">' . e($label) . '</x-filament::badge>');
     }
 
     protected function handleRecordUpdate(CompanyDefaultModel $record, array $data): CompanyDefaultModel
@@ -233,7 +260,7 @@ class CompanyDefault extends Page
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('filament-panels::pages/tenancy/edit-tenant-profile.form.actions.save.label'))
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }

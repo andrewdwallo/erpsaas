@@ -75,7 +75,7 @@ Run the database seeder
 
     php artisan migrate:refresh
 
-## Currency Exchange Rates
+## Live Currency
 
 ### Overview
 
@@ -84,6 +84,22 @@ This application offers support for real-time currency exchange rates. This feat
 **Disclaimer**: There is no affiliation between this application and ExchangeRate-API.
 
 Once you have your API key, you can enable the feature by setting the `CURRENCY_API_KEY` environment variable in your `.env` file.
+
+### Initial Setup
+
+After setting your API key in the `.env` file, it is essential to prepare your database to store the currency data. Start by running a fresh database migration:
+
+```bash
+php artisan migrate:fresh
+```
+
+This ensures that your database is in the correct state to store the currency information. Afterward, use the following command to generate and populate the Currency List with supported currencies for the Live Currency page:
+
+```bash
+php artisan currency:init
+```
+
+This command fetches and stores the list of currencies supported by your configured exchange rate service.
 
 ### Configuration
 
@@ -96,28 +112,11 @@ Of course, you may use any service you wish to retrieve currency exchange rates.
 ],
 ```
 
-Additionally, you may update the following method in the `app/Services/CurrencyService.php` file which is responsible for retrieving the exchange rates:
+Then, adjust the implementation of the `App\Services\CurrencyService` class to use your chosen service.
 
-```php
-public function getExchangeRates($base)
-{
-    $api_key = config('services.currency_api.key');
-    $base_url = config('services.currency_api.base_url');
+### Live Currency Page
 
-    $req_url = "{$base_url}/{$api_key}/latest/{$base}";
-
-    $response = Http::get($req_url);
-
-    if ($response->successful()) {
-        $responseData = $response->json();
-        if (isset($responseData['conversion_rates'])) {
-            return $responseData['conversion_rates'];
-        }
-    }
-
-    return null;
-}
-```
+Once enabled, the "Live Currency" feature provides access to a dedicated page in the application, listing all supported currencies from the configured exchange rate service. Users can view available currencies and update exchange rates for their company's currencies as needed.
 
 ### Important Information
 
@@ -125,12 +124,34 @@ public function getExchangeRates($base)
 - Your API key is sensitive information and should be kept secret. Do not commit it to your repository or share it with anyone.
 - Note that API rate limits may apply depending on the service you choose. Make sure to review the terms for your chosen service.
 
+## Automatic Translation
+
+The application now supports automatic translation using machine translation services like AWS, using the [andrewdwallo/transmatic](https://github.com/andrewdwallo/transmatic) package. This feature enhances the application's accessibility to a global audience. The application is currently configured to support English, Arabic, German, Spanish, French, Indonesian, Italian, Dutch, Portuguese, Turkish, and Chinese. The application's default language is English.
+
+### Configuration & Usage
+
+To utilize this feature for additional languages or custom translations:
+1. Follow the documentation provided in the [andrewdwallo/transmatic](https://github.com/andrewdwallo/transmatic) package.
+2. Configure the package with your preferred translation service credentials.
+3. Run the translation commands as per the package instructions to generate new translations.
+
+Once you have configured the package, you may update the following method in the `app/Models/Setting/Localization.php` file to generate translations based on the selected language in the application UI:
+
+Change to the following:
+```php
+public static function getAllLanguages(): array
+{
+    return Languages::getNames(app()->getLocale());
+}
+```
+
 ## Dependencies
 
 - [filamentphp/filament](https://github.com/filamentphp/filament) - A collection of beautiful full-stack components
 - [andrewdwallo/filament-companies](https://github.com/andrewdwallo/filament-companies) - A complete authentication system kit based on companies built for Filament
+- [andrewdwallo/transmatic](https://github.com/andrewdwallo/transmatic) - A package for automatic translation using machine translation services
 - [akaunting/laravel-money](https://github.com/akaunting/laravel-money) - Currency formatting and conversion package for Laravel
-- [squirephp/squire](https://github.com/squirephp/squire) - A library of static Eloquent models for common fixture data.
+- [squirephp/squire](https://github.com/squirephp/squire) - A library of static Eloquent models for common fixture data
 
 ***Note*** : It is recommended to read the documentation for all dependencies to get yourself familiar with how the application works.
 

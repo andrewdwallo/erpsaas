@@ -3,15 +3,23 @@
 namespace App\Services;
 
 use App\Enums\CategoryType;
-use App\Models\Setting\{Appearance, Category, CompanyDefault, Currency, Discount, DocumentDefault, Tax};
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\Setting\Appearance;
+use App\Models\Setting\Category;
+use App\Models\Setting\CompanyDefault;
+use App\Models\Setting\Currency;
+use App\Models\Setting\Discount;
+use App\Models\Setting\DocumentDefault;
+use App\Models\Setting\Localization;
+use App\Models\Setting\Tax;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class CompanyDefaultService
 {
-    public function createCompanyDefaults(Company $company, User $user, string $currencyCode): void
+    public function createCompanyDefaults(Company $company, User $user, string $currencyCode, string $countryCode, string $language): void
     {
-        DB::transaction(function () use ($company, $user, $currencyCode) {
+        DB::transaction(function () use ($company, $user, $currencyCode, $countryCode, $language) {
             $categories = $this->createCategories($company, $user);
             $currency = $this->createCurrency($company, $user, $currencyCode);
             $salesTax = $this->createSalesTax($company, $user);
@@ -20,6 +28,7 @@ class CompanyDefaultService
             $purchaseDiscount = $this->createPurchaseDiscount($company, $user);
             $this->createAppearance($company, $user);
             $this->createDocumentDefaults($company, $user);
+            $this->createLocalization($company, $user, $countryCode, $language);
 
             $companyDefaults = [
                 'company_id' => $company->id,
@@ -148,6 +157,15 @@ class CompanyDefaultService
         ]);
 
         DocumentDefault::factory()->bill()->create([
+            'company_id' => $company->id,
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+        ]);
+    }
+
+    private function createLocalization(Company $company, User $user, string $countryCode, string $language): void
+    {
+        Localization::factory()->withCountry($countryCode, $language)->create([
             'company_id' => $company->id,
             'created_by' => $user->id,
             'updated_by' => $user->id,

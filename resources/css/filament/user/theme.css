@@ -14,4 +14,10 @@
     @apply bg-translucent;
 }
 
+.fi-icon-btn.bg-gray-100.\!rounded-full.dark\:bg-custom-500\/20 {
+    @apply bg-translucent;
+}
 
+.panel-switch-card-section {
+    @apply bg-platinum;
+}

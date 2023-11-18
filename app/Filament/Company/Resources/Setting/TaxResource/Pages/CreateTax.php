@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\TaxResource\Pages;
 
+use App\Enums\TaxType;
 use App\Filament\Company\Resources\Setting\TaxResource;
 use App\Models\Setting\Tax;
 use App\Traits\HandlesResourceRecordCreation;
@@ -38,6 +39,8 @@ class CreateTax extends CreateRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordCreationWithUniqueField($data, new Tax(), $user, 'type');
+        $evaluatedTypes = [TaxType::Sales, TaxType::Purchase];
+
+        return $this->handleRecordCreationWithUniqueField($data, new Tax(), $user, 'type', $evaluatedTypes);
     }
 }

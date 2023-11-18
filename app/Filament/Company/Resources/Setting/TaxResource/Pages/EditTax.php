@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\TaxResource\Pages;
 
+use App\Enums\TaxType;
 use App\Filament\Company\Resources\Setting\TaxResource;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
@@ -45,6 +46,8 @@ class EditTax extends EditRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type');
+        $evaluatedTypes = [TaxType::Sales, TaxType::Purchase];
+
+        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type', $evaluatedTypes);
     }
 }

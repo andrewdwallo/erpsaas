@@ -14,7 +14,8 @@ export default defineConfig({
                 ...refreshPaths,
                 'app/Livewire/**',
                 'app/Filament/**',
-            ]
+            ],
+            detectTls: true,
         }),
     ],
 });

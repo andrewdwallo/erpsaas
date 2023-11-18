@@ -4,10 +4,10 @@ export default {
     presets: [preset],
     content: [
         './app/Filament/User/**/*.php',
-        './resources/views/**/*.blade.php',
         './resources/views/filament/user/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
         './vendor/andrewdwallo/filament-companies/resources/views/**/*.blade.php',
+        './vendor/bezhansalleh/filament-panel-switch/resources/views/panel-switch-menu.blade.php',
     ],
     theme: {
         extend: {

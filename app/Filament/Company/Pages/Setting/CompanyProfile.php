@@ -3,16 +3,27 @@
 namespace App\Filament\Company\Pages\Setting;
 
 use App\Enums\EntityType;
-use App\Models\Locale\{City, Country, State, Timezone};
+use App\Models\Locale\City;
+use App\Models\Locale\Country;
+use App\Models\Locale\State;
 use App\Models\Setting\CompanyProfile as CompanyProfileModel;
-use Filament\Actions\{Action, ActionGroup};
-use Filament\Forms\Components\{Component, DatePicker, FileUpload, Group, Section, Select, TextInput};
-use Filament\Forms\{Form, Get, Set};
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
@@ -29,13 +40,11 @@ class CompanyProfile extends Page
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationLabel = 'Company Profile';
+    protected static ?string $title = 'Company Profile';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/company-profile';
-
-    protected ?string $heading = 'Company Profile';
 
     protected static string $view = 'filament.company.pages.setting.company-profile';
 
@@ -43,6 +52,16 @@ class CompanyProfile extends Page
 
     #[Locked]
     public ?CompanyProfileModel $record = null;
+
+    public function getTitle(): string | Htmlable
+    {
+        return translate(static::$title);
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return translate(static::$title);
+    }
 
     public function mount(): void
     {
@@ -59,22 +78,7 @@ class CompanyProfile extends Page
     {
         $data = $this->record->attributesToArray();
 
-        $data = $this->mutateFormDataBeforeFill($data);
-
-        $data['fiscal_year_start'] = now()->startOfYear()->toDateString();
-        $data['fiscal_year_end'] = now()->endOfYear()->toDateString();
-
         $this->form->fill($data);
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return $data;
     }
 
     public function save(): void
@@ -82,42 +86,20 @@ class CompanyProfile extends Page
         try {
             $data = $this->form->getState();
 
-            $data = $this->mutateFormDataBeforeSave($data);
-
             $this->handleRecordUpdate($this->record, $data);
 
         } catch (Halt $exception) {
             return;
         }
 
-        $this->getSavedNotification()?->send();
-
-        if ($redirectUrl = $this->getRedirectUrl()) {
-            $this->redirect($redirectUrl);
-        }
+        $this->getSavedNotification()->send();
     }
 
-    protected function getSavedNotification(): ?Notification
+    protected function getSavedNotification(): Notification
     {
-        $title = $this->getSavedNotificationTitle();
-
-        if (blank($title)) {
-            return null;
-        }
-
         return Notification::make()
             ->success()
-            ->title($this->getSavedNotificationTitle());
-    }
-
-    protected function getSavedNotificationTitle(): ?string
-    {
-        return __('filament-panels::pages/tenancy/edit-tenant-profile.notifications.saved.title');
-    }
-
-    protected function getRedirectUrl(): ?string
-    {
-        return null;
+            ->title(__('filament-panels::resources/pages/edit-record.notifications.saved.title'));
     }
 
     public function form(Form $form): Form
@@ -127,7 +109,6 @@ class CompanyProfile extends Page
                 $this->getIdentificationSection(),
                 $this->getLocationDetailsSection(),
                 $this->getLegalAndComplianceSection(),
-                $this->getFiscalYearSection(),
             ])
             ->model($this->record)
             ->statePath('data')
@@ -138,34 +119,38 @@ class CompanyProfile extends Page
     {
         return Section::make('Identification')
             ->schema([
+                Group::make()
+                    ->schema([
+                        TextInput::make('email')
+                            ->email()
+                            ->localizeLabel()
+                            ->maxLength(255)
+                            ->required(),
+                        TextInput::make('phone_number')
+                            ->tel()
+                            ->nullable()
+                            ->localizeLabel(),
+                    ])->columns(1),
                 FileUpload::make('logo')
-                    ->label('Logo')
+                    ->openable()
+                    ->maxSize(2048)
+                    ->localizeLabel()
+                    ->visibility('public')
                     ->disk('public')
                     ->directory('logos/company')
                     ->imageResizeMode('contain')
-                    ->imagePreviewHeight('250')
-                    ->imageCropAspectRatio('2:1')
+                    ->imageCropAspectRatio('1:1')
+                    ->panelAspectRatio('1:1')
+                    ->panelLayout('compact')
+                    ->removeUploadedFileButtonPosition('center bottom')
+                    ->uploadButtonPosition('center bottom')
+                    ->uploadProgressIndicatorPosition('center bottom')
                     ->getUploadedFileNameForStorageUsing(
                         static fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
                             ->prepend(Auth::user()->currentCompany->id . '_'),
                     )
-                    ->openable()
-                    ->maxSize(2048)
-                    ->image()
-                    ->visibility('public')
+                    ->extraAttributes(['class' => 'w-32 h-32'])
                     ->acceptedFileTypes(['image/png', 'image/jpeg']),
-                Group::make()
-                    ->schema([
-                        TextInput::make('email')
-                            ->label('Email')
-                            ->email()
-                            ->maxLength(255)
-                            ->required(),
-                        TextInput::make('phone_number')
-                            ->label('Phone Number')
-                            ->tel()
-                            ->nullable(),
-                    ])->columns(1),
             ])->columns();
     }
 
@@ -174,39 +159,32 @@ class CompanyProfile extends Page
         return Section::make('Location Details')
             ->schema([
                 Select::make('country')
-                    ->label('Country')
-                    ->native(false)
-                    ->live()
                     ->searchable()
+                    ->localizeLabel()
+                    ->live()
                     ->options(Country::getAvailableCountryOptions())
                     ->afterStateUpdated(static function (Set $set) {
                         $set('state_id', null);
-                        $set('timezone', null);
                         $set('city_id', null);
                     })
                     ->required(),
                 Select::make('state_id')
-                    ->label('State / Province')
+                    ->localizeLabel('State / Province')
                     ->searchable()
                     ->live()
                     ->options(static fn (Get $get) => State::getStateOptions($get('country')))
                     ->nullable(),
-                Select::make('timezone')
-                    ->label('Timezone')
-                    ->searchable()
-                    ->options(static fn (Get $get) => Timezone::getTimezoneOptions($get('country')))
-                    ->nullable(),
                 TextInput::make('address')
-                    ->label('Street Address')
+                    ->localizeLabel('Street Address')
                     ->maxLength(255)
                     ->nullable(),
                 Select::make('city_id')
-                    ->label('City / Town')
+                    ->localizeLabel('City / Town')
                     ->searchable()
                     ->options(static fn (Get $get) => City::getCityOptions($get('country'), $get('state_id')))
                     ->nullable(),
                 TextInput::make('zip_code')
-                    ->label('Zip Code')
+                    ->localizeLabel('Zip / Postal Code')
                     ->maxLength(20)
                     ->nullable(),
             ])->columns();
@@ -217,38 +195,29 @@ class CompanyProfile extends Page
         return Section::make('Legal & Compliance')
             ->schema([
                 Select::make('entity_type')
-                    ->label('Entity Type')
-                    ->native(false)
+                    ->localizeLabel()
                     ->options(EntityType::class)
                     ->required(),
                 TextInput::make('tax_id')
-                    ->label('Tax ID')
+                    ->localizeLabel('Tax ID')
                     ->maxLength(50)
                     ->nullable(),
             ])->columns();
     }
 
-    protected function getFiscalYearSection(): Component
-    {
-        return Section::make('Fiscal Year')
-            ->schema([
-                DatePicker::make('fiscal_year_start')
-                    ->label('Start')
-                    ->native(false)
-                    ->seconds(false)
-                    ->rule('required'),
-                DatePicker::make('fiscal_year_end')
-                    ->label('End')
-                    ->minDate(static fn (Get $get) => $get('fiscal_year_start'))
-                    ->native(false)
-                    ->seconds(false)
-                    ->rule('required'),
-            ])->columns();
-    }
-
     protected function handleRecordUpdate(CompanyProfileModel $record, array $data): CompanyProfileModel
     {
-        $record->update($data);
+        $record->fill($data);
+
+        $keysToWatch = [
+            'logo',
+        ];
+
+        if ($record->isDirty($keysToWatch)) {
+            $this->dispatch('companyProfileUpdated');
+        }
+
+        $record->save();
 
         return $record;
     }
@@ -266,7 +235,7 @@ class CompanyProfile extends Page
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('filament-panels::pages/tenancy/edit-tenant-profile.form.actions.save.label'))
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }

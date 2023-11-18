@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('contact_method')->nullable();
             $table->string('phone_number', 30)->nullable();
             $table->string('tax_id', 50)->nullable();
-            $table->string('currency_code', 10)->nullable();
+            $table->string('currency_code', 10);
             $table->string('website', 255)->nullable();
             $table->string('reference', 255)->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
@@ -36,7 +36,11 @@ return new class extends Migration
 
             $table->index(['company_id', 'type']);
             $table->unique(['company_id', 'type', 'email']);
-            $table->foreign('currency_code')->references('code')->on('currencies')->nullOnDelete();
+
+            $table->foreign(['company_id', 'currency_code'])
+                ->references(['company_id', 'code'])
+                ->on('currencies')
+                ->restrictOnDelete();
         });
     }
 

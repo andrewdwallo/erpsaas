@@ -8,3 +8,10 @@
         />
     </x-filament-panels::form>
 </x-filament-panels::page>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('companyProfileUpdated', function () {
+            window.location.reload();
+        });
+    });
+</script>

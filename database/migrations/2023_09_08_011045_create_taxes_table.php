@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\TaxComputation;
+use App\Enums\TaxType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +19,8 @@ return new class extends Migration
             $table->string('name')->index();
             $table->string('description')->nullable();
             $table->integer('rate')->default(0);
-            $table->string('computation')->default('percentage');
-            $table->string('type')->default('sales');
+            $table->string('computation')->default(TaxComputation::DEFAULT);
+            $table->string('type')->default(TaxType::DEFAULT);
             $table->string('scope')->nullable();
             $table->boolean('enabled')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();

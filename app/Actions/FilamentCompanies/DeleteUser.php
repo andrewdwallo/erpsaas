@@ -2,9 +2,11 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Wallo\FilamentCompanies\Contracts\{DeletesCompanies, DeletesUsers};
+use Wallo\FilamentCompanies\Contracts\DeletesCompanies;
+use Wallo\FilamentCompanies\Contracts\DeletesUsers;
 
 class DeleteUser implements DeletesUsers
 {

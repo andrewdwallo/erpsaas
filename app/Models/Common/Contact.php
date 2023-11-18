@@ -3,13 +3,15 @@
 namespace App\Models\Common;
 
 use App\Enums\ContactType;
-use App\Models\Core\Department;
 use App\Models\Setting\Currency;
-use App\Traits\{Blamable, CompanyOwned};
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\Common\ContactFactory;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Contact extends Model
@@ -45,11 +47,6 @@ class Contact extends Model
     protected $casts = [
         'type' => ContactType::class,
     ];
-
-    public function manager(): HasMany
-    {
-        return $this->hasMany(Department::class, 'manager_id');
-    }
 
     public function company(): BelongsTo
     {

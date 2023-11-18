@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-use App\Interfaces\Utility\DocumentNumber as DocumentNumberInterface;
+use App\Contracts\DocumentNumber as DocumentNumberInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentNumber implements DocumentNumberInterface

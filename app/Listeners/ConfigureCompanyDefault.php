@@ -2,11 +2,23 @@
 
 namespace App\Listeners;
 
-use App\Enums\{Font, MaxContentWidth, ModalWidth, PrimaryColor, RecordsPerPage, TableSortDirection};
-use App\Models\Company;
+use App\Enums\DateFormat;
+use App\Enums\Font;
+use App\Enums\MaxContentWidth;
+use App\Enums\ModalWidth;
+use App\Enums\PrimaryColor;
+use App\Enums\RecordsPerPage;
+use App\Enums\TableSortDirection;
+use App\Enums\WeekStart;
+use App\Events\CompanyConfigured;
+use App\Utilities\Currency\ConfigureCurrencies;
 use Filament\Actions\MountableAction;
-use Filament\Events\TenantSet;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Navigation\NavigationGroup;
+use Filament\Resources\Components\Tab as ResourcesTab;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Tables\Table;
 
@@ -15,10 +27,9 @@ class ConfigureCompanyDefault
     /**
      * Handle the event.
      */
-    public function handle(TenantSet $event): void
+    public function handle(CompanyConfigured $event): void
     {
-        /** @var Company $company */
-        $company = $event->getTenant();
+        $company = $event->company;
         $paginationPageOptions = RecordsPerPage::caseValues();
         $defaultPaginationPageOption = $company->appearance->records_per_page->value ?? RecordsPerPage::DEFAULT;
         $defaultSort = $company->appearance->table_sort_direction->value ?? TableSortDirection::DEFAULT;
@@ -28,8 +39,18 @@ class ConfigureCompanyDefault
         $maxContentWidth = $company->appearance->max_content_width->value ?? MaxContentWidth::DEFAULT;
         $defaultFont = $company->appearance->font->value ?? Font::DEFAULT;
         $hasTopNavigation = $company->appearance->has_top_navigation ?? false;
+        $default_language = $company->locale->language ?? config('transmatic.source_locale');
+        $defaultTimezone = $company->locale->timezone ?? config('app.timezone');
+        $dateFormat = $company->locale->date_format->value ?? DateFormat::DEFAULT;
+        $weekStart = $company->locale->week_start->value ?? WeekStart::DEFAULT;
+
+        app()->setLocale($default_language);
+        locale_set_default($default_language);
+        config(['app.timezone' => $defaultTimezone]);
+        date_default_timezone_set($defaultTimezone);
 
         Table::configureUsing(static function (Table $table) use ($paginationPageOptions, $defaultSort, $stripedTables, $defaultPaginationPageOption): void {
+
             $table
                 ->paginationPageOptions($paginationPageOptions)
                 ->defaultSort(column: 'id', direction: $defaultSort)
@@ -38,14 +59,16 @@ class ConfigureCompanyDefault
         }, isImportant: true);
 
         MountableAction::configureUsing(static function (MountableAction $action) use ($modalWidth): void {
-            $action->modalWidth($modalWidth);
+            $actionOperation = $action->getName();
+
+            if (in_array($actionOperation, ['delete', 'restore', 'forceDelete', 'detach'])) {
+                $action->modalWidth($modalWidth);
+            }
         }, isImportant: true);
 
-        $defaultColor = FilamentColor::register([
+        FilamentColor::register([
             'primary' => $defaultPrimaryColor->getColor(),
         ]);
-
-        FilamentColor::swap($defaultColor);
 
         Filament::getPanel('company')
             ->font($defaultFont)
@@ -53,5 +76,32 @@ class ConfigureCompanyDefault
             ->topNavigation($hasTopNavigation)
             ->sidebarCollapsibleOnDesktop(! $hasTopNavigation)
             ->maxContentWidth($maxContentWidth);
+
+        DatePicker::configureUsing(static function (DatePicker $component) use ($dateFormat, $weekStart) {
+            $component
+                ->displayFormat($dateFormat)
+                ->firstDayOfWeek($weekStart);
+        });
+
+        Tab::configureUsing(static function (Tab $tab) {
+            $label = $tab->getLabel();
+
+            $tab->label(ucwords(translate($label)));
+        }, isImportant: true);
+
+        Section::configureUsing(static function (Section $section): void {
+            $heading = $section->getHeading();
+            $section->heading(ucfirst(translate($heading)));
+        }, isImportant: true);
+
+        ResourcesTab::configureUsing(static function (ResourcesTab $tab): void {
+            $tab->localizeLabel();
+        }, isImportant: true);
+
+        NavigationGroup::configureUsing(static function (NavigationGroup $group): void {
+            $group->localizeLabel();
+        }, isImportant: true);
+
+        ConfigureCurrencies::syncCurrencies();
     }
 }

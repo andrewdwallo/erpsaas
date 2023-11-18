@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\Banking;
+use App\Models\Setting;
+use App\Policies\DefaultEnabledRecordPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +24,26 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+
+        $this->registerEnabledRecordPolicy();
+    }
+
+    /**
+     * Register the policy for the enabled record.
+     */
+    protected function registerEnabledRecordPolicy(): void
+    {
+        $models = [
+            Setting\Currency::class,
+            Setting\Category::class,
+            Setting\Discount::class,
+            Setting\Tax::class,
+            Banking\Account::class,
+        ];
+
+        foreach ($models as $model) {
+            Gate::policy($model, DefaultEnabledRecordPolicy::class);
+        }
     }
 }

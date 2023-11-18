@@ -3,17 +3,24 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\{DisableBladeIconComponents, DispatchServingFilamentEvent};
-use Filament\Navigation\{MenuItem, NavigationItem};
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\{Pages, Panel, PanelProvider, Widgets};
-use Illuminate\Cookie\Middleware\{AddQueuedCookiesToResponse, EncryptCookies};
+use Filament\Widgets;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\{AuthenticateSession, StartSession};
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Wallo\FilamentCompanies\Pages\User\{PersonalAccessTokens, Profile};
+use Wallo\FilamentCompanies\Pages\User\PersonalAccessTokens;
+use Wallo\FilamentCompanies\Pages\User\Profile;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -27,10 +34,6 @@ class UserPanelProvider extends PanelProvider
                     ->label('Profile')
                     ->icon('heroicon-o-user-circle')
                     ->url(static fn () => url(Profile::getUrl())),
-                MenuItem::make()
-                    ->label('Company')
-                    ->icon('heroicon-o-building-office')
-                    ->url(static fn () => url(Pages\Dashboard::getUrl(panel: 'company', tenant: Auth::user()?->personalCompany()))),
             ])
             ->navigationItems([
                 NavigationItem::make('Personal Access Tokens')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\DiscountResource\Pages;
 
+use App\Enums\DiscountType;
 use App\Filament\Company\Resources\Setting\DiscountResource;
 use App\Models\Setting\Discount;
 use App\Traits\HandlesResourceRecordCreation;
@@ -38,6 +39,8 @@ class CreateDiscount extends CreateRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordCreationWithUniqueField($data, new Discount(), $user, 'type');
+        $evaluatedTypes = [DiscountType::Sales, DiscountType::Purchase];
+
+        return $this->handleRecordCreationWithUniqueField($data, new Discount(), $user, 'type', $evaluatedTypes);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Company\Resources\Setting\CurrencyResource\Pages;
 
-use App\Events\DefaultCurrencyChanged;
 use App\Filament\Company\Resources\Setting\CurrencyResource;
 use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordUpdate;
@@ -46,10 +45,6 @@ class EditCurrency extends EditRecord
 
         if (! $user) {
             throw new Halt('No authenticated user found');
-        }
-
-        if ($data['enabled'] && ! $record->enabled) {
-            event(new DefaultCurrencyChanged($record));
         }
 
         return $this->handleRecordUpdateWithUniqueField($record, $data, $user);

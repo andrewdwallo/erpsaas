@@ -19,7 +19,7 @@ enum MaxContentWidth: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return match ($this) {
+        $label = match ($this) {
             self::FOUR_XL => '4X Large',
             self::FIVE_XL => '5X Large',
             self::SIX_XL => '6X Large',
@@ -29,5 +29,7 @@ enum MaxContentWidth: string implements HasLabel
             self::SCREEN_2XL => 'Screen 2X Large',
             self::FULL => 'Full',
         };
+
+        return translate($label);
     }
 }

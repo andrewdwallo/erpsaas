@@ -2,7 +2,9 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\{DiscountComputation, DiscountScope, DiscountType};
+use App\Enums\DiscountComputation;
+use App\Enums\DiscountScope;
+use App\Enums\DiscountType;
 use App\Models\Setting\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,7 +30,7 @@ class DiscountFactory extends Factory
 
         return [
             'description' => $this->faker->sentence,
-            'rate' => $this->faker->randomFloat(4, 0, 20),
+            'rate' => $this->faker->biasedNumberBetween(300, 5000) * 100, // 3% - 50%
             'computation' => $this->faker->randomElement(DiscountComputation::class),
             'scope' => $this->faker->randomElement(DiscountScope::class),
             'start_date' => $startDate,
@@ -41,6 +43,7 @@ class DiscountFactory extends Factory
     {
         return $this->state([
             'name' => 'Summer Sale',
+            'rate' => $this->faker->biasedNumberBetween(300, 1200) * 100, // 3% - 12%
             'type' => DiscountType::Sales,
         ]);
     }
@@ -49,6 +52,7 @@ class DiscountFactory extends Factory
     {
         return $this->state([
             'name' => 'Bulk Purchase',
+            'rate' => $this->faker->biasedNumberBetween(300, 1200) * 100, // 3% - 12%
             'type' => DiscountType::Purchase,
         ]);
     }

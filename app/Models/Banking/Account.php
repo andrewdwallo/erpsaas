@@ -3,12 +3,20 @@
 namespace App\Models\Banking;
 
 use App\Casts\MoneyCast;
+use App\Enums\AccountStatus;
+use App\Enums\AccountType;
+use App\Models\History\AccountHistory;
 use App\Models\Setting\Currency;
-use App\Traits\{Blamable, CompanyOwned, SyncsWithCompanyDefaults};
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
+use App\Traits\HasDefault;
+use App\Traits\SyncsWithCompanyDefaults;
 use Database\Factories\Banking\AccountFactory;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Tags\HasTags;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
@@ -16,6 +24,7 @@ class Account extends Model
 {
     use Blamable;
     use CompanyOwned;
+    use HasDefault;
     use HasFactory;
     use HasTags;
     use SyncsWithCompanyDefaults;
@@ -29,6 +38,7 @@ class Account extends Model
         'number',
         'currency_code',
         'opening_balance',
+        'balance',
         'description',
         'notes',
         'status',
@@ -46,8 +56,11 @@ class Account extends Model
     ];
 
     protected $casts = [
+        'type' => AccountType::class,
+        'status' => AccountStatus::class,
         'enabled' => 'boolean',
         'opening_balance' => MoneyCast::class,
+        'balance' => MoneyCast::class,
     ];
 
     public function company(): BelongsTo
@@ -70,26 +83,9 @@ class Account extends Model
         return $this->belongsTo(FilamentCompanies::userModel(), 'updated_by');
     }
 
-    public static function getAccountTypes(): array
+    public function histories(): HasMany
     {
-        return [
-            'checking' => 'Checking',
-            'savings' => 'Savings',
-            'money_market' => 'Money Market',
-            'certificate_of_deposit' => 'Certificate of Deposit',
-            'credit_card' => 'Credit Card',
-        ];
-    }
-
-    public static function getAccountStatuses(): array
-    {
-        return [
-            'open' => 'Open',
-            'active' => 'Active',
-            'dormant' => 'Dormant',
-            'restricted' => 'Restricted',
-            'closed' => 'Closed',
-        ];
+        return $this->hasMany(AccountHistory::class, 'account_id');
     }
 
     protected static function newFactory(): Factory

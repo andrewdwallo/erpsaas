@@ -3,17 +3,23 @@
 namespace App\Models\Setting;
 
 use App\Enums\CategoryType;
-use App\Traits\{Blamable, CompanyOwned, SyncsWithCompanyDefaults};
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
+use App\Traits\HasDefault;
+use App\Traits\SyncsWithCompanyDefaults;
 use Database\Factories\Setting\CategoryFactory;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasOne};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Category extends Model
 {
     use Blamable;
     use CompanyOwned;
+    use HasDefault;
     use HasFactory;
     use SyncsWithCompanyDefaults;
 

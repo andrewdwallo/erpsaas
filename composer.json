@@ -9,9 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-bcmath": "*",
+        "ext-intl": "*",
+        "ext-simplexml": "*",
         "akaunting/laravel-money": "^5.1",
         "andrewdwallo/filament-companies": "^3.0",
         "andrewdwallo/filament-selectify": "^2.0",
+        "andrewdwallo/transmatic": "^1.0",
+        "bezhansalleh/filament-panel-switch": "^1.0",
         "filament/filament": "^3.0",
         "filament/spatie-laravel-tags-plugin": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.2",
@@ -19,7 +24,8 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "squirephp/model": "^3.4",
-        "squirephp/repository": "^3.4"
+        "squirephp/repository": "^3.4",
+        "symfony/intl": "^6.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -35,7 +41,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/format.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

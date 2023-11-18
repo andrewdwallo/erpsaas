@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\CategoryResource\Pages;
 
+use App\Enums\CategoryType;
 use App\Filament\Company\Resources\Setting\CategoryResource;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
@@ -45,6 +46,8 @@ class EditCategory extends EditRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type');
+        $evaluatedTypes = [CategoryType::Income, CategoryType::Expense];
+
+        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type', $evaluatedTypes);
     }
 }

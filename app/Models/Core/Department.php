@@ -2,12 +2,15 @@
 
 namespace App\Models\Core;
 
-use App\Models\Common\Contact;
-use App\Traits\{Blamable, CompanyOwned};
+use App\Models\User;
+use App\Traits\Blamable;
+use App\Traits\CompanyOwned;
 use Database\Factories\Core\DepartmentFactory;
-use Illuminate\Database\Eloquent\Factories\{Factory, HasFactory};
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class Department extends Model
@@ -35,12 +38,13 @@ class Department extends Model
 
     public function manager(): BelongsTo
     {
-        return $this->belongsTo(Contact::class, 'manager_id');
+        return $this->belongsTo(User::class, 'manager_id');
     }
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id')
+            ->whereKeyNot($this->getKey());
     }
 
     public function children(): HasMany
