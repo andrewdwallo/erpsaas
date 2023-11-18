@@ -16,7 +16,7 @@ enum EntityType: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return match ($this) {
+        $label = match ($this) {
             self::SoleProprietorship => 'Sole Proprietorship',
             self::GeneralPartnership => 'General Partnership',
             self::LimitedPartnership => 'Limited Partnership (LP)',
@@ -25,5 +25,7 @@ enum EntityType: string implements HasLabel
             self::Corporation => 'Corporation',
             self::Nonprofit => 'Nonprofit',
         };
+
+        return translate($label);
     }
 }

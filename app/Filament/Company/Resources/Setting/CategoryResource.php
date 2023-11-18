@@ -5,25 +5,37 @@ namespace App\Filament\Company\Resources\Setting;
 use App\Enums\CategoryType;
 use App\Filament\Company\Resources\Setting\CategoryResource\Pages;
 use App\Models\Setting\Category;
+use App\Traits\NotifiesOnDelete;
 use Closure;
 use Exception;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\{Forms, Tables};
-use Illuminate\Database\Eloquent\Collection;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class CategoryResource extends Resource
 {
+    use NotifiesOnDelete;
+
     protected static ?string $model = Category::class;
+
+    protected static ?string $modelLabel = 'Category';
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/categories';
+
+    public static function getModelLabel(): string
+    {
+        $modelLabel = static::$modelLabel;
+
+        return translate($modelLabel);
+    }
 
     public static function form(Form $form): Form
     {
@@ -32,7 +44,7 @@ class CategoryResource extends Resource
                 Forms\Components\Section::make('General')
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Name')
+                            ->localizeLabel()
                             ->autofocus()
                             ->required()
                             ->maxLength(255)
@@ -44,21 +56,27 @@ class CategoryResource extends Resource
                                         ->first();
 
                                     if ($existingCategory && $existingCategory->getKey() !== $component->getRecord()?->getKey()) {
-                                        $type = ucwords($get('type'));
-                                        $fail("The {$type} category \"{$value}\" already exists.");
+                                        $message = translate('The :Type :record ":name" already exists.', [
+                                            'Type' => $existingCategory->type->getLabel(),
+                                            'record' => strtolower(static::getModelLabel()),
+                                            'name' => $value,
+                                        ]);
+
+                                        $fail($message);
                                     }
                                 };
                             }),
                         Forms\Components\Select::make('type')
+                            ->localizeLabel()
                             ->options(CategoryType::class)
-                            ->required()
-                            ->native(false)
-                            ->label('Type'),
+                            ->required(),
                         Forms\Components\ColorPicker::make('color')
-                            ->required()
-                            ->label('Color'),
+                            ->localizeLabel()
+                            ->required(),
                         ToggleButton::make('enabled')
-                            ->label('Default'),
+                            ->localizeLabel('Default')
+                            ->onLabel(Category::enabledLabel())
+                            ->offLabel(Category::disabledLabel()),
                     ])->columns(),
             ]);
     }
@@ -71,21 +89,27 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
-                    ->weight('semibold')
-                    ->icon(static fn (Category $record) => $record->enabled ? 'heroicon-o-lock-closed' : null)
-                    ->tooltip(static fn (Category $record) => $record->enabled ? "Default {$record->type->getLabel()} Category" : null)
+                    ->localizeLabel()
+                    ->weight(FontWeight::Medium)
+                    ->icon(static fn (Category $record) => $record->isEnabled() ? 'heroicon-o-lock-closed' : null)
+                    ->tooltip(static function (Category $record) {
+                        $tooltipMessage = translate('Default :Type :Record', [
+                            'Type' => $record->type->getLabel(),
+                            'Record' => static::getModelLabel(),
+                        ]);
+
+                        return $record->isEnabled() ? $tooltipMessage : null;
+                    })
                     ->iconPosition('after')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->localizeLabel()
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ColorColumn::make('color')
-                    ->label('Color')
-                    ->copyable()
-                    ->copyMessage('Color code copied'),
+                    ->localizeLabel()
+                    ->copyable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
@@ -95,50 +119,16 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->before(static function (Category $record, Tables\Actions\DeleteAction $action) {
-                        if ($record->enabled) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Action Denied')
-                                ->body(__('The :name category is currently set as your default :type category and cannot be deleted. Please set a different category as your default before attempting to delete this one.', ['name' => $record->name, 'type' => $record->type->getLabel()]))
-                                ->persistent()
-                                ->send();
-
-                            $action->cancel();
-                        }
-                    }),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->before(static function (Collection $records, Tables\Actions\DeleteBulkAction $action) {
-                            $defaultCategories = $records->filter(static function (Category $record) {
-                                return $record->enabled;
-                            });
-
-                            if ($defaultCategories->isNotEmpty()) {
-                                $defaultCategoryNames = $defaultCategories->pluck('name')->toArray();
-
-                                Notification::make()
-                                    ->danger()
-                                    ->title('Action Denied')
-                                    ->body(static function () use ($defaultCategoryNames) {
-                                        $message = __('The following categories are currently set as your default and cannot be deleted. Please set a different category as your default before attempting to delete these ones.') . '<br><br>';
-                                        $message .= implode('<br>', array_map(static function ($name) {
-                                            return '&bull; ' . $name;
-                                        }, $defaultCategoryNames));
-
-                                        return $message;
-                                    })
-                                    ->persistent()
-                                    ->send();
-
-                                $action->cancel();
-                            }
-                        }),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->checkIfRecordIsSelectableUsing(static function (Category $record) {
+                return $record->isDisabled();
+            })
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);

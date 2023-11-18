@@ -4,7 +4,6 @@ namespace App\Filament\Company\Resources\Banking\AccountResource\Pages;
 
 use App\Filament\Company\Resources\Banking\AccountResource;
 use App\Models\Banking\Account;
-use App\Models\Setting\Currency;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -46,17 +45,6 @@ class EditAccount extends EditRecord
 
         if (! $user) {
             throw new Halt('No authenticated user found.');
-        }
-
-        $oldCurrency = $record->currency_code;
-        $newCurrency = $data['currency_code'];
-
-        if ($oldCurrency !== $newCurrency) {
-            $data['opening_balance'] = Currency::convertBalance(
-                $data['opening_balance'],
-                $oldCurrency,
-                $newCurrency
-            );
         }
 
         return $this->handleRecordUpdateWithUniqueField($record, $data, $user);

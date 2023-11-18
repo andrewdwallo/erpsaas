@@ -2,9 +2,11 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\{Gate, Validator};
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use Wallo\FilamentCompanies\Contracts\UpdatesCompanyNames;
 
 class UpdateCompanyName implements UpdatesCompanyNames

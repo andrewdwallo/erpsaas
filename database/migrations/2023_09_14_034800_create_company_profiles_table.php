@@ -20,13 +20,10 @@ return new class extends Migration
             $table->string('zip_code', 20)->nullable();
             $table->unsignedSmallInteger('state_id')->nullable()->index();
             $table->string('country')->nullable();
-            $table->string('timezone')->nullable();
             $table->string('phone_number', 30)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('tax_id', 50)->nullable();
             $table->string('entity_type')->nullable();
-            $table->date('fiscal_year_start')->nullable();
-            $table->date('fiscal_year_end')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

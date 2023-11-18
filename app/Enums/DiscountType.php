@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\{HasColor, HasIcon, HasLabel};
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
 
 enum DiscountType: string implements HasColor, HasIcon, HasLabel
 {
@@ -10,9 +12,11 @@ enum DiscountType: string implements HasColor, HasIcon, HasLabel
     case Purchase = 'purchase';
     case None = 'none';
 
+    public const DEFAULT = self::Sales->value;
+
     public function getLabel(): ?string
     {
-        return $this->name;
+        return translate($this->name);
     }
 
     public function getColor(): string | array | null

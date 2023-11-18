@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Locale\{City, Country, State, Timezone};
+use App\Models\Locale\City;
+use App\Models\Locale\Country;
+use App\Models\Locale\State;
 use Illuminate\Support\ServiceProvider;
 use Squire\Repository;
 
@@ -18,6 +20,5 @@ class SquireServiceProvider extends ServiceProvider
         Repository::registerSource(Country::class, 'en', resource_path('data/countries.csv'));
         Repository::registerSource(State::class, 'en', resource_path('data/states.csv'));
         Repository::registerSource(City::class, 'en', resource_path('data/cities.csv'));
-        Repository::registerSource(Timezone::class, 'en', resource_path('data/timezones.csv'));
     }
 }

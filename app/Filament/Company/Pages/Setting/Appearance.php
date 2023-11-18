@@ -2,19 +2,28 @@
 
 namespace App\Filament\Company\Pages\Setting;
 
-use App\Enums\{Font, MaxContentWidth, ModalWidth, PrimaryColor, RecordsPerPage, TableSortDirection};
+use App\Enums\Font;
+use App\Enums\MaxContentWidth;
+use App\Enums\ModalWidth;
+use App\Enums\PrimaryColor;
+use App\Enums\RecordsPerPage;
+use App\Enums\TableSortDirection;
 use App\Models\Setting\Appearance as AppearanceModel;
-use Filament\Actions\{Action, ActionGroup};
-use Filament\Forms\Components\{Component, Section, Select};
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
-use Wallo\FilamentSelectify\Components\{ButtonGroup, ToggleButton};
+use Wallo\FilamentSelectify\Components\ToggleButton;
 
 use function Filament\authorize;
 
@@ -27,13 +36,11 @@ class Appearance extends Page
 
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
 
-    protected static ?string $navigationLabel = 'Appearance';
+    protected static ?string $title = 'Appearance';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/appearance';
-
-    protected ?string $heading = 'Appearance';
 
     protected static string $view = 'filament.company.pages.setting.appearance';
 
@@ -41,6 +48,16 @@ class Appearance extends Page
 
     #[Locked]
     public ?AppearanceModel $record = null;
+
+    public function getTitle(): string | Htmlable
+    {
+        return translate(static::$title);
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return translate(static::$title);
+    }
 
     public function mount(): void
     {
@@ -57,19 +74,7 @@ class Appearance extends Page
     {
         $data = $this->record->attributesToArray();
 
-        $data = $this->mutateFormDataBeforeFill($data);
-
         $this->form->fill($data);
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return $data;
     }
 
     public function save(): void
@@ -77,42 +82,20 @@ class Appearance extends Page
         try {
             $data = $this->form->getState();
 
-            $data = $this->mutateFormDataBeforeSave($data);
-
             $this->handleRecordUpdate($this->record, $data);
 
         } catch (Halt $exception) {
             return;
         }
 
-        $this->getSavedNotification()?->send();
-
-        if ($redirectUrl = $this->getRedirectUrl()) {
-            $this->redirect($redirectUrl);
-        }
+        $this->getSavedNotification()->send();
     }
 
-    protected function getSavedNotification(): ?Notification
+    protected function getSavedNotification(): Notification
     {
-        $title = $this->getSavedNotificationTitle();
-
-        if (blank($title)) {
-            return null;
-        }
-
         return Notification::make()
             ->success()
-            ->title($this->getSavedNotificationTitle());
-    }
-
-    protected function getSavedNotificationTitle(): ?string
-    {
-        return __('filament-panels::pages/tenancy/edit-tenant-profile.notifications.saved.title');
-    }
-
-    protected function getRedirectUrl(): ?string
-    {
-        return null;
+            ->title(__('filament-panels::resources/pages/edit-record.notifications.saved.title'));
     }
 
     public function form(Form $form): Form
@@ -133,26 +116,22 @@ class Appearance extends Page
         return Section::make('General')
             ->schema([
                 Select::make('primary_color')
-                    ->label('Primary Color')
-                    ->native(false)
                     ->allowHtml()
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(
                         collect(PrimaryColor::cases())
                             ->mapWithKeys(static fn ($case) => [
                                 $case->value => "<span class='flex items-center gap-x-4'>
                                 <span class='rounded-full w-4 h-4' style='background:rgb(" . $case->getColor()[600] . ")'></span>
-                                <span>" . str($case->value)->title() . '</span>
+                                <span>" . $case->getLabel() . '</span>
                                 </span>',
                             ]),
                     ),
                 Select::make('font')
-                    ->label('Font')
-                    ->native(false)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
                     ->allowHtml()
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(
                         collect(Font::cases())
                             ->mapWithKeys(static fn ($case) => [
@@ -167,26 +146,21 @@ class Appearance extends Page
         return Section::make('Layout')
             ->schema([
                 Select::make('max_content_width')
-                    ->label('Max Content Width')
-                    ->native(false)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(MaxContentWidth::class),
                 Select::make('modal_width')
-                    ->label('Modal Width')
-                    ->native(false)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(ModalWidth::class),
-                ButtonGroup::make('has_top_navigation')
-                    ->label('Navigation Layout')
-                    ->boolean('Top Navigation', 'Side Navigation')
-                    ->rule('required'),
+                Select::make('has_top_navigation')
+                    ->localizeLabel('Navigation Layout')
+                    ->selectablePlaceholder(false)
+                    ->boolean(translate('Top Navigation'), translate('Side Navigation')),
                 ToggleButton::make('is_table_striped')
-                    ->label('Striped Tables')
-                    ->onLabel('Enabled')
-                    ->offLabel('Disabled')
-                    ->rule('required'),
+                    ->localizeLabel('Striped Tables')
+                    ->onLabel(translate('Enabled'))
+                    ->offLabel(translate('Disabled')),
             ])->columns();
     }
 
@@ -195,25 +169,19 @@ class Appearance extends Page
         return Section::make('Data Presentation')
             ->schema([
                 Select::make('table_sort_direction')
-                    ->label('Table Sort Direction')
-                    ->native(false)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(TableSortDirection::class),
                 Select::make('records_per_page')
-                    ->label('Records Per Page')
-                    ->native(false)
-                    ->selectablePlaceholder(false)
-                    ->rule('required')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->options(RecordsPerPage::class),
             ])->columns();
     }
 
     protected function handleRecordUpdate(AppearanceModel $record, array $data): AppearanceModel
     {
-        $record_array = array_map('strval', $record->toArray());
-        $data_array = array_map('strval', $data);
-        $diff = array_diff_assoc($data_array, $record_array);
+        $record->fill($data);
 
         $keysToWatch = [
             'primary_color',
@@ -222,13 +190,11 @@ class Appearance extends Page
             'font',
         ];
 
-        foreach ($diff as $key => $value) {
-            if (in_array($key, $keysToWatch, true)) {
-                $this->dispatch('appearanceUpdated');
-            }
+        if ($record->isDirty($keysToWatch)) {
+            $this->dispatch('appearanceUpdated');
         }
 
-        $record->update($data);
+        $record->save();
 
         return $record;
     }
@@ -246,7 +212,7 @@ class Appearance extends Page
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('filament-panels::pages/tenancy/edit-tenant-profile.form.actions.save.label'))
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }

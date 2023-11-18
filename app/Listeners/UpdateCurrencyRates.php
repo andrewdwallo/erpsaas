@@ -2,16 +2,17 @@
 
 namespace App\Listeners;
 
+use App\Contracts\CurrencyHandler;
 use App\Events\DefaultCurrencyChanged;
 use App\Models\Setting\Currency;
-use App\Services\CurrencyService;
+use Illuminate\Support\Facades\DB;
 
-class UpdateCurrencyRates
+readonly class UpdateCurrencyRates
 {
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(private CurrencyHandler $currencyService)
     {
         //
     }
@@ -21,14 +22,29 @@ class UpdateCurrencyRates
      */
     public function handle(DefaultCurrencyChanged $event): void
     {
-        $currencyService = app(CurrencyService::class);
+        DB::transaction(function () use ($event) {
+            $defaultCurrency = $event->currency;
 
-        $currencies = Currency::where('code', '!=', $event->currency->code)->get();
+            if (bccomp((string) $defaultCurrency->rate, '1.0', 8) !== 0) {
+                $defaultCurrency->update(['rate' => 1]);
+            }
 
-        foreach ($currencies as $currency) {
-            $newRate = $currencyService->getCachedExchangeRate($event->currency->code, $currency->code);
+            $this->updateOtherCurrencyRates($defaultCurrency);
+        });
+    }
 
-            if ($newRate !== null) {
+    private function updateOtherCurrencyRates(Currency $defaultCurrency): void
+    {
+        $targetCurrencies = Currency::where('code', '!=', $defaultCurrency->code)
+            ->pluck('code')
+            ->toArray();
+
+        $exchangeRates = $this->currencyService->getCachedExchangeRates($defaultCurrency->code, $targetCurrencies);
+
+        foreach ($exchangeRates as $currencyCode => $newRate) {
+            $currency = Currency::where('code', $currencyCode)->first();
+
+            if ($currency && bccomp((string) $currency->rate, (string) $newRate, 8) !== 0) {
                 $currency->update(['rate' => $newRate]);
             }
         }

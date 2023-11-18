@@ -2,27 +2,41 @@
 
 namespace App\Filament\Company\Resources\Setting;
 
-use App\Enums\{TaxComputation, TaxScope, TaxType};
+use App\Enums\TaxComputation;
+use App\Enums\TaxScope;
+use App\Enums\TaxType;
 use App\Filament\Company\Resources\Setting\TaxResource\Pages;
 use App\Models\Setting\Tax;
+use App\Traits\NotifiesOnDelete;
 use Closure;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\{Forms, Tables};
-use Illuminate\Database\Eloquent\Collection;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class TaxResource extends Resource
 {
+    use NotifiesOnDelete;
+
     protected static ?string $model = Tax::class;
+
+    protected static ?string $modelLabel = 'Tax';
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/taxes';
+
+    public static function getModelLabel(): string
+    {
+        $modelLabel = static::$modelLabel;
+
+        return translate($modelLabel);
+    }
 
     public static function form(Form $form): Form
     {
@@ -31,57 +45,51 @@ class TaxResource extends Resource
                 Forms\Components\Section::make('General')
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Name')
                             ->autofocus()
                             ->required()
+                            ->localizeLabel()
                             ->maxLength(255)
                             ->rule(static function (Forms\Get $get, Forms\Components\Component $component): Closure {
                                 return static function (string $attribute, $value, Closure $fail) use ($get, $component) {
-                                    $existingCategory = Tax::where('company_id', auth()->user()->currentCompany->id)
+                                    $existingTax = Tax::where('company_id', auth()->user()->currentCompany->id)
                                         ->where('name', $value)
                                         ->where('type', $get('type'))
                                         ->first();
 
-                                    if ($existingCategory && $existingCategory->getKey() !== $component->getRecord()?->getKey()) {
-                                        $type = $get('type')->getLabel();
-                                        $fail("The {$type} tax \"{$value}\" already exists.");
+                                    if ($existingTax && $existingTax->getKey() !== $component->getRecord()?->getKey()) {
+                                        $message = translate('The :Type :record ":name" already exists.', [
+                                            'Type' => $existingTax->type->getLabel(),
+                                            'record' => strtolower(static::getModelLabel()),
+                                            'name' => $value,
+                                        ]);
+
+                                        $fail($message);
                                     }
                                 };
                             }),
-                        Forms\Components\TextInput::make('description')
-                            ->label('Description'),
+                        Forms\Components\TextInput::make('description'),
                         Forms\Components\Select::make('computation')
-                            ->label('Computation')
+                            ->localizeLabel()
                             ->options(TaxComputation::class)
                             ->default(TaxComputation::Percentage)
                             ->live()
-                            ->native(false)
                             ->required(),
                         Forms\Components\TextInput::make('rate')
-                            ->label('Rate')
-                            ->numeric()
-                            ->suffix(static function (Forms\Get $get) {
-                                $computation = $get('computation');
-
-                                if ($computation === TaxComputation::Percentage) {
-                                    return '%';
-                                }
-
-                                return null;
-                            })
+                            ->localizeLabel()
+                            ->rate(static fn (Forms\Get $get) => $get('computation'))
                             ->required(),
                         Forms\Components\Select::make('type')
-                            ->label('Type')
+                            ->localizeLabel()
                             ->options(TaxType::class)
                             ->default(TaxType::Sales)
-                            ->native(false)
                             ->required(),
                         Forms\Components\Select::make('scope')
-                            ->label('Scope')
-                            ->options(TaxScope::class)
-                            ->native(false),
+                            ->localizeLabel()
+                            ->options(TaxScope::class),
                         ToggleButton::make('enabled')
-                            ->label('Enabled'),
+                            ->localizeLabel('Default')
+                            ->onLabel(Tax::enabledLabel())
+                            ->offLabel(Tax::disabledLabel()),
                     ])->columns(),
             ]);
     }
@@ -91,24 +99,31 @@ class TaxResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
-                    ->weight('semibold')
-                    ->icon(static fn (Tax $record) => $record->enabled ? 'heroicon-o-lock-closed' : null)
-                    ->tooltip(static fn (Tax $record) => $record->enabled ? "Default {$record->type->getLabel()} Tax" : null)
+                    ->localizeLabel()
+                    ->weight(FontWeight::Medium)
+                    ->icon(static fn (Tax $record) => $record->isEnabled() ? 'heroicon-o-lock-closed' : null)
+                    ->tooltip(static function (Tax $record) {
+                        $tooltipMessage = translate('Default :Type :Record', [
+                            'Type' => $record->type->getLabel(),
+                            'Record' => static::getModelLabel(),
+                        ]);
+
+                        return $record->isEnabled() ? $tooltipMessage : null;
+                    })
                     ->iconPosition('after')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('computation')
-                    ->label('Computation')
+                    ->localizeLabel()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('rate')
-                    ->label('Rate')
-                    ->formatStateUsing(static fn (Tax $record) => $record->rate . ($record->computation === TaxComputation::Percentage ? '%' : null))
+                    ->localizeLabel()
+                    ->rate(static fn (Tax $record) => $record->computation->value)
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->localizeLabel()
                     ->badge()
                     ->searchable()
                     ->sortable(),
@@ -118,60 +133,19 @@ class TaxResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->before(static function (Tables\Actions\DeleteAction $action, Tax $record) {
-                        if ($record->enabled) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Action Denied')
-                                ->body(__('The :name tax is currently set as your default :type tax and cannot be deleted. Please set a different tax as your default before attempting to delete this one.', ['name' => $record->name, 'type' => $record->type->getLabel()]))
-                                ->persistent()
-                                ->send();
-
-                            $action->cancel();
-                        }
-                    }),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->before(static function (Collection $records, Tables\Actions\DeleteBulkAction $action) {
-                            $defaultTaxes = $records->filter(static function (Tax $record) {
-                                return $record->enabled;
-                            });
-
-                            if ($defaultTaxes->isNotEmpty()) {
-                                $defaultTaxNames = $defaultTaxes->pluck('name')->toArray();
-
-                                Notification::make()
-                                    ->danger()
-                                    ->title('Action Denied')
-                                    ->body(static function () use ($defaultTaxNames) {
-                                        $message = __('The following taxes are currently set as your default and cannot be deleted. Please set a different tax as your default before attempting to delete these ones.') . '<br><br>';
-                                        $message .= implode('<br>', array_map(static function ($name) {
-                                            return '&bull; ' . $name;
-                                        }, $defaultTaxNames));
-
-                                        return $message;
-                                    })
-                                    ->persistent()
-                                    ->send();
-
-                                $action->cancel();
-                            }
-                        }),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->checkIfRecordIsSelectableUsing(static function (Tax $record) {
+                return $record->isDisabled();
+            })
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

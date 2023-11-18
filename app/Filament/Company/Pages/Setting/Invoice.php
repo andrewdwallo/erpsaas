@@ -2,16 +2,32 @@
 
 namespace App\Filament\Company\Pages\Setting;
 
-use App\Enums\{DocumentType, Font, PaymentTerms, Template};
+use App\Enums\DocumentType;
+use App\Enums\Font;
+use App\Enums\PaymentTerms;
+use App\Enums\Template;
 use App\Models\Setting\DocumentDefault as InvoiceModel;
-use Filament\Actions\{Action, ActionGroup};
-use Filament\Forms\Components\{Checkbox, ColorPicker, Component, FileUpload, Group, Section, Select, TextInput, Textarea, ViewField};
-use Filament\Forms\{Form, Get, Set};
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ViewField;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -27,19 +43,27 @@ class Invoice extends Page
 
     protected static ?string $navigationIcon = 'heroicon-o-document-duplicate';
 
-    protected static ?string $navigationLabel = 'Invoice';
+    protected static ?string $title = 'Invoice';
 
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/invoice';
-
-    protected ?string $heading = 'Invoice';
 
     protected static string $view = 'filament.company.pages.setting.invoice';
 
     public ?array $data = [];
 
     public ?InvoiceModel $record = null;
+
+    public function getTitle(): string | Htmlable
+    {
+        return translate(static::$title);
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return translate(static::$title);
+    }
 
     public function mount(): void
     {
@@ -58,19 +82,7 @@ class Invoice extends Page
     {
         $data = $this->record->attributesToArray();
 
-        $data = $this->mutateFormDataBeforeFill($data);
-
         $this->form->fill($data);
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return $data;
     }
 
     public function save(): void
@@ -78,42 +90,20 @@ class Invoice extends Page
         try {
             $data = $this->form->getState();
 
-            $data = $this->mutateFormDataBeforeSave($data);
-
             $this->handleRecordUpdate($this->record, $data);
 
         } catch (Halt $exception) {
             return;
         }
 
-        $this->getSavedNotification()?->send();
-
-        if ($redirectUrl = $this->getRedirectUrl()) {
-            $this->redirect($redirectUrl);
-        }
+        $this->getSavedNotification()->send();
     }
 
-    protected function getSavedNotification(): ?Notification
+    protected function getSavedNotification(): Notification
     {
-        $title = $this->getSavedNotificationTitle();
-
-        if (blank($title)) {
-            return null;
-        }
-
         return Notification::make()
             ->success()
-            ->title($this->getSavedNotificationTitle());
-    }
-
-    protected function getSavedNotificationTitle(): ?string
-    {
-        return __('filament-panels::pages/tenancy/edit-tenant-profile.notifications.saved.title');
-    }
-
-    protected function getRedirectUrl(): ?string
-    {
-        return null;
+            ->title(__('filament-panels::resources/pages/edit-record.notifications.saved.title'));
     }
 
     public function form(Form $form): Form
@@ -135,31 +125,27 @@ class Invoice extends Page
         return Section::make('General')
             ->schema([
                 TextInput::make('number_prefix')
-                    ->label('Number Prefix')
+                    ->localizeLabel()
                     ->nullable(),
                 Select::make('number_digits')
-                    ->label('Number Digits')
-                    ->options(InvoiceModel::availableNumberDigits())
-                    ->selectablePlaceholder(false)
-                    ->native(false)
-                    ->rule('required'),
+                    ->softRequired()
+                    ->localizeLabel()
+                    ->options(InvoiceModel::availableNumberDigits()),
                 TextInput::make('number_next')
-                    ->label('Next Number')
+                    ->softRequired()
+                    ->localizeLabel()
                     ->maxLength(static fn (Get $get) => $get('number_digits'))
-                    ->suffix(static function (Get $get, $state) {
+                    ->hint(static function (Get $get, $state) {
                         $number_prefix = $get('number_prefix');
                         $number_digits = $get('number_digits');
                         $number_next = $state;
 
                         return InvoiceModel::getNumberNext(true, true, $number_prefix, $number_digits, $number_next);
-                    })
-                    ->rule('required'),
+                    }),
                 Select::make('payment_terms')
-                    ->label('Payment Terms')
-                    ->options(PaymentTerms::class)
-                    ->selectablePlaceholder(false)
-                    ->native(false)
-                    ->rule('required'),
+                    ->softRequired()
+                    ->localizeLabel()
+                    ->options(PaymentTerms::class),
             ])->columns();
     }
 
@@ -168,16 +154,16 @@ class Invoice extends Page
         return Section::make('Content')
             ->schema([
                 TextInput::make('header')
-                    ->label('Header')
+                    ->localizeLabel()
                     ->nullable(),
                 TextInput::make('subheader')
-                    ->label('Subheader')
+                    ->localizeLabel()
                     ->nullable(),
                 Textarea::make('terms')
-                    ->label('Terms')
+                    ->localizeLabel()
                     ->nullable(),
                 Textarea::make('footer')
-                    ->label('Footer / Notes')
+                    ->localizeLabel('Footer / Notes')
                     ->nullable(),
             ])->columns();
     }
@@ -190,30 +176,32 @@ class Invoice extends Page
                 Group::make()
                     ->schema([
                         FileUpload::make('logo')
-                            ->label('Logo')
+                            ->openable()
+                            ->maxSize(2048)
+                            ->localizeLabel()
+                            ->visibility('public')
                             ->disk('public')
                             ->directory('logos/document')
                             ->imageResizeMode('contain')
-                            ->imagePreviewHeight('250')
-                            ->imageCropAspectRatio('2:1')
+                            ->imageCropAspectRatio('1:1')
+                            ->panelAspectRatio('1:1')
+                            ->panelLayout('compact')
+                            ->removeUploadedFileButtonPosition('center bottom')
+                            ->uploadButtonPosition('center bottom')
+                            ->uploadProgressIndicatorPosition('center bottom')
                             ->getUploadedFileNameForStorageUsing(
                                 static fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
                                     ->prepend(Auth::user()->currentCompany->id . '_'),
                             )
-                            ->openable()
-                            ->maxSize(2048)
-                            ->image()
-                            ->visibility('public')
+                            ->extraAttributes(['class' => 'w-32 h-32'])
                             ->acceptedFileTypes(['image/png', 'image/jpeg']),
                         Checkbox::make('show_logo')
-                            ->label('Show Logo'),
+                            ->localizeLabel(),
                         ColorPicker::make('accent_color')
-                            ->label('Accent Color'),
+                            ->localizeLabel(),
                         Select::make('font')
-                            ->label('Font')
-                            ->native(false)
-                            ->selectablePlaceholder(false)
-                            ->rule('required')
+                            ->softRequired()
+                            ->localizeLabel()
                             ->allowHtml()
                             ->options(
                                 collect(Font::cases())
@@ -222,16 +210,13 @@ class Invoice extends Page
                                     ]),
                             ),
                         Select::make('template')
-                            ->label('Template')
-                            ->native(false)
-                            ->options(Template::class)
-                            ->selectablePlaceholder(false)
-                            ->rule('required'),
+                            ->softRequired()
+                            ->localizeLabel()
+                            ->options(Template::class),
                         Select::make('item_name.option')
-                            ->label('Item Name')
-                            ->native(false)
+                            ->softRequired()
+                            ->localizeLabel('Item Name')
                             ->options(InvoiceModel::getAvailableItemNameOptions())
-                            ->selectablePlaceholder(false)
                             ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
                                 if ($state !== 'other' && $old === 'other' && filled($get('item_name.custom'))) {
                                     $set('item_name.old_custom', $get('item_name.custom'));
@@ -241,17 +226,15 @@ class Invoice extends Page
                                 if ($state === 'other' && $old !== 'other') {
                                     $set('item_name.custom', $get('item_name.old_custom'));
                                 }
-                            })
-                            ->rule('required'),
+                            }),
                         TextInput::make('item_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('item_name.option') !== 'other')
                             ->nullable(),
                         Select::make('unit_name.option')
-                            ->label('Unit Name')
-                            ->native(false)
+                            ->softRequired()
+                            ->localizeLabel('Unit Name')
                             ->options(InvoiceModel::getAvailableUnitNameOptions())
-                            ->selectablePlaceholder(false)
                             ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
                                 if ($state !== 'other' && $old === 'other' && filled($get('unit_name.custom'))) {
                                     $set('unit_name.old_custom', $get('unit_name.custom'));
@@ -261,15 +244,14 @@ class Invoice extends Page
                                 if ($state === 'other' && $old !== 'other') {
                                     $set('unit_name.custom', $get('unit_name.old_custom'));
                                 }
-                            })
-                            ->rule('required'),
+                            }),
                         TextInput::make('unit_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('unit_name.option') !== 'other')
                             ->nullable(),
                         Select::make('price_name.option')
-                            ->label('Price Name')
-                            ->native(false)
+                            ->softRequired()
+                            ->localizeLabel('Price Name')
                             ->options(InvoiceModel::getAvailablePriceNameOptions())
                             ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
                                 if ($state !== 'other' && $old === 'other' && filled($get('price_name.custom'))) {
@@ -280,18 +262,15 @@ class Invoice extends Page
                                 if ($state === 'other' && $old !== 'other') {
                                     $set('price_name.custom', $get('price_name.old_custom'));
                                 }
-                            })
-                            ->selectablePlaceholder(false)
-                            ->rule('required'),
+                            }),
                         TextInput::make('price_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('price_name.option') !== 'other')
                             ->nullable(),
                         Select::make('amount_name.option')
-                            ->label('Amount Name')
-                            ->native(false)
+                            ->softRequired()
+                            ->localizeLabel('Amount Name')
                             ->options(InvoiceModel::getAvailableAmountNameOptions())
-                            ->selectablePlaceholder(false)
                             ->afterStateUpdated(static function (Get $get, Set $set, $state, $old) {
                                 if ($state !== 'other' && $old === 'other' && filled($get('amount_name.custom'))) {
                                     $set('amount_name.old_custom', $get('amount_name.custom'));
@@ -301,8 +280,7 @@ class Invoice extends Page
                                 if ($state === 'other' && $old !== 'other') {
                                     $set('amount_name.custom', $get('amount_name.old_custom'));
                                 }
-                            })
-                            ->rule('required'),
+                            }),
                         TextInput::make('amount_name.custom')
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('amount_name.option') !== 'other')
@@ -311,17 +289,17 @@ class Invoice extends Page
                 Group::make()
                     ->schema([
                         ViewField::make('preview.default')
-                            ->label('Preview')
+                            ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'default')
-                            ->view('components.invoice-layouts.default'),
+                            ->view('filament.company.components.invoice-layouts.default'),
                         ViewField::make('preview.modern')
-                            ->label('Preview')
+                            ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'modern')
-                            ->view('components.invoice-layouts.modern'),
+                            ->view('filament.company.components.invoice-layouts.modern'),
                         ViewField::make('preview.classic')
-                            ->label('Preview')
+                            ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'classic')
-                            ->view('components.invoice-layouts.classic'),
+                            ->view('filament.company.components.invoice-layouts.classic'),
                     ])->columnSpan(2),
             ])->columns(3);
     }
@@ -346,7 +324,7 @@ class Invoice extends Page
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('filament-panels::pages/tenancy/edit-tenant-profile.form.actions.save.label'))
+            ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }

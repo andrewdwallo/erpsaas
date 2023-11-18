@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\CategoryResource\Pages;
 
+use App\Enums\CategoryType;
 use App\Filament\Company\Resources\Setting\CategoryResource;
 use App\Models\Setting\Category;
 use App\Traits\HandlesResourceRecordCreation;
@@ -38,6 +39,8 @@ class CreateCategory extends CreateRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordCreationWithUniqueField($data, new Category(), $user, 'type');
+        $evaluatedTypes = [CategoryType::Income, CategoryType::Expense];
+
+        return $this->handleRecordCreationWithUniqueField($data, new Category(), $user, 'type', $evaluatedTypes);
     }
 }

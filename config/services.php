@@ -34,7 +34,7 @@ return [
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
-        'redirect' => 'http://erpsaas.test/company/oauth/github/callback',
+        'redirect' => env('APP_URL') . '/company/oauth/github/callback',
     ],
 
     'currency_api' => [

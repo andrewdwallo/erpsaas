@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Wallo\FilamentCompanies\ConnectedAccount as SocialiteConnectedAccount;
-use Wallo\FilamentCompanies\Events\{ConnectedAccountCreated, ConnectedAccountDeleted, ConnectedAccountUpdated};
+use Wallo\FilamentCompanies\Events\ConnectedAccountCreated;
+use Wallo\FilamentCompanies\Events\ConnectedAccountDeleted;
+use Wallo\FilamentCompanies\Events\ConnectedAccountUpdated;
 
 class ConnectedAccount extends SocialiteConnectedAccount
 {

@@ -2,11 +2,14 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as ProviderUserContract;
-use Wallo\FilamentCompanies\Contracts\{CreatesConnectedAccounts, CreatesUserFromProvider};
-use Wallo\FilamentCompanies\{Features, Socialite};
+use Wallo\FilamentCompanies\Contracts\CreatesConnectedAccounts;
+use Wallo\FilamentCompanies\Contracts\CreatesUserFromProvider;
+use Wallo\FilamentCompanies\Features;
+use Wallo\FilamentCompanies\Socialite;
 
 class CreateUserFromProvider implements CreatesUserFromProvider
 {

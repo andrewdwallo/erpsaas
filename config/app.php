@@ -170,9 +170,12 @@ return [
         App\Providers\Faker\FakerServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\Filament\UserPanelProvider::class,
+        App\Providers\MacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\FilamentCompaniesServiceProvider::class,
         App\Providers\SquireServiceProvider::class,
+        App\Providers\TranslationServiceProvider::class,
+        App\Providers\CurrencyServiceProvider::class,
     ])->toArray(),
 
     /*

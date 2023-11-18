@@ -2,10 +2,11 @@
 
 namespace Database\Factories\Core;
 
+use App\Models\Core\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Core\Department>
+ * @extends Factory<Department>
  */
 class DepartmentFactory extends Factory
 {

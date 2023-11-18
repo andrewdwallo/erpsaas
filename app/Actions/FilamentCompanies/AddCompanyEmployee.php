@@ -2,13 +2,16 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\User;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\{Gate, Validator};
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use Wallo\FilamentCompanies\Contracts\AddsCompanyEmployees;
-use Wallo\FilamentCompanies\Events\{AddingCompanyEmployee, CompanyEmployeeAdded};
+use Wallo\FilamentCompanies\Events\AddingCompanyEmployee;
+use Wallo\FilamentCompanies\Events\CompanyEmployeeAdded;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Rules\Role;
 

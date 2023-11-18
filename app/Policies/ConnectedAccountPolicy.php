@@ -2,7 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\{ConnectedAccount, User};
+use App\Models\ConnectedAccount;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ConnectedAccountPolicy

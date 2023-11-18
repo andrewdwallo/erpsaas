@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Resources\Setting\DiscountResource\Pages;
 
+use App\Enums\DiscountType;
 use App\Filament\Company\Resources\Setting\DiscountResource;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
@@ -45,6 +46,8 @@ class EditDiscount extends EditRecord
             throw new Halt('No authenticated user found');
         }
 
-        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type');
+        $evaluatedTypes = [DiscountType::Sales, DiscountType::Purchase];
+
+        return $this->handleRecordUpdateWithUniqueField($record, $data, $user, 'type', $evaluatedTypes);
     }
 }

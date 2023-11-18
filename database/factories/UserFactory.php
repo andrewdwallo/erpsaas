@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
+use App\Models\Setting\CompanyDefault;
 use App\Models\Setting\CompanyProfile;
-use App\Models\{Company, User};
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Wallo\FilamentCompanies\Features;
@@ -56,13 +58,19 @@ class UserFactory extends Factory
             return $this->state([]);
         }
 
-        return $this->has(
+        $countryCode = $this->faker->countryCode;
+
+        return $this->afterCreating(function (User $user) use ($countryCode) {
             Company::factory()
-                ->has(CompanyProfile::factory(), 'profile')
-                ->state(function (array $attributes, User $user) {
-                    return ['name' => $user->name . '\'s Company', 'user_id' => $user->id, 'personal_company' => true];
-                }),
-            'ownedCompanies'
-        );
+                ->has(CompanyProfile::factory()->withCountry($countryCode), 'profile')
+                ->afterCreating(function (Company $company) use ($user, $countryCode) {
+                    CompanyDefault::factory()->withDefault($user, $company, $countryCode)->create();
+                })
+                ->create([
+                    'name' => $user->name . '\'s Company',
+                    'user_id' => $user->id,
+                    'personal_company' => true,
+                ]);
+        });
     }
 }

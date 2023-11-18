@@ -2,15 +2,15 @@
 
 namespace App\Models\Locale;
 
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Squire\Model;
 
 /**
  * @property int $id
  * @property string $name
- * @property int $country_id
- * @property string $country_code
+ * @property string $country_id
  * @property string $country_name
  * @property string $state_code
  * @property float $latitude
@@ -21,8 +21,7 @@ class State extends Model
     public static array $schema = [
         'id' => 'integer',
         'name' => 'string',
-        'country_id' => 'integer',
-        'country_code' => 'string',
+        'country_id' => 'string',
         'country_name' => 'string',
         'state_code' => 'string',
         'latitude' => 'float',
@@ -35,7 +34,7 @@ class State extends Model
             return collect();
         }
 
-        return self::where('country_code', $code)->get()->pluck('name', 'id');
+        return self::where('country_id', $code)->get()->pluck('name', 'id');
     }
 
     public function country(): BelongsTo

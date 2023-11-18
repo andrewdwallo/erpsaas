@@ -4,11 +4,16 @@ namespace App\Filament\Company\Pages;
 
 use App\Enums\EntityType;
 use App\Events\CompanyGenerated;
+use App\Models\Company;
 use App\Models\Locale\Country;
-use Filament\Forms\Components\{Select, TextInput};
+use App\Utilities\Currency\CurrencyAccessor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\{Auth, Gate};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Wallo\FilamentCompanies\Events\AddingCompany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\FilamentCompanies\Pages\Company\CreateCompany as FilamentCreateCompany;
@@ -30,14 +35,36 @@ class CreateCompany extends FilamentCreateCompany
                     ->required(),
                 Select::make('profile.entity_type')
                     ->label('Entity Type')
-                    ->native(false)
                     ->options(EntityType::class)
                     ->required(),
                 Select::make('profile.country')
                     ->label('Country')
-                    ->native(false)
+                    ->live()
                     ->searchable()
                     ->options(Country::getAvailableCountryOptions())
+                    ->required(),
+                Select::make('locale.language')
+                    ->label('Language')
+                    ->searchable()
+                    ->options(static fn (Get $get) => Country::getLanguagesByCountryCode($get('profile.country')))
+                    ->getSearchResultsUsing(static function (string $search) {
+                        $allLanguages = Country::getLanguagesByCountryCode();
+
+                        return array_filter($allLanguages, static function ($language) use ($search) {
+                            return stripos($language, $search) !== false;
+                        });
+                    })
+                    ->getOptionLabelUsing(static function ($value) {
+                        $allLanguages = Country::getLanguagesByCountryCode();
+
+                        return $allLanguages[$value] ?? $value;
+                    })
+                    ->required(),
+                Select::make('currencies.code')
+                    ->label('Currency')
+                    ->searchable()
+                    ->options(CurrencyAccessor::getAllCurrencyOptions())
+                    ->optionsLimit(5)
                     ->required(),
             ])
             ->model(FilamentCompanies::companyModel())
@@ -54,6 +81,7 @@ class CreateCompany extends FilamentCreateCompany
 
         $personalCompany = $user?->personalCompany() === null;
 
+        /** @var Company $company */
         $company = $user?->ownedCompanies()->create([
             'name' => $data['name'],
             'personal_company' => $personalCompany,
@@ -69,7 +97,7 @@ class CreateCompany extends FilamentCreateCompany
 
         $name = $data['name'];
 
-        CompanyGenerated::dispatch($user, $company, $data['profile']['country']);
+        CompanyGenerated::dispatch($user ?? Auth::user(), $company, $data['profile']['country'], $data['locale']['language'], $data['currencies']['code']);
 
         $this->companyCreated($name);
 

@@ -11,8 +11,7 @@ use Squire\Model;
  * @property string $name
  * @property int $state_id
  * @property string $state_code
- * @property int $country_id
- * @property string $country_code
+ * @property string $country_id
  * @property float $latitude
  * @property float $longitude
  */
@@ -23,8 +22,7 @@ class City extends Model
         'name' => 'string',
         'state_id' => 'integer',
         'state_code' => 'string',
-        'country_id' => 'integer',
-        'country_code' => 'string',
+        'country_id' => 'string',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
@@ -35,7 +33,7 @@ class City extends Model
             return collect();
         }
 
-        return self::query()->where('country_code', $countryCode)
+        return self::query()->where('country_id', $countryCode)
             ->where('state_id', $stateId)
             ->get();
     }

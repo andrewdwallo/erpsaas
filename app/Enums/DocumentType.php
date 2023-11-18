@@ -2,7 +2,8 @@
 
 namespace App\Enums;
 
-use Filament\Support\Contracts\{HasIcon, HasLabel};
+use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
 
 enum DocumentType: string implements HasIcon, HasLabel
 {

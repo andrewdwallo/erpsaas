@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Enums\{CategoryType, DiscountType, TaxType};
+use App\Enums\CategoryType;
+use App\Enums\DiscountType;
+use App\Enums\TaxType;
 use App\Events\CompanyDefaultEvent;
 use App\Models\Setting\CompanyDefault;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +69,10 @@ class SyncWithCompanyDefaults
 
     private function handleDiscount($default, $type, $key): void
     {
+        if (! in_array($type, [DiscountType::Sales, DiscountType::Purchase], true)) {
+            return;
+        }
+
         match (true) {
             $type === DiscountType::Sales => $default->sales_discount_id = $key,
             $type === DiscountType::Purchase => $default->purchase_discount_id = $key,
@@ -75,6 +81,10 @@ class SyncWithCompanyDefaults
 
     private function handleTax($default, $type, $key): void
     {
+        if (! in_array($type, [TaxType::Sales, TaxType::Purchase], true)) {
+            return;
+        }
+
         match (true) {
             $type === TaxType::Sales => $default->sales_tax_id = $key,
             $type === TaxType::Purchase => $default->purchase_tax_id = $key,
@@ -83,6 +93,10 @@ class SyncWithCompanyDefaults
 
     private function handleCategory($default, $type, $key): void
     {
+        if (! in_array($type, [CategoryType::Income, CategoryType::Expense], true)) {
+            return;
+        }
+
         match (true) {
             $type === CategoryType::Income => $default->income_category_id = $key,
             $type === CategoryType::Expense => $default->expense_category_id = $key,

@@ -13,6 +13,6 @@ enum CategoryType: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return $this->name;
+        return translate($this->name);
     }
 }

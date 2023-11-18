@@ -2,8 +2,11 @@
 
 namespace App\Providers\Faker;
 
-use App\Faker\{PhoneNumber, State};
-use Faker\{Factory, Generator};
+use App\Faker\CurrencyCode;
+use App\Faker\PhoneNumber;
+use App\Faker\State;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Support\ServiceProvider;
 
 class FakerServiceProvider extends ServiceProvider
@@ -17,6 +20,7 @@ class FakerServiceProvider extends ServiceProvider
             $faker = Factory::create();
             $faker->addProvider(new PhoneNumber($faker));
             $faker->addProvider(new State($faker));
+            $faker->addProvider(new CurrencyCode($faker));
 
             return $faker;
         });

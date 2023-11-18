@@ -2,11 +2,14 @@
 
 namespace App\Actions\FilamentCompanies;
 
-use App\Models\{Company, User};
+use App\Models\Company;
+use App\Models\User;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\{Gate, Mail, Validator};
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Wallo\FilamentCompanies\Contracts\InvitesCompanyEmployees;
 use Wallo\FilamentCompanies\Events\InvitingCompanyEmployee;

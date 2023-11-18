@@ -9,8 +9,6 @@ class State extends Base
 {
     public function state(string $countryCode, string $column = 'id'): mixed
     {
-        $state = StateModel::where('country_code', $countryCode)->inRandomOrder()->first();
-
-        return $state?->{$column};
+        return StateModel::where('country_id', $countryCode)->inRandomOrder()->first()?->{$column};
     }
 }

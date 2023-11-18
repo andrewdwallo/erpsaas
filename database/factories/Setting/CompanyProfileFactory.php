@@ -3,10 +3,9 @@
 namespace Database\Factories\Setting;
 
 use App\Enums\EntityType;
-use App\Events\CompanyGenerated;
-use App\Faker\{PhoneNumber, State};
+use App\Faker\PhoneNumber;
+use App\Faker\State;
 use App\Models\Setting\CompanyProfile;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class CompanyProfileFactory extends Factory
 {
     /**
-     * @var string The related model's name.
+     * The name of the factory's corresponding model.
      */
     protected $model = CompanyProfile::class;
 
@@ -26,34 +25,26 @@ class CompanyProfileFactory extends Factory
      */
     public function definition(): array
     {
+        return [
+            'address' => $this->faker->streetAddress,
+            'zip_code' => $this->faker->postcode,
+            'email' => $this->faker->email,
+            'entity_type' => $this->faker->randomElement(EntityType::class),
+        ];
+    }
+
+    public function withCountry(string $code): static
+    {
         /** @var PhoneNumber $phoneFaker */
         $phoneFaker = $this->faker;
 
         /** @var State $stateFaker */
         $stateFaker = $this->faker;
 
-        $countryCode = $this->faker->countryCode;
-
-        return [
-            'address' => $this->faker->streetAddress,
-            'zip_code' => $this->faker->postcode,
-            'state_id' => $stateFaker->state($countryCode),
-            'country' => $countryCode,
-            'timezone' => $this->faker->timezone($countryCode),
-            'phone_number' => $phoneFaker->phoneNumberForCountryCode($countryCode),
-            'email' => $this->faker->email,
-            'entity_type' => $this->faker->randomElement(EntityType::class),
-            'fiscal_year_start' => (new DateTime('first day of January'))->format('Y-m-d'),
-            'fiscal_year_end' => (new DateTime('last day of December'))->format('Y-m-d'),
-        ];
-    }
-
-    public function configure(): static
-    {
-        return $this->afterCreating(static function (CompanyProfile $companyProfile) {
-            $companyProfile->save();
-
-            event(new CompanyGenerated($companyProfile->company->owner, $companyProfile->company, $companyProfile->country));
-        });
+        return $this->state([
+            'country' => $code,
+            'state_id' => $stateFaker->state($code),
+            'phone_number' => $phoneFaker->phoneNumberForCountryCode($code),
+        ]);
     }
 }

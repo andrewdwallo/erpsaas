@@ -23,7 +23,7 @@ enum ModalWidth: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return match ($this) {
+        $label = match ($this) {
             self::XS => 'Extra Small',
             self::SM => 'Small',
             self::MD => 'Medium',
@@ -37,5 +37,7 @@ enum ModalWidth: string implements HasLabel
             self::SEVEN_XL => '7X Large',
             self::SCREEN => 'Screen',
         };
+
+        return translate($label);
     }
 }

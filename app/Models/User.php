@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Models\Core\Department;
-use Filament\Models\Contracts\{FilamentUser, HasAvatar, HasDefaultTenant, HasTenants};
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasDefaultTenant;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +15,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
-use Wallo\FilamentCompanies\{HasCompanies, HasConnectedAccounts, HasProfilePhoto, SetsProfilePhotoFromUrl};
+use Wallo\FilamentCompanies\HasCompanies;
+use Wallo\FilamentCompanies\HasConnectedAccounts;
+use Wallo\FilamentCompanies\HasProfilePhoto;
+use Wallo\FilamentCompanies\SetsProfilePhotoFromUrl;
 
-/** @property Company $currentCompany */
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasTenants
 {
     use HasApiTokens;
@@ -87,7 +92,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         return $this->profile_photo_url;
     }
 
-    public function managers(): HasMany
+    public function managerOf(): HasMany
     {
         return $this->hasMany(Department::class, 'manager_id');
     }

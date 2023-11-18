@@ -3,21 +3,33 @@
 namespace App\Filament\Company\Resources\Core;
 
 use App\Filament\Company\Resources\Core\DepartmentResource\Pages;
+use App\Filament\Company\Resources\Core\DepartmentResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Core\Department;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\{Forms, Tables};
+use Illuminate\Database\Eloquent\Builder;
 
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
+
+    protected static ?string $modelLabel = 'Department';
 
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?string $navigationGroup = 'HR';
 
     protected static ?string $slug = 'hr/departments';
+
+    public static function getModelLabel(): string
+    {
+        $modelLabel = static::$modelLabel;
+
+        return translate($modelLabel);
+    }
 
     public static function form(Form $form): Form
     {
@@ -28,26 +40,35 @@ class DepartmentResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->autofocus()
                             ->required()
+                            ->localizeLabel()
                             ->maxLength(100),
                         Forms\Components\Select::make('manager_id')
-                            ->label('Manager')
-                            ->relationship('manager', 'name')
+                            ->relationship(
+                                name: 'manager',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: static function (Builder $query) {
+                                    $company = auth()->user()->currentCompany;
+                                    $companyUsers = $company->allUsers()->pluck('id')->toArray();
+
+                                    return $query->whereIn('id', $companyUsers);
+                                }
+                            )
+                            ->localizeLabel()
                             ->searchable()
                             ->preload()
-                            ->placeholder('Select a manager')
                             ->nullable(),
                         Forms\Components\Group::make()
                             ->schema([
                                 Forms\Components\Select::make('parent_id')
-                                    ->label('Parent Department')
+                                    ->localizeLabel('Parent Department')
                                     ->relationship('parent', 'name')
                                     ->preload()
                                     ->searchable()
                                     ->nullable(),
                                 Forms\Components\Textarea::make('description')
-                                    ->label('Description')
                                     ->autosize()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->localizeLabel(),
                             ])->columns(1),
                     ])->columns(),
             ]);
@@ -58,11 +79,18 @@ class DepartmentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->localizeLabel()
                     ->weight('semibold')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('manager.name')
-                    ->label('Manager')
+                    ->localizeLabel()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('children_count')
+                    ->localizeLabel('Children')
+                    ->badge()
+                    ->counts('children')
                     ->searchable()
                     ->sortable(),
             ])
@@ -82,7 +110,7 @@ class DepartmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ChildrenRelationManager::class,
         ];
     }
 

@@ -3,12 +3,13 @@
 namespace App\Actions\OptionAction;
 
 use App\Models\Setting\Currency;
+use App\Utilities\Currency\CurrencyAccessor;
 
 class CreateCurrency
 {
     public function create(string $code, string $name, string $rate): Currency
     {
-        $defaultCurrency = Currency::getDefaultCurrencyCode();
+        $defaultCurrency = CurrencyAccessor::getDefaultCurrency();
 
         $hasDefaultCurrency = $defaultCurrency !== null;
         $currency_code = currency($code);

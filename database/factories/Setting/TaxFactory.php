@@ -2,7 +2,9 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\{TaxComputation, TaxScope, TaxType};
+use App\Enums\TaxComputation;
+use App\Enums\TaxScope;
+use App\Enums\TaxType;
 use App\Models\Setting\Tax;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,7 +27,7 @@ class TaxFactory extends Factory
     {
         return [
             'description' => $this->faker->sentence,
-            'rate' => $this->faker->randomFloat(4, 0, 20),
+            'rate' => $this->faker->biasedNumberBetween(300, 5000) * 100, // 3% - 50%
             'computation' => $this->faker->randomElement(TaxComputation::class),
             'scope' => $this->faker->randomElement(TaxScope::class),
             'enabled' => true,
@@ -36,6 +38,7 @@ class TaxFactory extends Factory
     {
         return $this->state([
             'name' => 'State Sales Tax',
+            'rate' => $this->faker->biasedNumberBetween(300, 1200) * 100, // 3% - 12%
             'type' => TaxType::Sales,
         ]);
     }
@@ -44,6 +47,7 @@ class TaxFactory extends Factory
     {
         return $this->state([
             'name' => 'State Purchase Tax',
+            'rate' => $this->faker->biasedNumberBetween(300, 1200) * 100, // 3% - 12%
             'type' => TaxType::Purchase,
         ]);
     }

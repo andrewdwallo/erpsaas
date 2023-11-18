@@ -13,3 +13,13 @@
 .fi-sidebar-header {
     @apply bg-translucent;
 }
+
+.choices__inner {
+    height: 2.25rem;
+}
+
+.fi-badge {
+    display: inline-flex;
+}
+
+
