@@ -12,10 +12,12 @@ use App\Traits\CompanyOwned;
 use Database\Factories\Setting\DocumentDefaultFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class DocumentDefault extends Model
@@ -61,6 +63,17 @@ class DocumentDefault extends Model
         'price_name' => AsArrayObject::class,
         'amount_name' => AsArrayObject::class,
     ];
+
+    protected $appends = [
+        'logo_url',
+    ];
+
+    protected function logoUrl(): Attribute
+    {
+        return Attribute::get(static function (mixed $value, array $attributes): ?string {
+            return $attributes['logo'] ? Storage::disk('public')->url($attributes['logo']) : null;
+        });
+    }
 
     public function company(): BelongsTo
     {

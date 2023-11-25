@@ -23,7 +23,7 @@ class InvoiceViewModel
 
     public function logo(): ?string
     {
-        return $this->invoice->logo ?? null;
+        return $this->invoice->logo_url;
     }
 
     public function show_logo(): bool

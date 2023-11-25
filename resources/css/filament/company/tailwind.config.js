@@ -5,6 +5,7 @@ export default {
     content: [
         './app/Filament/Company/**/*.php',
         './resources/views/filament/company/**/*.blade.php',
+        './resources/views/components/company/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
         './vendor/andrewdwallo/filament-companies/resources/views/**/*.blade.php',
         './vendor/andrewdwallo/filament-selectify/resources/views/**/*.blade.php',
@@ -17,7 +18,7 @@ export default {
                 platinum: '#E8E9EB',
                 moonlight: '#F6F5F3',
                 translucent: 'rgba(54, 54, 52, 0.06)',
-            }
+            },
         }
     }
 }
