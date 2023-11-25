@@ -5,7 +5,6 @@ namespace App\Observers;
 use App\Events\CurrencyRateChanged;
 use App\Events\DefaultCurrencyChanged;
 use App\Models\Setting\Currency;
-use Illuminate\Support\Facades\Log;
 
 class CurrencyObserver
 {
@@ -27,7 +26,6 @@ class CurrencyObserver
         }
 
         if ($currency->wasChanged('rate')) {
-            Log::info('Currency rate changed');
             event(new CurrencyRateChanged($currency));
         }
     }

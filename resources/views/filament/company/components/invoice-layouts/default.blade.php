@@ -8,125 +8,137 @@
 {!! $font_html !!}
 
 <style>
-    .paper {
+    .inv-paper {
         font-family: '{{ $font_family }}', sans-serif;
     }
 </style>
 
-<div class="print-template flex justify-center p-6">
-    <div class="paper bg-[#ffffff] dark:bg-gray-950 p-8 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] w-[612px] h-[791px]">
+<x-company.invoice.container class="default-template-container">
 
-        <!-- Header: Logo on the left and Company details on the right -->
-        <div class="flex mb-4">
-            <div class="w-2/5">
-                @if($logo && $show_logo)
-                    <div class="text-left">
-                        <img src="{{ \Illuminate\Support\Facades\URL::asset($logo) }}" alt="logo" style="width: 120px; height: auto">
-                    </div>
+    <x-company.invoice.header class="default-template-header border-b-2 p-6 pb-4">
+        <div class="w-2/3">
+            @if($logo && $show_logo)
+                <x-company.invoice.logo :src="$logo" />
+            @endif
+        </div>
+
+        <div class="w-1/3 text-right">
+            <div class="text-xs">
+                <h2 class="font-semibold">{{ $company_name }}</h2>
+                @if($company_address && $company_city && $company_state && $company_zip)
+                    <p>{{ $company_address }}</p>
+                    <p>{{ $company_city }}, {{ $company_state }} {{ $company_zip }}</p>
+                    <p>{{ $company_country }}</p>
                 @endif
             </div>
+        </div>
+    </x-company.invoice.header>
 
-            <!-- Company Details -->
-            <div class="w-3/5">
-                <div class="text-xs text-gray-600 dark:text-gray-200 text-right space-y-1">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">{{ $company_name }}</h2>
-                    @if($company_address && $company_city && $company_state && $company_zip)
-                        <p>{{ $company_address }}</p>
-                        <p>{{ $company_city }}, {{ $company_state }} {{ $company_zip }}</p>
-                        <p>{{ $company_country }}</p>
-                    @endif
-                </div>
-            </div>
+    <x-company.invoice.metadata class="default-template-metadata space-y-6">
+        <div>
+            <h1 class="text-3xl font-light uppercase">{{ $header }}</h1>
+            @if ($subheader)
+                <h2 class="text-sm text-gray-600 dark:text-gray-400">{{ $subheader }}</h2>
+            @endif
         </div>
 
-        <!-- Border Line -->
-        <div class="border-b-2 my-4" style="border-color: {{ $accent_color }}"></div>
-
-        <!-- Invoice Details -->
-        <div class="flex mb-4">
-            <div class="w-2/5">
-                <div class="text-left">
-                    <h1 class="text-3xl font-semibold text-gray-800 dark:text-white">{{ $header }}</h1>
-                    @if ($subheader)
-                        <p class="text-sm text-gray-600 dark:text-gray-100">{{ $subheader }}</p>
-                    @endif
-                </div>
+        <div class="flex justify-between items-end">
+            <!-- Billing Details -->
+            <div class="text-xs">
+                <h3 class="text-gray-600 dark:text-gray-400 font-medium tracking-tight mb-1">BILL TO</h3>
+                <p class="text-base font-bold">John Doe</p>
+                <p>123 Main Street</p>
+                <p>New York, New York 10001</p>
+                <p>United States</p>
             </div>
 
-            <div class="w-3/5">
-                <div class="text-right">
-                    <p>
-                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-100">No: </span>
-                        <span class="text-xs text-gray-700 dark:text-white">{{ $invoice_number }}</span>
-                    </p>
-                    <p>
-                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-100">Date: </span>
-                        <span class="text-xs text-gray-500 dark:text-white">{{ $invoice_date }}</span>
-                    </p>
-                    <p>
-                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-100">Due Date: </span>
-                        <span class="text-xs text-gray-500 dark:text-white">{{ $invoice_due_date }}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Billing Details -->
-        <div class="text-xs text-gray-600 dark:text-gray-200 mb-4">
-            <h3 class="text-base font-semibold text-gray-600 dark:text-gray-200 mb-2">BILL TO</h3>
-            <p class="text-sm text-gray-800 dark:text-white font-semibold">John Doe</p>
-            <p>123 Main Street</p>
-            <p>New York, NY 10001</p>
-        </div>
-
-        <!-- Line Items Table -->
-        <div class="mb-4">
-            <table class="w-full border-collapse text-sm">
-                <thead>
-                    <tr style="color: {{ $accent_color }}">
-                        <th class="text-left p-2 w-1/2">{{ $item_name }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $unit_name }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $price_name }}</th>
-                        <th class="text-center p-2 w-1/6">{{ $amount_name }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="bg-gray-200/75 dark:bg-gray-800">
-                        <td class="p-2">Item 1</td>
-                        <td class="p-2 text-center">2</td>
-                        <td class="p-2 text-center">$150.00</td>
-                        <td class="p-2 text-center">$300.00</td>
+            <div class="text-xs">
+                <table class="min-w-full">
+                    <tbody>
+                    <tr>
+                        <td class="font-semibold text-right pr-2">Invoice Number:</td>
+                        <td class="text-left pl-2">{{ $invoice_number }}</td>
                     </tr>
                     <tr>
-                        <td class="p-2">Item 2</td>
-                        <td class="p-2 text-center">3</td>
-                        <td class="p-2 text-center">$200.00</td>
-                        <td class="p-2 text-center">$600.00</td>
+                        <td class="font-semibold text-right pr-2">Invoice Date:</td>
+                        <td class="text-left pl-2">{{ $invoice_date }}</td>
                     </tr>
-                    <tr class="bg-gray-200/75 dark:bg-gray-800">
-                        <td class="p-2">Item 3</td>
-                        <td class="p-2 text-center">1</td>
-                        <td class="p-2 text-center">$200.00</td>
-                        <td class="p-2 text-center">$200.00</td>
+                    <tr>
+                        <td class="font-semibold text-right pr-2">Payment Due:</td>
+                        <td class="text-left pl-2">{{ $invoice_due_date }}</td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Total Amount -->
-        <div class="text-right mb-8">
-            <p class="text-sm text-gray-600 dark:text-gray-200">Subtotal: $1100.00</p>
-            <p class="text-sm text-gray-600 dark:text-gray-200">Tax: $110.00</p>
-            <p class="text-lg font-semibold text-gray-800 dark:text-white">Total: $1210.00</p>
-        </div>
-
-        <!-- Footer Notes -->
-        <div class="pt-6 text-gray-600 dark:text-gray-300 text-xs">
-            <p>{{ $footer }}</p>
-            <div class="mt-2 border-t-2 border-gray-300 py-2">
-                <h4 class="font-semibold text-gray-700 dark:text-gray-100 mb-2">Terms & Conditions:</h4>
-                <p>{{ $terms }}</p>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-</div>
+    </x-company.invoice.metadata>
+
+    <!-- Line Items Table -->
+    <x-company.invoice.line-items class="default-template-line-items">
+        <table class="w-full text-left table-fixed">
+            <thead class="text-sm leading-8" style="background: {{ $accent_color }}">
+                <tr class="text-white">
+                    <th class="text-left pl-6">{{ $item_name }}</th>
+                    <th class="text-center">{{ $unit_name }}</th>
+                    <th class="text-right">{{ $price_name }}</th>
+                    <th class="text-right pr-6">{{ $amount_name }}</th>
+                </tr>
+            </thead>
+            <tbody class="text-xs border-b-2 border-gray-300 leading-8">
+            <tr>
+                <td class="text-left pl-6 font-semibold">Item 1</td>
+                <td class="text-center">2</td>
+                <td class="text-right">$150.00</td>
+                <td class="text-right pr-6">$300.00</td>
+            </tr>
+            <tr>
+                <td class="text-left pl-6 font-semibold">Item 2</td>
+                <td class="text-center">3</td>
+                <td class="text-right">$200.00</td>
+                <td class="text-right pr-6">$600.00</td>
+            </tr>
+            <tr>
+                <td class="text-left pl-6 font-semibold">Item 3</td>
+                <td class="text-center">1</td>
+                <td class="text-right">$180.00</td>
+                <td class="text-right pr-6">$180.00</td>
+            </tr>
+            </tbody>
+            <tfoot class="text-xs leading-loose">
+                <tr>
+                    <td class="pl-6" colspan="2"></td>
+                    <td class="text-right font-semibold">Subtotal:</td>
+                    <td class="text-right pr-6">$1080.00</td>
+                </tr>
+                <tr class="text-success-800 dark:text-success-600">
+                    <td class="pl-6" colspan="2"></td>
+                    <td class="text-right">Discount (5%):</td>
+                    <td class="text-right pr-6">($54.00)</td>
+                </tr>
+                <tr>
+                    <td class="pl-6" colspan="2"></td>
+                    <td class="text-right">Sales Tax (10%):</td>
+                    <td class="text-right pr-6">$102.60</td>
+                </tr>
+                <tr>
+                    <td class="pl-6" colspan="2"></td>
+                    <td class="text-right font-semibold border-t">Total:</td>
+                    <td class="text-right border-t pr-6">$1128.60</td>
+                </tr>
+                <tr>
+                    <td class="pl-6" colspan="2"></td>
+                    <td class="text-right font-semibold border-t-4 border-double">Amount Due (USD):</td>
+                    <td class="text-right border-t-4 border-double pr-6">$1128.60</td>
+                </tr>
+            </tfoot>
+        </table>
+    </x-company.invoice.line-items>
+
+    <!-- Footer Notes -->
+    <x-company.invoice.footer class="default-template-footer">
+        <p class="px-6">{{ $footer }}</p>
+        <span class="border-t-2 my-2 border-gray-300 block w-full"></span>
+        <h4 class="font-semibold px-6 mb-2">Terms & Conditions</h4>
+        <p class="px-6 break-words line-clamp-4">{{ $terms }}</p>
+    </x-company.invoice.footer>
+</x-company.invoice.container>

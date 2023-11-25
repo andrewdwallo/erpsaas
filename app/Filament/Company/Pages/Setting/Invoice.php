@@ -13,7 +13,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -173,19 +173,19 @@ class Invoice extends Page
         return Section::make('Template')
             ->description('Choose the template and edit the column names.')
             ->schema([
-                Group::make()
+                Grid::make(1)
                     ->schema([
                         FileUpload::make('logo')
                             ->openable()
-                            ->maxSize(2048)
+                            ->maxSize(1024)
                             ->localizeLabel()
                             ->visibility('public')
                             ->disk('public')
                             ->directory('logos/document')
                             ->imageResizeMode('contain')
-                            ->imageCropAspectRatio('1:1')
-                            ->panelAspectRatio('1:1')
-                            ->panelLayout('compact')
+                            ->imageCropAspectRatio('3:2')
+                            ->panelAspectRatio('3:2')
+                            ->panelLayout('integrated')
                             ->removeUploadedFileButtonPosition('center bottom')
                             ->uploadButtonPosition('center bottom')
                             ->uploadProgressIndicatorPosition('center bottom')
@@ -193,8 +193,10 @@ class Invoice extends Page
                                 static fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
                                     ->prepend(Auth::user()->currentCompany->id . '_'),
                             )
-                            ->extraAttributes(['class' => 'w-32 h-32'])
-                            ->acceptedFileTypes(['image/png', 'image/jpeg']),
+                            ->extraAttributes([
+                                'class' => 'aspect-[3/2] w-[9.375rem] max-w-full',
+                            ])
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/gif']),
                         Checkbox::make('show_logo')
                             ->localizeLabel(),
                         ColorPicker::make('accent_color')
@@ -285,18 +287,21 @@ class Invoice extends Page
                             ->hiddenLabel()
                             ->disabled(static fn (callable $get) => $get('amount_name.option') !== 'other')
                             ->nullable(),
-                    ])->columns(1),
-                Group::make()
+                    ])->columnSpan(1),
+                Grid::make()
                     ->schema([
                         ViewField::make('preview.default')
+                            ->columnSpan(2)
                             ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'default')
                             ->view('filament.company.components.invoice-layouts.default'),
                         ViewField::make('preview.modern')
+                            ->columnSpan(2)
                             ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'modern')
                             ->view('filament.company.components.invoice-layouts.modern'),
                         ViewField::make('preview.classic')
+                            ->columnSpan(2)
                             ->hiddenLabel()
                             ->visible(static fn (callable $get) => $get('template') === 'classic')
                             ->view('filament.company.components.invoice-layouts.classic'),

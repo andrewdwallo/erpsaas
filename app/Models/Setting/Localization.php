@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use NumberFormatter;
 use ResourceBundle;
-use Symfony\Component\Intl\Languages;
 use Wallo\FilamentCompanies\FilamentCompanies;
 use Wallo\Transmatic\Facades\Transmatic;
 

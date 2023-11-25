@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Log;
 
 class CurrencyService implements CurrencyHandler
 {
-    protected string|null $api_key;
+    protected ?string $api_key;
 
-    protected string|null $base_url;
+    protected ?string $base_url;
 
     protected Client $client;
 
-    public function __construct(string|null $api_key, string|null $base_url, Client $client)
+    public function __construct(?string $api_key, ?string $base_url, Client $client)
     {
         $this->api_key = $api_key;
         $this->base_url = $base_url;
