@@ -29,7 +29,6 @@
     "State \/ Province": "Bundesland\/Provinz",
     "Categories": "Kategorien",
     "Layout": "Raumaufteilung",
-    "HR": "HR",
     "sky": "Himmel",
     "stone": "Stein",
     "Settings": "Einstellungen",
@@ -224,5 +223,11 @@
     "Parent Department": "Elternabteilung",
     "Action Denied": "Aktion verweigert",
     "Live Rate": "Live-Rate",
-    "Entity": "Entität"
+    "Entity": "Entität",
+    "Website": "Webseite",
+    "Resources": "Ressourcen",
+    "Management": "Verwaltung",
+    "Finance": "Finanzen",
+    "Company": "Firma",
+    "Personalization": "Personalisierung"
 }

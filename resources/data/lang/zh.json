@@ -46,7 +46,6 @@
     "Quantity": "数量",
     "Large": "大",
     "Item Name": "物品名",
-    "HR": "HR",
     "Content": "内容",
     "Phone Number": "电话号码",
     "State \/ Province": "州\/省",
@@ -224,5 +223,11 @@
     "Action Denied": "操作被拒绝",
     "Parent Department": "家长部门",
     "The rate must be between 0 and 100.": "速率必须介于 0 和 100 之间。",
-    "The rate must be greater than 0.": "速率必须大于 0。"
+    "The rate must be greater than 0.": "速率必须大于 0。",
+    "Finance": "财务",
+    "Website": "网站",
+    "Personalization": "个性化",
+    "Management": "管理",
+    "Company": "公司",
+    "Resources": "资源"
 }

@@ -10,6 +10,7 @@ use App\Models\Setting\Localization as LocalizationModel;
 use App\Utilities\Localization\Timezone;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
@@ -58,6 +59,15 @@ class Localization extends Page
     public static function getNavigationLabel(): string
     {
         return translate(static::$title);
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        if (Filament::hasTopNavigation()) {
+            return translate('Company');
+        }
+
+        return null;
     }
 
     public function mount(): void

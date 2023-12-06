@@ -26,7 +26,6 @@
     "Small": "Küçük",
     "Rate": "Oranı",
     "Large": "Büyük",
-    "HR": "İK",
     "Layout": "Düzen",
     "Invoice": "Fatura",
     "Terms": "Şartlar",
@@ -224,5 +223,11 @@
     "The rate must be greater than 0.": "Oranın 0'dan büyük olması gerekir.",
     "Live Rate": "Canlı Oran",
     "The rate must be between 0 and 100.": "Oranın 0 ile 100 arasında olması gerekir.",
-    "Action Denied": "Eylem Reddedildi"
+    "Action Denied": "Eylem Reddedildi",
+    "Website": "İnternet sitesi",
+    "Management": "Yönetim",
+    "Resources": "Kaynaklar",
+    "Personalization": "Kişiselleştirme",
+    "Company": "ŞİRKETİ",
+    "Finance": "Finans"
 }

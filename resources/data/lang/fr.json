@@ -53,7 +53,6 @@
     "Identification": "Identification",
     "Limited Partnership (LP)": "Société en commandite (LP)",
     "Accent Color": "Couleur d'accent",
-    "HR": "HR",
     "Number Digits": "Chiffres numériques",
     "Navigation Layout": "Disposition de navigation",
     "Content": "Contenu",
@@ -224,5 +223,11 @@
     "Action Denied": "Action refusée",
     "Parent Department": "Département parent",
     "The rate must be between 0 and 100.": "Le taux doit être compris entre 0 et 100.",
-    "The rate must be greater than 0.": "Le taux doit être supérieur à 0."
+    "The rate must be greater than 0.": "Le taux doit être supérieur à 0.",
+    "Management": "Gestion",
+    "Website": "Site Web",
+    "Resources": "Ressources",
+    "Finance": "Finances",
+    "Company": "Entreprise",
+    "Personalization": "Personnalisation"
 }

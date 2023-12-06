@@ -11,6 +11,7 @@ use App\Enums\TableSortDirection;
 use App\Models\Setting\Appearance as AppearanceModel;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -57,6 +58,15 @@ class Appearance extends Page
     public static function getNavigationLabel(): string
     {
         return translate(static::$title);
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        if (Filament::hasTopNavigation()) {
+            return translate('Personalization');
+        }
+
+        return null;
     }
 
     public function mount(): void

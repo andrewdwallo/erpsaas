@@ -9,6 +9,7 @@ use App\Enums\Template;
 use App\Models\Setting\DocumentDefault as InvoiceModel;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Component;
@@ -63,6 +64,15 @@ class Invoice extends Page
     public static function getNavigationLabel(): string
     {
         return translate(static::$title);
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        if (Filament::hasTopNavigation()) {
+            return translate('Personalization');
+        }
+
+        return null;
     }
 
     public function mount(): void

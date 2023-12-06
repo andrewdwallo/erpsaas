@@ -17,7 +17,6 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs\Tab;
-use Filament\Navigation\NavigationGroup;
 use Filament\Resources\Components\Tab as ResourcesTab;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Tables\Table;
@@ -38,7 +37,6 @@ class ConfigureCompanyDefault
         $modalWidth = $company->appearance->modal_width->value ?? ModalWidth::DEFAULT;
         $maxContentWidth = $company->appearance->max_content_width->value ?? MaxContentWidth::DEFAULT;
         $defaultFont = $company->appearance->font->value ?? Font::DEFAULT;
-        $hasTopNavigation = $company->appearance->has_top_navigation ?? false;
         $default_language = $company->locale->language ?? config('transmatic.source_locale');
         $defaultTimezone = $company->locale->timezone ?? config('app.timezone');
         $dateFormat = $company->locale->date_format->value ?? DateFormat::DEFAULT;
@@ -73,8 +71,6 @@ class ConfigureCompanyDefault
         Filament::getPanel('company')
             ->font($defaultFont)
             ->brandName($company->name)
-            ->topNavigation($hasTopNavigation)
-            ->sidebarCollapsibleOnDesktop(! $hasTopNavigation)
             ->maxContentWidth($maxContentWidth);
 
         DatePicker::configureUsing(static function (DatePicker $component) use ($dateFormat, $weekStart) {
@@ -96,10 +92,6 @@ class ConfigureCompanyDefault
 
         ResourcesTab::configureUsing(static function (ResourcesTab $tab): void {
             $tab->localizeLabel();
-        }, isImportant: true);
-
-        NavigationGroup::configureUsing(static function (NavigationGroup $group): void {
-            $group->localizeLabel();
         }, isImportant: true);
 
         ConfigureCurrencies::syncCurrencies();

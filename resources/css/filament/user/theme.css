@@ -6,18 +6,31 @@
     @apply bg-platinum;
 }
 
-.fi-topbar > nav {
-    @apply bg-translucent;
+.fi-topbar > nav, .fi-sidebar-header {
+    @apply bg-transparent ring-0 shadow-none !important;
+    transition: background-color 0.3s, top 0.3s;
 }
 
-.fi-sidebar-header {
-    @apply bg-translucent;
+.fi-topbar > nav {
+    @apply relative flex justify-center;
+
+    > ul {
+        @apply absolute -translate-x-2/4 gap-x-0 left-2/4;
+    }
+
+    > div {
+        @apply static;
+    }
+}
+
+.fi-topbar > nav.topbar-hovered, .fi-sidebar-header.topbar-hovered {
+    @apply bg-translucent dark:bg-translucent-dark !important;
+}
+
+.fi-dropdown.fi-topbar-dropdown .fi-dropdown-panel {
+    @apply absolute -translate-x-1/2 left-1/2 !important;
 }
 
 .fi-icon-btn.bg-gray-100.\!rounded-full.dark\:bg-custom-500\/20 {
     @apply bg-translucent;
-}
-
-.panel-switch-card-section {
-    @apply bg-platinum;
 }

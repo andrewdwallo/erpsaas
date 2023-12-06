@@ -17,7 +17,6 @@
     "cyan": "biru kehijau-hijauan",
     "Descending": "Menurun",
     "red": "merah",
-    "HR": "SDM",
     "Income Category": "Kategori Pendapatan",
     "Ascending": "Menaik",
     "Department": "Departemen",
@@ -224,5 +223,11 @@
     "Company Currencies": "Mata Uang Perusahaan",
     "Action Denied": "Tindakan Ditolak",
     "The rate must be between 0 and 100.": "Tarifnya harus antara 0 dan 100.",
-    "The :Type :record \":name\" already exists.": ":Type :record \":name\" sudah ada."
+    "The :Type :record \":name\" already exists.": ":Type :record \":name\" sudah ada.",
+    "Company": "Perusahaan",
+    "Management": "Manajemen",
+    "Website": "Situs Web",
+    "Resources": "Sumber daya",
+    "Finance": "Keuangan",
+    "Personalization": "Personalisasi"
 }

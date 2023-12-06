@@ -67,7 +67,6 @@
     "Tax": "Tax",
     "Settings": "Settings",
     "Banking": "Banking",
-    "HR": "HR",
     "Taxes & Discounts": "Taxes & Discounts",
     "Sales Tax": "Sales Tax",
     "Purchase Tax": "Purchase Tax",
@@ -224,5 +223,11 @@
     "Currencies": "Currencies",
     "Live Rate": "Live Rate",
     "Currency List": "Currency List",
-    "Company Currencies": "Company Currencies"
+    "Company Currencies": "Company Currencies",
+    "Website": "Website",
+    "Management": "Management",
+    "Resources": "Resources",
+    "Finance": "Finance",
+    "Personalization": "Personalization",
+    "Company": "Company"
 }

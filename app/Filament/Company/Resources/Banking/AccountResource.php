@@ -9,6 +9,7 @@ use App\Filament\Company\Resources\Banking\AccountResource\Pages;
 use App\Models\Banking\Account;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -36,6 +37,15 @@ class AccountResource extends Resource
         $modelLabel = static::$modelLabel;
 
         return translate($modelLabel);
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        if (Filament::hasTopNavigation()) {
+            return translate(static::$navigationGroup);
+        }
+
+        return null;
     }
 
     public static function form(Form $form): Form

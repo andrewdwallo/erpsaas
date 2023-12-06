@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Notifications\Livewire\Notifications;
+use Filament\Support\Assets\Js;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
         Notifications::alignment(Alignment::Center);
 
         $this->configurePanelSwitch();
+
+        FilamentAsset::register([
+            Js::make('top-navigation-script', __DIR__ . '/../../resources/js/top-navigation.js'),
+        ]);
     }
 
     /**
