@@ -40,6 +40,7 @@ Run the database migrations (**Set the database connection in .env before migrat
     php artisan migrate
 
 Build your assets & start the local development server
+
     php artisan filament:assets
     npm run build
     npm run dev
