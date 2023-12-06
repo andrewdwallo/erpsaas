@@ -46,7 +46,6 @@
     "Side Navigation": "التنقل الجانبي",
     "Disabled": "معاق",
     "Discount": "خصم",
-    "HR": "HR",
     "Striped Tables": "طاولات مخططة",
     "Identification": "تحديد",
     "fuchsia": "فوشيا",
@@ -224,5 +223,11 @@
     "Action Denied": "تم رفض الإجراء",
     "The rate must be between 0 and 100.": "يجب أن يكون المعدل بين 0 و 100.",
     "The rate must be greater than 0.": "يجب أن يكون المعدل أكبر من 0.",
-    "Parent Department": "قسم أولياء الأمور"
+    "Parent Department": "قسم أولياء الأمور",
+    "Company": "الشركة",
+    "Management": "الإدارة",
+    "Website": "الموقع الإلكتروني",
+    "Resources": "الموارد",
+    "Finance": "التمويل",
+    "Personalization": "التخصيص"
 }

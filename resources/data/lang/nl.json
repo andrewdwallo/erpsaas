@@ -18,7 +18,6 @@
     "pink": "roze",
     "rose": "roos",
     "Layout": "Indeling",
-    "HR": "HR",
     "violet": "paars",
     "Categories": "Categorieën",
     "Account": "Account",
@@ -224,5 +223,11 @@
     "Action Denied": "Actie afgewezen",
     "Parent Department": "Ouderafdeling",
     "The rate must be greater than 0.": "De snelheid moet groter zijn dan 0.",
-    "The rate must be between 0 and 100.": "Het tarief moet tussen 0 en 100 liggen."
+    "The rate must be between 0 and 100.": "Het tarief moet tussen 0 en 100 liggen.",
+    "Personalization": "Personalisatie",
+    "Website": "Website",
+    "Resources": "Hulpbronnen",
+    "Finance": "Financiën",
+    "Company": "Bedrijf",
+    "Management": "Management"
 }

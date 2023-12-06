@@ -35,7 +35,6 @@
     "Account": "Conta",
     "Items": "Itens",
     "Street Address": "Endereço da rua",
-    "HR": "RH",
     "City \/ Town": "Cidade\/ Cidade",
     "Country": "País",
     "Quantity": "Quantidade",
@@ -224,5 +223,11 @@
     "Live Currency": "Moeda ao vivo",
     "Parent Department": "Departamento de pais",
     "The rate must be between 0 and 100.": "A taxa deve estar entre 0 e 100.",
-    "The rate must be greater than 0.": "A taxa deve ser maior que 0."
+    "The rate must be greater than 0.": "A taxa deve ser maior que 0.",
+    "Website": "Site",
+    "Personalization": "Personalização",
+    "Management": "Gestão",
+    "Resources": "Recursos",
+    "Finance": "Finanças",
+    "Company": "Companhia"
 }

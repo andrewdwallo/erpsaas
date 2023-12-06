@@ -57,10 +57,7 @@ class MacroServiceProvider extends ServiceProvider
                 $currency = $column->evaluate($currency);
                 $convert = $column->evaluate($convert);
 
-                $formatted = money($state, $currency, $convert);
-                $currencyCode = currency($currency)->getCurrency();
-
-                return "{$formatted} {$currencyCode}";
+                return money($state, $currency, $convert)->formatWithCode();
             });
 
             return $this;

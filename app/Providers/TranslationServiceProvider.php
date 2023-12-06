@@ -64,7 +64,7 @@ class TranslationServiceProvider extends ServiceProvider
         NavigationGroup::macro('localizeLabel', function () {
             $label = $this->getLabel();
 
-            if (filled($label)) {
+            if ($label !== 'HR' && filled($label)) {
                 $this->label(translate($label));
             }
 

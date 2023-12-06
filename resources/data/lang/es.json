@@ -50,7 +50,6 @@
     "slate": "pizarra",
     "Banking": "Banca",
     "Settings": "Ajustes",
-    "HR": "HORA",
     "Currency": "Divisa",
     "Ascending": "Ascendente",
     "Localization": "Localización",
@@ -224,5 +223,11 @@
     "Live Currency": "Divisa en vivo",
     "The :Type :record \":name\" already exists.": "El :Type :record \":name\" ya existe.",
     "Currency Rate": "Tipo de cambio",
-    "The rate must be between 0 and 100.": "La tasa debe estar entre 0 y 100."
+    "The rate must be between 0 and 100.": "La tasa debe estar entre 0 y 100.",
+    "Resources": "Recursos",
+    "Company": "Empresa",
+    "Website": "Sitio web",
+    "Management": "Administración",
+    "Finance": "Finanzas",
+    "Personalization": "Personalización"
 }

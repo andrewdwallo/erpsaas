@@ -46,7 +46,6 @@
     "Font": "Font",
     "Large": "Grande",
     "Account": "Account",
-    "HR": "RISORSE UMANE",
     "Other": "Altro",
     "Items": "Oggetti",
     "Rate": "Tariffa",
@@ -224,5 +223,11 @@
     "Action Denied": "Azione negata",
     "The rate must be between 0 and 100.": "La tariffa deve essere compresa tra 0 e 100.",
     "The rate must be greater than 0.": "La tariffa deve essere maggiore di 0.",
-    "Parent Department": "Dipartimento dei genitori"
+    "Parent Department": "Dipartimento dei genitori",
+    "Resources": "Risorse",
+    "Company": "Azienda",
+    "Website": "Sito Web",
+    "Finance": "Finanza",
+    "Personalization": "Personalizzazione",
+    "Management": "Direzione"
 }

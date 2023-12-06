@@ -9,6 +9,7 @@ use App\Events\CompanyGenerated;
 use App\Events\CurrencyRateChanged;
 use App\Events\DefaultCurrencyChanged;
 use App\Listeners\ConfigureCompanyDefault;
+use App\Listeners\ConfigureCompanyNavigation;
 use App\Listeners\CreateCompanyDefaults;
 use App\Listeners\SyncAssociatedModels;
 use App\Listeners\SyncWithCompanyDefaults;
@@ -41,6 +42,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         CompanyConfigured::class => [
             ConfigureCompanyDefault::class,
+            ConfigureCompanyNavigation::class,
         ],
         CompanyGenerated::class => [
             CreateCompanyDefaults::class,
