@@ -1,7 +1,10 @@
 # ERPSAAS
 
 ![Screenshot 2023-11-25 at 3 29 26 AM](https://github.com/andrewdwallo/erpsaas/assets/104294090/d1c8ed6d-4fd2-4c88-a02b-0f1534700b0f)
-![Screenshot 2023-11-25 at 3 27 11 AM](https://github.com/andrewdwallo/erpsaas/assets/104294090/20b12920-1ca8-42ed-8c55-c034cde683b1)
+![Screenshot 2023-12-06 at 3 33 25 AM](https://github.com/andrewdwallo/erpsaas/assets/104294090/d543681b-4d53-40e3-8d01-5b55b6b97c86)
+![Screenshot 2023-12-06 at 3 28 46 AM](https://github.com/andrewdwallo/erpsaas/assets/104294090/33beed6c-3ff5-4819-a8ae-71feaa6b95da)
+
+
 
 This repo is currently a work in progress — PRs and issues welcome!
 
@@ -36,8 +39,8 @@ Run the database migrations (**Set the database connection in .env before migrat
 
     php artisan migrate
 
-Build your dependencies & start the local development server
-
+Build your assets & start the local development server
+    php artisan filament:assets
     npm run build
     npm run dev
 
