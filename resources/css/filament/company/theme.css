@@ -3,7 +3,54 @@
 @config './tailwind.config.js';
 
 .fi-body {
-    @apply bg-platinum;
+    position: relative;
+    background-color: #E8E9EB;
+    z-index: 1;
+}
+
+.fi-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(99.6deg,
+            rgba(232, 233, 235, 1) 10.6%,
+            rgba(240, 241, 243, 1) 32.9%,
+            rgba(248, 249, 251, 0.7) 50%,
+            rgba(240, 241, 243, 1) 67.1%,
+            rgba(232, 233, 235, 1) 83.4%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+:is(.dark .fi-body) {
+    position: relative;
+    background-color: rgb(3, 7, 18);
+    z-index: 1;
+}
+
+:is(.dark .fi-body)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-image: radial-gradient(
+        ellipse at top right,
+        rgba(var(--primary-950), 1) 0%,
+        rgba(var(--primary-950), 0.9) 15%,
+        rgba(var(--primary-900), 0.7) 30%,
+        rgba(var(--primary-900), 0.5) 45%,
+        rgba(var(--primary-950), 0.3) 60%,
+        rgba(var(--primary-950), 0.1) 75%,
+        rgba(3,7,18,0) 100%
+    );
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .fi-topbar > nav, .fi-sidebar-header {
@@ -24,7 +71,19 @@
 }
 
 .fi-topbar > nav.topbar-hovered, .fi-sidebar-header.topbar-hovered {
-    @apply bg-translucent dark:bg-translucent-dark !important;
+    background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+:is(.dark .fi-topbar > nav.topbar-hovered, .dark .fi-sidebar-header.topbar-hovered) {
+    background-color: rgba(10, 16, 33, 0.75) !important;
+}
+
+.fi-topbar > nav.topbar-scrolled, .fi-sidebar-header.topbar-scrolled {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:is(.dark .fi-topbar > nav.topbar-scrolled, .dark .fi-sidebar-header.topbar-scrolled) {
+    background-color: rgba(10, 16, 33, 0.5) !important;
 }
 
 .fi-dropdown.fi-topbar-dropdown .fi-dropdown-panel {
@@ -105,7 +164,7 @@
 .fi-topbar-dropdown-list-item {
     @apply flex justify-between relative transition-[left] duration-200 z-[2] rounded-none left-0;
 
-    &:after {
+    &::after {
         @apply bg-primary-600 dark:bg-primary-400 content-[''] block h-0 left-[-1rem] absolute transition-all duration-300 w-px top-[calc(100%_+_0.5rem)];
     }
 
@@ -117,7 +176,7 @@
         @apply text-primary-600 dark:text-primary-400;
     }
 
-    &:hover:after {
+    &:hover::after {
         @apply -top-2 h-[calc(100%+1rem)];
     }
 
