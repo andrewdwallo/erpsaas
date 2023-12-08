@@ -2,7 +2,7 @@
     $data = $this->form->getRawState();
     $viewModel = new \App\View\Models\InvoiceViewModel($this->record, $data);
     $viewSpecial = $viewModel->buildViewData();
-    extract($viewSpecial);
+    extract($viewSpecial,\EXTR_SKIP);
 @endphp
 
 {!! $font_html !!}
@@ -29,7 +29,7 @@
 
         <div class="w-1/3 flex justify-end mr-6">
             @if($logo && $show_logo)
-                <x-company.invoice.logo :src="$logo" />
+                <x-company.invoice.logo :src="$logo"/>
             @endif
         </div>
     </x-company.invoice.header>
@@ -38,13 +38,14 @@
         <div class="items-center flex">
             <hr class="grow-[2] py-0.5 border-double border-y-2" style="border-color: {{ $accent_color }};">
             <div class="items-center flex mx-5">
-                <x-icons.decor-border-left color="{{ $accent_color }}" />
+                <x-icons.decor-border-left color="{{ $accent_color }}"/>
                 <div class="px-2.5 border-double border-y-2 py-1 -mx-3" style="border-color: {{ $accent_color }};">
                     <div class="px-2.5 border-double border-y-2 py-3" style="border-color: {{ $accent_color }};">
-                        <div class="inline text-2xl font-semibold" style="color: {{ $accent_color }};">{{ $header }}</div>
+                        <div class="inline text-2xl font-semibold"
+                             style="color: {{ $accent_color }};">{{ $header }}</div>
                     </div>
                 </div>
-                <x-icons.decor-border-right color="{{ $accent_color }}" />
+                <x-icons.decor-border-right color="{{ $accent_color }}"/>
             </div>
             <hr class="grow-[2] py-0.5 border-double border-y-2" style="border-color: {{ $accent_color }};">
         </div>
@@ -126,26 +127,26 @@
             <div class="w-1/2 mt-2">
                 <table class="w-full table-fixed">
                     <tbody class="text-xs leading-loose">
-                        <tr>
-                            <td class="text-right font-semibold">Subtotal:</td>
-                            <td class="text-right">$1080.00</td>
-                        </tr>
-                        <tr class="text-success-800 dark:text-success-600">
-                            <td class="text-right">Discount (5%):</td>
-                            <td class="text-right">($54.00)</td>
-                        </tr>
-                        <tr>
-                            <td class="text-right">Sales Tax (10%):</td>
-                            <td class="text-right">$102.60</td>
-                        </tr>
-                        <tr>
-                            <td class="text-right font-semibold">Total:</td>
-                            <td class="text-right">$1128.60</td>
-                        </tr>
-                        <tr>
-                            <td class="text-right font-semibold">Amount Due (USD):</td>
-                            <td class="text-right">$1128.60</td>
-                        </tr>
+                    <tr>
+                        <td class="text-right font-semibold">Subtotal:</td>
+                        <td class="text-right">$1080.00</td>
+                    </tr>
+                    <tr class="text-success-800 dark:text-success-600">
+                        <td class="text-right">Discount (5%):</td>
+                        <td class="text-right">($54.00)</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">Sales Tax (10%):</td>
+                        <td class="text-right">$102.60</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right font-semibold">Total:</td>
+                        <td class="text-right">$1128.60</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right font-semibold">Amount Due (USD):</td>
+                        <td class="text-right">$1128.60</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

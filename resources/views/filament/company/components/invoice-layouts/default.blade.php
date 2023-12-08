@@ -2,7 +2,7 @@
     $data = $this->form->getRawState();
     $viewModel = new \App\View\Models\InvoiceViewModel($this->record, $data);
     $viewSpecial = $viewModel->buildViewData();
-    extract($viewSpecial);
+    extract($viewSpecial,\EXTR_SKIP);
 @endphp
 
 {!! $font_html !!}
@@ -18,7 +18,7 @@
     <x-company.invoice.header class="default-template-header border-b-2 p-6 pb-4">
         <div class="w-2/3">
             @if($logo && $show_logo)
-                <x-company.invoice.logo :src="$logo" />
+                <x-company.invoice.logo :src="$logo"/>
             @endif
         </div>
 
@@ -77,12 +77,12 @@
     <x-company.invoice.line-items class="default-template-line-items">
         <table class="w-full text-left table-fixed">
             <thead class="text-sm leading-8" style="background: {{ $accent_color }}">
-                <tr class="text-white">
-                    <th class="text-left pl-6">{{ $item_name }}</th>
-                    <th class="text-center">{{ $unit_name }}</th>
-                    <th class="text-right">{{ $price_name }}</th>
-                    <th class="text-right pr-6">{{ $amount_name }}</th>
-                </tr>
+            <tr class="text-white">
+                <th class="text-left pl-6">{{ $item_name }}</th>
+                <th class="text-center">{{ $unit_name }}</th>
+                <th class="text-right">{{ $price_name }}</th>
+                <th class="text-right pr-6">{{ $amount_name }}</th>
+            </tr>
             </thead>
             <tbody class="text-xs border-b-2 border-gray-300 leading-8">
             <tr>
@@ -105,31 +105,31 @@
             </tr>
             </tbody>
             <tfoot class="text-xs leading-loose">
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold">Subtotal:</td>
-                    <td class="text-right pr-6">$1080.00</td>
-                </tr>
-                <tr class="text-success-800 dark:text-success-600">
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right">Discount (5%):</td>
-                    <td class="text-right pr-6">($54.00)</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right">Sales Tax (10%):</td>
-                    <td class="text-right pr-6">$102.60</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold border-t">Total:</td>
-                    <td class="text-right border-t pr-6">$1128.60</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold border-t-4 border-double">Amount Due (USD):</td>
-                    <td class="text-right border-t-4 border-double pr-6">$1128.60</td>
-                </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold">Subtotal:</td>
+                <td class="text-right pr-6">$1080.00</td>
+            </tr>
+            <tr class="text-success-800 dark:text-success-600">
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right">Discount (5%):</td>
+                <td class="text-right pr-6">($54.00)</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right">Sales Tax (10%):</td>
+                <td class="text-right pr-6">$102.60</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold border-t">Total:</td>
+                <td class="text-right border-t pr-6">$1128.60</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold border-t-4 border-double">Amount Due (USD):</td>
+                <td class="text-right border-t-4 border-double pr-6">$1128.60</td>
+            </tr>
             </tfoot>
         </table>
     </x-company.invoice.line-items>

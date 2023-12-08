@@ -6,6 +6,7 @@ use App\Enums\DateFormat;
 use App\Enums\NumberFormat;
 use App\Enums\TimeFormat;
 use App\Enums\WeekStart;
+use App\Models\Setting\CompanyProfile as CompanyProfileModel;
 use App\Models\Setting\Localization as LocalizationModel;
 use App\Utilities\Localization\Timezone;
 use Filament\Actions\Action;
@@ -133,7 +134,7 @@ class Localization extends Page
                     ->searchable(),
                 Select::make('timezone')
                     ->localizeLabel()
-                    ->options(Timezone::getTimezoneOptions(\App\Models\Setting\CompanyProfile::find(auth()->user()->currentCompany->id)->country))
+                    ->options(Timezone::getTimezoneOptions(CompanyProfileModel::first()->country))
                     ->searchable()
                     ->nullable(),
             ])->columns();

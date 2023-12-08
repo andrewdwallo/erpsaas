@@ -2,7 +2,7 @@
     $data = $this->form->getRawState();
     $viewModel = new \App\View\Models\InvoiceViewModel($this->record, $data);
     $viewSpecial = $viewModel->buildViewData();
-    extract($viewSpecial);
+    extract($viewSpecial,\EXTR_SKIP);
 @endphp
 
 {!! $font_html !!}
@@ -20,12 +20,13 @@
         <!-- Logo -->
         <div class="w-2/3">
             @if($logo && $show_logo)
-                <x-company.invoice.logo class="ml-6" :src="$logo" />
+                <x-company.invoice.logo class="ml-6" :src="$logo"/>
             @endif
         </div>
 
         <!-- Ribbon Container -->
-        <div class="w-1/3 absolute right-0 top-0 p-2 h-28 flex flex-col justify-end rounded-bl-sm" style="background: {{ $accent_color }};">
+        <div class="w-1/3 absolute right-0 top-0 p-2 h-28 flex flex-col justify-end rounded-bl-sm"
+             style="background: {{ $accent_color }};">
             @if($header)
                 <h1 class="text-3xl font-bold text-white text-center uppercase">{{ $header }}</h1>
             @endif
@@ -106,31 +107,31 @@
             </tr>
             </tbody>
             <tfoot class="text-xs leading-loose">
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold">Subtotal:</td>
-                    <td class="text-right pr-6">$1080.00</td>
-                </tr>
-                <tr class="text-success-800 dark:text-success-600">
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right">Discount (5%):</td>
-                    <td class="text-right pr-6">($54.00)</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right">Sales Tax (10%):</td>
-                    <td class="text-right pr-6">$102.60</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold border-t">Total:</td>
-                    <td class="text-right border-t pr-6">$1128.60</td>
-                </tr>
-                <tr>
-                    <td class="pl-6" colspan="2"></td>
-                    <td class="text-right font-semibold border-t-4 border-double">Amount Due (USD):</td>
-                    <td class="text-right border-t-4 border-double pr-6">$1128.60</td>
-                </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold">Subtotal:</td>
+                <td class="text-right pr-6">$1080.00</td>
+            </tr>
+            <tr class="text-success-800 dark:text-success-600">
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right">Discount (5%):</td>
+                <td class="text-right pr-6">($54.00)</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right">Sales Tax (10%):</td>
+                <td class="text-right pr-6">$102.60</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold border-t">Total:</td>
+                <td class="text-right border-t pr-6">$1128.60</td>
+            </tr>
+            <tr>
+                <td class="pl-6" colspan="2"></td>
+                <td class="text-right font-semibold border-t-4 border-double">Amount Due (USD):</td>
+                <td class="text-right border-t-4 border-double pr-6">$1128.60</td>
+            </tr>
             </tfoot>
         </table>
     </x-company.invoice.line-items>

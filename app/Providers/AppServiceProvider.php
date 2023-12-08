@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configurePanelSwitch();
 
         FilamentAsset::register([
-            Js::make('top-navigation-script', __DIR__ . '/../../resources/js/top-navigation.js'),
+            Js::make('top-navigation', __DIR__ . '/../../resources/js/top-navigation.js'),
         ]);
     }
 

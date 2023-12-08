@@ -4,31 +4,34 @@ namespace App\Utilities\Localization;
 
 use App\Enums\TimeFormat;
 use App\Models\Setting\Localization;
+use DateTimeZone;
 use Symfony\Component\Intl\Timezones;
 
 class Timezone
 {
-    public static function getTimezoneOptions(?string $countryCode = null): array
+    public static function getTimezoneOptions(#[\SensitiveParameter] ?string $countryCode = null): array
     {
         if (empty($countryCode)) {
             return [];
         }
 
-        $timezones = Timezones::forCountryCode($countryCode);
+        $countryTimezones = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, strtoupper($countryCode));
 
-        if (empty($timezones)) {
+        if (empty($countryTimezones)) {
             return [];
         }
 
+        $localizedTimezoneNames = Timezones::getNames();
+
         $results = [];
 
-        foreach ($timezones as $timezone) {
-            $translatedName = Timezones::getName($timezone);
+        foreach ($countryTimezones as $timezoneIdentifier) {
+            $translatedName = $localizedTimezoneNames[$timezoneIdentifier] ?? $timezoneIdentifier;
             $cityName = self::extractCityName($translatedName);
-            $localTime = self::getLocalTime($timezone);
-            $timezoneAbbreviation = now($timezone)->format('T');
+            $localTime = self::getLocalTime($timezoneIdentifier);
+            $timezoneAbbreviation = now($timezoneIdentifier)->format('T');
 
-            $results[$timezone] = "{$cityName} ({$timezoneAbbreviation}) {$localTime}";
+            $results[$timezoneIdentifier] = "{$cityName} ({$timezoneAbbreviation}) {$localTime}";
         }
 
         return $results;
