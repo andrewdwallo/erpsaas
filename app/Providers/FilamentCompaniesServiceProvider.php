@@ -80,6 +80,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
             )
             ->colors([
                 'primary' => Color::Indigo,
+                'gray' => Color::Gray,
             ])
             ->viteTheme('resources/css/filament/company/theme.css')
             ->tenant(Company::class)
