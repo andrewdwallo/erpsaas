@@ -23,7 +23,7 @@ class CreateAccount extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['enabled'] = (bool) $data['enabled'];
+        $data['enabled'] = (bool) ($data['enabled'] ?? false);
 
         return $data;
     }
