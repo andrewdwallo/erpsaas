@@ -60,7 +60,7 @@ class AccountResource extends Resource
                                     ->options(AccountType::class)
                                     ->localizeLabel()
                                     ->searchable()
-                                    ->default('checking')
+                                    ->default(AccountType::Checking->value)
                                     ->live()
                                     ->required(),
                                 Forms\Components\TextInput::make('name')
@@ -81,7 +81,7 @@ class AccountResource extends Resource
                                     ->localizeLabel('Default')
                                     ->onLabel(translate('Yes'))
                                     ->offLabel(translate('No'))
-                                    ->hidden(static fn (Forms\Get $get) => $get('type') === 'credit_card'),
+                                    ->hidden(static fn (Forms\Get $get) => $get('type') === AccountType::CreditCard->value),
                             ])->columns(),
                         Forms\Components\Section::make('Currency & Balance')
                             ->schema([
