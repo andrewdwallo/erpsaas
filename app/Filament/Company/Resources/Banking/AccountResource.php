@@ -60,7 +60,7 @@ class AccountResource extends Resource
                                     ->options(AccountType::class)
                                     ->localizeLabel()
                                     ->searchable()
-                                    ->default(AccountType::Checking->value)
+                                    ->default(AccountType::DEFAULT)
                                     ->live()
                                     ->required(),
                                 Forms\Components\TextInput::make('name')
