@@ -229,5 +229,16 @@
     "Management": "Gestão",
     "Resources": "Recursos",
     "Finance": "Finanças",
-    "Company": "Companhia"
+    "Company": "Companhia",
+    "Subtype": "Subtipo",
+    "Connected": "Conectado",
+    "Connected Accounts": "Contas conectadas",
+    "Credit": "Crédito",
+    "Investment": "Investimento",
+    "Depository": "Depositário",
+    "Brokerage": "Corretagem",
+    "Routing Number": "Número de roteamento",
+    "Loan": "Empréstimo",
+    "Manual": "Manual",
+    "Accounts": "Contas"
 }

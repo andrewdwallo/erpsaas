@@ -5,7 +5,7 @@ namespace App\Models\Setting;
 use App\Enums\CategoryType;
 use App\Enums\DiscountType;
 use App\Enums\TaxType;
-use App\Models\Banking\Account;
+use App\Models\Banking\BankAccount;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Database\Factories\Setting\CompanyDefaultFactory;
@@ -25,7 +25,7 @@ class CompanyDefault extends Model
 
     protected $fillable = [
         'company_id',
-        'account_id',
+        'bank_account_id',
         'currency_code',
         'sales_tax_id',
         'purchase_tax_id',
@@ -42,9 +42,9 @@ class CompanyDefault extends Model
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
     }
 
-    public function account(): BelongsTo
+    public function bankAccount(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(BankAccount::class, 'bank_account_id');
     }
 
     public function currency(): BelongsTo

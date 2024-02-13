@@ -65,6 +65,7 @@
             class="flex flex-wrap items-center justify-center gap-4 md:gap-6"
         >
             @foreach ($panels as $panel)
+                <!-- x-on:click="location.href = '{{ $getHref($panel) }}'" -->
                 <a
                     href="{{ $getHref($panel) }}"
                     class="flex flex-col items-center justify-center flex-1 hover:cursor-pointer group panel-switch-card"

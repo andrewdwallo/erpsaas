@@ -229,5 +229,16 @@
     "Resources": "Hulpbronnen",
     "Finance": "Financiën",
     "Company": "Bedrijf",
-    "Management": "Management"
+    "Management": "Management",
+    "Subtype": "Subtype",
+    "Routing Number": "Routeringsnummer",
+    "Connected Accounts": "Gekoppelde accounts",
+    "Manual": "Handboek",
+    "Accounts": "Accounts",
+    "Investment": "Investering",
+    "Loan": "Lening",
+    "Connected": "Verbonden",
+    "Credit": "Krediet",
+    "Depository": "Depository",
+    "Brokerage": "Makelaardij"
 }

@@ -229,5 +229,16 @@
     "Personalization": "个性化",
     "Management": "管理",
     "Company": "公司",
-    "Resources": "资源"
+    "Resources": "资源",
+    "Connected Accounts": "关联账户",
+    "Investment": "投资",
+    "Loan": "贷款",
+    "Subtype": "子类型",
+    "Credit": "信用",
+    "Brokerage": "经纪业务",
+    "Connected": "已连接",
+    "Routing Number": "路由号码",
+    "Depository": "存放处",
+    "Accounts": "账户",
+    "Manual": "手册"
 }

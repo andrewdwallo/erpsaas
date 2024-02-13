@@ -60,7 +60,7 @@ class SyncWithCompanyDefaults
             'Tax' => $this->handleTax($default, $type, $model->getKey()),
             'Category' => $this->handleCategory($default, $type, $model->getKey()),
             'Currency' => $default->currency_code = $model->getAttribute('code'),
-            'Account' => $default->account_id = $model->getKey(),
+            'BankAccount' => $default->bank_account_id = $model->getKey(),
             default => null,
         };
 

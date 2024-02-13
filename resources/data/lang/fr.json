@@ -229,5 +229,16 @@
     "Resources": "Ressources",
     "Finance": "Finances",
     "Company": "Entreprise",
-    "Personalization": "Personnalisation"
+    "Personalization": "Personnalisation",
+    "Manual": "manuel",
+    "Connected": "Connecté",
+    "Connected Accounts": "Comptes connectés",
+    "Subtype": "Sous-type",
+    "Routing Number": "Numéro de routage",
+    "Loan": "Prêt",
+    "Brokerage": "Courtage",
+    "Credit": "Crédit",
+    "Investment": "Investissement",
+    "Depository": "Dépositaire",
+    "Accounts": "Comptes"
 }

@@ -15,6 +15,7 @@ use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -169,8 +170,7 @@ class Invoice extends Page
                 TextInput::make('subheader')
                     ->localizeLabel()
                     ->nullable(),
-                Textarea::make('terms')
-                    ->localizeLabel()
+                MarkdownEditor::make('terms')
                     ->nullable(),
                 Textarea::make('footer')
                     ->localizeLabel('Footer / Notes')
@@ -303,17 +303,17 @@ class Invoice extends Page
                         ViewField::make('preview.default')
                             ->columnSpan(2)
                             ->hiddenLabel()
-                            ->visible(static fn (callable $get) => $get('template') === 'default')
+                            ->visible(static fn (Get $get) => $get('template') === 'default')
                             ->view('filament.company.components.invoice-layouts.default'),
                         ViewField::make('preview.modern')
                             ->columnSpan(2)
                             ->hiddenLabel()
-                            ->visible(static fn (callable $get) => $get('template') === 'modern')
+                            ->visible(static fn (Get $get) => $get('template') === 'modern')
                             ->view('filament.company.components.invoice-layouts.modern'),
                         ViewField::make('preview.classic')
                             ->columnSpan(2)
                             ->hiddenLabel()
-                            ->visible(static fn (callable $get) => $get('template') === 'classic')
+                            ->visible(static fn (Get $get) => $get('template') === 'classic')
                             ->view('filament.company.components.invoice-layouts.classic'),
                     ])->columnSpan(2),
             ])->columns(3);

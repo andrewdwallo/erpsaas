@@ -3,16 +3,16 @@
 namespace App\Filament\Company\Resources\Banking\AccountResource\Pages;
 
 use App\Filament\Company\Resources\Banking\AccountResource;
-use App\Models\Banking\Account;
+use App\Models\Banking\BankAccount;
 use App\Traits\HandlesResourceRecordCreation;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CreateAccount extends CreateRecord
 {
-    use HandlesResourceRecordCreation;
 
     protected static string $resource = AccountResource::class;
 
@@ -25,20 +25,15 @@ class CreateAccount extends CreateRecord
     {
         $data['enabled'] = (bool) ($data['enabled'] ?? false);
 
+        Log::info('CreateAccount::mutateFormDataBeforeCreate', $data);
+
         return $data;
     }
 
-    /**
-     * @throws Halt
-     */
     protected function handleRecordCreation(array $data): Model
     {
-        $user = Auth::user();
+        Log::info('CreateAccount::handleRecordCreation', $data);
 
-        if (! $user) {
-            throw new Halt('No authenticated user found.');
-        }
-
-        return $this->handleRecordCreationWithUniqueField($data, new Account(), $user);
+        return parent::handleRecordCreation($data);
     }
 }

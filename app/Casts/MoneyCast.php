@@ -13,7 +13,11 @@ class MoneyCast implements CastsAttributes
     {
         $currency_code = $model->getAttribute('currency_code');
 
-        return $value ? money($value, $currency_code)->formatSimple() : '';
+        if ($value !== null) {
+            return money($value, $currency_code)->formatSimple();
+        }
+
+        return '';
     }
 
     /**
@@ -21,14 +25,16 @@ class MoneyCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): int
     {
-        if (is_int($value)) {
-            return $value;
-        }
-
         $currency_code = $model->getAttribute('currency_code') ?? CurrencyAccessor::getDefaultCurrency();
 
         if (! $currency_code) {
             throw new UnexpectedValueException('Currency code is not set');
+        }
+
+        if (is_numeric($value)) {
+            $value = (string) $value;
+        } elseif (! is_string($value)) {
+            throw new UnexpectedValueException('Expected string or numeric value for money cast');
         }
 
         return money($value, $currency_code, true)->getAmount();

@@ -1,0 +1,76 @@
+.es-toolip .tippy-arrow {
+    border-color: inherit;
+}
+
+.es-tooltip .tippy-box[data-placement^='right'] > .tippy-arrow::before {
+    transform: scale(1.75);
+}
+
+.es-tooltip .tippy-box[data-placement^='right'] > .tippy-arrow::after {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    border-color: transparent;
+    border-style: solid;
+    top: 0;
+    border-width: 8px 8px 8px 0;
+    border-right-color: inherit;
+    left: -11px;
+    transform: scale(1.75);
+}
+
+
+.es-tooltip .tippy-box[data-theme~='light'][data-placement^='right'] {
+    border-radius: 8px;
+    border: 1px solid #d4dde3;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.es-tooltip .tippy-box[data-theme~='dark'][data-placement^='right'] {
+    border-radius: 8px;
+    border: 1px solid #555555;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, .7);
+}
+
+.es-close-tooltip {
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    border: 0;
+    background: none;
+    padding: 0;
+
+    &::before {
+        transform: rotate(45deg);
+    }
+
+    &::after {
+        transform: rotate(-45deg);
+    }
+
+    &::before, &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 7px;
+        width: 2px;
+        height: 12px;
+        background-color: #92a0aa;
+        transition: background-color 0.2s;
+    }
+}
+
+.es-close-tooltip:hover::before, .es-close-tooltip:hover::after {
+    background-color: #707070;
+}
+
+:is(.dark) .es-close-tooltip::before, :is(.dark) .es-close-tooltip::after {
+    background-color: #dddddd;
+}
+
+:is(.dark) .es-close-tooltip:hover::before, :is(.dark) .es-close-tooltip:hover::after {
+    background-color: #bbbbbb;
+}

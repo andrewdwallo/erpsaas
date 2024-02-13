@@ -4,7 +4,7 @@ namespace App\Models\Setting;
 
 use App\Casts\CurrencyRateCast;
 use App\Facades\Forex;
-use App\Models\Banking\Account;
+use App\Models\Accounting\Account;
 use App\Models\History\AccountHistory;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;

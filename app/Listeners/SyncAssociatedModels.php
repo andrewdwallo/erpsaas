@@ -39,7 +39,7 @@ class SyncAssociatedModels
         $diff = array_diff_assoc($data, $record_array);
 
         $keyToMethodMap = [
-            'account_id' => 'account',
+            'bank_account_id' => 'bankAccount',
             'currency_code' => 'currency',
             'sales_tax_id' => 'salesTax',
             'purchase_tax_id' => 'purchaseTax',

@@ -8,14 +8,14 @@ trait Blamable
 {
     public static function bootBlamable(): void
     {
-        $auth = Auth::check() ? Auth::id() : null;
-
-        static::creating(static function ($model) use ($auth) {
+        static::creating(static function ($model) {
+            $auth = Auth::id();
             $model->created_by = $auth;
             $model->updated_by = $auth;
         });
 
-        static::updating(static function ($model) use ($auth) {
+        static::updating(static function ($model) {
+            $auth = Auth::id();
             $model->updated_by = $auth;
         });
     }

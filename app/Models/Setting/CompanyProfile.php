@@ -52,7 +52,11 @@ class CompanyProfile extends Model
     protected function logoUrl(): Attribute
     {
         return Attribute::get(static function (mixed $value, array $attributes): ?string {
-            return $attributes['logo'] ? Storage::disk('public')->url($attributes['logo']) : null;
+            if ($attributes['logo']) {
+                return Storage::disk('public')->url($attributes['logo']);
+            }
+
+            return null;
         });
     }
 

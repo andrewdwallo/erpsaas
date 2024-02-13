@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\DocumentType;
-use App\Models\Banking\Account;
+use App\Models\Accounting\AccountSubtype;
+use App\Models\Banking\BankAccount;
+use App\Models\Banking\ConnectedBankAccount;
 use App\Models\Common\Contact;
 use App\Models\Core\Department;
 use App\Models\History\AccountHistory;
@@ -64,14 +66,24 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         return $this->profile->logo_url ?? $this->owner->profile_photo_url;
     }
 
+    public function connectedBankAccounts(): HasMany
+    {
+        return $this->hasMany(ConnectedBankAccount::class, 'company_id');
+    }
+
     public function accounts(): HasMany
     {
-        return $this->hasMany(Account::class, 'company_id');
+        return $this->hasMany(Accounting\Account::class, 'company_id');
     }
 
     public function accountHistories(): HasMany
     {
         return $this->hasMany(AccountHistory::class, 'company_id');
+    }
+
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(BankAccount::class, 'company_id');
     }
 
     public function appearance(): HasOne
@@ -82,6 +94,12 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class, 'company_id');
+    }
+
+    public function accountSubtypes(): HasMany
+    {
+        return $this->hasMany(AccountSubtype::class, 'company_id');
+
     }
 
     public function contacts(): HasMany

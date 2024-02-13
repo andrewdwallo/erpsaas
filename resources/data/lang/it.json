@@ -229,5 +229,16 @@
     "Website": "Sito Web",
     "Finance": "Finanza",
     "Personalization": "Personalizzazione",
-    "Management": "Direzione"
+    "Management": "Direzione",
+    "Connected Accounts": "Account connessi",
+    "Subtype": "Sottotipo",
+    "Connected": "Connesso",
+    "Depository": "Depositario",
+    "Loan": "Prestito",
+    "Investment": "Investimento",
+    "Brokerage": "Intermediazione",
+    "Routing Number": "Numero di routing",
+    "Manual": "Manuale",
+    "Accounts": "Account",
+    "Credit": "Credito"
 }

@@ -84,7 +84,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getDefaultTenant(Panel $panel): ?Model
     {
-        return $this->currentCompany;
+        return $this->personalCompany();
     }
 
     public function getFilamentAvatarUrl(): string

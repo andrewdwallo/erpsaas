@@ -12,7 +12,7 @@ trait HandlesResourceRecordCreation
     protected function handleRecordCreationWithUniqueField(array $data, Model $model, User $user, ?string $uniqueField = null, ?array $evaluatedTypes = null): Model
     {
         if (is_array($evaluatedTypes)) {
-            $evaluatedTypes = $this->ensureEnumValues($evaluatedTypes);
+            $evaluatedTypes = $this->ensureCreationEnumValues($evaluatedTypes);
         }
 
         if ($uniqueField && ! in_array($data[$uniqueField] ?? '', $evaluatedTypes ?? [], true)) {
@@ -43,7 +43,7 @@ trait HandlesResourceRecordCreation
         return $instance;
     }
 
-    private function ensureEnumValues(array $evaluatedTypes): array
+    private function ensureCreationEnumValues(array $evaluatedTypes): array
     {
         return array_map(static function ($type) {
             return $type instanceof BackedEnum ? $type->value : $type;

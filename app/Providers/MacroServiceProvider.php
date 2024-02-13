@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
+use App\Models\Accounting\AccountSubtype;
+use App\Utilities\Accounting\AccountCode;
 use BackedEnum;
 use Closure;
 use Filament\Forms\Components\Field;
@@ -98,6 +100,25 @@ class MacroServiceProvider extends ServiceProvider
                         }
                     };
                 });
+
+            return $this;
+        });
+
+        Field::macro('validateAccountCode', function (string | Closure | null $subtype = null): static {
+            $this
+                ->rules([
+                    fn (Field $component): Closure => static function (string $attribute, $value, Closure $fail) use ($subtype, $component) {
+                    $subtype = $component->evaluate($subtype);
+                    $chartSubtype = AccountSubtype::find($subtype);
+                    $type = $chartSubtype->type;
+
+                    if (!AccountCode::isValidCode($value, $type)) {
+                        $message = AccountCode::getMessage($type);
+
+                        $fail($message);
+                    }
+                },
+            ]);
 
             return $this;
         });

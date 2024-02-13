@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\CompanyConfigured;
+use App\Filament\Company\Pages\Service\ConnectedAccount;
 use App\Filament\Company\Pages\Service\LiveCurrency;
 use App\Filament\Company\Pages\Setting\Appearance;
 use App\Filament\Company\Pages\Setting\CompanyDefault;
@@ -66,7 +67,7 @@ class ConfigureCompanyNavigation
      */
     protected function buildSettingsGroup(): NavigationGroup
     {
-        return NavigationGroup::make(translate('Settings'))
+        return NavigationGroup::make('Settings')
             ->items([
                 ...CategoryResource::getNavigationItems(),
                 ...CurrencyResource::getNavigationItems(),
@@ -85,10 +86,11 @@ class ConfigureCompanyNavigation
      */
     protected function buildResourcesGroup(): NavigationGroup
     {
-        return NavigationGroup::make(translate('Resources'))
+        return NavigationGroup::make('Resources')
             ->items([
-                ...LiveCurrency::getNavigationItems(),
                 ...AccountResource::getNavigationItems(),
+                ...ConnectedAccount::getNavigationItems(),
+                ...LiveCurrency::getNavigationItems(),
                 ...DepartmentResource::getNavigationItems(),
             ]);
     }

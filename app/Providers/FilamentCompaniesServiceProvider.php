@@ -19,7 +19,11 @@ use App\Actions\FilamentCompanies\UpdateUserPassword;
 use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
 use App\Filament\Company\Pages\CreateCompany;
 use App\Http\Middleware\ConfigureCurrentCompany;
+use App\Livewire\UpdatePassword;
+use App\Livewire\UpdateProfileInformation;
 use App\Models\Company;
+use Exception;
+use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -48,6 +52,9 @@ use Wallo\FilamentCompanies\Socialite;
 
 class FilamentCompaniesServiceProvider extends PanelProvider
 {
+    /**
+     * @throws Exception
+     */
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -61,8 +68,8 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                 FilamentCompanies::make()
                     ->userPanel('user')
                     ->switchCurrentCompany()
-                    ->updateProfileInformation()
-                    ->updatePasswords()
+                    ->updateProfileInformation(component: UpdateProfileInformation::class)
+                    ->updatePasswords(component: UpdatePassword::class)
                     ->setPasswords()
                     ->connectedAccounts()
                     ->manageBrowserSessions()
@@ -172,6 +179,10 @@ class FilamentCompaniesServiceProvider extends PanelProvider
     protected function configureDefaults(): void
     {
         $this->configureSelect();
+
+        CreateAction::configureUsing(static function (CreateAction $action) {
+            $action->createAnother(false);
+        });
 
         DatePicker::configureUsing(static function (DatePicker $component) {
             $component->native(false);

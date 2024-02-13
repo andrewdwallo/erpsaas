@@ -229,5 +229,16 @@
     "Management": "Verwaltung",
     "Finance": "Finanzen",
     "Company": "Firma",
-    "Personalization": "Personalisierung"
+    "Personalization": "Personalisierung",
+    "Investment": "Investition",
+    "Subtype": "Subtyp",
+    "Routing Number": "Routing-Nummer",
+    "Credit": "Kredit",
+    "Connected Accounts": "Verbundene Konten",
+    "Connected": "Verbunden",
+    "Accounts": "Konten",
+    "Manual": "Manuell",
+    "Loan": "Darlehen",
+    "Brokerage": "Maklertätigkeit",
+    "Depository": "Verwahrstelle"
 }

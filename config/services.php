@@ -42,4 +42,9 @@ return [
         'base_url' => 'https://v6.exchangerate-api.com/v6',
     ],
 
+    'plaid' => [
+        'client_id' => env('PLAID_CLIENT_ID'),
+        'client_secret' => env('PLAID_CLIENT_SECRET'),
+        'environment' => env('PLAID_ENVIRONMENT', 'sandbox'),
+    ]
 ];

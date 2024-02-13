@@ -229,5 +229,16 @@
     "Website": "الموقع الإلكتروني",
     "Resources": "الموارد",
     "Finance": "التمويل",
-    "Personalization": "التخصيص"
+    "Personalization": "التخصيص",
+    "Connected": "متصل",
+    "Manual": "دليل",
+    "Accounts": "الحسابات",
+    "Connected Accounts": "الحسابات المتصلة",
+    "Subtype": "نوع فرعي",
+    "Credit": "الائتمان",
+    "Investment": "الاستثمار",
+    "Routing Number": "رقم التوجيه",
+    "Depository": "جهة الإيداع",
+    "Brokerage": "الوساطة",
+    "Loan": "قرض"
 }

@@ -131,6 +131,7 @@ class Appearance extends Page
                     ->localizeLabel()
                     ->options(
                         collect(PrimaryColor::cases())
+                            ->sort(static fn ($a, $b) => $a->value <=> $b->value)
                             ->mapWithKeys(static fn ($case) => [
                                 $case->value => "<span class='flex items-center gap-x-4'>
                                 <span class='rounded-full w-4 h-4' style='background:rgb(" . $case->getColor()[600] . ")'></span>

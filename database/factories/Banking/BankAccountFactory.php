@@ -2,13 +2,13 @@
 
 namespace Database\Factories\Banking;
 
-use App\Models\Banking\Account;
+use App\Models\Banking\BankAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Account>
+ * @extends Factory<BankAccount>
  */
-class AccountFactory extends Factory
+class BankAccountFactory extends Factory
 {
     /**
      * Define the model's default state.

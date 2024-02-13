@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Pages\Setting;
 
 use App\Events\CompanyDefaultUpdated;
-use App\Models\Banking\Account;
+use App\Models\Banking\BankAccount;
 use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
@@ -127,12 +127,12 @@ class CompanyDefault extends Page
     {
         return Section::make('General')
             ->schema([
-                Select::make('account_id')
+                Select::make('bank_account_id')
                     ->localizeLabel()
-                    ->relationship('account', 'name')
-                    ->getOptionLabelFromRecordUsing(function (Account $record) {
-                        $name = $record->name;
-                        $currency = $this->renderBadgeOptionLabel($record->currency_code);
+                    ->relationship('bankAccount', 'name')
+                    ->getOptionLabelFromRecordUsing(function (BankAccount $record) {
+                        $name = $record->account->name;
+                        $currency = $this->renderBadgeOptionLabel($record->account->currency_code);
 
                         return "{$name} ⁓ {$currency}";
                     })

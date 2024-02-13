@@ -8,6 +8,7 @@ use App\Enums\TimeFormat;
 use App\Enums\WeekStart;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
+use Carbon\Carbon;
 use Database\Factories\Setting\LocalizationFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,6 +79,7 @@ class Localization extends Model
 
     public static function getWeekStart(string $locale): int
     {
+        /** @var Carbon $date */
         $date = now()->locale($locale);
 
         $firstDay = $date->startOfWeek()->dayOfWeekIso;

@@ -229,5 +229,16 @@
     "Resources": "Kaynaklar",
     "Personalization": "Kişiselleştirme",
     "Company": "ŞİRKETİ",
-    "Finance": "Finans"
+    "Finance": "Finans",
+    "Connected Accounts": "Bağlı Hesaplar",
+    "Connected": "Bağlı",
+    "Subtype": "Alt Tür",
+    "Credit": "Kredi",
+    "Loan": "Kredi",
+    "Investment": "Yatırım",
+    "Brokerage": "Aracılık",
+    "Depository": "Depozito",
+    "Routing Number": "Yönlendirme Numarası",
+    "Manual": "El Kitabı",
+    "Accounts": "Hesaplar"
 }

@@ -8,20 +8,30 @@ use App\Events\CompanyDefaultUpdated;
 use App\Events\CompanyGenerated;
 use App\Events\CurrencyRateChanged;
 use App\Events\DefaultCurrencyChanged;
+use App\Events\PlaidSuccess;
+use App\Events\StartTransactionImport;
+use App\Listeners\ConfigureChartOfAccounts;
 use App\Listeners\ConfigureCompanyDefault;
 use App\Listeners\ConfigureCompanyNavigation;
 use App\Listeners\CreateCompanyDefaults;
+use App\Listeners\CreateConnectedAccount;
+use App\Listeners\HandleTransactionImport;
+use App\Listeners\PopulateAccountFromPlaid;
 use App\Listeners\SyncAssociatedModels;
+use App\Listeners\SyncTransactionsFromPlaid;
 use App\Listeners\SyncWithCompanyDefaults;
 use App\Listeners\UpdateAccountBalances;
 use App\Listeners\UpdateCurrencyRates;
-use App\Models\Banking\Account;
+use App\Models\Accounting\Account;
+use App\Models\Banking\BankAccount;
 use App\Models\Setting\Currency;
 use App\Observers\AccountObserver;
+use App\Observers\BankAccountObserver;
 use App\Observers\CurrencyObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Wallo\FilamentCompanies\Events\CompanyCreated;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -46,12 +56,22 @@ class EventServiceProvider extends ServiceProvider
         ],
         CompanyGenerated::class => [
             CreateCompanyDefaults::class,
+            ConfigureChartOfAccounts::class,
         ],
         DefaultCurrencyChanged::class => [
             UpdateCurrencyRates::class,
         ],
         CurrencyRateChanged::class => [
             UpdateAccountBalances::class,
+        ],
+        PlaidSuccess::class => [
+            CreateConnectedAccount::class,
+            // PopulateAccountFromPlaid::class,
+            // SyncTransactionsFromPlaid::class,
+        ],
+        StartTransactionImport::class => [
+            // SyncTransactionsFromPlaid::class,
+            HandleTransactionImport::class,
         ],
     ];
 
@@ -62,6 +82,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $observers = [
         Currency::class => [CurrencyObserver::class],
+        BankAccount::class => [BankAccountObserver::class],
         Account::class => [AccountObserver::class],
     ];
 

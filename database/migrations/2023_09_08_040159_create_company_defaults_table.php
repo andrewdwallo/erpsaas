@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('company_defaults', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->foreignId('account_id')->nullable()->constrained('accounts')->restrictOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bank_account_id')->nullable()->constrained('bank_accounts')->restrictOnDelete();
             $table->string('currency_code')->nullable();
-            $table->foreignId('sales_tax_id')->nullable()->constrained('taxes')->restrictOnDelete();
-            $table->foreignId('purchase_tax_id')->nullable()->constrained('taxes')->restrictOnDelete();
-            $table->foreignId('sales_discount_id')->nullable()->constrained('discounts')->restrictOnDelete();
-            $table->foreignId('purchase_discount_id')->nullable()->constrained('discounts')->restrictOnDelete();
-            $table->foreignId('income_category_id')->nullable()->constrained('categories')->restrictOnDelete();
-            $table->foreignId('expense_category_id')->nullable()->constrained('categories')->restrictOnDelete();
+            $table->foreignId('sales_tax_id')->nullable()->constrained('taxes')->cascadeOnDelete();
+            $table->foreignId('purchase_tax_id')->nullable()->constrained('taxes')->cascadeOnDelete();
+            $table->foreignId('sales_discount_id')->nullable()->constrained('discounts')->cascadeOnDelete();
+            $table->foreignId('purchase_discount_id')->nullable()->constrained('discounts')->cascadeOnDelete();
+            $table->foreignId('income_category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('expense_category_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->timestamps();

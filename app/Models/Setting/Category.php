@@ -3,6 +3,7 @@
 namespace App\Models\Setting;
 
 use App\Enums\CategoryType;
+use App\Models\Accounting\Account;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use App\Traits\HasDefault;
@@ -27,6 +28,7 @@ class Category extends Model
 
     protected $fillable = [
         'company_id',
+        'account_id',
         'name',
         'type',
         'color',
@@ -43,6 +45,11 @@ class Category extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'account_id');
     }
 
     public function defaultIncomeCategory(): HasOne
