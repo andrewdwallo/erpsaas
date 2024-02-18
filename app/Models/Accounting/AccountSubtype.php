@@ -15,8 +15,8 @@ use Wallo\FilamentCompanies\FilamentCompanies;
 
 class AccountSubtype extends Model
 {
-    use HasFactory;
     use CompanyOwned;
+    use HasFactory;
 
     protected $table = 'account_subtypes';
 
@@ -34,7 +34,6 @@ class AccountSubtype extends Model
         'category' => AccountCategory::class,
         'type' => AccountType::class,
     ];
-
 
     public function company(): BelongsTo
     {

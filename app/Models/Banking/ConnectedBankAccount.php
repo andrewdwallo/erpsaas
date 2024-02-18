@@ -62,7 +62,7 @@ class ConnectedBankAccount extends Model
     protected function maskedNumber(): Attribute
     {
         return Attribute::get(static function (mixed $value, array $attributes): ?string {
-            return $attributes['mask'] ? '****' . $attributes['mask'] : null;
+            return $attributes['mask'] ? '•••• ' . substr($attributes['mask'], -4) : null;
         });
     }
 

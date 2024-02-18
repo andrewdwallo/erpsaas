@@ -10,8 +10,6 @@ use App\Models\Company;
 use App\Models\Setting\Currency;
 use App\Services\PlaidService;
 use App\Utilities\Currency\CurrencyAccessor;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
 
 class HandleTransactionImport
@@ -39,15 +37,9 @@ class HandleTransactionImport
     public function processTransactionImport(StartTransactionImport $event): void
     {
         $company = $event->company;
-        $connectedBankAccountId = $event->connectedBankAccountId;
+        $connectedBankAccount = $event->connectedBankAccount;
         $selectedBankAccountId = $event->selectedBankAccountId;
         $startDate = $event->startDate;
-
-        $connectedBankAccount = ConnectedBankAccount::find($connectedBankAccountId);
-
-        if ($connectedBankAccount === null) {
-            return;
-        }
 
         $accessToken = $connectedBankAccount->access_token;
 

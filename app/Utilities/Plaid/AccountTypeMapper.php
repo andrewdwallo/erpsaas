@@ -7,7 +7,8 @@ use App\Enums\BankAccountType;
 
 class AccountTypeMapper
 {
-    public static function mapToEnums(string $plaidType, string $plaidSubtype): array {
+    public static function mapToEnums(string $plaidType, string $plaidSubtype): array
+    {
         $mappedType = self::mapType($plaidType);
         $mappedSubtype = self::mapSubtype($plaidType, $plaidSubtype);
 
@@ -17,7 +18,8 @@ class AccountTypeMapper
         ];
     }
 
-    private static function mapType(string $plaidType): BankAccountType {
+    private static function mapType(string $plaidType): BankAccountType
+    {
         return match ($plaidType) {
             'depository' => BankAccountType::Depository,
             'credit' => BankAccountType::Credit,

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Company\Pages\Accounting;
 
-use App\Models\Accounting\Account as ChartModel;
 use App\Enums\Accounting\AccountCategory;
+use App\Models\Accounting\Account as ChartModel;
 use App\Models\Accounting\AccountSubtype;
 use App\Utilities\Accounting\AccountCode;
 use App\Utilities\Currency\CurrencyAccessor;
@@ -117,11 +117,11 @@ class AccountChart extends Page
                 ->disabled(static fn (string $operation, ?ChartModel $record) => $operation === 'edit' && $record?->default === true)
                 ->options($this->getChartSubtypeOptions($useActiveTab))
                 ->afterStateUpdated(static function (?string $state, Set $set): void {
-                   if ($state) {
-                       $companyId = auth()->user()->currentCompany->id;
-                       $generatedCode = AccountCode::generate($companyId, $state);
-                       $set('code', $generatedCode);
-                   }
+                    if ($state) {
+                        $companyId = auth()->user()->currentCompany->id;
+                        $generatedCode = AccountCode::generate($companyId, $state);
+                        $set('code', $generatedCode);
+                    }
                 }),
             TextInput::make('code')
                 ->label('Code')
@@ -154,8 +154,8 @@ class AccountChart extends Page
             AccountSubtype::where('category', $this->activeTab)->get() :
             AccountSubtype::all();
 
-        return $subtypes->groupBy(fn(AccountSubtype $subtype) => $subtype->type->getLabel())
-            ->map(fn(Collection $subtypes, string $type) => $subtypes->mapWithKeys(static fn (AccountSubtype $subtype) => [$subtype->id => $subtype->name]))
+        return $subtypes->groupBy(fn (AccountSubtype $subtype) => $subtype->type->getLabel())
+            ->map(fn (Collection $subtypes, string $type) => $subtypes->mapWithKeys(static fn (AccountSubtype $subtype) => [$subtype->id => $subtype->name]))
             ->toArray();
     }
 

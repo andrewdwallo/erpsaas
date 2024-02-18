@@ -4,7 +4,6 @@ namespace App\Filament\Company\Resources\Banking;
 
 use App\Actions\OptionAction\CreateCurrency;
 use App\Enums\Accounting\AccountCategory;
-use App\Enums\Accounting\AccountType;
 use App\Enums\BankAccountType;
 use App\Facades\Forex;
 use App\Filament\Company\Resources\Banking\AccountResource\Pages;
@@ -25,7 +24,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Unique;
-use Livewire\Component as Livewire;
 use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class AccountResource extends Resource
@@ -198,7 +196,7 @@ class AccountResource extends Resource
                     ->icon(static fn (BankAccount $record) => $record->isEnabled() ? 'heroicon-o-lock-closed' : null)
                     ->tooltip(static fn (BankAccount $record) => $record->isEnabled() ? 'Default Account' : null)
                     ->iconPosition('after')
-                    ->description(static fn (BankAccount $record) => $record->number ?: 'N/A')
+                    ->description(static fn (BankAccount $record) => $record->mask ?: 'N/A')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('account.starting_balance')
                     ->localizeLabel('Current Balance')
@@ -300,8 +298,8 @@ class AccountResource extends Resource
 
         $subtypes = AccountSubtype::where('category', $category)->get();
 
-        return $subtypes->groupBy(fn(AccountSubtype $subtype) => $subtype->type->getLabel())
-            ->map(fn(Collection $subtypes, string $type) => $subtypes->mapWithKeys(static fn (AccountSubtype $subtype) => [$subtype->id => $subtype->name]))
+        return $subtypes->groupBy(fn (AccountSubtype $subtype) => $subtype->type->getLabel())
+            ->map(fn (Collection $subtypes, string $type) => $subtypes->mapWithKeys(static fn (AccountSubtype $subtype) => [$subtype->id => $subtype->name]))
             ->toArray();
     }
 }

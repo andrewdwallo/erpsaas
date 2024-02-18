@@ -276,7 +276,7 @@ class PlaidService
         return $this->sendRequest('institutions/get_by_id', $data);
     }
 
-    public function syncTransactions(string $access_token, string|null $cursor = null, int $count = 100, array $options = []): object
+    public function syncTransactions(string $access_token, ?string $cursor = null, int $count = 100, array $options = []): object
     {
         $data = [
             'access_token' => $access_token,

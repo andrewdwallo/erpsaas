@@ -2,7 +2,7 @@
     <div class="grid grid-cols-1 gap-4">
         @forelse($this->connectedInstitutions as $institution) {{-- Group connected accounts by institution --}}
             <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-                <header class="connected-account-header bg-primary-300/10 flex flex-col gap-3 overflow-hidden sm:flex-row sm:items-center px-6 py-4">
+                <header class="connected-account-header bg-primary-300/10 px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
                     @if($institution->logo_url === null)
                         <div class="flex-shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
                             <x-filament::icon
@@ -11,16 +11,16 @@
                             />
                         </div>
                     @else
-                        <img src="{{ $institution->logo_url }}" alt="{{ $institution->name }}" class="h-10">
+                        <img src="{{ $institution->logo_url }}" alt="{{ $institution->name }}" class="h-10 object-contain object-left">
                     @endif
 
-                    <div class="grid flex-1 gap-y-1">
-                        <h3 class="connected-account-section-header-heading text-lg font-semibold leading-[1.4] text-gray-950 dark:text-white">
+                    <div class="flex-auto">
+                        <h3 class="connected-account-section-header-heading text-lg font-semibold leading-6 text-gray-950 dark:text-white">
                             {{ $institution->name }}
                         </h3>
 
                         {{-- Eventually we will need to assert last updated time based on when the last time one of the accounts for the institution last has transactions imported --}}
-                        <p class="connected-account-section-header-description text-sm text-gray-500 dark:text-gray-400">
+                        <p class="connected-account-section-header-description text-sm leading-6 text-gray-500 dark:text-gray-400">
                             {{ __('Last Updated') }} {{ $institution->updated_at->diffForHumans() }}
                         </p>
                     </div>
@@ -29,30 +29,28 @@
                 </header>
 
                 @foreach($institution->connectedBankAccounts as $connectedBankAccount)
-                    <div class="border-t-2 border-gray-200 dark:border-white/10">
-                        <div class="p-6">
-                            <div class="flex justify-between items-start">
-                                <div class="flex flex-col space-y-2">
-                                    <span class="account-name text-base font-medium text-gray-900 dark:text-white">{{ $connectedBankAccount->name }}</span>
-                                    <span class="account-type text-sm text-gray-600 dark:text-gray-200">{{  ucwords($connectedBankAccount->subtype) }} {{ $connectedBankAccount->masked_number }}</span>
+                    <div class="border-t-2 border-gray-200 dark:border-white/10 px-6 py-4">
+                        <div class="flex flex-col sm:flex-row items-start gap-y-2">
+                            <div class="grid flex-auto gap-y-2">
+                                <span class="account-name text-base font-medium leading-6 text-gray-900 dark:text-white">{{ $connectedBankAccount->name }}</span>
+                                <span class="account-type text-sm leading-6 text-gray-600 dark:text-gray-200">{{  ucwords($connectedBankAccount->subtype) }} {{ $connectedBankAccount->masked_number }}</span>
+                            </div>
+
+                            @if($connectedBankAccount->bankAccount?->account)
+                                <div class="account-balance flex text-base leading-6 text-gray-700 dark:text-gray-200 space-x-1">
+                                    <strong>@money($connectedBankAccount->bankAccount->account->ending_balance, $connectedBankAccount->bankAccount->account->currency_code, true)</strong>
+                                    <p>{{ $connectedBankAccount->bankAccount->account->currency_code }}</p>
                                 </div>
+                            @endif
+                        </div>
 
-                                @if($connectedBankAccount->bankAccount?->account)
-                                    <div class="account-balance flex justify-between text-base text-gray-700 dark:text-gray-200 space-x-1">
-                                        <strong>@money($connectedBankAccount->bankAccount->account->ending_balance, $connectedBankAccount->bankAccount->account->currency_code, true)</strong>
-                                        <p>{{ $connectedBankAccount->bankAccount->account->currency_code }}</p>
-                                    </div>
-                                @endif
-                            </div>
-
-                            {{-- Add the toggle button to import transactions or not --}}
-                            <div class="mt-4 flex items-center space-x-2">
-                                @if($connectedBankAccount->import_transactions)
-                                    {{ ($this->stopImportingTransactions)(['connectedBankAccount' => $connectedBankAccount->id]) }}
-                                @else
-                                    {{ ($this->startImportingTransactions)(['connectedBankAccount' => $connectedBankAccount->id]) }}
-                                @endif
-                            </div>
+                        {{-- Add the toggle button to import transactions or not --}}
+                        <div class="mt-4">
+                            @if($connectedBankAccount->import_transactions)
+                                {{ ($this->stopImportingTransactions)(['connectedBankAccount' => $connectedBankAccount->id]) }}
+                            @else
+                                {{ ($this->startImportingTransactions)(['connectedBankAccount' => $connectedBankAccount->id]) }}
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -96,6 +94,16 @@
     {{-- Initialize Plaid Link --}}
     @script
     <script>
+        let data = Alpine.reactive({ windowWidth: 'max-w-2xl' });
+
+        Alpine.effect(() => {
+            $wire.$set('modalWidth', data.windowWidth);
+        });
+
+        window.addEventListener('resize', () => {
+            data.windowWidth = window.innerWidth <= 480 ? 'screen' : 'max-w-2xl';
+        });
+
         $wire.on('initializeLink', token => {
             const handler = Plaid.create({
                 token: token,

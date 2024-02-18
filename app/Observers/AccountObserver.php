@@ -55,19 +55,19 @@ class AccountObserver
     public function created(Account $account): void
     {
         //$account->histories()->create([
-           // 'company_id' => $account->company_id,
-          //  'account_id' => $account->id,
-           // 'type' => $account->type,
-          //  'name' => $account->name,
-          //  'number' => $account->number,
-           // 'currency_code' => $account->currency_code,
-         //   'opening_balance' => $account->opening_balance,
-         //   'balance' => $account->balance,
-         //   'exchange_rate' => $account->currency->rate,
-          //  'status' => AccountStatus::Open,
-          //  'actions' => ['account_created'],
-         //   'enabled' => $account->enabled,
-          //  'changed_by' => $account->created_by,
+        // 'company_id' => $account->company_id,
+        //  'account_id' => $account->id,
+        // 'type' => $account->type,
+        //  'name' => $account->name,
+        //  'number' => $account->number,
+        // 'currency_code' => $account->currency_code,
+        //   'opening_balance' => $account->opening_balance,
+        //   'balance' => $account->balance,
+        //   'exchange_rate' => $account->currency->rate,
+        //  'status' => AccountStatus::Open,
+        //  'actions' => ['account_created'],
+        //   'enabled' => $account->enabled,
+        //  'changed_by' => $account->created_by,
         //]);
     }
 
@@ -79,27 +79,27 @@ class AccountObserver
         //$actionsTaken = [];
 
         //foreach ($this->actions as $action => $attribute) {
-            //if ($account->isDirty($attribute)) {
-                //$actionsTaken[] = $action;
-           // }
+        //if ($account->isDirty($attribute)) {
+        //$actionsTaken[] = $action;
+        // }
         //}
 
         //if (count($actionsTaken) > 0) {
-            //$account->histories()->create([
-                //'company_id' => $account->company_id,
-               // 'account_id' => $account->id,
-               // 'type' => $account->getOriginal('type'),
-               // 'name' => $account->getOriginal('name'),
-               // 'number' => $account->getOriginal('number'),
-               // 'currency_code' => $account->getOriginal('currency_code'),
-               // 'opening_balance' => $account->getRawOriginal('opening_balance'),
-               // 'balance' => $account->getRawOriginal('balance'),
-               // 'exchange_rate' => $account->currency->getRawOriginal('rate'),
-               // 'status' => $account->getOriginal('status'),
-               // 'actions' => $actionsTaken,
-               // 'enabled' => $account->getOriginal('enabled'),
-               // 'changed_by' => $account->updated_by,
-            //]);
+        //$account->histories()->create([
+        //'company_id' => $account->company_id,
+        // 'account_id' => $account->id,
+        // 'type' => $account->getOriginal('type'),
+        // 'name' => $account->getOriginal('name'),
+        // 'number' => $account->getOriginal('number'),
+        // 'currency_code' => $account->getOriginal('currency_code'),
+        // 'opening_balance' => $account->getRawOriginal('opening_balance'),
+        // 'balance' => $account->getRawOriginal('balance'),
+        // 'exchange_rate' => $account->currency->getRawOriginal('rate'),
+        // 'status' => $account->getOriginal('status'),
+        // 'actions' => $actionsTaken,
+        // 'enabled' => $account->getOriginal('enabled'),
+        // 'changed_by' => $account->updated_by,
+        //]);
         //}
     }
 
@@ -133,8 +133,8 @@ class AccountObserver
         $defaultChartType = AccountType::CurrentAsset;
 
         //if ($account->type->isCreditCard()) {
-            //$defaultChartCategory = ChartCategory::Liability;
-            //$defaultChartType = ChartType::CurrentLiability;
+        //$defaultChartCategory = ChartCategory::Liability;
+        //$defaultChartType = ChartType::CurrentLiability;
         //}
 
         $subTypeId = $this->getSubTypeId($account->company_id, $defaultChartType);
@@ -170,7 +170,7 @@ class AccountObserver
             ->where('type', $type)
             ->first();
 
-        if (!$subType) {
+        if (! $subType) {
             $subType = AccountSubtype::where('company_id', $companyId)
                 ->where('type', $type)
                 ->first();

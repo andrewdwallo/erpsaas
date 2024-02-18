@@ -382,7 +382,7 @@ return [
             ],
         ],
         'contra_expense' => [
-             'Contra Expenses' => [
+            'Contra Expenses' => [
                 'description' => 'Expenses that are deducted from gross expenses to arrive at net expenses. This includes purchase discounts, returns, and allowances.',
                 'multi_currency' => false,
                 'base_code' => '5900',
@@ -394,7 +394,7 @@ return [
                         'description' => 'The amount of money deducted from purchases due to discounts offered by suppliers for early payment or other reasons.',
                     ],
                 ],
-             ],
+            ],
         ],
         'uncategorized_expense' => [
             'Uncategorized Expense' => [

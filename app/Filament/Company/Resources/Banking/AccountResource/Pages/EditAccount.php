@@ -6,9 +6,6 @@ use App\Filament\Company\Resources\Banking\AccountResource;
 use App\Traits\HandlesResourceRecordUpdate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Exceptions\Halt;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class EditAccount extends EditRecord
 {

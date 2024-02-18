@@ -12,36 +12,33 @@ use App\Services\PlaidService;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use JsonException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use RuntimeException;
 
-class ListInstitutions extends Component implements HasForms, HasActions
+class ListInstitutions extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
 
     protected PlaidService $plaidService;
 
     public User $user;
 
-    public ?ConnectedBankAccount $connectedBankAccount = null;
+    public string $modalWidth;
 
     public function boot(PlaidService $plaidService): void
     {
@@ -54,7 +51,7 @@ class ListInstitutions extends Component implements HasForms, HasActions
     }
 
     #[Computed]
-    public function connectedInstitutions(): Collection|array
+    public function connectedInstitutions(): Collection | array
     {
         return Institution::withWhereHas('connectedBankAccounts')
             ->get();
@@ -66,58 +63,60 @@ class ListInstitutions extends Component implements HasForms, HasActions
             ->link()
             ->icon('heroicon-o-cloud-arrow-down')
             ->label('Start Importing Transactions')
-            ->modalWidth(MaxWidth::TwoExtraLarge)
+            ->modalWidth(fn () => $this->modalWidth)
+            ->modalFooterActionsAlignment(fn () => $this->modalWidth === 'screen' ? Alignment::Center : Alignment::Start)
             ->stickyModalHeader()
             ->stickyModalFooter()
-            ->record($this->connectedBankAccount)
-            ->mountUsing(function (array $arguments, Form $form) {
-                $connectedAccountId = $arguments['connectedBankAccount'];
-
-                $this->connectedBankAccount = ConnectedBankAccount::find($connectedAccountId);
-
-                $form
-                    ->fill($this->connectedBankAccount->toArray())
-                    ->operation('edit')
-                    ->model($this->connectedBankAccount);
-            })
+            ->record(fn (array $arguments) => ConnectedBankAccount::find($arguments['connectedBankAccount']))
             ->form([
+                Placeholder::make('import_from')
+                    ->label('Import Transactions From')
+                    ->content(static fn (ConnectedBankAccount $connectedBankAccount): View => view(
+                        'components.actions.transaction-import-modal',
+                        compact('connectedBankAccount')
+                    )),
+                Placeholder::make('info')
+                    ->hiddenLabel()
+                    ->visible(static fn (ConnectedBankAccount $connectedBankAccount) => $connectedBankAccount->bank_account_id === null)
+                    ->content(static fn (ConnectedBankAccount $connectedBankAccount) => 'If ' . $connectedBankAccount->name . ' already has transactions for an existing account, select the account to import transactions into.'),
                 Select::make('bank_account_id')
                     ->label('Select Account')
-                    ->visible(static fn (?ConnectedBankAccount $connectedBankAccount) => $connectedBankAccount?->bank_account_id === null)
-                    ->options(fn () => $this->getBankAccountOptions())
-                    ->required()
-                    ->placeholder('Select an account to start importing transactions for.'),
+                    ->visible(static fn (ConnectedBankAccount $connectedBankAccount) => $connectedBankAccount->bank_account_id === null)
+                    ->options(fn (ConnectedBankAccount $connectedBankAccount) => $this->getBankAccountOptions($connectedBankAccount))
+                    ->required(),
                 DatePicker::make('start_date')
                     ->label('Start Date')
                     ->required()
                     ->placeholder('Select a start date for importing transactions.'),
             ])
             ->action(function (array $arguments, array $data, ConnectedBankAccount $connectedBankAccount) {
-                $connectedBankAccountId = $arguments['connectedBankAccount'];
                 $selectedBankAccountId = $data['bank_account_id'] ?? $connectedBankAccount->bank_account_id;
                 $startDate = $data['start_date'];
                 $company = $this->user->currentCompany;
 
-                StartTransactionImport::dispatch($company, $connectedBankAccountId, $selectedBankAccountId, $startDate);
+                StartTransactionImport::dispatch($company, $connectedBankAccount, $selectedBankAccountId, $startDate);
 
                 unset($this->connectedInstitutions);
             });
     }
 
-    public function getBankAccountOptions(): array
+    public function getBankAccountOptions(ConnectedBankAccount $connectedBankAccount): array
     {
-        $institutionId = $this->connectedBankAccount->institution_id ?? null;
+        $institutionId = $connectedBankAccount->institution_id ?? null;
+        $options = ['new' => 'New Account'];
 
-        $options = BankAccount::query()
-            ->where('company_id', $this->user->currentCompany->id)
-            ->when($institutionId, static fn($query) => $query->where('institution_id', $institutionId))
-            ->whereDoesntHave('connectedBankAccount')
-            ->with('account')
-            ->get()
-            ->pluck('account.name', 'id')
-            ->toArray();
+        if ($institutionId) {
+            $options += BankAccount::query()
+                ->where('company_id', $this->user->currentCompany->id)
+                ->where('institution_id', $institutionId)
+                ->whereDoesntHave('connectedBankAccount')
+                ->with('account')
+                ->get()
+                ->pluck('account.name', 'id')
+                ->toArray();
+        }
 
-        return ['new' => 'New Account'] + $options;
+        return $options;
     }
 
     public function stopImportingTransactions(): Action
@@ -137,7 +136,7 @@ class ListInstitutions extends Component implements HasForms, HasActions
 
                 if ($connectedBankAccount) {
                     $connectedBankAccount->update([
-                        'import_transactions' => !$connectedBankAccount->import_transactions,
+                        'import_transactions' => ! $connectedBankAccount->import_transactions,
                     ]);
                 }
 
@@ -150,9 +149,28 @@ class ListInstitutions extends Component implements HasForms, HasActions
         return Action::make('deleteBankConnection')
             ->iconButton()
             ->icon('heroicon-o-trash')
-            ->requiresConfirmation()
+            ->color('danger')
             ->modalHeading('Delete Bank Connection')
-            ->modalDescription('Deleting this bank connection will stop the import of transactions for all accounts associated with this bank. Existing transactions will remain unchanged.')
+            ->modalWidth(fn () => $this->modalWidth)
+            ->modalFooterActionsAlignment(fn () => $this->modalWidth === 'screen' ? Alignment::Center : Alignment::Start)
+            ->stickyModalHeader()
+            ->stickyModalFooter()
+            ->record(fn (array $arguments) => Institution::find($arguments['institution']))
+            ->form([
+                Placeholder::make('accounts')
+                    ->hiddenLabel()
+                    ->content(static fn (Institution $institution): View => view(
+                        'components.actions.delete-bank-connection-modal',
+                        compact('institution')
+                    )),
+                Placeholder::make('info')
+                    ->hiddenLabel()
+                    ->content('Deleting this bank connection will stop the import of transactions for all accounts associated with this bank. Existing transactions will remain unchanged.'),
+                Checkbox::make('confirm')
+                    ->label('Yes, I want to delete this bank connection.')
+                    ->markAsRequired(false)
+                    ->required(),
+            ])
             ->action(function (array $arguments) {
                 $institutionId = $arguments['institution'];
 
@@ -183,7 +201,7 @@ class ListInstitutions extends Component implements HasForms, HasActions
 
             $this->dispatch('initializeLink', $plaidLinkToken)->self();
         } catch (RuntimeException) {
-            Log::error("Error creating Plaid token.");
+            Log::error('Error creating Plaid token.');
 
             $this->sendErrorNotification("We're currently experiencing issues connecting your account. Please try again in a few moments.");
         }

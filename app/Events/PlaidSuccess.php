@@ -8,9 +8,11 @@ use Illuminate\Queue\SerializesModels;
 
 class PlaidSuccess
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public string $publicToken;
+
     public string $accessToken;
 
     public Company $company;

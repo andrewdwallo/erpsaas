@@ -2,31 +2,31 @@
 
 namespace App\Events;
 
+use App\Models\Banking\ConnectedBankAccount;
 use App\Models\Company;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class StartTransactionImport
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public Company $company;
-    public $connectedBankAccountId;
-    public $selectedBankAccountId;
-    public $startDate;
+
+    public ConnectedBankAccount $connectedBankAccount;
+
+    public mixed $selectedBankAccountId;
+
+    public mixed $startDate;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($company, $connectedBankAccountId, $selectedBankAccountId, $startDate)
+    public function __construct($company, $connectedBankAccount, $selectedBankAccountId, $startDate)
     {
         $this->company = $company;
-        $this->connectedBankAccountId = $connectedBankAccountId;
+        $this->connectedBankAccount = $connectedBankAccount;
         $this->selectedBankAccountId = $selectedBankAccountId;
         $this->startDate = $startDate;
     }

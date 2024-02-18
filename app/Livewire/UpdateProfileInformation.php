@@ -11,12 +11,12 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Illuminate\Contracts\View\View;
 use RuntimeException;
 use Wallo\FilamentCompanies\Features;
 
@@ -37,7 +37,7 @@ class UpdateProfileInformation extends Component implements HasForms
         $this->fillForm();
     }
 
-    public function getUser(): Authenticatable|Model
+    public function getUser(): Authenticatable | Model
     {
         $user = Filament::auth()->user();
 

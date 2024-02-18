@@ -4,7 +4,6 @@ namespace App\Filament\Company\Resources\Accounting;
 
 use App\Enums\DateFormat;
 use App\Filament\Company\Resources\Accounting\TransactionResource\Pages;
-use App\Filament\Company\Resources\Accounting\TransactionResource\RelationManagers;
 use App\Models\Accounting\Transaction;
 use App\Models\Banking\Account;
 use App\Models\Setting\Localization;
@@ -14,8 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 
 class TransactionResource extends Resource

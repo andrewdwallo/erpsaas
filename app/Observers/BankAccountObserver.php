@@ -2,12 +2,10 @@
 
 namespace App\Observers;
 
-use App\Enums\Accounting\AccountCategory;
 use App\Enums\Accounting\AccountType;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountSubtype;
 use App\Models\Banking\BankAccount;
-use Illuminate\Support\Facades\Log;
 
 class BankAccountObserver
 {
@@ -37,7 +35,7 @@ class BankAccountObserver
             ->where('type', $type)
             ->first();
 
-        if (!$subType) {
+        if (! $subType) {
             $subType = AccountSubtype::where('company_id', $companyId)
                 ->where('type', $type)
                 ->first();

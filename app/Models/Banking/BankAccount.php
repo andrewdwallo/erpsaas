@@ -2,7 +2,6 @@
 
 namespace App\Models\Banking;
 
-use App\Enums\BankAccountSubtype;
 use App\Enums\BankAccountType;
 use App\Models\Accounting\Account;
 use App\Traits\Blamable;
@@ -81,7 +80,7 @@ class BankAccount extends Model
     protected function mask(): Attribute
     {
         return Attribute::get(static function (mixed $value, array $attributes): ?string {
-            return $attributes['number'] ? '****' . substr($attributes['number'], -4) : null;
+            return $attributes['number'] ? '•••• ' . substr($attributes['number'], -4) : null;
         });
     }
 

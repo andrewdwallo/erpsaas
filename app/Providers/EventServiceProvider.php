@@ -31,7 +31,6 @@ use App\Observers\CurrencyObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Wallo\FilamentCompanies\Events\CompanyCreated;
 
 class EventServiceProvider extends ServiceProvider
 {

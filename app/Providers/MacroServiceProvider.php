@@ -108,17 +108,17 @@ class MacroServiceProvider extends ServiceProvider
             $this
                 ->rules([
                     fn (Field $component): Closure => static function (string $attribute, $value, Closure $fail) use ($subtype, $component) {
-                    $subtype = $component->evaluate($subtype);
-                    $chartSubtype = AccountSubtype::find($subtype);
-                    $type = $chartSubtype->type;
+                        $subtype = $component->evaluate($subtype);
+                        $chartSubtype = AccountSubtype::find($subtype);
+                        $type = $chartSubtype->type;
 
-                    if (!AccountCode::isValidCode($value, $type)) {
-                        $message = AccountCode::getMessage($type);
+                        if (! AccountCode::isValidCode($value, $type)) {
+                            $message = AccountCode::getMessage($type);
 
-                        $fail($message);
-                    }
-                },
-            ]);
+                            $fail($message);
+                        }
+                    },
+                ]);
 
             return $this;
         });

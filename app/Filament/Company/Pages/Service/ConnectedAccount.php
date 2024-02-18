@@ -20,7 +20,7 @@ class ConnectedAccount extends Page
 
     protected static string $view = 'filament.company.pages.service.connected-account';
 
-    public function getTitle(): string|Htmlable
+    public function getTitle(): string | Htmlable
     {
         return translate(static::$title);
     }
@@ -48,7 +48,7 @@ class ConnectedAccount extends Page
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth|string|null
+    public function getMaxContentWidth(): MaxWidth | string | null
     {
         return MaxWidth::ScreenLarge;
     }

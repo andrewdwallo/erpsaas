@@ -3,17 +3,12 @@
 namespace App\Filament\Company\Resources\Banking\AccountResource\Pages;
 
 use App\Filament\Company\Resources\Banking\AccountResource;
-use App\Models\Banking\BankAccount;
-use App\Traits\HandlesResourceRecordCreation;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CreateAccount extends CreateRecord
 {
-
     protected static string $resource = AccountResource::class;
 
     protected function getRedirectUrl(): string
