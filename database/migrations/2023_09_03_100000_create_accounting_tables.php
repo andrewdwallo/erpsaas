@@ -49,6 +49,7 @@ return new class extends Migration
             $table->bigInteger('starting_balance')->default(0);
             $table->bigInteger('debit_balance')->default(0);
             $table->bigInteger('credit_balance')->default(0);
+            $table->bigInteger('net_movement')->default(0);
             $table->bigInteger('ending_balance')->default(0);
             $table->text('description')->nullable();
             $table->boolean('active')->default(true);

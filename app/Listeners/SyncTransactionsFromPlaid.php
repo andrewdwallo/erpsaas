@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Enums\Accounting\AccountType;
 use App\Events\PlaidSuccess;
-use App\Models\Accounting\Chart;
+use App\Models\Accounting\Account;
 use App\Models\Company;
 use App\Models\Setting\Category;
 use App\Services\PlaidService;
@@ -141,12 +141,12 @@ class SyncTransactionsFromPlaid
         return $uncategorizedCategory;
     }
 
-    public function getChartFromTransaction(Company $company, $transaction, string $transactionType): Chart
+    public function getChartFromTransaction(Company $company, $transaction, string $transactionType): Account
     {
         if ($transactionType === 'income') {
-            $chart = $company->charts()->where('type', AccountType::OperatingRevenue)->where('name', 'Uncategorized Income')->first();
+            $chart = $company->accounts()->where('type', AccountType::OperatingRevenue)->where('name', 'Uncategorized Income')->first();
         } else {
-            $chart = $company->charts()->where('type', AccountType::OperatingExpense)->where('name', 'Uncategorized Expense')->first();
+            $chart = $company->accounts()->where('type', AccountType::OperatingExpense)->where('name', 'Uncategorized Expense')->first();
         }
 
         return $chart;

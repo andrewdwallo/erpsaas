@@ -3,6 +3,8 @@
 namespace App\Models\Accounting;
 
 use App\Casts\MoneyCast;
+use App\Enums\Accounting\AccountCategory;
+use App\Enums\Accounting\AccountType;
 use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Traits\Blamable;
@@ -37,6 +39,7 @@ class Account extends Model
         'starting_balance',
         'debit_balance',
         'credit_balance',
+        'net_movement',
         'ending_balance',
         'description',
         'active',
@@ -48,6 +51,8 @@ class Account extends Model
     ];
 
     protected $casts = [
+        'category' => AccountCategory::class,
+        'type' => AccountType::class,
         'starting_balance' => MoneyCast::class,
         'debit_balance' => MoneyCast::class,
         'credit_balance' => MoneyCast::class,

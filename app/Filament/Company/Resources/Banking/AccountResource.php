@@ -198,7 +198,7 @@ class AccountResource extends Resource
                     ->iconPosition('after')
                     ->description(static fn (BankAccount $record) => $record->mask ?: 'N/A')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('account.starting_balance')
+                Tables\Columns\TextColumn::make('account.ending_balance')
                     ->localizeLabel('Current Balance')
                     ->sortable()
                     ->currency(static fn (BankAccount $record) => $record->account->currency_code, true),

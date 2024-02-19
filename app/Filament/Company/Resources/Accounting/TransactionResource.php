@@ -5,7 +5,7 @@ namespace App\Filament\Company\Resources\Accounting;
 use App\Enums\DateFormat;
 use App\Filament\Company\Resources\Accounting\TransactionResource\Pages;
 use App\Models\Accounting\Transaction;
-use App\Models\Banking\Account;
+use App\Models\Banking\BankAccount;
 use App\Models\Setting\Localization;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -49,14 +49,12 @@ class TransactionResource extends Resource
                 Forms\Components\TextInput::make('amount')
                     ->label('Amount')
                     ->money(static function (Forms\Get $get) {
-                        $account = $get('account_id');
+                        $bankAccount = $get('bank_account_id');
+                        $bankAccount = BankAccount::find($bankAccount);
+                        $account = $bankAccount->account ?? null;
 
                         if ($account) {
-                            $account = Account::find($account);
-
-                            if ($account) {
-                                return $account->currency_code;
-                            }
+                            return $account->currency_code;
                         }
 
                         return 'USD';
@@ -98,7 +96,7 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->weight(FontWeight::Medium)
                     ->color(static fn (Transaction $record) => $record->type === 'expense' ? 'danger' : null)
-                    ->currency(static fn (Transaction $record) => $record->account->currency_code, true),
+                    ->currency(static fn (Transaction $record) => $record->bankAccount->account->currency_code ?? 'USD', true),
             ])
             ->filters([
                 //

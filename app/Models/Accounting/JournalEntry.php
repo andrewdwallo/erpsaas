@@ -3,6 +3,7 @@
 namespace App\Models\Accounting;
 
 use App\Casts\MoneyCast;
+use App\Models\Banking\BankAccount;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Database\Factories\Accounting\JournalEntryFactory;
@@ -56,6 +57,11 @@ class JournalEntry extends Model
     public function scopeCredit($query)
     {
         return $query->where('type', 'credit');
+    }
+
+    public function bankAccount(): BelongsTo
+    {
+        return $this->account()->where('accountable_type', BankAccount::class);
     }
 
     public function createdBy(): BelongsTo

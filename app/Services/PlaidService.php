@@ -290,4 +290,16 @@ class PlaidService
 
         return $this->sendRequest('transactions/sync', $data);
     }
+
+    public function getTransactions(string $access_token, string $start_date, string $end_date, array $options = []): object
+    {
+        $data = [
+            'access_token' => $access_token,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'options' => (object) $options,
+        ];
+
+        return $this->sendRequest('transactions/get', $data);
+    }
 }

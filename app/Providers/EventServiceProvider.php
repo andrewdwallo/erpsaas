@@ -23,11 +23,13 @@ use App\Listeners\SyncWithCompanyDefaults;
 use App\Listeners\UpdateAccountBalances;
 use App\Listeners\UpdateCurrencyRates;
 use App\Models\Accounting\Account;
+use App\Models\Accounting\JournalEntry;
 use App\Models\Banking\BankAccount;
 use App\Models\Setting\Currency;
 use App\Observers\AccountObserver;
 use App\Observers\BankAccountObserver;
 use App\Observers\CurrencyObserver;
+use App\Observers\JournalEntryObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -83,6 +85,7 @@ class EventServiceProvider extends ServiceProvider
         Currency::class => [CurrencyObserver::class],
         BankAccount::class => [BankAccountObserver::class],
         Account::class => [AccountObserver::class],
+        JournalEntry::class => [JournalEntryObserver::class],
     ];
 
     /**

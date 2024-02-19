@@ -3,6 +3,7 @@
 namespace App\Models\Accounting;
 
 use App\Casts\MoneyCast;
+use App\Models\Banking\BankAccount;
 use App\Models\Common\Contact;
 use App\Models\Setting\Category;
 use App\Traits\Blamable;
@@ -24,6 +25,7 @@ class Transaction extends Model
     protected $fillable = [
         'company_id',
         'category_id',
+        'bank_account_id', // 'account_id' => 'bank_account_id'
         'contact_id',
         'type',
         'method',
@@ -64,6 +66,11 @@ class Transaction extends Model
     public function journalEntries(): HasMany
     {
         return $this->hasMany(JournalEntry::class, 'transaction_id');
+    }
+
+    public function bankAccount(): BelongsTo
+    {
+        return $this->belongsTo(BankAccount::class, 'bank_account_id');
     }
 
     public function createdBy(): BelongsTo

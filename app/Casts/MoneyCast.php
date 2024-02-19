@@ -11,7 +11,7 @@ class MoneyCast implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes): string
     {
-        $currency_code = $model->getAttribute('currency_code');
+        $currency_code = $model->getAttribute('currency_code') ?? CurrencyAccessor::getDefaultCurrency();
 
         if ($value !== null) {
             return money($value, $currency_code)->formatSimple();
