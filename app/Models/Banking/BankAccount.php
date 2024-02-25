@@ -4,11 +4,13 @@ namespace App\Models\Banking;
 
 use App\Enums\BankAccountType;
 use App\Models\Accounting\Account;
+use App\Observers\BankAccountObserver;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use App\Traits\HasDefault;
 use App\Traits\SyncsWithCompanyDefaults;
 use Database\Factories\Banking\BankAccountFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
+#[ObservedBy(BankAccountObserver::class)]
 class BankAccount extends Model
 {
     use Blamable;

@@ -13,7 +13,7 @@ use RuntimeException;
 
 class PlaidService
 {
-    public const string API_VERSION = '2020-09-14';
+    public const API_VERSION = '2020-09-14';
 
     protected ?string $client_id;
 
@@ -194,7 +194,7 @@ class PlaidService
         );
     }
 
-    public function createLinkToken(string $client_name, string $language, array $country_codes, array $user, array $products = []): object
+    public function createLinkToken(string $client_name, string $language, array $country_codes, array $user, array $products): object
     {
         $data = [
             'client_name' => $client_name,

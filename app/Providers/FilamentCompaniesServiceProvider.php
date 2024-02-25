@@ -90,6 +90,7 @@ class FilamentCompaniesServiceProvider extends PanelProvider
                 'gray' => Color::Gray,
             ])
             ->viteTheme('resources/css/filament/company/theme.css')
+            ->brandLogo(static fn () => view('components.icons.logo'))
             ->tenant(Company::class)
             ->tenantProfile(CompanySettings::class)
             ->tenantRegistration(CreateCompany::class)

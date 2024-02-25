@@ -6,9 +6,11 @@ use App\Casts\MoneyCast;
 use App\Models\Banking\BankAccount;
 use App\Models\Common\Contact;
 use App\Models\Setting\Category;
+use App\Observers\TransactionObserver;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Database\Factories\Accounting\TransactionFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
+#[ObservedBy(TransactionObserver::class)]
 class Transaction extends Model
 {
     use Blamable;

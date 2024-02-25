@@ -80,13 +80,16 @@ class TransactionResource extends Resource
 
                         return Carbon::parse($state)->translatedFormat($dateFormat);
                     }),
+                Tables\Columns\TextColumn::make('bankAccount.account.name')
+                    ->label('Account')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->wrap()
+                    ->limit(50)
                     ->label('Description'),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label('Category')
                     ->html()
-                    ->formatStateUsing(function ($state, Transaction $record) {
+                    ->formatStateUsing(static function ($state, Transaction $record) {
                         $color = $record->category->color ?? '#000000';
 
                         return "<span style='display: inline-block; width: 8px; height: 8px; background-color: {$color}; border-radius: 50%; margin-right: 3px;'></span> {$state}";
@@ -98,6 +101,7 @@ class TransactionResource extends Resource
                     ->color(static fn (Transaction $record) => $record->type === 'expense' ? 'danger' : null)
                     ->currency(static fn (Transaction $record) => $record->bankAccount->account->currency_code ?? 'USD', true),
             ])
+            ->defaultSort('posted_at', 'desc')
             ->filters([
                 //
             ])

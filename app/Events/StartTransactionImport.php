@@ -16,14 +16,14 @@ class StartTransactionImport
 
     public ConnectedBankAccount $connectedBankAccount;
 
-    public mixed $selectedBankAccountId;
+    public int | string $selectedBankAccountId;
 
-    public mixed $startDate;
+    public string $startDate;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($company, $connectedBankAccount, $selectedBankAccountId, $startDate)
+    public function __construct(Company $company, ConnectedBankAccount $connectedBankAccount, int | string $selectedBankAccountId, string $startDate)
     {
         $this->company = $company;
         $this->connectedBankAccount = $connectedBankAccount;

@@ -84,6 +84,8 @@ return new class extends Migration
             $table->text('access_token')->nullable();
             $table->string('identifier')->unique()->nullable(); // Plaid
             $table->string('item_id')->nullable();
+            $table->string('currency_code')->nullable();
+            $table->double('current_balance')->default(0);
             $table->string('name');
             $table->string('mask');
             $table->string('type')->default(BankAccountType::DEFAULT);

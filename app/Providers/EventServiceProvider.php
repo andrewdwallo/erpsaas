@@ -16,20 +16,12 @@ use App\Listeners\ConfigureCompanyNavigation;
 use App\Listeners\CreateCompanyDefaults;
 use App\Listeners\CreateConnectedAccount;
 use App\Listeners\HandleTransactionImport;
-use App\Listeners\PopulateAccountFromPlaid;
 use App\Listeners\SyncAssociatedModels;
-use App\Listeners\SyncTransactionsFromPlaid;
 use App\Listeners\SyncWithCompanyDefaults;
 use App\Listeners\UpdateAccountBalances;
 use App\Listeners\UpdateCurrencyRates;
-use App\Models\Accounting\Account;
-use App\Models\Accounting\JournalEntry;
-use App\Models\Banking\BankAccount;
 use App\Models\Setting\Currency;
-use App\Observers\AccountObserver;
-use App\Observers\BankAccountObserver;
 use App\Observers\CurrencyObserver;
-use App\Observers\JournalEntryObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -67,11 +59,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         PlaidSuccess::class => [
             CreateConnectedAccount::class,
-            // PopulateAccountFromPlaid::class,
-            // SyncTransactionsFromPlaid::class,
         ],
         StartTransactionImport::class => [
-            // SyncTransactionsFromPlaid::class,
             HandleTransactionImport::class,
         ],
     ];
@@ -82,10 +71,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, string|object|array<int, string|object>>
      */
     protected $observers = [
-        Currency::class => [CurrencyObserver::class],
-        BankAccount::class => [BankAccountObserver::class],
-        Account::class => [AccountObserver::class],
-        JournalEntry::class => [JournalEntryObserver::class],
+        // Currency::class => [CurrencyObserver::class],
     ];
 
     /**

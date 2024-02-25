@@ -25,6 +25,8 @@ class ConnectedBankAccount extends Model
         'access_token',
         'identifier',
         'item_id',
+        'currency_code',
+        'current_balance',
         'name',
         'mask',
         'type',

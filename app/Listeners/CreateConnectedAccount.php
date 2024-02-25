@@ -69,6 +69,8 @@ class CreateConnectedAccount
             'external_account_id' => $plaidAccount->account_id,
             'access_token' => $accessToken,
             'item_id' => $authResponse->item->item_id,
+            'currency_code' => $plaidAccount->balances->iso_currency_code ?? 'USD',
+            'current_balance' => $plaidAccount->balances->current ?? 0,
             'name' => $plaidAccount->name,
             'mask' => $plaidAccount->mask,
             'type' => $plaidAccount->type,

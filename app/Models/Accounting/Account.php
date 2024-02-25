@@ -7,9 +7,11 @@ use App\Enums\Accounting\AccountCategory;
 use App\Enums\Accounting\AccountType;
 use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
+use App\Observers\AccountObserver;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Database\Factories\Accounting\AccountFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
+#[ObservedBy(AccountObserver::class)]
 class Account extends Model
 {
     use Blamable;
@@ -56,6 +59,7 @@ class Account extends Model
         'starting_balance' => MoneyCast::class,
         'debit_balance' => MoneyCast::class,
         'credit_balance' => MoneyCast::class,
+        'net_movement' => MoneyCast::class,
         'ending_balance' => MoneyCast::class,
         'active' => 'boolean',
         'default' => 'boolean',
