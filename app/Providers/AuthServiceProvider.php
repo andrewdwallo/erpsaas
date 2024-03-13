@@ -36,7 +36,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $models = [
             Setting\Currency::class,
-            Setting\Category::class,
             Setting\Discount::class,
             Setting\Tax::class,
             Banking\BankAccount::class,

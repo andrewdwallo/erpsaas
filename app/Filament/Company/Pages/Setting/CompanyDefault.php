@@ -116,7 +116,6 @@ class CompanyDefault extends Page
             ->schema([
                 $this->getGeneralSection(),
                 $this->getModifiersSection(),
-                $this->getCategoriesSection(),
             ])
             ->model($this->record)
             ->statePath('data')
@@ -219,27 +218,6 @@ class CompanyDefault extends Page
                     ->allowHtml()
                     ->saveRelationshipsUsing(null)
                     ->searchable(),
-            ])->columns();
-    }
-
-    protected function getCategoriesSection(): Component
-    {
-        return Section::make('Categories')
-            ->schema([
-                Select::make('income_category_id')
-                    ->softRequired()
-                    ->localizeLabel()
-                    ->relationship('incomeCategory', 'name')
-                    ->saveRelationshipsUsing(null)
-                    ->required()
-                    ->preload(),
-                Select::make('expense_category_id')
-                    ->softRequired()
-                    ->localizeLabel()
-                    ->relationship('expenseCategory', 'name')
-                    ->saveRelationshipsUsing(null)
-                    ->searchable()
-                    ->preload(),
             ])->columns();
     }
 

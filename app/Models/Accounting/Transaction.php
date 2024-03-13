@@ -5,7 +5,6 @@ namespace App\Models\Accounting;
 use App\Casts\MoneyCast;
 use App\Models\Banking\BankAccount;
 use App\Models\Common\Contact;
-use App\Models\Setting\Category;
 use App\Observers\TransactionObserver;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
@@ -27,8 +26,8 @@ class Transaction extends Model
 
     protected $fillable = [
         'company_id',
-        'category_id',
-        'bank_account_id', // 'account_id' => 'bank_account_id'
+        'account_id', // Account from Chart of Accounts (Income/Expense accounts)
+        'bank_account_id', // Cash or Bank Account
         'contact_id',
         'type',
         'method',
@@ -56,9 +55,14 @@ class Transaction extends Model
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
     }
 
-    public function category(): BelongsTo
+    public function account(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Account::class, 'account_id');
+    }
+
+    public function bankAccount(): BelongsTo
+    {
+        return $this->belongsTo(BankAccount::class, 'bank_account_id');
     }
 
     public function contact(): BelongsTo
@@ -69,11 +73,6 @@ class Transaction extends Model
     public function journalEntries(): HasMany
     {
         return $this->hasMany(JournalEntry::class, 'transaction_id');
-    }
-
-    public function bankAccount(): BelongsTo
-    {
-        return $this->belongsTo(BankAccount::class, 'bank_account_id');
     }
 
     public function createdBy(): BelongsTo

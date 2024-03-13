@@ -3,11 +3,13 @@
 namespace App\Models\Banking;
 
 use App\Enums\BankAccountType;
+use App\Models\Accounting\Account;
 use App\Traits\Blamable;
 use App\Traits\CompanyOwned;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 class ConnectedBankAccount extends Model
@@ -59,6 +61,18 @@ class ConnectedBankAccount extends Model
     public function bankAccount(): BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'bank_account_id');
+    }
+
+    public function account(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Account::class,
+            BankAccount::class,
+            'id',
+            'accountable_id',
+            'bank_account_id',
+            'id'
+        );
     }
 
     protected function maskedNumber(): Attribute

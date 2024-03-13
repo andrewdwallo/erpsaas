@@ -3,8 +3,10 @@
 namespace App\Filament\Company\Pages\Accounting;
 
 use App\Enums\Accounting\AccountCategory;
+use App\Models\Accounting\Account;
 use App\Models\Accounting\Account as ChartModel;
 use App\Models\Accounting\AccountSubtype;
+use App\Services\AccountService;
 use App\Utilities\Accounting\AccountCode;
 use App\Utilities\Currency\CurrencyAccessor;
 use Filament\Actions\Action;
@@ -39,9 +41,25 @@ class AccountChart extends Page
     #[Url]
     public ?string $activeTab = null;
 
+    protected AccountService $accountService;
+
+    public function boot(AccountService $accountService): void
+    {
+        $this->accountService = $accountService;
+    }
+
     public function mount(): void
     {
         $this->activeTab = $this->activeTab ?? AccountCategory::Asset->value;
+    }
+
+    public function getAccountBalance(Account $account): ?string
+    {
+        $company = $account->company;
+        $startDate = $company->locale->fiscalYearStartDate();
+        $endDate = $company->locale->fiscalYearEndDate();
+
+        return $this->accountService->getEndingBalance($account, $startDate, $endDate)?->formatted();
     }
 
     protected function configureAction(Action $action): void

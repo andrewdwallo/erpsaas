@@ -47,8 +47,8 @@ class LocalizationFactory extends Factory
             'number_format' => $number_format,
             'percent_first' => $percent_first,
             'week_start' => $week_start,
-            'fiscal_year_start' => now()->startOfYear()->toDateString(),
-            'fiscal_year_end' => now()->endOfYear()->toDateString(),
+            'fiscal_year_end_month' => 12,
+            'fiscal_year_end_day' => 31,
         ]);
     }
 }

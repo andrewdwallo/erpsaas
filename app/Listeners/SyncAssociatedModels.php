@@ -45,8 +45,6 @@ class SyncAssociatedModels
             'purchase_tax_id' => 'purchaseTax',
             'sales_discount_id' => 'salesDiscount',
             'purchase_discount_id' => 'purchaseDiscount',
-            'income_category_id' => 'incomeCategory',
-            'expense_category_id' => 'expenseCategory',
         ];
 
         foreach ($diff as $key => $value) {

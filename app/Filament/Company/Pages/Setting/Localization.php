@@ -13,19 +13,20 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
+use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 
 use function Filament\authorize;
@@ -168,27 +169,6 @@ class Localization extends Page
 
         return Section::make('Financial & Fiscal')
             ->schema([
-                DatePicker::make('fiscal_year_start')
-                    ->localizeLabel()
-                    ->live()
-                    ->extraAttributes(['wire:key' => Str::random()]) // Required to reinitialize the datepicker when the date_format state changes
-                    ->maxDate(static fn (Get $get) => $get('fiscal_year_end'))
-                    ->displayFormat(static function (LocalizationModel $record, Get $get) {
-                        return $get('date_format') ?? DateFormat::DEFAULT;
-                    })
-                    ->seconds(false)
-                    ->softRequired(),
-                DatePicker::make('fiscal_year_end')
-                    ->softRequired()
-                    ->localizeLabel()
-                    ->live()
-                    ->extraAttributes(['wire:key' => Str::random()]) // Required to reinitialize the datepicker when the date_format state changes
-                    ->minDate(static fn (Get $get) => $get('fiscal_year_start'))
-                    ->disabled(static fn (Get $get): bool => ! filled($get('fiscal_year_start')))
-                    ->displayFormat(static function (LocalizationModel $record, Get $get) {
-                        return $get('date_format') ?? DateFormat::DEFAULT;
-                    })
-                    ->seconds(false),
                 Select::make('number_format')
                     ->softRequired()
                     ->localizeLabel()
@@ -197,6 +177,34 @@ class Localization extends Page
                     ->softRequired()
                     ->localizeLabel('Percent Position')
                     ->boolean($beforeNumber, $afterNumber, $selectPosition),
+                Group::make()
+                    ->schema([
+                        Cluster::make([
+                            Select::make('fiscal_year_end_month')
+                                ->softRequired()
+                                ->options(array_combine(range(1, 12), array_map(static fn ($month) => now()->month($month)->monthName, range(1, 12))))
+                                ->afterStateUpdated(static fn (Set $set) => $set('fiscal_year_end_day', null))
+                                ->columnSpan(2)
+                                ->live(),
+                            Select::make('fiscal_year_end_day')
+                                ->placeholder('Day')
+                                ->softRequired()
+                                ->columnSpan(1)
+                                ->options(function (Get $get) {
+                                    $month = $get('fiscal_year_end_month');
+
+                                    $daysInMonth = now()->month($month)->daysInMonth;
+
+                                    return array_combine(range(1, $daysInMonth), range(1, $daysInMonth));
+                                })
+                                ->live(),
+                        ])
+                            ->columns(3)
+                            ->columnSpan(2)
+                            ->required()
+                            ->markAsRequired(false)
+                            ->label('Fiscal Year End'),
+                    ])->columns(3),
             ])->columns();
     }
 

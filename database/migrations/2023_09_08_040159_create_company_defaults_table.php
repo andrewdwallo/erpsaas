@@ -20,8 +20,6 @@ return new class extends Migration
             $table->foreignId('purchase_tax_id')->nullable()->constrained('taxes')->cascadeOnDelete();
             $table->foreignId('sales_discount_id')->nullable()->constrained('discounts')->cascadeOnDelete();
             $table->foreignId('purchase_discount_id')->nullable()->constrained('discounts')->cascadeOnDelete();
-            $table->foreignId('income_category_id')->nullable()->constrained('categories')->cascadeOnDelete();
-            $table->foreignId('expense_category_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->timestamps();

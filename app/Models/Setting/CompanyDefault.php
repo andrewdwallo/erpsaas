@@ -2,7 +2,6 @@
 
 namespace App\Models\Setting;
 
-use App\Enums\CategoryType;
 use App\Enums\DiscountType;
 use App\Enums\TaxType;
 use App\Models\Banking\BankAccount;
@@ -31,8 +30,6 @@ class CompanyDefault extends Model
         'purchase_tax_id',
         'sales_discount_id',
         'purchase_discount_id',
-        'income_category_id',
-        'expense_category_id',
         'created_by',
         'updated_by',
     ];
@@ -74,18 +71,6 @@ class CompanyDefault extends Model
     {
         return $this->belongsTo(Discount::class, 'purchase_discount_id', 'id')
             ->where('type', DiscountType::Purchase);
-    }
-
-    public function incomeCategory(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'income_category_id', 'id')
-            ->where('type', CategoryType::Income);
-    }
-
-    public function expenseCategory(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'expense_category_id', 'id')
-            ->where('type', CategoryType::Expense);
     }
 
     public function createdBy(): BelongsTo

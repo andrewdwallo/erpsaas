@@ -160,10 +160,6 @@ class DiscountResource extends Resource
                     ->iconPosition('after')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('computation')
-                    ->localizeLabel()
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('rate')
                     ->localizeLabel()
                     ->rate(static fn (Discount $record) => $record->computation->value)

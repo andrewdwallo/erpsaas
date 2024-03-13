@@ -9,6 +9,7 @@ use App\Facades\Forex;
 use App\Filament\Company\Resources\Banking\AccountResource\Pages;
 use App\Models\Accounting\AccountSubtype;
 use App\Models\Banking\BankAccount;
+use App\Services\AccountService;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
 use BackedEnum;
@@ -62,6 +63,7 @@ class AccountResource extends Resource
                             ->options(BankAccountType::class)
                             ->localizeLabel()
                             ->searchable()
+                            ->columnSpan(1)
                             ->default(BankAccountType::DEFAULT)
                             ->live()
                             ->afterStateUpdated(static function (Forms\Set $set, $state, ?BankAccount $record, string $operation) {
@@ -77,6 +79,7 @@ class AccountResource extends Resource
                             })
                             ->required(),
                         Forms\Components\Group::make()
+                            ->columnStart(2)
                             ->relationship('account')
                             ->schema([
                                 Forms\Components\Select::make('subtype_id')
@@ -93,94 +96,85 @@ class AccountResource extends Resource
                             ]),
                         Forms\Components\Group::make()
                             ->relationship('account')
+                            ->columns(2)
+                            ->columnSpanFull()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->maxLength(100)
                                     ->localizeLabel()
                                     ->required(),
-                            ]),
-                        Forms\Components\TextInput::make('number')
-                            ->localizeLabel('Account Number')
-                            ->unique(ignoreRecord: true, modifyRuleUsing: static function (Unique $rule, $state) {
-                                $companyId = Auth::user()->currentCompany->id;
-
-                                return $rule->where('company_id', $companyId)->where('number', $state);
-                            })
-                            ->maxLength(20)
-                            ->validationAttribute('account number')
-                            ->required(),
-                        ToggleButton::make('enabled')
-                            ->localizeLabel('Default'),
-                    ])->columns(),
-                Forms\Components\Section::make('Financial Details')
-                    ->relationship('account')
-                    ->schema([
-                        Forms\Components\Select::make('currency_code')
-                            ->localizeLabel('Currency')
-                            ->relationship('currency', 'name')
-                            ->default(CurrencyAccessor::getDefaultCurrency())
-                            ->preload()
-                            ->searchable()
-                            ->live()
-                            ->afterStateUpdated(static function (Forms\Set $set, $state, $old, Forms\Get $get) {
-                                $starting_balance = CurrencyConverter::convertAndSet($state, $old, $get('starting_balance'));
-
-                                if ($starting_balance !== null) {
-                                    $set('starting_balance', $starting_balance);
-                                }
-                            })
-                            ->required()
-                            ->createOptionForm([
-                                Forms\Components\Select::make('code')
-                                    ->localizeLabel()
+                                Forms\Components\Select::make('currency_code')
+                                    ->localizeLabel('Currency')
+                                    ->relationship('currency', 'name')
+                                    ->default(CurrencyAccessor::getDefaultCurrency())
+                                    ->preload()
                                     ->searchable()
-                                    ->options(CurrencyAccessor::getAvailableCurrencies())
                                     ->live()
-                                    ->afterStateUpdated(static function (callable $set, $state) {
-                                        if ($state === null) {
-                                            return;
-                                        }
+                                    ->required()
+                                    ->createOptionForm([
+                                        Forms\Components\Select::make('code')
+                                            ->localizeLabel()
+                                            ->searchable()
+                                            ->options(CurrencyAccessor::getAvailableCurrencies())
+                                            ->live()
+                                            ->afterStateUpdated(static function (callable $set, $state) {
+                                                if ($state === null) {
+                                                    return;
+                                                }
 
-                                        $currency_code = currency($state);
-                                        $defaultCurrencyCode = currency()->getCurrency();
-                                        $forexEnabled = Forex::isEnabled();
-                                        $exchangeRate = $forexEnabled ? Forex::getCachedExchangeRate($defaultCurrencyCode, $state) : null;
+                                                $currency_code = currency($state);
+                                                $defaultCurrencyCode = currency()->getCurrency();
+                                                $forexEnabled = Forex::isEnabled();
+                                                $exchangeRate = $forexEnabled ? Forex::getCachedExchangeRate($defaultCurrencyCode, $state) : null;
 
-                                        $set('name', $currency_code->getName() ?? '');
+                                                $set('name', $currency_code->getName() ?? '');
 
-                                        if ($forexEnabled && $exchangeRate !== null) {
-                                            $set('rate', $exchangeRate);
-                                        }
+                                                if ($forexEnabled && $exchangeRate !== null) {
+                                                    $set('rate', $exchangeRate);
+                                                }
+                                            })
+                                            ->required(),
+                                        Forms\Components\TextInput::make('name')
+                                            ->localizeLabel()
+                                            ->maxLength(100)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('rate')
+                                            ->localizeLabel()
+                                            ->numeric()
+                                            ->required(),
+                                    ])->createOptionAction(static function (Forms\Components\Actions\Action $action) {
+                                        return $action
+                                            ->label('Add Currency')
+                                            ->slideOver()
+                                            ->modalWidth('md')
+                                            ->action(static function (array $data) {
+                                                return DB::transaction(static function () use ($data) {
+                                                    $code = $data['code'];
+                                                    $name = $data['name'];
+                                                    $rate = $data['rate'];
+
+                                                    return (new CreateCurrency())->create($code, $name, $rate);
+                                                });
+                                            });
+                                    }),
+                            ]),
+                        Forms\Components\Group::make()
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->schema([
+                                Forms\Components\TextInput::make('number')
+                                    ->localizeLabel('Account Number')
+                                    ->unique(ignoreRecord: true, modifyRuleUsing: static function (Unique $rule, $state) {
+                                        $companyId = Auth::user()->currentCompany->id;
+
+                                        return $rule->where('company_id', $companyId)->where('number', $state);
                                     })
+                                    ->maxLength(20)
+                                    ->validationAttribute('account number')
                                     ->required(),
-                                Forms\Components\TextInput::make('name')
-                                    ->localizeLabel()
-                                    ->maxLength(100)
-                                    ->required(),
-                                Forms\Components\TextInput::make('rate')
-                                    ->localizeLabel()
-                                    ->numeric()
-                                    ->required(),
-                            ])->createOptionAction(static function (Forms\Components\Actions\Action $action) {
-                                return $action
-                                    ->label('Add Currency')
-                                    ->slideOver()
-                                    ->modalWidth('md')
-                                    ->action(static function (array $data) {
-                                        return DB::transaction(static function () use ($data) {
-                                            $code = $data['code'];
-                                            $name = $data['name'];
-                                            $rate = $data['rate'];
-
-                                            return (new CreateCurrency())->create($code, $name, $rate);
-                                        });
-                                    });
-                            }),
-                        Forms\Components\TextInput::make('starting_balance')
-                            ->required()
-                            ->localizeLabel()
-                            ->dehydrated()
-                            ->money(static fn (Forms\Get $get) => $get('currency_code')),
+                                ToggleButton::make('enabled')
+                                    ->localizeLabel('Default'),
+                            ]),
                     ])->columns(),
             ]);
     }
@@ -198,10 +192,16 @@ class AccountResource extends Resource
                     ->iconPosition('after')
                     ->description(static fn (BankAccount $record) => $record->mask ?: 'N/A')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('account.ending_balance')
+                Tables\Columns\TextColumn::make('account.code') // Just so I could display the balance in the table for now
                     ->localizeLabel('Current Balance')
                     ->sortable()
-                    ->currency(static fn (BankAccount $record) => $record->account->currency_code, true),
+                    ->formatStateUsing(function (BankAccount $record) {
+                        $accountService = app(AccountService::class);
+                        $startDate = $record->account->company->locale->fiscalYearStartDate();
+                        $endDate = $record->account->company->locale->fiscalYearEndDate();
+
+                        return $accountService->getEndingBalance($record->account, $startDate, $endDate)?->formatted();
+                    }),
             ])
             ->filters([
                 //

@@ -47,8 +47,6 @@ class ConfigureChartOfAccounts
                 $this->createDefaultAccounts($company, $subtype, $subtypeConfig);
             }
         }
-
-        $this->linkCategoriesToAccounts($company);
     }
 
     private function createDefaultAccounts(Company $company, AccountSubtype $subtype, array $subtypeConfig): void
@@ -72,20 +70,6 @@ class ConfigureChartOfAccounts
                     'created_by' => $company->owner->id,
                     'updated_by' => $company->owner->id,
                 ]);
-            }
-        }
-    }
-
-    private function linkCategoriesToAccounts(Company $company): void
-    {
-        $categories = config('chart-of-accounts.category_account_map');
-
-        foreach ($categories as $categoryName => $accountName) {
-            $category = $company->categories()->where('name', $categoryName)->first();
-            $account = $company->accounts()->where('name', $accountName)->first();
-
-            if ($category && $account) {
-                $category->update(['account_id' => $account->id]);
             }
         }
     }

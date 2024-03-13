@@ -2,11 +2,9 @@
 
 namespace Database\Factories\Setting;
 
-use App\Enums\CategoryType;
 use App\Faker\CurrencyCode;
 use App\Models\Company;
 use App\Models\Setting\Appearance;
-use App\Models\Setting\Category;
 use App\Models\Setting\CompanyDefault;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
@@ -46,7 +44,6 @@ class CompanyDefaultFactory extends Factory
 
         $currencyCode = $currencyFaker->currencyCode($country);
 
-        $categories = $this->createCategories($company, $user);
         $currency = $this->createCurrency($company, $user, $currencyCode);
         $salesTax = $this->createSalesTax($company, $user);
         $purchaseTax = $this->createPurchaseTax($company, $user);
@@ -58,8 +55,6 @@ class CompanyDefaultFactory extends Factory
 
         $companyDefaults = [
             'company_id' => $company->id,
-            'income_category_id' => $categories['income_category_id'],
-            'expense_category_id' => $categories['expense_category_id'],
             'currency_code' => $currency->code,
             'sales_tax_id' => $salesTax->id,
             'purchase_tax_id' => $purchaseTax->id,
@@ -70,53 +65,6 @@ class CompanyDefaultFactory extends Factory
         ];
 
         return $this->state($companyDefaults);
-    }
-
-    private function createCategories(Company $company, User $user): array
-    {
-        $incomeCategories = ['Salary', 'Bonus', 'Interest', 'Dividends', 'Rentals'];
-        $expenseCategories = ['Rent', 'Utilities', 'Food', 'Transportation', 'Entertainment'];
-
-        $shuffledCategories = [
-            ...array_map(static fn ($name) => ['name' => $name, 'type' => CategoryType::Income->value], $incomeCategories),
-            ...array_map(static fn ($name) => ['name' => $name, 'type' => CategoryType::Expense->value], $expenseCategories),
-        ];
-
-        shuffle($shuffledCategories);
-
-        $incomeEnabled = $expenseEnabled = false;
-
-        $enabledIncomeCategoryId = null;
-        $enabledExpenseCategoryId = null;
-
-        foreach ($shuffledCategories as $category) {
-            $enabled = false;
-            if (! $incomeEnabled && $category['type'] === CategoryType::Income->value) {
-                $enabled = $incomeEnabled = true;
-            } elseif (! $expenseEnabled && $category['type'] === CategoryType::Expense->value) {
-                $enabled = $expenseEnabled = true;
-            }
-
-            $categoryModel = Category::factory()->create([
-                'company_id' => $company->id,
-                'name' => $category['name'],
-                'type' => $category['type'],
-                'enabled' => $enabled,
-                'created_by' => $user->id,
-                'updated_by' => $user->id,
-            ]);
-
-            if ($enabled && $category['type'] === CategoryType::Income->value) {
-                $enabledIncomeCategoryId = $categoryModel->id;
-            } elseif ($enabled && $category['type'] === CategoryType::Expense->value) {
-                $enabledExpenseCategoryId = $categoryModel->id;
-            }
-        }
-
-        return [
-            'income_category_id' => $enabledIncomeCategoryId,
-            'expense_category_id' => $enabledExpenseCategoryId,
-        ];
     }
 
     private function createCurrency(Company $company, User $user, string $currencyCode)

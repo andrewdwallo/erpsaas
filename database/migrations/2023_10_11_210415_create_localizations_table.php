@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('timezone')->nullable();
             $table->string('date_format')->default(DateFormat::DEFAULT);
             $table->string('time_format')->default(TimeFormat::DEFAULT);
-            $table->date('fiscal_year_start')->default(now()->startOfYear()->toDateString());
-            $table->date('fiscal_year_end')->default(now()->endOfYear()->toDateString());
+            $table->unsignedTinyInteger('fiscal_year_end_month')->default(12);
+            $table->unsignedTinyInteger('fiscal_year_end_day')->default(31);
             $table->unsignedTinyInteger('week_start')->default(WeekStart::DEFAULT);
             $table->string('number_format')->default(NumberFormat::DEFAULT);
             $table->boolean('percent_first')->default(false);

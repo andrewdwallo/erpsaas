@@ -1,6 +1,6 @@
 <div>
     <div class="grid grid-cols-1 gap-4">
-        @forelse($this->connectedInstitutions as $institution) {{-- Group connected accounts by institution --}}
+        @forelse($this->connectedInstitutions as $institution)
             <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <header class="connected-account-header bg-primary-300/10 px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
                     @if($institution->logo_url === null)
@@ -38,7 +38,7 @@
 
                             @if($connectedBankAccount->bankAccount?->account)
                                 <div class="account-balance flex text-base leading-6 text-gray-700 dark:text-gray-200 space-x-1">
-                                    <strong>@money($connectedBankAccount->bankAccount->account->ending_balance, $connectedBankAccount->bankAccount->account->currency_code, true)</strong>
+                                    <strong>{{ $this->getAccountBalance($connectedBankAccount->bankAccount->account) }}</strong>
                                     <p>{{ $connectedBankAccount->bankAccount->account->currency_code }}</p>
                                 </div>
                             @endif

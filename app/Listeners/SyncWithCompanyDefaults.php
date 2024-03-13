@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Enums\CategoryType;
 use App\Enums\DiscountType;
 use App\Enums\TaxType;
 use App\Events\CompanyDefaultEvent;
@@ -58,7 +57,6 @@ class SyncWithCompanyDefaults
         match ($modelName) {
             'Discount' => $this->handleDiscount($default, $type, $model->getKey()),
             'Tax' => $this->handleTax($default, $type, $model->getKey()),
-            'Category' => $this->handleCategory($default, $type, $model->getKey()),
             'Currency' => $default->currency_code = $model->getAttribute('code'),
             'BankAccount' => $default->bank_account_id = $model->getKey(),
             default => null,
@@ -88,18 +86,6 @@ class SyncWithCompanyDefaults
         match (true) {
             $type === TaxType::Sales => $default->sales_tax_id = $key,
             $type === TaxType::Purchase => $default->purchase_tax_id = $key,
-        };
-    }
-
-    private function handleCategory($default, $type, $key): void
-    {
-        if (! in_array($type, [CategoryType::Income, CategoryType::Expense], true)) {
-            return;
-        }
-
-        match (true) {
-            $type === CategoryType::Income => $default->income_category_id = $key,
-            $type === CategoryType::Expense => $default->expense_category_id = $key,
         };
     }
 }

@@ -17,35 +17,25 @@ enum AccountCategory: string implements HasLabel
         return $this->name;
     }
 
-    public function getTypes(): array
+    public function getPluralLabel(): ?string
     {
         return match ($this) {
-            self::Asset => [
-                AccountType::CurrentAsset,
-                AccountType::NonCurrentAsset,
-                AccountType::ContraAsset,
-            ],
-            self::Liability => [
-                AccountType::CurrentLiability,
-                AccountType::NonCurrentLiability,
-                AccountType::ContraLiability,
-            ],
-            self::Equity => [
-                AccountType::Equity,
-                AccountType::ContraEquity,
-            ],
-            self::Revenue => [
-                AccountType::OperatingRevenue,
-                AccountType::NonOperatingRevenue,
-                AccountType::ContraRevenue,
-                AccountType::UncategorizedRevenue,
-            ],
-            self::Expense => [
-                AccountType::OperatingExpense,
-                AccountType::NonOperatingExpense,
-                AccountType::ContraExpense,
-                AccountType::UncategorizedExpense,
-            ],
+            self::Asset => 'Assets',
+            self::Liability => 'Liabilities',
+            self::Equity => 'Equity',
+            self::Revenue => 'Revenue',
+            self::Expense => 'Expenses',
         };
+    }
+
+    public static function fromPluralLabel(string $label): ?self
+    {
+        foreach (self::cases() as $case) {
+            if ($case->getPluralLabel() === $label) {
+                return $case;
+            }
+        }
+
+        return null;
     }
 }

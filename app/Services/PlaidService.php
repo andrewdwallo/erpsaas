@@ -163,22 +163,6 @@ class PlaidService
         return 'US';
     }
 
-    public function createSandboxPublicToken(): object
-    {
-        return $this->createPublicToken('ins_109508', ['auth']);
-    }
-
-    public function createPublicToken(string $institution_id, array $initial_products, array $options = []): object
-    {
-        $data = [
-            'institution_id' => $institution_id,
-            'initial_products' => $initial_products,
-            'options' => (object) $options,
-        ];
-
-        return $this->sendRequest('sandbox/public_token/create', $data);
-    }
-
     public function createToken(string $language, string $country, array $user, array $products = []): object
     {
         $plaidLanguage = $this->getLanguage($language);
@@ -227,21 +211,6 @@ class PlaidService
         return $this->sendRequest('accounts/get', $data);
     }
 
-    public function getAuth($access_token): object
-    {
-        return $this->authGet($access_token);
-    }
-
-    public function authGet(string $access_token, array $options = []): object
-    {
-        $data = [
-            'access_token' => $access_token,
-            'options' => (object) $options,
-        ];
-
-        return $this->sendRequest('auth/get', $data);
-    }
-
     public function getInstitution(string $institution_id, string $country): object
     {
         $options = [
@@ -253,18 +222,6 @@ class PlaidService
         return $this->getInstitutionById($institution_id, [$plaidCountry], $options);
     }
 
-    public function getInstitutions(int $count, int $offset, array $country_codes, array $options = []): object
-    {
-        $data = [
-            'count' => $count,
-            'offset' => $offset,
-            'country_codes' => $country_codes,
-            'options' => (object) $options,
-        ];
-
-        return $this->sendRequest('institutions/get', $data);
-    }
-
     public function getInstitutionById(string $institution_id, array $country_codes, array $options = []): object
     {
         $data = [
@@ -274,21 +231,6 @@ class PlaidService
         ];
 
         return $this->sendRequest('institutions/get_by_id', $data);
-    }
-
-    public function syncTransactions(string $access_token, ?string $cursor = null, int $count = 100, array $options = []): object
-    {
-        $data = [
-            'access_token' => $access_token,
-            'count' => $count,
-            'options' => (object) $options,
-        ];
-
-        if ($cursor !== null) {
-            $data['cursor'] = $cursor;
-        }
-
-        return $this->sendRequest('transactions/sync', $data);
     }
 
     public function getTransactions(string $access_token, string $start_date, string $end_date, array $options = []): object

@@ -33,8 +33,8 @@ class Localization extends Model
         'timezone',
         'date_format',
         'time_format',
-        'fiscal_year_start',
-        'fiscal_year_end',
+        'fiscal_year_end_month',
+        'fiscal_year_end_day',
         'week_start',
         'number_format',
         'percent_first',
@@ -45,8 +45,8 @@ class Localization extends Model
     protected $casts = [
         'date_format' => DateFormat::class,
         'time_format' => TimeFormat::class,
-        'fiscal_year_start' => 'date',
-        'fiscal_year_end' => 'date',
+        'fiscal_year_end_month' => 'integer',
+        'fiscal_year_end_day' => 'integer',
         'week_start' => WeekStart::class,
         'number_format' => NumberFormat::class,
     ];
@@ -96,6 +96,23 @@ class Localization extends Model
         $formattedPercent = $formatter->format($test);
 
         return strpos($formattedPercent, '%') < strpos($formattedPercent, $test);
+    }
+
+    public function fiscalYearStartDate(): string
+    {
+        return Carbon::parse($this->fiscalYearEndDate())->subYear()->addDay()->toDateString();
+    }
+
+    public function fiscalYearEndDate(): string
+    {
+        $today = now();
+        $fiscalYearEndThisYear = Carbon::createFromDate($today->year, $this->fiscal_year_end_month, $this->fiscal_year_end_day);
+
+        if ($today->gt($fiscalYearEndThisYear)) {
+            return $fiscalYearEndThisYear->copy()->addYear()->toDateString();
+        }
+
+        return $fiscalYearEndThisYear->toDateString();
     }
 
     public function getDateTimeFormatAttribute(): string

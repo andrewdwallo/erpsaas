@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Enums\CategoryType;
 use App\Models\Company;
 use App\Models\Setting\Appearance;
-use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Discount;
 use App\Models\Setting\DocumentDefault;
@@ -19,7 +17,6 @@ class CompanyDefaultService
     public function createCompanyDefaults(Company $company, User $user, string $currencyCode, string $countryCode, string $language): void
     {
         DB::transaction(function () use ($company, $user, $currencyCode, $countryCode, $language) {
-            $this->createCategories($company, $user);
             $this->createCurrency($company, $user, $currencyCode);
             $this->createSalesTax($company, $user);
             $this->createPurchaseTax($company, $user);
@@ -29,48 +26,6 @@ class CompanyDefaultService
             $this->createDocumentDefaults($company, $user);
             $this->createLocalization($company, $user, $countryCode, $language);
         }, 5);
-    }
-
-    private function createCategories(Company $company, User $user): void
-    {
-        $incomeCategories = ['Dividends', 'Interest Earned', 'Wages', 'Sales', 'Other Income'];
-        $expenseCategories = ['Rent or Mortgage', 'Utilities', 'Groceries', 'Transportation', 'Other Expense'];
-        $otherCategories = ['Transfer', 'Other'];
-
-        $defaultIncomeCategory = 'Sales';
-        $defaultExpenseCategory = 'Rent or Mortgage';
-
-        $this->createCategory($company, $user, $defaultIncomeCategory, CategoryType::Income, true);
-        $this->createCategory($company, $user, $defaultExpenseCategory, CategoryType::Expense, true);
-
-        foreach ($incomeCategories as $incomeCategory) {
-            if ($incomeCategory !== $defaultIncomeCategory) {
-                $this->createCategory($company, $user, $incomeCategory, CategoryType::Income);
-            }
-        }
-
-        foreach ($expenseCategories as $expenseCategory) {
-            if ($expenseCategory !== $defaultExpenseCategory) {
-                $this->createCategory($company, $user, $expenseCategory, CategoryType::Expense);
-            }
-        }
-
-        foreach ($otherCategories as $otherCategory) {
-            $this->createCategory($company, $user, $otherCategory, CategoryType::Other);
-        }
-
-    }
-
-    private function createCategory(Company $company, User $user, string $name, CategoryType $type, bool $enabled = false): void
-    {
-        Category::factory()->create([
-            'company_id' => $company->id,
-            'name' => $name,
-            'type' => $type,
-            'enabled' => $enabled,
-            'created_by' => $user->id,
-            'updated_by' => $user->id,
-        ]);
     }
 
     private function createCurrency(Company $company, User $user, string $currencyCode): void

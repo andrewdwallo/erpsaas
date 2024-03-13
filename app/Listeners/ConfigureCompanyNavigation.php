@@ -12,7 +12,6 @@ use App\Filament\Company\Pages\Setting\Invoice;
 use App\Filament\Company\Pages\Setting\Localization;
 use App\Filament\Company\Resources\Banking\AccountResource;
 use App\Filament\Company\Resources\Core\DepartmentResource;
-use App\Filament\Company\Resources\Setting\CategoryResource;
 use App\Filament\Company\Resources\Setting\CurrencyResource;
 use App\Filament\Company\Resources\Setting\DiscountResource;
 use App\Filament\Company\Resources\Setting\TaxResource;
@@ -69,7 +68,6 @@ class ConfigureCompanyNavigation
     {
         return NavigationGroup::make('Settings')
             ->items([
-                ...CategoryResource::getNavigationItems(),
                 ...CurrencyResource::getNavigationItems(),
                 ...DiscountResource::getNavigationItems(),
                 ...TaxResource::getNavigationItems(),

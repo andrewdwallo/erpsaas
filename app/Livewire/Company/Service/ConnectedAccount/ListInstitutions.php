@@ -4,10 +4,12 @@ namespace App\Livewire\Company\Service\ConnectedAccount;
 
 use App\Events\PlaidSuccess;
 use App\Events\StartTransactionImport;
+use App\Models\Accounting\Account;
 use App\Models\Banking\BankAccount;
 use App\Models\Banking\ConnectedBankAccount;
 use App\Models\Banking\Institution;
 use App\Models\User;
+use App\Services\AccountService;
 use App\Services\PlaidService;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -36,13 +38,16 @@ class ListInstitutions extends Component implements HasActions, HasForms
 
     protected PlaidService $plaidService;
 
+    protected AccountService $accountService;
+
     public User $user;
 
     public string $modalWidth;
 
-    public function boot(PlaidService $plaidService): void
+    public function boot(PlaidService $plaidService, AccountService $accountService): void
     {
         $this->plaidService = $plaidService;
+        $this->accountService = $accountService;
     }
 
     public function mount(): void
@@ -55,6 +60,15 @@ class ListInstitutions extends Component implements HasActions, HasForms
     {
         return Institution::withWhereHas('connectedBankAccounts')
             ->get();
+    }
+
+    public function getAccountBalance(Account $account): ?string
+    {
+        $company = $account->company;
+        $startDate = $company->locale->fiscalYearStartDate();
+        $endDate = $company->locale->fiscalYearEndDate();
+
+        return $this->accountService->getEndingBalance($account, $startDate, $endDate)?->formatted();
     }
 
     public function startImportingTransactions(): Action

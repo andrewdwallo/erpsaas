@@ -3,6 +3,22 @@
 
 @config './tailwind.config.js';
 
+.es-report-card {
+    @apply md:!grid-cols-2;
+
+    .fi-fo-component-ctn {
+        @apply divide-y divide-gray-200 dark:divide-white/10 !gap-0;
+    }
+
+    .fi-section-content-ctn {
+        @apply md:!col-span-1;
+    }
+
+    .fi-section-content {
+        @apply !p-0;
+    }
+}
+
 .choices:focus-visible {
     outline: none;
 }

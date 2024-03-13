@@ -10,7 +10,6 @@ use App\Models\Common\Contact;
 use App\Models\Core\Department;
 use App\Models\History\AccountHistory;
 use App\Models\Setting\Appearance;
-use App\Models\Setting\Category;
 use App\Models\Setting\CompanyDefault;
 use App\Models\Setting\CompanyProfile;
 use App\Models\Setting\Currency;
@@ -91,11 +90,6 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
         return $this->hasOne(Appearance::class, 'company_id');
     }
 
-    public function categories(): HasMany
-    {
-        return $this->hasMany(Category::class, 'company_id');
-    }
-
     public function accountSubtypes(): HasMany
     {
         return $this->hasMany(AccountSubtype::class, 'company_id');
@@ -152,5 +146,10 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
     public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class, 'company_id');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Accounting\Transaction::class, 'company_id');
     }
 }

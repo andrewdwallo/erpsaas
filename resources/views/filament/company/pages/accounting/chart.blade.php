@@ -47,26 +47,33 @@
 
                                 <!-- Chart Rows -->
                                 @forelse($subtype->accounts as $account)
-                                <tr class="es-table__row">
-                                    <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->code }}</td>
-                                    <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->name }}</td>
-                                    <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->description }}</td>
-                                    <td colspan="1" class="es-table__cell px-4 py-4">@money($account->ending_balance, $account->currency_code, true)</td>
-                                    <td colspan="1" class="es-table__cell px-4 py-4">
-                                        <div>
-                                            @if($account->default === false)
-                                                {{ ($this->editChartAction)(['chart' => $account->id]) }}
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
+                                    @php
+                                        $accountBalance = $this->getAccountBalance($account);
+                                    @endphp
+                                    <tr class="es-table__row">
+                                        <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->code }}</td>
+                                        <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->name }}</td>
+                                        <td colspan="{{ $accountBalance === null ? '2' : '1' }}" class="es-table__cell px-4 py-4">{{ $account->description }}</td>
+                                        @if($accountBalance !== null)
+                                            <td colspan="1" class="es-table__cell px-4 py-4">
+                                                {{ $accountBalance }}
+                                            </td>
+                                        @endif
+                                        <td colspan="1" class="es-table__cell px-4 py-4">
+                                            <div>
+                                                @if($account->default === false)
+                                                    {{ ($this->editChartAction)(['chart' => $account->id]) }}
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <!-- No Accounts Available Row -->
-                                <tr class="es-table__row">
-                                    <td colspan="5" class="es-table__cell px-4 py-4 italic">
-                                        {{ __("You haven't added any {$subtype->name} accounts yet.") }}
-                                    </td>
-                                </tr>
+                                    <!-- No Accounts Available Row -->
+                                    <tr class="es-table__row">
+                                        <td colspan="5" class="es-table__cell px-4 py-4 italic">
+                                            {{ __("You haven't added any {$subtype->name} accounts yet.") }}
+                                        </td>
+                                    </tr>
                                 @endforelse
 
                                 <!-- Add New Account Row -->

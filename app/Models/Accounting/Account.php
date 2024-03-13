@@ -2,10 +2,8 @@
 
 namespace App\Models\Accounting;
 
-use App\Casts\MoneyCast;
 use App\Enums\Accounting\AccountCategory;
 use App\Enums\Accounting\AccountType;
-use App\Models\Setting\Category;
 use App\Models\Setting\Currency;
 use App\Observers\AccountObserver;
 use App\Traits\Blamable;
@@ -17,7 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
@@ -39,11 +36,6 @@ class Account extends Model
         'code',
         'name',
         'currency_code',
-        'starting_balance',
-        'debit_balance',
-        'credit_balance',
-        'net_movement',
-        'ending_balance',
         'description',
         'active',
         'default',
@@ -56,11 +48,6 @@ class Account extends Model
     protected $casts = [
         'category' => AccountCategory::class,
         'type' => AccountType::class,
-        'starting_balance' => MoneyCast::class,
-        'debit_balance' => MoneyCast::class,
-        'credit_balance' => MoneyCast::class,
-        'net_movement' => MoneyCast::class,
-        'ending_balance' => MoneyCast::class,
         'active' => 'boolean',
         'default' => 'boolean',
     ];
@@ -68,11 +55,6 @@ class Account extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(FilamentCompanies::companyModel(), 'company_id');
-    }
-
-    public function categories(): HasMany
-    {
-        return $this->hasMany(Category::class, 'account_id');
     }
 
     public function subtype(): BelongsTo
@@ -111,16 +93,9 @@ class Account extends Model
         return $this->morphTo();
     }
 
-    public function transactions(): HasManyThrough
+    public function transactions(): HasMany
     {
-        return $this->hasManyThrough(
-            Transaction::class,
-            JournalEntry::class,
-            'account_id',
-            'id',
-            'id',
-            'transaction_id',
-        );
+        return $this->hasMany(Transaction::class, 'account_id');
     }
 
     public function journalEntries(): HasMany

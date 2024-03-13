@@ -409,16 +409,4 @@ return [
             ],
         ],
     ],
-    'category_account_map' => [
-        'Dividends' => 'Dividends',
-        'Interest Earned' => 'Interest Earned',
-        'Wages' => 'Salaries and Wages',
-        'Sales' => 'Product Sales',
-        'Other Income' => 'Uncategorized Income',
-        'Rent or Mortgage' => 'Rent or Lease Payments',
-        'Utilities' => 'Utilities',
-        'Groceries' => 'Food and Drink',
-        'Transportation' => 'Transportation',
-        'Other Expenses' => 'Uncategorized Expense',
-    ],
 ];

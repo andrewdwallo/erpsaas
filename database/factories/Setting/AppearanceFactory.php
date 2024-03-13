@@ -2,10 +2,11 @@
 
 namespace Database\Factories\Setting;
 
+use App\Models\Setting\Appearance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Setting\Appearance>
+ * @extends Factory<Appearance>
  */
 class AppearanceFactory extends Factory
 {
