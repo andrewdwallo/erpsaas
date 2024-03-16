@@ -43,11 +43,7 @@ class Invoice extends Page
 {
     use InteractsWithFormActions;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-duplicate';
-
     protected static ?string $title = 'Invoice';
-
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/invoice';
 

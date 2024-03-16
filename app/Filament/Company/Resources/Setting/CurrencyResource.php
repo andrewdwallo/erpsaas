@@ -4,7 +4,6 @@ namespace App\Filament\Company\Resources\Setting;
 
 use App\Facades\Forex;
 use App\Filament\Company\Resources\Setting\CurrencyResource\Pages;
-use App\Models\Banking\Account;
 use App\Models\Setting\Currency;
 use App\Models\Setting\Currency as CurrencyModel;
 use App\Traits\ChecksForeignKeyConstraints;
@@ -29,10 +28,6 @@ class CurrencyResource extends Resource
     protected static ?string $model = CurrencyModel::class;
 
     protected static ?string $modelLabel = 'Currency';
-
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/currencies';
 

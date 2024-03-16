@@ -35,11 +35,7 @@ class Appearance extends Page
 {
     use InteractsWithFormActions;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
-
     protected static ?string $title = 'Appearance';
-
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/appearance';
 

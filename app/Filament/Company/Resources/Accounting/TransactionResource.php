@@ -3,6 +3,7 @@
 namespace App\Filament\Company\Resources\Accounting;
 
 use App\Enums\Accounting\AccountCategory;
+use App\Enums\Accounting\AccountType;
 use App\Enums\DateFormat;
 use App\Filament\Company\Resources\Accounting\TransactionResource\Pages;
 use App\Models\Accounting\Account;
@@ -12,6 +13,7 @@ use App\Models\Setting\Localization;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
@@ -23,7 +25,7 @@ class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel = 'Transaction';
 
     public static function form(Form $form): Form
     {
@@ -32,60 +34,31 @@ class TransactionResource extends Resource
                 Forms\Components\DatePicker::make('posted_at')
                     ->label('Date')
                     ->required()
-                    ->displayFormat('Y-m-d')
-                    ->default(now()->format('Y-m-d')),
+                    ->displayFormat('Y-m-d'),
                 Forms\Components\TextInput::make('description')
                     ->label('Description'),
                 Forms\Components\Select::make('bank_account_id')
                     ->label('Account')
-                    ->options(fn () => static::getBankAccountOptions())
+                    ->options(static fn () => static::getBankAccountOptions())
                     ->live()
                     ->searchable()
-                    ->preload()
                     ->required(),
-                Forms\Components\Select::make('method')
+                Forms\Components\Select::make('type')
                     ->label('Type')
                     ->live()
                     ->options([
                         'deposit' => 'Deposit',
                         'withdrawal' => 'Withdrawal',
                     ])
-                    ->default('deposit')
-                    ->afterStateUpdated(static function (Forms\Set $set, $state) {
-                        if ($state === 'deposit') {
-                            $account = Account::where('category', AccountCategory::Revenue)
-                                ->where('name', 'Uncategorized Income')->first();
-
-                            if ($account->exists()) {
-                                $set('account_id', $account->id);
-                            }
-                        } else {
-                            $account = Account::where('category', AccountCategory::Expense)
-                                ->where('name', 'Uncategorized Expense')->first();
-
-                            if ($account->exists()) {
-                                $set('account_id', $account->id);
-                            }
-                        }
-                    })
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(static fn (Forms\Set $set, $state) => $set('account_id', Pages\ManageTransaction::getUncategorizedAccountByType($state)?->id)),
                 Forms\Components\TextInput::make('amount')
                     ->label('Amount')
-                    ->money(static function (Forms\Get $get) {
-                        $bankAccount = $get('bank_account_id');
-                        $bankAccount = BankAccount::find($bankAccount);
-                        $account = $bankAccount->account ?? null;
-
-                        if ($account) {
-                            return $account->currency_code;
-                        }
-
-                        return 'USD';
-                    })
+                    ->money(static fn (Forms\Get $get) => BankAccount::find($get('bank_account_id'))?->account?->currency_code ?? 'USD')
                     ->required(),
                 Forms\Components\Select::make('account_id')
                     ->label('Category')
-                    ->options(static fn (Forms\Get $get) => static::getAccountOptions($get('method')))
+                    ->options(static fn (Forms\Get $get) => static::getAccountOptions($get('type')))
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -109,47 +82,77 @@ class TransactionResource extends Resource
 
                         return Carbon::parse($state)->translatedFormat($dateFormat);
                     }),
+                Tables\Columns\TextColumn::make('description')
+                    ->limit(30)
+                    ->label('Description'),
                 Tables\Columns\TextColumn::make('bankAccount.account.name')
                     ->label('Account')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->limit(50)
-                    ->label('Description'),
                 Tables\Columns\TextColumn::make('account.name')
                     ->label('Category'),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Amount')
                     ->sortable()
-                    ->weight(FontWeight::Medium)
-                    ->color(static fn (Transaction $record) => $record->type === 'expense' ? 'danger' : null)
+                    ->weight(static fn (Transaction $record) => $record->reviewed ? null : FontWeight::SemiBold)
+                    ->color(static fn (Transaction $record) => $record->type === 'deposit' ? Color::rgb('rgb(' . Color::Green[700] . ')') : null)
                     ->currency(static fn (Transaction $record) => $record->bankAccount->account->currency_code ?? 'USD', true),
             ])
+            ->recordClasses(static fn (Transaction $record) => $record->reviewed ? 'bg-primary-300/10' : null)
             ->defaultSort('posted_at', 'desc')
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->modalWidth(MaxWidth::ThreeExtraLarge)
-                    ->stickyModalHeader()
-                    ->stickyModalFooter()
-                    ->mutateFormDataUsing(static function (array $data): array {
-                        $method = $data['method'];
-
-                        if ($method === 'deposit') {
-                            $data['type'] = 'income';
-                        } else {
-                            $data['type'] = 'expense';
-                        }
-
-                        return $data;
-                    }),
+                Tables\Actions\Action::make('markAsReviewed')
+                    ->label('Mark as Reviewed')
+                    ->view('filament.company.components.tables.actions.mark-as-reviewed')
+                    ->icon(static fn (Transaction $record) => $record->reviewed ? 'heroicon-s-check-circle' : 'heroicon-o-check-circle')
+                    ->color(static fn (Transaction $record, Tables\Actions\Action $action) => match (static::determineTransactionState($record, $action)) {
+                        'reviewed' => 'primary',
+                        'unreviewed' => Color::rgb('rgb(' . Color::Gray[600] . ')'),
+                        'uncategorized' => 'gray',
+                    })
+                    ->tooltip(static fn (Transaction $record, Tables\Actions\Action $action) => match (static::determineTransactionState($record, $action)) {
+                        'reviewed' => 'Reviewed',
+                        'unreviewed' => 'Mark as Reviewed',
+                        'uncategorized' => 'Categorize first to mark as reviewed',
+                    })
+                    ->disabled(static fn (Transaction $record) => in_array($record->account->type, [AccountType::UncategorizedRevenue, AccountType::UncategorizedExpense], true))
+                    ->action(fn (Transaction $record) => $record->update(['reviewed' => ! $record->reviewed])),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->modalWidth(MaxWidth::ThreeExtraLarge)
+                        ->stickyModalHeader()
+                        ->stickyModalFooter(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ReplicateAction::make()
+                        ->excludeAttributes(['created_by', 'updated_by', 'created_at', 'updated_at'])
+                        ->modal(false)
+                        ->beforeReplicaSaved(static function (Transaction $replica) {
+                            $replica->description = '(Copy of) ' . $replica->description;
+                        }),
+                ])
+                    ->dropdownPlacement('bottom-start')
+                    ->dropdownWidth('max-w-fit'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    protected static function determineTransactionState(Transaction $record, Tables\Actions\Action $action): string
+    {
+        if ($record->reviewed) {
+            return 'reviewed';
+        }
+
+        if ($record->reviewed === false && $action->isEnabled()) {
+            return 'unreviewed';
+        }
+
+        return 'uncategorized';
     }
 
     public static function getRelations(): array
@@ -175,9 +178,9 @@ class TransactionResource extends Resource
             ->toArray();
     }
 
-    public static function getAccountOptions(mixed $method)
+    public static function getAccountOptions(string $type)
     {
-        $excludedCategory = match ($method) {
+        $excludedCategory = match ($type) {
             'deposit' => AccountCategory::Expense,
             'withdrawal' => AccountCategory::Revenue,
         };
@@ -185,7 +188,7 @@ class TransactionResource extends Resource
         $accounts = Account::whereNot('category', $excludedCategory)->get();
 
         return $accounts->groupBy(fn (Account $account) => $account->category->getLabel())
-            ->map(fn (Collection $accounts, string $category) => $accounts->mapWithKeys(fn (Account $account) => [$account->id => $account->name]))
+            ->map(fn (Collection $accounts, string $category) => $accounts->mapWithKeys(static fn (Account $account) => [$account->id => $account->name]))
             ->toArray();
     }
 }

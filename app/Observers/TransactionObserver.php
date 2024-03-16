@@ -17,8 +17,8 @@ class TransactionObserver
         $chartAccount = $transaction->account;
         $bankAccount = $transaction->bankAccount->account;
 
-        $debitAccount = $transaction->type === 'expense' ? $chartAccount : $bankAccount;
-        $creditAccount = $transaction->type === 'expense' ? $bankAccount : $chartAccount;
+        $debitAccount = $transaction->type === 'withdrawal' ? $chartAccount : $bankAccount;
+        $creditAccount = $transaction->type === 'withdrawal' ? $bankAccount : $chartAccount;
 
         $this->createJournalEntries($transaction, $debitAccount, $creditAccount);
     }
@@ -63,8 +63,8 @@ class TransactionObserver
         $debitEntry = $journalEntries->where('type', 'debit')->first();
         $creditEntry = $journalEntries->where('type', 'credit')->first();
 
-        $debitAccount = $transaction->type === 'expense' ? $chartAccount : $bankAccount;
-        $creditAccount = $transaction->type === 'expense' ? $bankAccount : $chartAccount;
+        $debitAccount = $transaction->type === 'withdrawal' ? $chartAccount : $bankAccount;
+        $creditAccount = $transaction->type === 'withdrawal' ? $bankAccount : $chartAccount;
 
         $debitEntry?->update([
             'account_id' => $debitAccount->id,

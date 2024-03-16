@@ -29,8 +29,7 @@ class Transaction extends Model
         'account_id', // Account from Chart of Accounts (Income/Expense accounts)
         'bank_account_id', // Cash or Bank Account
         'contact_id',
-        'type',
-        'method',
+        'type', // 'deposit', 'withdrawal', 'journal entry'
         'payment_channel',
         'description',
         'notes',

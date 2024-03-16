@@ -69,11 +69,7 @@ class AccountBalances extends Page
 
     public function loadAccountBalances(): void
     {
-        $startTime = microtime(true);
         $this->accountBalanceReport = $this->accountService->buildAccountBalanceReport($this->startDate, $this->endDate);
-        $endTime = microtime(true);
-        $executionTime = ($endTime - $startTime);
-        info('Account balance report loaded in ' . $executionTime . ' seconds');
     }
 
     protected function getHeaderActions(): array
@@ -109,7 +105,7 @@ class AccountBalances extends Page
             'accountBalanceReport' => $this->accountBalanceReport,
             'startDate' => Carbon::parse($this->startDate)->format('M d, Y'),
             'endDate' => Carbon::parse($this->endDate)->format('M d, Y'),
-        ])->setPaper('a4')->setOption(['defaultFont' => 'sans-serif', 'isPhpEnabled' => true]);
+        ])->setPaper('a4');
 
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->stream();
@@ -206,6 +202,7 @@ class AccountBalances extends Page
             'Y' => $this->processCalendarYear($param1),
             'Q' => $this->processCalendarQuarter($param1, $param2),
             'M' => $this->processMonth("{$param1}-{$param2}"),
+            'Custom' => null,
         };
     }
 

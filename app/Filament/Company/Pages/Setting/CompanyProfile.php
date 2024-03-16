@@ -39,11 +39,7 @@ class CompanyProfile extends Page
 {
     use InteractsWithFormActions;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
-
     protected static ?string $title = 'Company Profile';
-
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/company-profile';
 

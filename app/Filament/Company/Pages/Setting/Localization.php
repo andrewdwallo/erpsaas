@@ -38,11 +38,7 @@ class Localization extends Page
 {
     use InteractsWithFormActions;
 
-    protected static ?string $navigationIcon = 'heroicon-o-language';
-
     protected static ?string $title = 'Localization';
-
-    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $slug = 'settings/localization';
 

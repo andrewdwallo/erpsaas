@@ -33,10 +33,6 @@ class AccountResource extends Resource
 
     protected static ?string $modelLabel = 'Account';
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-
-    protected static ?string $navigationGroup = 'Banking';
-
     public static function getModelLabel(): string
     {
         $modelLabel = static::$modelLabel;

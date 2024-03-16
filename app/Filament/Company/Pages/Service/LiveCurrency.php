@@ -12,11 +12,7 @@ use Livewire\Attributes\Url;
 
 class LiveCurrency extends Page
 {
-    protected static ?string $navigationIcon = 'icon-currency-exchange';
-
     protected static ?string $title = 'Live Currency';
-
-    protected static ?string $navigationGroup = 'Services';
 
     protected static ?string $slug = 'services/live-currency';
 

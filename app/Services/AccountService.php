@@ -39,8 +39,8 @@ class AccountService
 
     public function getNetMovement(Account $account, string $startDate, string $endDate): BalanceValue
     {
-        $debitBalance = $this->getDebitBalance($account, $startDate, $endDate)->getValue();
-        $creditBalance = $this->getCreditBalance($account, $startDate, $endDate)->getValue();
+        $debitBalance = $this->journalEntryRepository->sumDebitAmounts($account, $startDate, $endDate);
+        $creditBalance = $this->journalEntryRepository->sumCreditAmounts($account, $startDate, $endDate);
         $netMovement = $this->calculateNetMovementByCategory($account->category, $debitBalance, $creditBalance);
 
         return new BalanceValue($netMovement, $account->currency_code ?? 'USD');

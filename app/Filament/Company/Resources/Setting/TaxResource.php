@@ -26,10 +26,6 @@ class TaxResource extends Resource
 
     protected static ?string $modelLabel = 'Tax';
 
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-
-    protected static ?string $navigationGroup = 'Settings';
-
     protected static ?string $slug = 'settings/taxes';
 
     public static function getModelLabel(): string

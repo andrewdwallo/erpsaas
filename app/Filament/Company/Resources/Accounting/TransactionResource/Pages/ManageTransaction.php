@@ -17,56 +17,46 @@ class ManageTransaction extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make('addIncome')
-                ->label('Add Income')
-                ->modalWidth(MaxWidth::ThreeExtraLarge)
-                ->stickyModalHeader()
-                ->stickyModalFooter()
-                ->button()
-                ->outlined()
-                ->fillForm(static fn (): array => [
-                    'method' => 'deposit',
-                    'posted_at' => now()->format('Y-m-d'),
-                    'bank_account_id' => BankAccount::first()->isEnabled() ? BankAccount::first()->id : null,
-                    'amount' => '0.00',
-                    'account_id' => Account::where('category', AccountCategory::Revenue)->where('name', 'Uncategorized Income')->first()->id,
-                ])
-                ->mutateFormDataUsing(function (array $data): array {
-                    $method = $data['method'];
-
-                    if ($method === 'deposit') {
-                        $data['type'] = 'income';
-                    } else {
-                        $data['type'] = 'expense';
-                    }
-
-                    return $data;
-                }),
-            Actions\CreateAction::make('addExpense')
-                ->label('Add Expense')
-                ->modalWidth(MaxWidth::ThreeExtraLarge)
-                ->stickyModalHeader()
-                ->stickyModalFooter()
-                ->button()
-                ->outlined()
-                ->fillForm(static fn (): array => [
-                    'method' => 'withdrawal',
-                    'posted_at' => now()->format('Y-m-d'),
-                    'bank_account_id' => BankAccount::first()->isEnabled() ? BankAccount::first()->id : null,
-                    'amount' => '0.00',
-                    'account_id' => Account::where('category', AccountCategory::Expense)->where('name', 'Uncategorized Expense')->first()->id,
-                ])
-                ->mutateFormDataUsing(function (array $data): array {
-                    $method = $data['method'];
-
-                    if ($method === 'deposit') {
-                        $data['type'] = 'income';
-                    } else {
-                        $data['type'] = 'expense';
-                    }
-
-                    return $data;
-                }),
+            $this->createAction(
+                name: 'addIncome',
+                label: 'Add Income',
+                type: 'deposit',
+            ),
+            $this->createAction(
+                name: 'addExpense',
+                label: 'Add Expense',
+                type: 'withdrawal',
+            ),
         ];
+    }
+
+    protected function createAction(string $name, string $label, string $type): Actions\CreateAction
+    {
+        return Actions\CreateAction::make($name)
+            ->label($label)
+            ->modalWidth(MaxWidth::ThreeExtraLarge)
+            ->stickyModalHeader()
+            ->stickyModalFooter()
+            ->button()
+            ->outlined()
+            ->fillForm(static fn (): array => [
+                'type' => $type,
+                'posted_at' => now()->format('Y-m-d'),
+                'bank_account_id' => BankAccount::where('enabled', true)->first()->id ?? null,
+                'amount' => '0.00',
+                'account_id' => static::getUncategorizedAccountByType($type)?->id,
+            ]);
+    }
+
+    public static function getUncategorizedAccountByType(string $type): ?Account
+    {
+        [$category, $accountName] = match ($type) {
+            'deposit' => [AccountCategory::Revenue, 'Uncategorized Income'],
+            'withdrawal' => [AccountCategory::Expense, 'Uncategorized Expense'],
+        };
+
+        return Account::where('category', $category)
+            ->where('name', $accountName)
+            ->first();
     }
 }

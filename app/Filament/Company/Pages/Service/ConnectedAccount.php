@@ -10,11 +10,7 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class ConnectedAccount extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-building-library';
-
     protected static ?string $title = 'Connected Accounts';
-
-    protected static ?string $navigationGroup = 'Services';
 
     protected static ?string $slug = 'services/connected-accounts';
 

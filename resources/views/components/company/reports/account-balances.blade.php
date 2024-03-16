@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Account Balances</title>
     <style>
         @page {
-            margin: 0.25in 0.25in 1in 0.25in;
+            size: A4;
+            margin: 8.5mm 8.5mm 30mm 8.5mm;
         }
 
         .header {
@@ -122,15 +124,4 @@
             </tr>
         </tfoot>
     </table>
-    <script type="text/php">
-        if (isset($pdf)) {
-            $font = $fontMetrics->getFont("Inter, sans-serif", "normal");
-            $size = 8;
-
-            $pageText = "Page {PAGE_NUM} of {PAGE_COUNT}";
-            $x = 533;
-            $y = 820;
-            $pdf->page_text($x, $y, $pageText, $font, $size);
-        }
-    </script>
 </body>

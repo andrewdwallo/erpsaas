@@ -19,10 +19,6 @@ class DepartmentResource extends Resource
 
     protected static ?string $modelLabel = 'Department';
 
-    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
-
-    protected static ?string $navigationGroup = 'HR';
-
     protected static ?string $slug = 'hr/departments';
 
     public static function getModelLabel(): string

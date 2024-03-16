@@ -26,11 +26,7 @@ use Livewire\Attributes\Url;
 
 class AccountChart extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-
     protected static ?string $title = 'Chart of Accounts';
-
-    protected static ?string $navigationGroup = 'Accounting';
 
     protected static ?string $slug = 'accounting/chart';
 

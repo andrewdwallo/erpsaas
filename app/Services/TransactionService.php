@@ -39,7 +39,7 @@ class TransactionService
 
     public function createStartingBalanceTransaction(Company $company, Account $account, BankAccount $bankAccount, float $startingBalance, string $startDate): void
     {
-        [$transactionType, $method] = $startingBalance >= 0 ? ['income', 'deposit'] : ['expense', 'withdrawal'];
+        $transactionType = $startingBalance >= 0 ? 'deposit' : 'withdrawal';
         $chartAccount = $account->where('category', AccountCategory::Equity)->where('name', 'Owner\'s Equity')->first();
         $postedAt = Carbon::parse($startDate)->subDay()->toDateTimeString();
 
@@ -49,7 +49,6 @@ class TransactionService
             'bank_account_id' => $bankAccount->id,
             'type' => $transactionType,
             'amount' => abs($startingBalance),
-            'method' => $method,
             'payment_channel' => 'other',
             'posted_at' => $postedAt,
             'description' => 'Starting Balance',
@@ -60,7 +59,7 @@ class TransactionService
 
     public function storeTransaction(Company $company, BankAccount $bankAccount, object $transaction): void
     {
-        [$transactionType, $method] = $transaction->amount < 0 ? ['income', 'deposit'] : ['expense', 'withdrawal'];
+        $transactionType = $transaction->amount < 0 ? 'deposit' : 'withdrawal';
         $paymentChannel = $transaction->payment_channel;
         $chartAccount = $this->getAccountFromTransaction($company, $transaction, $transactionType);
         $postedAt = $transaction->datetime ?? Carbon::parse($transaction->date)->toDateTimeString();
@@ -72,7 +71,6 @@ class TransactionService
             'bank_account_id' => $bankAccount->id,
             'type' => $transactionType,
             'amount' => abs($transaction->amount),
-            'method' => $method,
             'payment_channel' => $paymentChannel,
             'posted_at' => $postedAt,
             'description' => $description,
@@ -84,8 +82,8 @@ class TransactionService
     public function getAccountFromTransaction(Company $company, object $transaction, string $transactionType): Account
     {
         $accountCategory = match ($transactionType) {
-            'income' => AccountCategory::Revenue,
-            'expense' => AccountCategory::Expense,
+            'deposit' => AccountCategory::Revenue,
+            'withdrawal' => AccountCategory::Expense,
         };
 
         $accounts = $company->accounts()
@@ -132,8 +130,8 @@ class TransactionService
     public function getUncategorizedAccount(Company $company, string $transactionType): Account
     {
         [$type, $name] = match ($transactionType) {
-            'income' => [AccountType::UncategorizedRevenue, 'Uncategorized Income'],
-            'expense' => [AccountType::UncategorizedExpense, 'Uncategorized Expense'],
+            'deposit' => [AccountType::UncategorizedRevenue, 'Uncategorized Income'],
+            'withdrawal' => [AccountType::UncategorizedExpense, 'Uncategorized Expense'],
         };
 
         return $company->accounts()

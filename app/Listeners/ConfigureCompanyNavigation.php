@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\CompanyConfigured;
+use App\Filament\Company\Pages\Accounting\AccountChart;
+use App\Filament\Company\Pages\Reports;
 use App\Filament\Company\Pages\Service\ConnectedAccount;
 use App\Filament\Company\Pages\Service\LiveCurrency;
 use App\Filament\Company\Pages\Setting\Appearance;
@@ -10,6 +12,7 @@ use App\Filament\Company\Pages\Setting\CompanyDefault;
 use App\Filament\Company\Pages\Setting\CompanyProfile;
 use App\Filament\Company\Pages\Setting\Invoice;
 use App\Filament\Company\Pages\Setting\Localization;
+use App\Filament\Company\Resources\Accounting\TransactionResource;
 use App\Filament\Company\Resources\Banking\AccountResource;
 use App\Filament\Company\Resources\Core\DepartmentResource;
 use App\Filament\Company\Resources\Setting\CurrencyResource;
@@ -38,6 +41,10 @@ class ConfigureCompanyNavigation
         if (Filament::getPanel('company')->hasTopNavigation()) {
             Filament::getPanel('company')->navigation(
                 $this->buildCompanyNavigation()
+            );
+        } else {
+            Filament::getPanel('company')->navigation(
+                $this->buildCompanySidebarNavigation()
             );
         }
 
@@ -91,5 +98,50 @@ class ConfigureCompanyNavigation
                 ...LiveCurrency::getNavigationItems(),
                 ...DepartmentResource::getNavigationItems(),
             ]);
+    }
+
+    /**
+     * Build the company sidebar navigation.
+     */
+    protected function buildCompanySidebarNavigation(): callable
+    {
+        return static function (NavigationBuilder $builder): NavigationBuilder {
+            return $builder
+                ->items(Dashboard::getNavigationItems())
+                ->groups([
+                    NavigationGroup::make('Accounting')
+                        ->icon('heroicon-o-clipboard-document-list')
+                        ->extraSidebarAttributes(['class' => 'es-sidebar-group'])
+                        ->items([
+                            ...AccountChart::getNavigationItems(),
+                            ...TransactionResource::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Banking')
+                        ->icon('heroicon-o-building-library')
+                        ->items(AccountResource::getNavigationItems()),
+                    NavigationGroup::make('HR')
+                        ->icon('heroicon-o-user-group')
+                        ->items(DepartmentResource::getNavigationItems()),
+                    NavigationGroup::make('Services')
+                        ->icon('heroicon-o-wrench-screwdriver')
+                        ->items([
+                            ...ConnectedAccount::getNavigationItems(),
+                            ...LiveCurrency::getNavigationItems(),
+                        ]),
+                    NavigationGroup::make('Settings')
+                        ->icon('heroicon-o-cog-8-tooth')
+                        ->items([
+                            ...Appearance::getNavigationItems(),
+                            ...CompanyProfile::getNavigationItems(),
+                            ...CurrencyResource::getNavigationItems(),
+                            ...CompanyDefault::getNavigationItems(),
+                            ...DiscountResource::getNavigationItems(),
+                            ...Invoice::getNavigationItems(),
+                            ...Localization::getNavigationItems(),
+                            ...TaxResource::getNavigationItems(),
+                        ]),
+                ])
+                ->items(Reports::getNavigationItems());
+        };
     }
 }

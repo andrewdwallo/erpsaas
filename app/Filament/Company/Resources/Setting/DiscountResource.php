@@ -29,10 +29,6 @@ class DiscountResource extends Resource
 
     protected static ?string $modelLabel = 'Discount';
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
-
-    protected static ?string $navigationGroup = 'Settings';
-
     protected static ?string $slug = 'settings/discounts';
 
     public static function getModelLabel(): string
