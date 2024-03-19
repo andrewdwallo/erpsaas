@@ -241,6 +241,8 @@ class Invoice extends Page
                             }),
                         TextInput::make('item_name.custom')
                             ->hiddenLabel()
+                            ->prefix(translate('Item Name'))
+                            ->hidden(static fn (callable $get) => $get('item_name.option') !== 'other')
                             ->disabled(static fn (callable $get) => $get('item_name.option') !== 'other')
                             ->nullable(),
                         Select::make('unit_name.option')
@@ -259,6 +261,8 @@ class Invoice extends Page
                             }),
                         TextInput::make('unit_name.custom')
                             ->hiddenLabel()
+                            ->prefix(translate('Unit Name'))
+                            ->hidden(static fn (callable $get) => $get('unit_name.option') !== 'other')
                             ->disabled(static fn (callable $get) => $get('unit_name.option') !== 'other')
                             ->nullable(),
                         Select::make('price_name.option')
@@ -277,6 +281,8 @@ class Invoice extends Page
                             }),
                         TextInput::make('price_name.custom')
                             ->hiddenLabel()
+                            ->prefix(translate('Price Name'))
+                            ->hidden(static fn (callable $get) => $get('price_name.option') !== 'other')
                             ->disabled(static fn (callable $get) => $get('price_name.option') !== 'other')
                             ->nullable(),
                         Select::make('amount_name.option')
@@ -295,6 +301,8 @@ class Invoice extends Page
                             }),
                         TextInput::make('amount_name.custom')
                             ->hiddenLabel()
+                            ->prefix(translate('Amount Name'))
+                            ->hidden(static fn (callable $get) => $get('amount_name.option') !== 'other')
                             ->disabled(static fn (callable $get) => $get('amount_name.option') !== 'other')
                             ->nullable(),
                     ])->columnSpan(1),
