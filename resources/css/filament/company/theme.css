@@ -1,0 +1,59 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+@import '/vendor/awcodes/filament-table-repeater/resources/css/plugin.css';
+@import 'custom-data-table.css';
+@import 'custom-section.css';
+@import 'form-fields.css';
+@import 'modal.css';
+@import 'report-card.css';
+@import 'tooltip.css';
+@import 'top-navigation.css';
+
+@config 'tailwind.config.js';
+
+.fi-sidebar-nav {
+    scrollbar-width: thin;
+}
+
+.fi-ta-empty-state-icon-ctn {
+    @apply bg-platinum;
+}
+
+.fi-dropdown-panel {
+    @apply divide-gray-200/80;
+}
+
+.fi-badge {
+    display: inline-flex;
+}
+
+/* End Alignment sortable column enhancement */
+.fi-ta-header-cell:has(button.justify-end > svg.fi-ta-header-cell-sort-icon) {
+    padding-right: 0.25rem;
+}
+
+.fi-ta-cell:has(.fi-ta-col-wrp > .justify-end) {
+    padding-right: 1rem;
+}
+
+:not(.dark) .fi-body {
+    position: relative;
+    background-color: #E8E9EB;
+    z-index: 1;
+}
+
+:not(.dark) .fi-body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(99.6deg,
+    rgba(232, 233, 235, 1) 10.6%,
+    rgba(240, 241, 243, 1) 32.9%,
+    rgba(248, 249, 251, 0.7) 50%,
+    rgba(240, 241, 243, 1) 67.1%,
+    rgba(232, 233, 235, 1) 83.4%);
+    pointer-events: none;
+    z-index: -1;
+}

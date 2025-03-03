@@ -1,0 +1,27 @@
+.es-table__header-ctn, .es-table__footer-ctn {
+    @apply divide-y divide-gray-200 dark:divide-white/10 min-h-12;
+}
+
+.es-table .es-table__rowgroup td:first-child {
+    padding-left: 3rem;
+}
+
+.es-table .es-table__rowgroup .es-table__row > td:nth-child(2) {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.es-table .es-table__rowgroup .es-table__row > td:nth-child(3) {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.es-table .es-table__rowgroup .es-table__row > td:nth-child(4) {
+    white-space: nowrap;
+}
+
+.es-table .es-table__rowgroup .es-table__row > td:last-child {
+    padding-right: 3rem;
+}

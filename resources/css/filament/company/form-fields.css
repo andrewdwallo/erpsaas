@@ -1,0 +1,92 @@
+/* Filament Repeater Styles */
+.fi-fo-repeater.uncontained .fi-fo-repeater-item {
+    @apply divide-y-0 rounded-none bg-none shadow-none ring-0 ring-gray-950/5 dark:divide-white/10 dark:bg-white/5 dark:ring-white/10;
+
+    .fi-fo-repeater-item-header {
+        @apply px-0;
+
+        > h4 {
+            @apply text-base font-semibold leading-6 text-gray-950 dark:text-white;
+        }
+    }
+
+    .fi-fo-repeater-item-content {
+        @apply py-4 px-0;
+    }
+}
+
+.fi-fo-repeater-item {
+    @apply divide-y divide-gray-200 rounded-xl bg-white dark:bg-gray-900;
+}
+
+/* Report Field Styles */
+.fi-fo-field-wrp.report-hidden-label > div.grid.gap-y-2 > div.flex.items-center {
+    @apply hidden;
+}
+
+.fi-fo-field-wrp.report-hidden-label {
+    @apply lg:mt-8;
+}
+
+/* Choices.js select field overrides */
+.choices__list.choices__list--single {
+    @apply w-full;
+}
+
+.choices:focus-visible {
+    outline: none;
+}
+
+.choices__group {
+    @apply text-gray-900 dark:text-white font-semibold;
+}
+
+.choices[data-type="select-one"] .choices__inner {
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-height: 2.25rem;
+    box-sizing: border-box;
+}
+
+.choices:not(.is-disabled) .choices__item {
+    cursor: pointer;
+}
+
+/* Table Repeater Styles */
+.table-repeater-container {
+    @apply rounded-none ring-0;
+}
+
+.table-repeater-component {
+    @apply space-y-10;
+}
+
+.table-repeater-component ul {
+    @apply justify-start;
+}
+
+.table-repeater-row {
+    @apply divide-x-0 !important;
+}
+
+.table-repeater-column {
+    @apply py-2 !important;
+}
+
+.table-repeater-header {
+    @apply rounded-t-none !important;
+}
+
+.table-repeater-rows-wrapper {
+    @apply divide-gray-300 last:border-b last:border-gray-300 dark:divide-white/20 dark:last:border-white/20;
+}
+
+.table-repeater-header tr {
+    @apply divide-x-0 text-base sm:text-sm sm:leading-6 !important;
+}
+
+.table-repeater-header-column {
+    @apply ps-3 pe-3 font-semibold bg-gray-200 dark:bg-gray-800 rounded-none !important;
+}
+

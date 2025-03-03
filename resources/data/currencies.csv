@@ -1,0 +1,159 @@
+name,currency,code,precision,symbol,decimal_mark,thousands_separator,symbol_first,subunit
+Afghani,AFN,971,2,؋,.,",",FALSE,100
+Euro,EUR,978,2,€,",",.,TRUE,100
+Lek,ALL,008,2,L,.,",",FALSE,100
+Algerian Dinar,DZD,012,2,دج,.,",",FALSE,100
+US Dollar,USD,840,2,$,.,",",TRUE,100
+Kwanza,AOA,973,2,Kz,.,",",FALSE,100
+East Caribbean Dollar,XCD,951,2,$,.,",",TRUE,100
+Argentine Peso,ARS,032,2,$,",",.,TRUE,100
+Armenian Dram,AMD,051,2,֏,.,",",FALSE,100
+Aruban Florin,AWG,533,2,ƒ,.,",",FALSE,100
+Australian Dollar,AUD,036,2,$,.,",",TRUE,100
+Azerbaijan Manat,AZN,944,2,₼,.,",",TRUE,100
+Bahamian Dollar,BSD,044,2,$,.,",",TRUE,100
+Bahraini Dinar,BHD,048,3,.د.ب,.,",",TRUE,1000
+Taka,BDT,050,2,৳,.,",",TRUE,100
+Barbados Dollar,BBD,052,2,$,.,",",TRUE,100
+Belarusian Ruble,BYN,933,2,Br,",","",FALSE,1
+Belize Dollar,BZD,084,2,BZ$,.,",",TRUE,100
+CFA Franc BCEAO,XOF,952,0,CFA,.,",",FALSE,1
+Bermudian Dollar,BMD,060,2,$,.,",",TRUE,100
+Indian Rupee,INR,356,2,₹,.,",",TRUE,100
+Ngultrum,BTN,064,2,Nu.,.,",",FALSE,100
+Boliviano,BOB,068,2,$b,.,",",TRUE,100
+Convertible Mark,BAM,977,2,KM,",",.,TRUE,100
+Pula,BWP,072,2,P,.,",",TRUE,100
+Norwegian Krone,NOK,578,2,kr,",","",FALSE,100
+Brazilian Real,BRL,986,2,R$,",",.,TRUE,100
+Brunei Dollar,BND,096,2,$,.,",",TRUE,100
+Bulgarian Lev,BGN,975,2,лв,",","",FALSE,100
+Burundi Franc,BIF,108,0,FBu,.,",",FALSE,1
+Cabo Verde Escudo,CVE,132,2,$,.,",",FALSE,100
+Riel,KHR,116,2,៛,.,",",FALSE,100
+CFA Franc BEAC,XAF,950,0,FCFA,.,",",FALSE,1
+Canadian Dollar,CAD,124,2,$,.,",",TRUE,100
+Cayman Islands Dollar,KYD,136,2,$,.,",",TRUE,100
+Chilean Peso,CLP,152,0,$,.,.,TRUE,1
+Yuan Renminbi,CNY,156,2,¥,.,",",TRUE,100
+Colombian Peso,COP,170,2,$,.,",",TRUE,100
+Comorian Franc ,KMF,174,0,CF,.,",",FALSE,1
+Congolese Franc,CDF,976,2,FC,.,",",FALSE,100
+New Zealand Dollar,NZD,554,2,$,.,",",TRUE,100
+Costa Rican Colon,CRC,188,2,₡,.,",",TRUE,100
+Cuban Peso,CUP,192,2,₱,.,",",TRUE,100
+Peso Convertible,CUC,931,2,$,.,",",FALSE,100
+Netherlands Antillean Guilder,ANG,532,2,ƒ,.,",",TRUE,100
+Czech Koruna,CZK,203,2,Kč,",",.,FALSE,100
+Danish Krone,DKK,208,2,kr,",",.,FALSE,100
+Djibouti Franc,DJF,262,0,Fdj,.,",",FALSE,1
+Dominican Peso,DOP,214,2,RD$,.,",",TRUE,100
+Egyptian Pound,EGP,818,2,£,.,",",TRUE,100
+El Salvador Colon,SVC,222,2,$,.,",",TRUE,100
+Nakfa,ERN,232,2,Nfk,.,",",FALSE,100
+Lilangeni,SZL,748,2,E,.,",",TRUE,100
+Ethiopian Birr,ETB,230,2,Br,.,",",FALSE,100
+Falkland Islands Pound,FKP,238,2,£,.,",",FALSE,100
+Fiji Dollar,FJD,242,2,$,.,",",FALSE,100
+CFP Franc,XPF,953,0,₣,.,",",FALSE,1
+Dalasi,GMD,270,2,D,.,",",FALSE,100
+Lari,GEL,981,2,₾,",",.,TRUE,100
+Ghana Cedi,GHS,936,2,GH₵,.,",",TRUE,100
+Gibraltar Pound,GIP,292,2,£,.,",",TRUE,100
+Quetzal,GTQ,320,2,Q,.,",",TRUE,100
+Pound Sterling,GBP,826,2,£,.,",",TRUE,100
+Guinean Franc,GNF,324,0,FG,.,",",FALSE,1
+Guyana Dollar,GYD,328,2,$,.,",",FALSE,100
+Gourde,HTG,332,2,G,.,",",FALSE,100
+Lempira,HNL,340,2,L,.,",",TRUE,100
+Hong Kong Dollar,HKD,344,2,$,.,",",TRUE,100
+Forint,HUF,348,2,Ft,",","",FALSE,100
+Iceland Krona,ISK,352,0,kr,",",.,TRUE,1
+Rupiah,IDR,360,2,Rp,",",.,TRUE,100
+Iranian Rial,IRR,364,2,﷼,.,",",TRUE,100
+Iraqi Dinar,IQD,368,3,ع.د,.,",",FALSE,1000
+New Israeli Sheqel,ILS,376,2,₪,.,",",TRUE,100
+Jamaican Dollar,JMD,388,2,J$,.,",",TRUE,100
+Yen,JPY,392,0,¥,.,",",TRUE,1
+Jordanian Dinar,JOD,400,3,JD,.,",",TRUE,100
+Tenge,KZT,398,2,₸,.,",",FALSE,100
+Kenyan Shilling,KES,404,2,KSh,.,",",TRUE,100
+North Korean Won,KPW,408,2,₩,.,",",FALSE,100
+Won,KRW,410,0,₩,.,",",TRUE,1
+Kuwaiti Dinar,KWD,414,3,KD,.,",",TRUE,1000
+Som,KGS,417,2,лв,.,",",FALSE,100
+Lao Kip,LAK,418,2,₭,.,",",FALSE,100
+Lebanese Pound,LBP,422,2,£,.,",",TRUE,100
+Loti,LSL,426,2,M,.,",",FALSE,100
+Rand,ZAR,710,2,R,.,",",TRUE,100
+Liberian Dollar,LRD,430,2,$,.,",",FALSE,100
+Libyan Dinar,LYD,434,3,LD,.,",",FALSE,1000
+Swiss Franc,CHF,756,2,Fr.,.,",",TRUE,100
+Pataca,MOP,446,2,MOP$,.,",",FALSE,100
+Denar,MKD,807,2,ден,",","",FALSE,100
+Malagasy Ariary,MGA,969,2,Ar,.,",",TRUE,5
+Malawi Kwacha,MWK,454,2,MK,.,",",FALSE,100
+Malaysian Ringgit,MYR,458,2,RM,.,",",TRUE,100
+Rufiyaa,MVR,462,2,Rf,.,",",FALSE,100
+Ouguiya,MRU,929,2,UM,",","",FALSE,5
+Mauritius Rupee,MUR,480,2,₨,.,",",TRUE,100
+Mexican Peso,MXN,484,2,$,.,",",TRUE,100
+Moldovan Leu,MDL,498,2,lei,.,",",FALSE,100
+Tugrik,MNT,496,2,₮,.,",",FALSE,100
+Moroccan Dirham,MAD,504,2,د.م.,.,",",FALSE,100
+Mozambique Metical,MZN,943,2,MT,.,",",TRUE,100
+Kyat,MMK,104,2,K,.,",",FALSE,100
+Namibia Dollar,NAD,516,2,$,.,",",FALSE,100
+Nepalese Rupee,NPR,524,2,₨,.,",",TRUE,100
+Cordoba Oro,NIO,558,2,C$,.,",",FALSE,100
+Naira,NGN,566,2,₦,.,",",TRUE,100
+Rial Omani,OMR,512,3,﷼,.,",",TRUE,1000
+Pakistan Rupee,PKR,586,2,₨,.,",",TRUE,100
+Balboa,PAB,590,2,B/.,.,",",FALSE,100
+Kina,PGK,598,2,K,.,",",FALSE,100
+Guarani,PYG,600,0,Gs,.,",",TRUE,1
+Sol,PEN,604,2,S/.,.,",",TRUE,100
+Philippine Peso,PHP,608,2,₱,.,",",TRUE,100
+Zloty,PLN,985,2,zł,",","",FALSE,100
+Qatari Rial,QAR,634,2,﷼,.,",",FALSE,100
+Romanian Leu,RON,946,2,lei,",",.,TRUE,100
+Russian Ruble,RUB,643,2,₽,",","",FALSE,100
+Rwanda Franc,RWF,646,0,R₣,.,",",FALSE,1
+Saint Helena Pound,SHP,654,2,£,.,",",FALSE,100
+Tala,WST,882,2,WS$,.,",",FALSE,100
+Dobra,STN,930,2,Db,",","",FALSE,100
+Saudi Riyal,SAR,682,2,﷼,.,",",TRUE,100
+Serbian Dinar,RSD,941,2,Дин.,",","",TRUE,100
+Seychelles Rupee,SCR,690,2,₨,.,",",FALSE,100
+Leone,SLL,694,2,Le,.,",",FALSE,100
+Leone,SLE,925,2,Le,.,",",FALSE,100
+Singapore Dollar,SGD,702,2,S$,.,",",TRUE,100
+Solomon Islands Dollar,SBD,090,2,$,.,",",FALSE,100
+Somali Shilling,SOS,706,2,S,.,",",FALSE,100
+South Sudanese Pound,SSP,728,2,£,.,",",FALSE,100
+Sri Lanka Rupee,LKR,144,2,₨,.,",",FALSE,100
+Sudanese Pound,SDG,938,2,ج.س.,.,",",TRUE,100
+Surinam Dollar,SRD,968,2,$,.,",",FALSE,100
+Swedish Krona,SEK,752,2,kr,",","",FALSE,100
+Syrian Pound,SYP,760,2,£,.,",",FALSE,100
+New Taiwan Dollar,TWD,901,2,NT$,.,",",TRUE,100
+Somoni,TJS,972,2,SM,.,",",FALSE,100
+Tanzanian Shilling,TZS,834,2,TSh,.,",",TRUE,100
+Baht,THB,764,2,฿,.,",",TRUE,100
+Pa’anga,TOP,776,2,T$,.,",",TRUE,100
+Trinidad and Tobago Dollar,TTD,780,2,TT$,.,",",FALSE,100
+Tunisian Dinar,TND,788,3,د.ت,.,",",FALSE,1000
+Turkish Lira,TRY,949,2,₺,",",",",TRUE,100
+Turkmenistan New Manat,TMT,934,2,T,.,",",FALSE,100
+Uganda Shilling,UGX,800,0,USh,.,",",FALSE,1
+Hryvnia,UAH,980,2,₴,",","",FALSE,100
+UAE Dirham,AED,784,2,د.إ,.,",",TRUE,100
+Peso Uruguayo,UYU,858,2,$U,",",.,TRUE,100
+Uzbekistan Sum,UZS,860,2,лв,.,",",TRUE,100
+Vatu,VUV,548,0,VT,.,",",TRUE,1
+Bolívar Soberano,VES,928,2,Bs.S,",","",TRUE,100
+Bolívar Soberano,VED,926,2,Bs.,",","",TRUE,100
+Dong,VND,704,0,₫,.,",",TRUE,1
+Yemeni Rial,YER,886,2,﷼,.,",",FALSE,100
+Zambian Kwacha,ZMW,967,2,ZK,.,",",FALSE,100
+Zimbabwe Dollar,ZWL,932,2,$,.,",",TRUE,100

@@ -1,0 +1,251 @@
+id,name,iso_code_3,iso_code_2,numeric_code,phone_code,capital,currency_code,native_name,nationality,latitude,longitude,flag
+AF,Afghanistan,AFG,AF,004,93,Kabul,AFN,افغانستان,Afghan,33.00000000,65.00000000,🇦🇫
+AX,"Aland Islands",ALA,AX,248,358,Mariehamn,EUR,Åland,"Aland Island",60.11666700,19.90000000,🇦🇽
+AL,Albania,ALB,AL,008,355,Tirana,ALL,Shqipëria,"Albanian ",41.00000000,20.00000000,🇦🇱
+DZ,Algeria,DZA,DZ,012,213,Algiers,DZD,الجزائر,Algerian,28.00000000,3.00000000,🇩🇿
+AS,"American Samoa",ASM,AS,016,1,"Pago Pago",USD,"American Samoa","American Samoan",-14.33333333,-170.00000000,🇦🇸
+AD,Andorra,AND,AD,020,376,"Andorra la Vella",EUR,Andorra,Andorran,42.50000000,1.50000000,🇦🇩
+AO,Angola,AGO,AO,024,244,Luanda,AOA,Angola,Angolan,-12.50000000,18.50000000,🇦🇴
+AI,Anguilla,AIA,AI,660,1,"The Valley",XCD,Anguilla,Anguillan,18.25000000,-63.16666666,🇦🇮
+AQ,Antarctica,ATA,AQ,010,672,,"",Antarctica,Antarctic,-74.65000000,4.48000000,🇦🇶
+AG,"Antigua And Barbuda",ATG,AG,028,1,"St. John's",XCD,"Antigua and Barbuda","Antiguan or Barbudan",17.05000000,-61.80000000,🇦🇬
+AR,Argentina,ARG,AR,032,54,"Buenos Aires",ARS,Argentina,Argentine,-34.00000000,-64.00000000,🇦🇷
+AM,Armenia,ARM,AM,051,374,Yerevan,AMD,Հայաստան,Armenian,40.00000000,45.00000000,🇦🇲
+AW,Aruba,ABW,AW,533,297,Oranjestad,AWG,Aruba,Aruban,12.50000000,-69.96666666,🇦🇼
+AU,Australia,AUS,AU,036,61,Canberra,AUD,Australia,Australian,-27.00000000,133.00000000,🇦🇺
+AT,Austria,AUT,AT,040,43,Vienna,EUR,Österreich,Austrian,47.33333333,13.33333333,🇦🇹
+AZ,Azerbaijan,AZE,AZ,031,994,Baku,AZN,Azərbaycan,"Azerbaijani, Azeri",40.50000000,47.50000000,🇦🇿
+BH,Bahrain,BHR,BH,048,973,Manama,BHD,‏البحرين,Bahraini,26.00000000,50.55000000,🇧🇭
+BD,Bangladesh,BGD,BD,050,880,Dhaka,BDT,Bangladesh,Bangladeshi,24.00000000,90.00000000,🇧🇩
+BB,Barbados,BRB,BB,052,1,Bridgetown,BBD,Barbados,Barbadian,13.16666666,-59.53333333,🇧🇧
+BY,Belarus,BLR,BY,112,375,Minsk,BYN,Белару́сь,Belarusian,53.00000000,28.00000000,🇧🇾
+BE,Belgium,BEL,BE,056,32,Brussels,EUR,België,Belgian,50.83333333,4.00000000,🇧🇪
+BZ,Belize,BLZ,BZ,084,501,Belmopan,BZD,Belize,Belizean,17.25000000,-88.75000000,🇧🇿
+BJ,Benin,BEN,BJ,204,229,Porto-Novo,XOF,Bénin,"Beninese, Beninois",9.50000000,2.25000000,🇧🇯
+BM,Bermuda,BMU,BM,060,1,Hamilton,BMD,Bermuda,"Bermudian, Bermudan",32.33333333,-64.75000000,🇧🇲
+BT,Bhutan,BTN,BT,064,975,Thimphu,BTN,ʼbrug-yul,Bhutanese,27.50000000,90.50000000,🇧🇹
+BO,Bolivia,BOL,BO,068,591,Sucre,BOB,Bolivia,Bolivian,-17.00000000,-65.00000000,🇧🇴
+BQ,"Bonaire, Sint Eustatius and Saba",BES,BQ,535,599,Kralendijk,USD,"Caribisch Nederland",Bonaire,12.15000000,-68.26666700,🇧🇶
+BA,"Bosnia and Herzegovina",BIH,BA,070,387,Sarajevo,BAM,"Bosna i Hercegovina","Bosnian or Herzegovinian",44.00000000,18.00000000,🇧🇦
+BW,Botswana,BWA,BW,072,267,Gaborone,BWP,Botswana,"Motswana, Botswanan",-22.00000000,24.00000000,🇧🇼
+BV,"Bouvet Island",BVT,BV,074,55,,NOK,Bouvetøya,"Bouvet Island",-54.43333333,3.40000000,🇧🇻
+BR,Brazil,BRA,BR,076,55,Brasilia,BRL,Brasil,Brazilian,-10.00000000,-55.00000000,🇧🇷
+IO,"British Indian Ocean Territory",IOT,IO,086,246,"Diego Garcia",USD,"British Indian Ocean Territory",BIOT,-6.00000000,71.50000000,🇮🇴
+BN,Brunei,BRN,BN,096,673,"Bandar Seri Begawan",BND,"Negara Brunei Darussalam",Bruneian,4.50000000,114.66666666,🇧🇳
+BG,Bulgaria,BGR,BG,100,359,Sofia,BGN,България,Bulgarian,43.00000000,25.00000000,🇧🇬
+BF,"Burkina Faso",BFA,BF,854,226,Ouagadougou,XOF,"Burkina Faso",Burkinabe,13.00000000,-2.00000000,🇧🇫
+BI,Burundi,BDI,BI,108,257,Bujumbura,BIF,Burundi,Burundian,-3.50000000,30.00000000,🇧🇮
+KH,Cambodia,KHM,KH,116,855,"Phnom Penh",KHR,Kâmpŭchéa,Cambodian,13.00000000,105.00000000,🇰🇭
+CM,Cameroon,CMR,CM,120,237,Yaounde,XAF,Cameroon,Cameroonian,6.00000000,12.00000000,🇨🇲
+CA,Canada,CAN,CA,124,1,Ottawa,CAD,Canada,Canadian,60.00000000,-95.00000000,🇨🇦
+CV,"Cape Verde",CPV,CV,132,238,Praia,CVE,"Cabo Verde",Verdean,16.00000000,-24.00000000,🇨🇻
+KY,"Cayman Islands",CYM,KY,136,1,"George Town",KYD,"Cayman Islands",Caymanian,19.50000000,-80.50000000,🇰🇾
+CF,"Central African Republic",CAF,CF,140,236,Bangui,XAF,"Ködörösêse tî Bêafrîka","Central African",7.00000000,21.00000000,🇨🇫
+TD,Chad,TCD,TD,148,235,N'Djamena,XAF,Tchad,Chadian,15.00000000,19.00000000,🇹🇩
+CL,Chile,CHL,CL,152,56,Santiago,CLP,Chile,Chilean,-30.00000000,-71.00000000,🇨🇱
+CN,China,CHN,CN,156,86,Beijing,CNY,中国,Chinese,35.00000000,105.00000000,🇨🇳
+CX,"Christmas Island",CXR,CX,162,61,"Flying Fish Cove",AUD,"Christmas Island","Christmas Island",-10.50000000,105.66666666,🇨🇽
+CC,"Cocos (Keeling) Islands",CCK,CC,166,61,"West Island",AUD,"Cocos (Keeling) Islands","Cocos Island",-12.50000000,96.83333333,🇨🇨
+CO,Colombia,COL,CO,170,57,Bogotá,COP,Colombia,Colombian,4.00000000,-72.00000000,🇨🇴
+KM,Comoros,COM,KM,174,269,Moroni,KMF,Komori,"Comoran, Comorian",-12.16666666,44.25000000,🇰🇲
+CG,Congo,COG,CG,178,242,Brazzaville,XAF,"République du Congo",Congolese,-1.00000000,15.00000000,🇨🇬
+CK,"Cook Islands",COK,CK,184,682,Avarua,NZD,"Cook Islands","Cook Island",-21.23333333,-159.76666666,🇨🇰
+CR,"Costa Rica",CRI,CR,188,506,"San Jose",CRC,"Costa Rica","Costa Rican",10.00000000,-84.00000000,🇨🇷
+CI,"Cote D'Ivoire (Ivory Coast)",CIV,CI,384,225,Yamoussoukro,XOF,,Ivorian,8.00000000,-5.00000000,🇨🇮
+HR,Croatia,HRV,HR,191,385,Zagreb,HRK,Hrvatska,Croatian,45.16666666,15.50000000,🇭🇷
+CU,Cuba,CUB,CU,192,53,Havana,CUP,Cuba,Cuban,21.50000000,-80.00000000,🇨🇺
+CW,Curaçao,CUW,CW,531,599,Willemstad,ANG,Curaçao,Curacaoan,12.11666700,-68.93333300,🇨🇼
+CY,Cyprus,CYP,CY,196,357,Nicosia,EUR,Κύπρος,Cypriot,35.00000000,33.00000000,🇨🇾
+CZ,"Czech Republic",CZE,CZ,203,420,Prague,CZK,"Česká republika",Czech,49.75000000,15.50000000,🇨🇿
+CD,"Democratic Republic of the Congo",COD,CD,180,243,Kinshasa,CDF,"République démocratique du Congo",Congolese,0.00000000,25.00000000,🇨🇩
+DK,Denmark,DNK,DK,208,45,Copenhagen,DKK,Danmark,Danish,56.00000000,10.00000000,🇩🇰
+DJ,Djibouti,DJI,DJ,262,253,Djibouti,DJF,Djibouti,Djiboutian,11.50000000,43.00000000,🇩🇯
+DM,Dominica,DMA,DM,212,1,Roseau,XCD,Dominica,Dominican,15.41666666,-61.33333333,🇩🇲
+DO,"Dominican Republic",DOM,DO,214,1,"Santo Domingo",DOP,"República Dominicana",Dominican,19.00000000,-70.66666666,🇩🇴
+TL,"East Timor",TLS,TL,626,670,Dili,USD,Timor-Leste,Timorese,-8.83333333,125.91666666,🇹🇱
+EC,Ecuador,ECU,EC,218,593,Quito,USD,Ecuador,Ecuadorian,-2.00000000,-77.50000000,🇪🇨
+EG,Egypt,EGY,EG,818,20,Cairo,EGP,مصر‎,Egyptian,27.00000000,30.00000000,🇪🇬
+SV,"El Salvador",SLV,SV,222,503,"San Salvador",USD,"El Salvador",Salvadoran,13.83333333,-88.91666666,🇸🇻
+GQ,"Equatorial Guinea",GNQ,GQ,226,240,Malabo,XAF,"Guinea Ecuatorial","Equatorial Guinean, Equatoguinean",2.00000000,10.00000000,🇬🇶
+ER,Eritrea,ERI,ER,232,291,Asmara,ERN,ኤርትራ,Eritrean,15.00000000,39.00000000,🇪🇷
+EE,Estonia,EST,EE,233,372,Tallinn,EUR,Eesti,Estonian,59.00000000,26.00000000,🇪🇪
+ET,Ethiopia,ETH,ET,231,251,"Addis Ababa",ETB,ኢትዮጵያ,Ethiopian,8.00000000,38.00000000,🇪🇹
+FK,"Falkland Islands",FLK,FK,238,500,Stanley,FKP,"Falkland Islands","Falkland Island",-51.75000000,-59.00000000,🇫🇰
+FO,"Faroe Islands",FRO,FO,234,298,Torshavn,DKK,Føroyar,Faroese,62.00000000,-7.00000000,🇫🇴
+FJ,"Fiji Islands",FJI,FJ,242,679,Suva,FJD,Fiji,Fijian,-18.00000000,175.00000000,🇫🇯
+FI,Finland,FIN,FI,246,358,Helsinki,EUR,Suomi,Finnish,64.00000000,26.00000000,🇫🇮
+FR,France,FRA,FR,250,33,Paris,EUR,France,French,46.00000000,2.00000000,🇫🇷
+GF,"French Guiana",GUF,GF,254,594,Cayenne,EUR,"Guyane française","French Guianese",4.00000000,-53.00000000,🇬🇫
+PF,"French Polynesia",PYF,PF,258,689,Papeete,XPF,"Polynésie française","French Polynesia",-15.00000000,-140.00000000,🇵🇫
+TF,"French Southern Territories",ATF,TF,260,262,Port-aux-Francais,EUR,"Territoire des Terres australes et antarctiques fr","French Southern Territories",-49.25000000,69.16700000,🇹🇫
+GA,Gabon,GAB,GA,266,241,Libreville,XAF,Gabon,Gabonese,-1.00000000,11.75000000,🇬🇦
+GM,The Gambia,GMB,GM,270,220,Banjul,GMD,Gambia,Gambian,13.46666666,-16.56666666,🇬🇲
+GE,Georgia,GEO,GE,268,995,Tbilisi,GEL,საქართველო,Georgian,42.00000000,43.50000000,🇬🇪
+DE,Germany,DEU,DE,276,49,Berlin,EUR,Deutschland,German,51.00000000,9.00000000,🇩🇪
+GH,Ghana,GHA,GH,288,233,Accra,GHS,Ghana,Ghanaian,8.00000000,-2.00000000,🇬🇭
+GI,Gibraltar,GIB,GI,292,350,Gibraltar,GIP,Gibraltar,Gibraltar,36.13333333,-5.35000000,🇬🇮
+GR,Greece,GRC,GR,300,30,Athens,EUR,Ελλάδα,"Greek, Hellenic",39.00000000,22.00000000,🇬🇷
+GL,Greenland,GRL,GL,304,299,Nuuk,DKK,"Kalaallit Nunaat",Greenlandic,72.00000000,-40.00000000,🇬🇱
+GD,Grenada,GRD,GD,308,1,"St. George's",XCD,Grenada,Grenadian,12.11666666,-61.66666666,🇬🇩
+GP,Guadeloupe,GLP,GP,312,590,Basse-Terre,EUR,Guadeloupe,Guadeloupe,16.25000000,-61.58333300,🇬🇵
+GU,Guam,GUM,GU,316,1,Hagatna,USD,Guam,"Guamanian, Guambat",13.46666666,144.78333333,🇬🇺
+GT,Guatemala,GTM,GT,320,502,"Guatemala City",GTQ,Guatemala,Guatemalan,15.50000000,-90.25000000,🇬🇹
+GG,"Guernsey and Alderney",GGY,GG,831,44,"St Peter Port",GBP,Guernsey,"Channel Island",49.46666666,-2.58333333,🇬🇬
+GN,Guinea,GIN,GN,324,224,Conakry,GNF,Guinée,Guinean,11.00000000,-10.00000000,🇬🇳
+GW,Guinea-Bissau,GNB,GW,624,245,Bissau,XOF,Guiné-Bissau,Bissau-Guinean,12.00000000,-15.00000000,🇬🇼
+GY,Guyana,GUY,GY,328,592,Georgetown,GYD,Guyana,Guyanese,5.00000000,-59.00000000,🇬🇾
+HT,Haiti,HTI,HT,332,509,Port-au-Prince,HTG,Haïti,Haitian,19.00000000,-72.41666666,🇭🇹
+HM,"Heard Island and McDonald Islands",HMD,HM,334,672,,AUD,"Heard Island and McDonald Islands","Heard Island or McDonald Islands",-53.10000000,72.51666666,🇭🇲
+HN,Honduras,HND,HN,340,504,Tegucigalpa,HNL,Honduras,Honduran,15.00000000,-86.50000000,🇭🇳
+HK,"Hong Kong S.A.R.",HKG,HK,344,852,"Hong Kong",HKD,香港,"Hong Kong, Hong Kongese",22.25000000,114.16666666,🇭🇰
+HU,Hungary,HUN,HU,348,36,Budapest,HUF,Magyarország,"Hungarian, Magyar",47.00000000,20.00000000,🇭🇺
+IS,Iceland,ISL,IS,352,354,Reykjavik,ISK,Ísland,Icelandic,65.00000000,-18.00000000,🇮🇸
+IN,India,IND,IN,356,91,"New Delhi",INR,भारत,Indian,20.00000000,77.00000000,🇮🇳
+ID,Indonesia,IDN,ID,360,62,Jakarta,IDR,Indonesia,Indonesian,-5.00000000,120.00000000,🇮🇩
+IR,Iran,IRN,IR,364,98,Tehran,IRR,ایران,"Iranian, Persian",32.00000000,53.00000000,🇮🇷
+IQ,Iraq,IRQ,IQ,368,964,Baghdad,IQD,العراق,Iraqi,33.00000000,44.00000000,🇮🇶
+IE,Ireland,IRL,IE,372,353,Dublin,EUR,Éire,Irish,53.00000000,-8.00000000,🇮🇪
+IL,Israel,ISR,IL,376,972,Jerusalem,ILS,יִשְׂרָאֵל,Israeli,31.50000000,34.75000000,🇮🇱
+IT,Italy,ITA,IT,380,39,Rome,EUR,Italia,Italian,42.83333333,12.83333333,🇮🇹
+JM,Jamaica,JAM,JM,388,1,Kingston,JMD,Jamaica,Jamaican,18.25000000,-77.50000000,🇯🇲
+JP,Japan,JPN,JP,392,81,Tokyo,JPY,日本,Japanese,36.00000000,138.00000000,🇯🇵
+JE,Jersey,JEY,JE,832,44,"Saint Helier",GBP,Jersey,"Channel Island",49.25000000,-2.16666666,🇯🇪
+JO,Jordan,JOR,JO,400,962,Amman,JOD,الأردن,Jordanian,31.00000000,36.00000000,🇯🇴
+KZ,Kazakhstan,KAZ,KZ,398,7,Astana,KZT,Қазақстан,"Kazakhstani, Kazakh",48.00000000,68.00000000,🇰🇿
+KE,Kenya,KEN,KE,404,254,Nairobi,KES,Kenya,Kenyan,1.00000000,38.00000000,🇰🇪
+KI,Kiribati,KIR,KI,296,686,Tarawa,AUD,Kiribati,I-Kiribati,1.41666666,173.00000000,🇰🇮
+XK,Kosovo,XKX,XK,926,383,Pristina,EUR,"Republika e Kosovës","Kosovar, Kosovan",42.56129090,20.34030350,🇽🇰
+KW,Kuwait,KWT,KW,414,965,"Kuwait City",KWD,الكويت,Kuwaiti,29.50000000,45.75000000,🇰🇼
+KG,Kyrgyzstan,KGZ,KG,417,996,Bishkek,KGS,Кыргызстан,"Kyrgyzstani, Kyrgyz, Kirgiz, Kirghiz",41.00000000,75.00000000,🇰🇬
+LA,Laos,LAO,LA,418,856,Vientiane,LAK,ສປປລາວ,"Lao, Laotian",18.00000000,105.00000000,🇱🇦
+LV,Latvia,LVA,LV,428,371,Riga,EUR,Latvija,Latvian,57.00000000,25.00000000,🇱🇻
+LB,Lebanon,LBN,LB,422,961,Beirut,LBP,لبنان,Lebanese,33.83333333,35.83333333,🇱🇧
+LS,Lesotho,LSO,LS,426,266,Maseru,LSL,Lesotho,Basotho,-29.50000000,28.50000000,🇱🇸
+LR,Liberia,LBR,LR,430,231,Monrovia,LRD,Liberia,Liberian,6.50000000,-9.50000000,🇱🇷
+LY,Libya,LBY,LY,434,218,Tripolis,LYD,‏ليبيا,Libyan,25.00000000,17.00000000,🇱🇾
+LI,Liechtenstein,LIE,LI,438,423,Vaduz,CHF,Liechtenstein,Liechtenstein,47.26666666,9.53333333,🇱🇮
+LT,Lithuania,LTU,LT,440,370,Vilnius,EUR,Lietuva,Lithuanian,56.00000000,24.00000000,🇱🇹
+LU,Luxembourg,LUX,LU,442,352,Luxembourg,EUR,Luxembourg,"Luxembourg, Luxembourgish",49.75000000,6.16666666,🇱🇺
+MO,"Macau S.A.R.",MAC,MO,446,853,Macao,MOP,澳門,"Macanese, Chinese",22.16666666,113.55000000,🇲🇴
+MG,Madagascar,MDG,MG,450,261,Antananarivo,MGA,Madagasikara,Malagasy,-20.00000000,47.00000000,🇲🇬
+MW,Malawi,MWI,MW,454,265,Lilongwe,MWK,Malawi,Malawian,-13.50000000,34.00000000,🇲🇼
+MY,Malaysia,MYS,MY,458,60,"Kuala Lumpur",MYR,Malaysia,Malaysian,2.50000000,112.50000000,🇲🇾
+MV,Maldives,MDV,MV,462,960,Male,MVR,Maldives,Maldivian,3.25000000,73.00000000,🇲🇻
+ML,Mali,MLI,ML,466,223,Bamako,XOF,Mali,"Malian, Malinese",17.00000000,-4.00000000,🇲🇱
+MT,Malta,MLT,MT,470,356,Valletta,EUR,Malta,Maltese,35.83333333,14.58333333,🇲🇹
+IM,Isle of Man,IMN,IM,833,44,"Douglas, Isle of Man",GBP,"Isle of Man",Manx,54.25000000,-4.50000000,🇮🇲
+MH,"Marshall Islands",MHL,MH,584,692,Majuro,USD,M̧ajeļ,Marshallese,9.00000000,168.00000000,🇲🇭
+MQ,Martinique,MTQ,MQ,474,596,Fort-de-France,EUR,Martinique,"Martiniquais, Martinican",14.66666700,-61.00000000,🇲🇶
+MR,Mauritania,MRT,MR,478,222,Nouakchott,MRO,موريتانيا,Mauritanian,20.00000000,-12.00000000,🇲🇷
+MU,Mauritius,MUS,MU,480,230,"Port Louis",MUR,Maurice,Mauritian,-20.28333333,57.55000000,🇲🇺
+YT,Mayotte,MYT,YT,175,262,Mamoudzou,EUR,Mayotte,Mahoran,-12.83333333,45.16666666,🇾🇹
+MX,Mexico,MEX,MX,484,52,"Ciudad de México",MXN,México,Mexican,23.00000000,-102.00000000,🇲🇽
+FM,Micronesia,FSM,FM,583,691,Palikir,USD,Micronesia,Micronesian,6.91666666,158.25000000,🇫🇲
+MD,Moldova,MDA,MD,498,373,Chisinau,MDL,Moldova,Moldovan,47.00000000,29.00000000,🇲🇩
+MC,Monaco,MCO,MC,492,377,Monaco,EUR,Monaco,"Monegasque, Monacan",43.73333333,7.40000000,🇲🇨
+MN,Mongolia,MNG,MN,496,976,"Ulan Bator",MNT,"Монгол улс",Mongolian,46.00000000,105.00000000,🇲🇳
+ME,Montenegro,MNE,ME,499,382,Podgorica,EUR,"Црна Гора",Montenegrin,42.50000000,19.30000000,🇲🇪
+MS,Montserrat,MSR,MS,500,1,Plymouth,XCD,Montserrat,Montserratian,16.75000000,-62.20000000,🇲🇸
+MA,Morocco,MAR,MA,504,212,Rabat,MAD,المغرب,Moroccan,32.00000000,-5.00000000,🇲🇦
+MZ,Mozambique,MOZ,MZ,508,258,Maputo,MZN,Moçambique,Mozambican,-18.25000000,35.00000000,🇲🇿
+MM,Myanmar,MMR,MM,104,95,"Nay Pyi Taw",MMK,မြန်မာ,Burmese,22.00000000,98.00000000,🇲🇲
+NA,Namibia,NAM,NA,516,264,Windhoek,NAD,Namibia,Namibian,-22.00000000,17.00000000,🇳🇦
+NR,Nauru,NRU,NR,520,674,Yaren,AUD,Nauru,Nauruan,-0.53333333,166.91666666,🇳🇷
+NP,Nepal,NPL,NP,524,977,Kathmandu,NPR,नपल,"Nepali, Nepalese",28.00000000,84.00000000,🇳🇵
+NL,Netherlands,NLD,NL,528,31,Amsterdam,EUR,Nederland,"Dutch, Netherlandic",52.50000000,5.75000000,🇳🇱
+NC,"New Caledonia",NCL,NC,540,687,Noumea,XPF,Nouvelle-Calédonie,"New Caledonian",-21.50000000,165.50000000,🇳🇨
+NZ,"New Zealand",NZL,NZ,554,64,Wellington,NZD,"New Zealand","New Zealand, NZ",-41.00000000,174.00000000,🇳🇿
+NI,Nicaragua,NIC,NI,558,505,Managua,NIO,Nicaragua,Nicaraguan,13.00000000,-85.00000000,🇳🇮
+NE,Niger,NER,NE,562,227,Niamey,XOF,Niger,Nigerien,16.00000000,8.00000000,🇳🇪
+NG,Nigeria,NGA,NG,566,234,Abuja,NGN,Nigeria,Nigerian,10.00000000,8.00000000,🇳🇬
+NU,Niue,NIU,NU,570,683,Alofi,NZD,Niuē,Niuean,-19.03333333,-169.86666666,🇳🇺
+NF,"Norfolk Island",NFK,NF,574,672,Kingston,AUD,"Norfolk Island","Norfolk Island",-29.03333333,167.95000000,🇳🇫
+KP,"North Korea",PRK,KP,408,850,Pyongyang,KPW,북한,"North Korean",40.00000000,127.00000000,🇰🇵
+MK,"North Macedonia",MKD,MK,807,389,Skopje,MKD,"Северна Македонија",Macedonian,41.83333333,22.00000000,🇲🇰
+MP,"Northern Mariana Islands",MNP,MP,580,1,Saipan,USD,"Northern Mariana Islands","Northern Marianan",15.20000000,145.75000000,🇲🇵
+NO,Norway,NOR,NO,578,47,Oslo,NOK,Norge,Norwegian,62.00000000,10.00000000,🇳🇴
+OM,Oman,OMN,OM,512,968,Muscat,OMR,عمان,Omani,21.00000000,57.00000000,🇴🇲
+PK,Pakistan,PAK,PK,586,92,Islamabad,PKR,Pakistan,Pakistani,30.00000000,70.00000000,🇵🇰
+PW,Palau,PLW,PW,585,680,Melekeok,USD,Palau,Palauan,7.50000000,134.50000000,🇵🇼
+PS,"Palestinian Territory Occupied",PSE,PS,275,970,"East Jerusalem",ILS,فلسطين,Palestinian,31.90000000,35.20000000,🇵🇸
+PA,Panama,PAN,PA,591,507,"Panama City",PAB,Panamá,Panamanian,9.00000000,-80.00000000,🇵🇦
+PG,"Papua new Guinea",PNG,PG,598,675,"Port Moresby",PGK,"Papua Niugini","Papua New Guinean, Papuan",-6.00000000,147.00000000,🇵🇬
+PY,Paraguay,PRY,PY,600,595,Asuncion,PYG,Paraguay,Paraguayan,-23.00000000,-58.00000000,🇵🇾
+PE,Peru,PER,PE,604,51,Lima,PEN,Perú,Peruvian,-10.00000000,-76.00000000,🇵🇪
+PH,Philippines,PHL,PH,608,63,Manila,PHP,Pilipinas,"Philippine, Filipino",13.00000000,122.00000000,🇵🇭
+PN,"Pitcairn Island",PCN,PN,612,870,Adamstown,NZD,"Pitcairn Islands","Pitcairn Island",-25.06666666,-130.10000000,🇵🇳
+PL,Poland,POL,PL,616,48,Warsaw,PLN,Polska,Polish,52.00000000,20.00000000,🇵🇱
+PT,Portugal,PRT,PT,620,351,Lisbon,EUR,Portugal,Portuguese,39.50000000,-8.00000000,🇵🇹
+PR,"Puerto Rico",PRI,PR,630,1,"San Juan",USD,"Puerto Rico","Puerto Rican",18.25000000,-66.50000000,🇵🇷
+QA,Qatar,QAT,QA,634,974,Doha,QAR,قطر,Qatari,25.50000000,51.25000000,🇶🇦
+RE,Reunion,REU,RE,638,262,Saint-Denis,EUR,"La Réunion","Reunionese, Reunionnais",-21.15000000,55.50000000,🇷🇪
+RO,Romania,ROU,RO,642,40,Bucharest,RON,România,Romanian,46.00000000,25.00000000,🇷🇴
+RU,Russia,RUS,RU,643,7,Moscow,RUB,Россия,Russian,60.00000000,100.00000000,🇷🇺
+RW,Rwanda,RWA,RW,646,250,Kigali,RWF,Rwanda,Rwandan,-2.00000000,30.00000000,🇷🇼
+SH,"Saint Helena",SHN,SH,654,290,Jamestown,SHP,"Saint Helena","Saint Helenian",-15.95000000,-5.70000000,🇸🇭
+KN,"Saint Kitts And Nevis",KNA,KN,659,1,Basseterre,XCD,"Saint Kitts and Nevis","Kittitian or Nevisian",17.33333333,-62.75000000,🇰🇳
+LC,"Saint Lucia",LCA,LC,662,1,Castries,XCD,"Saint Lucia","Saint Lucian",13.88333333,-60.96666666,🇱🇨
+PM,"Saint Pierre and Miquelon",SPM,PM,666,508,Saint-Pierre,EUR,Saint-Pierre-et-Miquelon,"Saint-Pierrais or Miquelonnais",46.83333333,-56.33333333,🇵🇲
+VC,"Saint Vincent And The Grenadines",VCT,VC,670,1,Kingstown,XCD,"Saint Vincent and the Grenadines","Saint Vincentian, Vincentian",13.25000000,-61.20000000,🇻🇨
+BL,Saint-Barthelemy,BLM,BL,652,590,Gustavia,EUR,Saint-Barthélemy,Barthelemois,18.50000000,-63.41666666,🇧🇱
+MF,"Saint-Martin (French part)",MAF,MF,663,590,Marigot,EUR,Saint-Martin,Saint-Martinoise,18.08333333,-63.95000000,🇲🇫
+WS,Samoa,WSM,WS,882,685,Apia,WST,Samoa,Samoan,-13.58333333,-172.33333333,🇼🇸
+SM,"San Marino",SMR,SM,674,378,"San Marino",EUR,"San Marino",Sammarinese,43.76666666,12.41666666,🇸🇲
+ST,"Sao Tome and Principe",STP,ST,678,239,"Sao Tome",STD,"São Tomé e Príncipe","Sao Tomean",1.00000000,7.00000000,🇸🇹
+SA,"Saudi Arabia",SAU,SA,682,966,Riyadh,SAR,"المملكة العربية السعودية","Saudi, Saudi Arabian",25.00000000,45.00000000,🇸🇦
+SN,Senegal,SEN,SN,686,221,Dakar,XOF,Sénégal,Senegalese,14.00000000,-14.00000000,🇸🇳
+RS,Serbia,SRB,RS,688,381,Belgrade,RSD,Србија,Serbian,44.00000000,21.00000000,🇷🇸
+SC,Seychelles,SYC,SC,690,248,Victoria,SCR,Seychelles,Seychellois,-4.58333333,55.66666666,🇸🇨
+SL,"Sierra Leone",SLE,SL,694,232,Freetown,SLL,"Sierra Leone","Sierra Leonean",8.50000000,-11.50000000,🇸🇱
+SG,Singapore,SGP,SG,702,65,Singapur,SGD,Singapore,Singaporean,1.36666666,103.80000000,🇸🇬
+SX,"Sint Maarten (Dutch part)",SXM,SX,534,1721,Philipsburg,ANG,"Sint Maarten","Sint Maarten",18.03333300,-63.05000000,🇸🇽
+SK,Slovakia,SVK,SK,703,421,Bratislava,EUR,Slovensko,Slovak,48.66666666,19.50000000,🇸🇰
+SI,Slovenia,SVN,SI,705,386,Ljubljana,EUR,Slovenija,"Slovenian, Slovene",46.11666666,14.81666666,🇸🇮
+SB,"Solomon Islands",SLB,SB,090,677,Honiara,SBD,"Solomon Islands","Solomon Island",-8.00000000,159.00000000,🇸🇧
+SO,Somalia,SOM,SO,706,252,Mogadishu,SOS,Soomaaliya,"Somali, Somalian",10.00000000,49.00000000,🇸🇴
+ZA,"South Africa",ZAF,ZA,710,27,Pretoria,ZAR,"South Africa","South African",-29.00000000,24.00000000,🇿🇦
+GS,"South Georgia",SGS,GS,239,500,Grytviken,GBP,"South Georgia","South Georgia or South Sandwich Islands",-54.50000000,-37.00000000,🇬🇸
+KR,"South Korea",KOR,KR,410,82,Seoul,KRW,대한민국,"South Korean",37.00000000,127.50000000,🇰🇷
+SS,"South Sudan",SSD,SS,728,211,Juba,SSP,"South Sudan","South Sudanese",7.00000000,30.00000000,🇸🇸
+ES,Spain,ESP,ES,724,34,Madrid,EUR,España,Spanish,40.00000000,-4.00000000,🇪🇸
+LK,"Sri Lanka",LKA,LK,144,94,Colombo,LKR,"śrī laṃkāva","Sri Lankan",7.00000000,81.00000000,🇱🇰
+SD,Sudan,SDN,SD,729,249,Khartoum,SDG,السودان,Sudanese,15.00000000,30.00000000,🇸🇩
+SR,Suriname,SUR,SR,740,597,Paramaribo,SRD,Suriname,Surinamese,4.00000000,-56.00000000,🇸🇷
+SJ,"Svalbard And Jan Mayen Islands",SJM,SJ,744,47,Longyearbyen,NOK,"Svalbard og Jan Mayen",Svalbard,78.00000000,20.00000000,🇸🇯
+SZ,Swaziland,SWZ,SZ,748,268,Mbabane,SZL,Swaziland,Swazi,-26.50000000,31.50000000,🇸🇿
+SE,Sweden,SWE,SE,752,46,Stockholm,SEK,Sverige,Swedish,62.00000000,15.00000000,🇸🇪
+CH,Switzerland,CHE,CH,756,41,Bern,CHF,Schweiz,Swiss,47.00000000,8.00000000,🇨🇭
+SY,Syria,SYR,SY,760,963,Damascus,SYP,سوريا,Syrian,35.00000000,38.00000000,🇸🇾
+TW,Taiwan,TWN,TW,158,886,Taipei,TWD,臺灣,"Chinese, Taiwanese",23.50000000,121.00000000,🇹🇼
+TJ,Tajikistan,TJK,TJ,762,992,Dushanbe,TJS,Тоҷикистон,Tajikistani,39.00000000,71.00000000,🇹🇯
+TZ,Tanzania,TZA,TZ,834,255,Dodoma,TZS,Tanzania,Tanzanian,-6.00000000,35.00000000,🇹🇿
+TH,Thailand,THA,TH,764,66,Bangkok,THB,ประเทศไทย,Thai,15.00000000,100.00000000,🇹🇭
+BS,"The Bahamas",BHS,BS,044,1,Nassau,BSD,Bahamas,Bahamian,24.25000000,-76.00000000,🇧🇸
+TG,Togo,TGO,TG,768,228,Lome,XOF,Togo,Togolese,8.00000000,1.16666666,🇹🇬
+TK,Tokelau,TKL,TK,772,690,,NZD,Tokelau,Tokelauan,-9.00000000,-172.00000000,🇹🇰
+TO,Tonga,TON,TO,776,676,Nuku'alofa,TOP,Tonga,Tongan,-20.00000000,-175.00000000,🇹🇴
+TT,"Trinidad And Tobago",TTO,TT,780,1,"Port of Spain",TTD,"Trinidad and Tobago","Trinidadian or Tobagonian",11.00000000,-61.00000000,🇹🇹
+TN,Tunisia,TUN,TN,788,216,Tunis,TND,تونس,Tunisian,34.00000000,9.00000000,🇹🇳
+TR,Turkey,TUR,TR,792,90,Ankara,TRY,Türkiye,Turkish,39.00000000,35.00000000,🇹🇷
+TM,Turkmenistan,TKM,TM,795,993,Ashgabat,TMT,Türkmenistan,Turkmen,40.00000000,60.00000000,🇹🇲
+TC,"Turks And Caicos Islands",TCA,TC,796,1,"Cockburn Town",USD,"Turks and Caicos Islands","Turks and Caicos Island",21.75000000,-71.58333333,🇹🇨
+TV,Tuvalu,TUV,TV,798,688,Funafuti,AUD,Tuvalu,Tuvaluan,-8.00000000,178.00000000,🇹🇻
+UG,Uganda,UGA,UG,800,256,Kampala,UGX,Uganda,Ugandan,1.00000000,32.00000000,🇺🇬
+UA,Ukraine,UKR,UA,804,380,Kyiv,UAH,Україна,Ukrainian,49.00000000,32.00000000,🇺🇦
+AE,"United Arab Emirates",ARE,AE,784,971,"Abu Dhabi",AED,"دولة الإمارات العربية المتحدة","Emirati, Emirian, Emiri",24.00000000,54.00000000,🇦🇪
+GB,"United Kingdom",GBR,GB,826,44,London,GBP,"United Kingdom","British, UK",54.00000000,-2.00000000,🇬🇧
+US,"United States",USA,US,840,1,Washington,USD,"United States",American,38.00000000,-97.00000000,🇺🇸
+UM,"United States Minor Outlying Islands",UMI,UM,581,1,,USD,"United States Minor Outlying Islands",American,0.00000000,0.00000000,🇺🇲
+UY,Uruguay,URY,UY,858,598,Montevideo,UYU,Uruguay,Uruguayan,-33.00000000,-56.00000000,🇺🇾
+UZ,Uzbekistan,UZB,UZ,860,998,Tashkent,UZS,O‘zbekiston,"Uzbekistani, Uzbek",41.00000000,64.00000000,🇺🇿
+VU,Vanuatu,VUT,VU,548,678,"Port Vila",VUV,Vanuatu,"Ni-Vanuatu, Vanuatuan",-16.00000000,167.00000000,🇻🇺
+VA,"Vatican City State (Holy See)",VAT,VA,336,379,"Vatican City",EUR,Vaticano,Vatican,41.90000000,12.45000000,🇻🇦
+VE,Venezuela,VEN,VE,862,58,Caracas,VES,Venezuela,Venezuelan,8.00000000,-66.00000000,🇻🇪
+VN,Vietnam,VNM,VN,704,84,Hanoi,VND,"Việt Nam",Vietnamese,16.16666666,107.83333333,🇻🇳
+VG,"Virgin Islands (British)",VGB,VG,092,1,"Road Town",USD,"British Virgin Islands","British Virgin Island",18.43138300,-64.62305000,🇻🇬
+VI,"Virgin Islands (US)",VIR,VI,850,1,"Charlotte Amalie",USD,"United States Virgin Islands","U.S. Virgin Island",18.34000000,-64.93000000,🇻🇮
+WF,"Wallis And Futuna Islands",WLF,WF,876,681,"Mata Utu",XPF,"Wallis et Futuna","Wallis and Futuna, Wallisian or Futunan",-13.30000000,-176.20000000,🇼🇫
+EH,"Western Sahara",ESH,EH,732,212,El-Aaiun,MAD,"الصحراء الغربية","Sahrawi, Sahrawian, Sahraouian",24.50000000,-13.00000000,🇪🇭
+YE,Yemen,YEM,YE,887,967,Sanaa,YER,اليَمَن,Yemeni,15.00000000,48.00000000,🇾🇪
+ZM,Zambia,ZMB,ZM,894,260,Lusaka,ZMW,Zambia,Zambian,-15.00000000,30.00000000,🇿🇲
+ZW,Zimbabwe,ZWE,ZW,716,263,Harare,ZWL,Zimbabwe,Zimbabwean,-20.00000000,30.00000000,🇿🇼

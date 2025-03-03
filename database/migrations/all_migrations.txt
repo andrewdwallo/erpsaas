@@ -1,0 +1,1163 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('users', function (Blueprint $table) {
+$table->id();
+$table->string('name');
+$table->string('email')->unique();
+$table->timestamp('email_verified_at')->nullable();
+$table->string('password')->nullable();
+$table->rememberToken();
+$table->foreignId('current_company_id')->nullable();
+$table->foreignId('current_connected_account_id')->nullable();
+$table->string('profile_photo_path', 2048)->nullable();
+$table->timestamps();
+});
+
+Schema::create('password_reset_tokens', function (Blueprint $table) {
+$table->string('email')->primary();
+$table->string('token');
+$table->timestamp('created_at')->nullable();
+});
+
+Schema::create('sessions', function (Blueprint $table) {
+$table->string('id')->primary();
+$table->foreignId('user_id')->nullable()->index();
+$table->string('ip_address', 45)->nullable();
+$table->text('user_agent')->nullable();
+$table->longText('payload');
+$table->integer('last_activity')->index();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('users');
+Schema::dropIfExists('password_reset_tokens');
+Schema::dropIfExists('sessions');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('cache', function (Blueprint $table) {
+$table->string('key')->primary();
+$table->mediumText('value');
+$table->integer('expiration');
+});
+
+Schema::create('cache_locks', function (Blueprint $table) {
+$table->string('key')->primary();
+$table->string('owner');
+$table->integer('expiration');
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('cache');
+Schema::dropIfExists('cache_locks');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('jobs', function (Blueprint $table) {
+$table->id();
+$table->string('queue')->index();
+$table->longText('payload');
+$table->unsignedTinyInteger('attempts');
+$table->unsignedInteger('reserved_at')->nullable();
+$table->unsignedInteger('available_at');
+$table->unsignedInteger('created_at');
+});
+
+Schema::create('job_batches', function (Blueprint $table) {
+$table->string('id')->primary();
+$table->string('name');
+$table->integer('total_jobs');
+$table->integer('pending_jobs');
+$table->integer('failed_jobs');
+$table->longText('failed_job_ids');
+$table->mediumText('options')->nullable();
+$table->integer('cancelled_at')->nullable();
+$table->integer('created_at');
+$table->integer('finished_at')->nullable();
+});
+
+Schema::create('failed_jobs', function (Blueprint $table) {
+$table->id();
+$table->string('uuid')->unique();
+$table->text('connection');
+$table->text('queue');
+$table->longText('payload');
+$table->longText('exception');
+$table->timestamp('failed_at')->useCurrent();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('jobs');
+Schema::dropIfExists('job_batches');
+Schema::dropIfExists('failed_jobs');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('personal_access_tokens', function (Blueprint $table) {
+$table->id();
+$table->morphs('tokenable');
+$table->string('name');
+$table->string('token', 64)->unique();
+$table->text('abilities')->nullable();
+$table->timestamp('last_used_at')->nullable();
+$table->timestamp('expires_at')->nullable();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('personal_access_tokens');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('companies', function (Blueprint $table) {
+$table->id();
+$table->foreignId('user_id')->index();
+$table->string('name');
+$table->boolean('personal_company');
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('companies');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('company_user', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id');
+$table->foreignId('user_id');
+$table->string('role')->nullable();
+$table->timestamps();
+
+$table->unique(['company_id', 'user_id']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('company_user');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('company_invitations', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('email');
+$table->string('role')->nullable();
+$table->timestamps();
+
+$table->unique(['company_id', 'email']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('company_invitations');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('connected_accounts', function (Blueprint $table) {
+$table->id();
+$table->foreignId('user_id');
+$table->string('provider');
+$table->string('provider_id');
+$table->string('name')->nullable();
+$table->string('nickname')->nullable();
+$table->string('email')->nullable();
+$table->string('telephone')->nullable();
+$table->text('avatar_path')->nullable();
+$table->string('token', 1000);
+$table->string('secret')->nullable(); // OAuth1
+$table->string('refresh_token', 1000)->nullable(); // OAuth2
+$table->dateTime('expires_at')->nullable(); // OAuth2
+$table->timestamps();
+
+$table->index(['user_id', 'id']);
+$table->index(['provider', 'provider_id']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('connected_accounts');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('currencies', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('name', 50);
+$table->string('code')->index();
+$table->bigInteger('rate')->default(1);
+$table->unsignedTinyInteger('precision')->default(2);
+$table->string('symbol')->default('$');
+$table->boolean('symbol_first')->default(true);
+$table->string('decimal_mark')->default('.');
+$table->string('thousands_separator')->nullable();
+$table->boolean('enabled')->default(true);
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+
+$table->unique(['company_id', 'code']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('currencies');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('institutions', function (Blueprint $table) {
+$table->id();
+$table->string('external_institution_id')->nullable(); // Plaid
+$table->string('name')->index();
+$table->string('logo')->nullable();
+$table->string('website')->nullable();
+$table->string('phone', 20)->nullable();
+$table->text('address')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+
+Schema::create('account_subtypes', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->boolean('multi_currency')->default(false);
+$table->string('category');
+$table->string('type');
+$table->string('name');
+$table->text('description')->nullable();
+$table->timestamps();
+});
+
+Schema::create('accounts', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('subtype_id')->nullable()->constrained('account_subtypes')->nullOnDelete();
+$table->foreignId('parent_id')->nullable()->constrained('accounts')->nullOnDelete();
+$table->string('category')->nullable();
+$table->string('type')->nullable();
+$table->string('code')->nullable()->index();
+$table->string('name')->nullable()->index();
+$table->string('currency_code')->nullable();
+$table->text('description')->nullable();
+$table->boolean('archived')->default(false);
+$table->boolean('default')->default(false);
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+
+Schema::create('bank_accounts', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('account_id')->nullable()->constrained('accounts')->nullOnDelete();
+$table->foreignId('institution_id')->nullable()->constrained('institutions')->nullOnDelete();
+$table->string('type')->default('depository');
+$table->string('number', 20)->nullable();
+$table->boolean('enabled')->default(true);
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+
+Schema::create('connected_bank_accounts', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('institution_id')->nullable()->constrained('institutions')->nullOnDelete();
+$table->foreignId('bank_account_id')->nullable()->constrained('bank_accounts')->nullOnDelete();
+$table->string('external_account_id')->nullable();
+$table->text('access_token')->nullable();
+$table->string('identifier')->unique()->nullable(); // Plaid
+$table->string('item_id')->nullable();
+$table->string('currency_code')->nullable();
+$table->double('current_balance')->default(0);
+$table->string('name');
+$table->string('mask');
+$table->string('type')->default('depository');
+$table->string('subtype')->nullable();
+$table->boolean('import_transactions')->default(false);
+$table->timestamp('last_imported_at')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('connected_bank_accounts');
+Schema::dropIfExists('bank_accounts');
+Schema::dropIfExists('accounts');
+Schema::dropIfExists('account_subtypes');
+Schema::dropIfExists('institutions');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('company_defaults', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('bank_account_id')->nullable()->constrained('bank_accounts')->nullOnDelete();
+$table->string('currency_code')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('company_defaults');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('document_defaults', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->onDelete('cascade');
+$table->string('type');
+$table->string('logo')->nullable();
+$table->boolean('show_logo')->default(false);
+$table->string('number_prefix')->nullable();
+$table->string('payment_terms')->default('due_upon_receipt');
+$table->string('header')->nullable();
+$table->string('subheader')->nullable();
+$table->text('terms')->nullable();
+$table->text('footer')->nullable();
+$table->string('accent_color')->nullable();
+$table->string('font')->nullable();
+$table->string('template')->nullable();
+$table->json('item_name')->nullable();
+$table->json('unit_name')->nullable();
+$table->json('price_name')->nullable();
+$table->json('amount_name')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+
+$table->unique(['company_id', 'type']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('document_defaults');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('company_profiles', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('logo')->nullable();
+$table->string('phone_number', 30)->nullable();
+$table->string('email', 255)->nullable();
+$table->string('tax_id', 50)->nullable();
+$table->string('entity_type')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('company_profiles');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('departments', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('manager_id')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('parent_id')->nullable()->constrained('departments')->nullOnDelete();
+$table->string('name');
+$table->text('description')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+
+$table->unique(['company_id', 'name']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('departments');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('contacts', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('type')->nullable();
+$table->string('first_name');
+$table->string('last_name')->nullable();
+$table->string('email')->nullable();
+$table->json('phones')->nullable();
+$table->boolean('is_primary')->default(false);
+$table->morphs('contactable');
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('contacts');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::table('company_user', function (Blueprint $table) {
+$table->unsignedBigInteger('contact_id')->nullable()->after('user_id');
+$table->string('employment_type')->nullable()->after('role');
+$table->date('hire_date')->nullable()->after('employment_type');
+$table->date('start_date')->nullable()->after('hire_date');
+$table->unsignedBigInteger('department_id')->nullable()->after('start_date');
+$table->string('job_title')->nullable()->after('department_id');
+$table->string('photo')->nullable()->after('job_title');
+$table->date('date_of_birth')->nullable()->after('photo');
+$table->string('gender')->nullable()->after('date_of_birth');
+$table->string('marital_status')->nullable()->after('gender');
+$table->string('nationality')->nullable()->after('marital_status');
+$table->bigInteger('compensation_amount')->nullable()->after('nationality');
+$table->string('compensation_type')->nullable()->after('compensation_amount');
+$table->string('compensation_frequency')->nullable()->after('compensation_type');
+$table->string('bank_account_number')->nullable()->after('compensation_frequency');
+$table->string('education_level')->nullable()->after('bank_account_number');
+$table->string('field_of_study')->nullable()->after('education_level');
+$table->string('school_name')->nullable()->after('field_of_study');
+$table->string('emergency_contact_name')->nullable()->after('school_name');
+$table->string('emergency_contact_phone_number')->nullable()->after('emergency_contact_name');
+$table->string('emergency_contact_email')->nullable()->after('emergency_contact_phone_number');
+
+$table->foreign('contact_id')->references('id')->on('contacts')->nullOnDelete();
+$table->foreign('department_id')->references('id')->on('departments')->nullOnDelete();
+});
+}
+public function down(): void
+{
+Schema::table('company_user', function (Blueprint $table) {
+$table->dropColumn([
+'contact_id',
+'employment_type',
+'hire_date',
+'start_date',
+'department_id',
+'job_title',
+'photo',
+'date_of_birth',
+'gender',
+'marital_status',
+'nationality',
+'compensation_amount',
+'compensation_type',
+'compensation_frequency',
+'bank_account_number',
+'education_level',
+'field_of_study',
+'school_name',
+'emergency_contact_name',
+'emergency_contact_phone_number',
+'emergency_contact_email',
+]);
+});
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('localizations', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('language')->default('en');
+$table->string('timezone')->nullable();
+$table->string('date_format')->default('M j, Y');
+$table->string('time_format')->default('g:i A');
+$table->unsignedTinyInteger('fiscal_year_end_month')->default(12);
+$table->unsignedTinyInteger('fiscal_year_end_day')->default(31);
+$table->unsignedTinyInteger('week_start')->default(1);
+$table->string('number_format')->default('comma_dot');
+$table->boolean('percent_first')->default(false);
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('localizations');
+}
+};
+<?php
+
+use App\Facades\Forex;
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+if (Forex::isDisabled()) {
+return;
+}
+
+Schema::create('currency_lists', function (Blueprint $table) {
+$table->id();
+$table->string('code');
+$table->string('name');
+$table->string('entity')->nullable();
+$table->boolean('available');
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('currency_lists');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('transactions', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->nullableMorphs('transactionable');
+$table->foreignId('account_id')->nullable()->constrained()->nullOnDelete();
+$table->foreignId('bank_account_id')->nullable()->constrained()->nullOnDelete();
+$table->string('plaid_transaction_id')->nullable();
+$table->foreignId('contact_id')->nullable()->constrained()->nullOnDelete();
+$table->string('type'); // deposit, withdrawal, journal
+$table->string('payment_channel')->nullable(); // online, in store, other
+$table->string('payment_method')->nullable(); // cash, check, credit card, bank transfer
+$table->boolean('is_payment')->default(false);
+$table->string('description')->nullable();
+$table->text('notes')->nullable();
+$table->string('reference')->nullable();
+$table->bigInteger('amount')->default(0);
+$table->boolean('pending')->default(false);
+$table->boolean('reviewed')->default(false);
+$table->dateTime('posted_at');
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+
+$table->index(['account_id', 'posted_at']);
+$table->index(['bank_account_id', 'posted_at']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('transactions');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('journal_entries', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('account_id')->constrained()->cascadeOnDelete();
+$table->foreignId('transaction_id')->constrained()->cascadeOnDelete();
+$table->string('type'); // debit, credit
+$table->bigInteger('amount')->default(0);
+$table->text('description')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+
+$table->index(['account_id', 'type']);
+$table->index(['account_id', 'transaction_id']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('journal_entries');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::table('transactions', function (Blueprint $table) {
+$table->date('posted_at')->change();
+});
+}
+public function down(): void
+{
+Schema::table('transactions', function (Blueprint $table) {
+$table->dateTime('posted_at')->change();
+});
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::table('account_subtypes', function (Blueprint $table) {
+$table->boolean('inverse_cash_flow')->default(false)->after('multi_currency');
+});
+}
+public function down(): void
+{
+Schema::table('account_subtypes', function (Blueprint $table) {
+$table->dropColumn('inverse_cash_flow');
+});
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('offerings', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('name')->index();
+$table->string('description')->nullable();
+$table->string('type')->nullable(); // product, service, etc.
+$table->integer('price')->default(0);
+$table->boolean('sellable')->default(false);
+$table->boolean('purchasable')->default(false);
+$table->foreignId('income_account_id')->nullable()->constrained('accounts')->nullOnDelete(); // income account e.g. sales/invoice
+$table->foreignId('expense_account_id')->nullable()->constrained('accounts')->nullOnDelete(); // expense account e.g. purchase/bill
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('offerings');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('clients', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('name');
+$table->string('currency_code')->nullable();
+$table->string('account_number')->nullable();
+$table->string('website')->nullable();
+$table->text('notes')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('clients');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('vendors', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->string('name');
+$table->string('type');
+$table->string('contractor_type')->nullable();
+$table->text('ssn')->nullable();
+$table->text('ein')->nullable();
+$table->string('currency_code')->nullable();
+$table->string('account_number')->nullable();
+$table->string('website')->nullable();
+$table->text('notes')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('vendors');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('document_line_items', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->morphs('documentable');
+$table->foreignId('offering_id')->nullable()->constrained()->nullOnDelete();
+$table->string('description')->nullable();
+$table->integer('quantity')->default(1);
+$table->integer('unit_price')->default(0);
+$table->integer('subtotal')->storedAs('quantity * unit_price');
+$table->integer('total')->storedAs('(quantity * unit_price) + tax_total - discount_total');
+$table->integer('tax_total')->default(0);
+$table->integer('discount_total')->default(0);
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('document_line_items');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('adjustments', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('account_id')->nullable()->constrained('accounts')->nullOnDelete();
+$table->string('name')->nullable();
+$table->text('description')->nullable();
+$table->string('category')->default('tax');
+$table->string('type')->default('sales');
+$table->boolean('recoverable')->default(false);
+$table->integer('rate')->default(0);
+$table->string('computation')->default('percentage');
+$table->string('scope')->nullable();
+$table->dateTime('start_date')->nullable();
+$table->dateTime('end_date')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('adjustments');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('adjustmentables', function (Blueprint $table) {
+$table->id();
+$table->foreignId('adjustment_id')->constrained()->cascadeOnDelete();
+$table->morphs('adjustmentable');
+
+$table->index(['adjustmentable_id', 'adjustmentable_type']);
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('adjustmentables');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('addresses', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('parent_address_id')->nullable()->constrained('addresses')->nullOnDelete();
+$table->morphs('addressable');
+$table->string('type'); // billing, shipping, etc.
+$table->string('recipient')->nullable();
+$table->string('phone')->nullable();
+$table->string('address_line_1')->nullable();
+$table->string('address_line_2')->nullable();
+$table->string('city')->nullable();
+$table->smallInteger('state_id')->nullable();
+$table->string('postal_code')->nullable();
+$table->string('country_code');
+$table->text('notes')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('addresses');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('bills', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('vendor_id')->nullable()->constrained('vendors')->nullOnDelete();
+$table->string('bill_number')->nullable();
+$table->string('order_number')->nullable(); // PO, SO, etc.
+$table->date('date')->nullable();
+$table->date('due_date')->nullable();
+$table->timestamp('paid_at')->nullable();
+$table->string('status')->default('open');
+$table->string('currency_code')->nullable();
+$table->string('discount_method')->default('per_line_item');
+$table->string('discount_computation')->default('percentage');
+$table->integer('discount_rate')->default(0);
+$table->integer('subtotal')->default(0);
+$table->integer('tax_total')->default(0);
+$table->integer('discount_total')->default(0);
+$table->integer('total')->default(0);
+$table->integer('amount_paid')->default(0);
+$table->integer('amount_due')->storedAs('total - amount_paid');
+$table->text('notes')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('bills');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('estimates', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
+$table->string('logo')->nullable();
+$table->string('header')->nullable();
+$table->string('subheader')->nullable();
+$table->string('estimate_number')->nullable();
+$table->string('reference_number')->nullable(); // PO, SO, etc.
+$table->date('date')->nullable();
+$table->date('expiration_date')->nullable();
+$table->timestamp('approved_at')->nullable();
+$table->timestamp('accepted_at')->nullable();
+$table->timestamp('converted_at')->nullable();
+$table->timestamp('declined_at')->nullable();
+$table->timestamp('last_sent_at')->nullable();
+$table->timestamp('last_viewed_at')->nullable();
+$table->string('status')->default('draft');
+$table->string('currency_code')->nullable();
+$table->string('discount_method')->default('per_line_item');
+$table->string('discount_computation')->default('percentage');
+$table->integer('discount_rate')->default(0);
+$table->integer('subtotal')->default(0);
+$table->integer('tax_total')->default(0);
+$table->integer('discount_total')->default(0);
+$table->integer('total')->default(0);
+$table->text('terms')->nullable(); // terms, notes
+$table->text('footer')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('estimates');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('recurring_invoices', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
+$table->string('logo')->nullable();
+$table->string('header')->nullable();
+$table->string('subheader')->nullable();
+$table->string('order_number')->nullable(); // PO, SO, etc.
+$table->string('payment_terms')->default('due_upon_receipt');
+$table->timestamp('approved_at')->nullable();
+$table->timestamp('ended_at')->nullable();
+$table->string('frequency')->default('monthly'); // daily, weekly, monthly, yearly, custom
+$table->string('interval_type')->nullable(); // for custom frequency "day(s), week(s), month(s), year(s)"
+$table->tinyInteger('interval_value')->nullable(); // "every x" value (only for custom frequency)
+$table->tinyInteger('month')->nullable(); // 1-12 for yearly frequency
+$table->tinyInteger('day_of_month')->nullable(); // 1-31 for monthly, yearly, custom yearly frequency
+$table->tinyInteger('day_of_week')->nullable(); // 1-7 for weekly, custom weekly frequency
+$table->date('start_date')->nullable();
+$table->string('end_type')->default('never'); // never, after, on
+$table->smallInteger('max_occurrences')->nullable(); // when end_type is 'after'
+$table->date('end_date')->nullable(); // when end_type is 'on'
+$table->smallInteger('occurrences_count')->default(0);
+$table->string('timezone')->default(config('app.timezone'));
+$table->date('next_date')->nullable();
+$table->date('last_date')->nullable();
+$table->boolean('auto_send')->default(false);
+$table->time('send_time')->default('09:00:00');
+$table->string('status')->default('draft');
+$table->string('currency_code')->nullable();
+$table->string('discount_method')->default('per_line_item');
+$table->string('discount_computation')->default('percentage');
+$table->integer('discount_rate')->default(0);
+$table->integer('subtotal')->default(0);
+$table->integer('tax_total')->default(0);
+$table->integer('discount_total')->default(0);
+$table->integer('total')->default(0);
+$table->text('terms')->nullable(); // terms, notes
+$table->text('footer')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('recurring_invoices');
+}
+};
+<?php
+
+//...
+
+return new class extends Migration
+{
+
+public function up(): void
+{
+Schema::create('invoices', function (Blueprint $table) {
+$table->id();
+$table->foreignId('company_id')->constrained()->cascadeOnDelete();
+$table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
+$table->foreignId('estimate_id')->nullable()->constrained('estimates')->nullOnDelete();
+$table->foreignId('recurring_invoice_id')->nullable()->constrained('recurring_invoices')->nullOnDelete();
+$table->string('logo')->nullable();
+$table->string('header')->nullable();
+$table->string('subheader')->nullable();
+$table->string('invoice_number')->nullable();
+$table->string('order_number')->nullable(); // PO, SO, etc.
+$table->date('date')->nullable();
+$table->date('due_date')->nullable();
+$table->timestamp('approved_at')->nullable();
+$table->timestamp('paid_at')->nullable();
+$table->timestamp('last_sent_at')->nullable();
+$table->timestamp('last_viewed_at')->nullable();
+$table->string('status')->default('draft');
+$table->string('currency_code')->nullable();
+$table->string('discount_method')->default('per_line_item');
+$table->string('discount_computation')->default('percentage');
+$table->integer('discount_rate')->default(0);
+$table->integer('subtotal')->default(0);
+$table->integer('tax_total')->default(0);
+$table->integer('discount_total')->default(0);
+$table->integer('total')->default(0);
+$table->integer('amount_paid')->default(0);
+$table->integer('amount_due')->storedAs('total - amount_paid');
+$table->text('terms')->nullable(); // terms, notes
+$table->text('footer')->nullable();
+$table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+$table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+$table->timestamps();
+});
+}
+public function down(): void
+{
+Schema::dropIfExists('invoices');
+}
+};
