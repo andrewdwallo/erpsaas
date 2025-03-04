@@ -19,3 +19,5 @@ yarn-error.log
 /.vscode
 /public/css/
 /public/js/
+dump.sql
+all_*.txt
