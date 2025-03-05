@@ -873,7 +873,7 @@ class MigrateNiboData extends Command
     private function fetchPaginated(
         string $endpoint,
         array $query = [],
-        string $orderby = null,
+        string $orderby = 'null',
         int $top = 500
     ): array
     {
@@ -895,7 +895,7 @@ class MigrateNiboData extends Command
                 '$top'  => $top,
                 '$skip' => $skip,
             ]);
-            if ($orderby) {
+            if ($orderby !== 'null') {
                 $params['$orderby'] = $orderby;
             }
 
