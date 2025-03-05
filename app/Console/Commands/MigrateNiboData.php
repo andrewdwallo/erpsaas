@@ -72,6 +72,35 @@ class MigrateNiboData extends Command
         ];
         //$this->compareAndLogApiToDbColumns('erpsaas', $maps);
         // Chamada do método genérico
+
+        $maps = [
+            [
+                'endpoint' => 'organizations',
+                'table' => 'companies',
+                'model' => Company::class,
+                // Neste array, a chave (ex: 'organizationId') é a propriedade do JSON da API
+                // e o valor (ex: 'nibo_org_id') é a coluna do DB
+                'fields' => [
+                    'organizationId'    => 'nibo_org_id',
+                    'name'              => 'name',
+                    'some_api_property' => 'personal_company', 
+                    // ...
+                ],
+            ],
+            [
+                'endpoint' => 'users',
+                'table' => 'users',
+                'fields' => [
+                    'id'    => 'nibo_user_id',
+                    'name'  => 'name',
+                    'email' => 'email',
+                    // ...
+                ],
+            ],
+            // quantos blocos você quiser...
+        ];
+        //$this->compareAndLogApiToDbColumns('erpsaas', $maps);
+        // Chamada do método genérico
         $orgs = $this->fetchPaginated('organizations'); // Chamando o endpoint
         $this->compareApiKeysWithTableColumnsColorPro(
             tableName: 'companies',            // nome da tabela no DB
@@ -136,7 +165,11 @@ class MigrateNiboData extends Command
     }
 
     /** 
+    /** 
      * Exibe em tabela as colunas do DB e as keys do primeiro objeto da resposta da API.
+     *
+     * Exemplo de uso: compareApiKeysWithTableColumns('column', $apiObjectList, );
+     * 
      *
      * Exemplo de uso: compareApiKeysWithTableColumns('column', $apiObjectList, );
      * 
@@ -151,6 +184,7 @@ class MigrateNiboData extends Command
         // Verifica se há itens na resposta da API
         if (empty($apiItems)) {
             $this->info("Nenhum item retornado da API para comparação:" );
+            $this->info("Nenhum item retornado da API para comparação:" );
             return;
         }
 
@@ -159,6 +193,7 @@ class MigrateNiboData extends Command
 
         // Determina o número máximo de linhas (para cobrir todos os elementos)
         $maxCount = max(count($columns), count($apiKeys));
+        
         
         // Monta as linhas da tabela, exibindo lado a lado a coluna do DB e a key da API (se houver)
         $rows = [];
