@@ -43,13 +43,55 @@ class MigrateNiboData extends Command
     public function handle()
     {
         $this->info('Iniciando migração de dados do Nibo...');
-        $orgs = $this->fetchPaginated('organizations'); // Chamando o endpoint
 
+        $maps = [
+            [
+                'endpoint' => 'organizations',
+                'table' => 'companies',
+                'model' => Company::class,
+                // Neste array, a chave (ex: 'organizationId') é a propriedade do JSON da API
+                // e o valor (ex: 'nibo_org_id') é a coluna do DB
+                'fields' => [
+                    'organizationId'    => 'nibo_org_id',
+                    'name'              => 'name',
+                    'some_api_property' => 'personal_company', 
+                    // ...
+                ],
+            ],
+            [
+                'endpoint' => 'users',
+                'table' => 'users',
+                'fields' => [
+                    'id'    => 'nibo_user_id',
+                    'name'  => 'name',
+                    'email' => 'email',
+                    // ...
+                ],
+            ],
+            // quantos blocos você quiser...
+        ];
+        //$this->compareAndLogApiToDbColumns('erpsaas', $maps);
         // Chamada do método genérico
-        $this->compareApiKeysWithTableColumns(
+        $orgs = $this->fetchPaginated('organizations'); // Chamando o endpoint
+        $this->compareApiKeysWithTableColumnsColorPro(
             tableName: 'companies',            // nome da tabela no DB
-            apiItems:  $orgs['items'] ?? [],   // itens de resposta do endpoint, podem ser dinâmicos então lógica extra é necessária para busca-los
+            apiItems:  $orgs ?? [],   // passa itens para pegar o primeiro.
+            // quero fazer o bind de chaves de um endpoint para uma tabela
+            //companies:   ['name' => 'organizationId', 'personal_company' => 'name'] // organizations
         );
+            //users:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+            //paring:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
+       // );
 
         // // Se quiser transacionar tudo junto, mantendo atomicidade:
         // DB::transaction(function () {
@@ -95,9 +137,11 @@ class MigrateNiboData extends Command
         $this->info('Migração concluída com sucesso!');
     }
 
-    /**
+    /** 
      * Exibe em tabela as colunas do DB e as keys do primeiro objeto da resposta da API.
      *
+     * Exemplo de uso: compareApiKeysWithTableColumns('column', $apiObjectList, );
+     * 
      * @param  string  $tableName  Nome da tabela do DB, ex.: 'companies'
      * @param  array   $apiItems   Array de itens da resposta da API
      */
@@ -108,7 +152,7 @@ class MigrateNiboData extends Command
 
         // Verifica se há itens na resposta da API
         if (empty($apiItems)) {
-            $this->info("Nenhum item retornado da API para comparação.");
+            $this->info("Nenhum item retornado da API para comparação:" );
             return;
         }
 
@@ -117,7 +161,7 @@ class MigrateNiboData extends Command
 
         // Determina o número máximo de linhas (para cobrir todos os elementos)
         $maxCount = max(count($columns), count($apiKeys));
-
+        
         // Monta as linhas da tabela, exibindo lado a lado a coluna do DB e a key da API (se houver)
         $rows = [];
         for ($i = 0; $i < $maxCount; $i++) {
@@ -133,6 +177,244 @@ class MigrateNiboData extends Command
         $extraKeys = array_diff($apiKeys, $columns);
         if (!empty($extraKeys)) {
             $this->info("Chaves extras da API não existentes em '$tableName': " . implode(', ', $extraKeys));
+        }
+    }
+
+    /** 
+     * Exibe em tabela as colunas do DB e as keys do primeiro objeto da resposta da API.
+     * 
+     * @param  string  $tableName  Nome da tabela do DB, ex.: 'companies'
+     * @param  array   $apiItems   Array de itens da resposta da API
+     */
+    private function compareApiKeysWithTableColumnsColor(string $tableName, array $apiItems): void
+    {
+        // Obtém as colunas da tabela via Schema
+        $columns = Schema::getColumnListing($tableName);
+
+        // Verifica se há itens na resposta da API
+        if (empty($apiItems)) {
+            $this->info("Nenhum item retornado da API para comparação.");
+            return;
+        }
+
+        // Obtém as keys do primeiro objeto da API
+        $apiKeys = array_keys($apiItems[0]);
+
+        // Exemplo de mapeamento: se a tabela for 'companies', obtemos os fillable do model Company
+        $fillable = [];
+        if ($tableName === 'companies') {
+            $modelClass = \App\Models\Company::class;
+            $fillable = (new $modelClass)->getFillable();
+        }
+
+        // Determina o número máximo de linhas (para cobrir todos os elementos)
+        $maxCount = max(count($columns), count($apiKeys));
+
+        // Monta as linhas da tabela, exibindo lado a lado a coluna do DB e a key da API (se houver)
+        $rows = [];
+        for ($i = 0; $i < $maxCount; $i++) {
+            $dbColumn = $columns[$i] ?? '';
+            // Se a coluna for fillable, marca com formatação de cor verde
+            if (in_array($dbColumn, $fillable)) {
+                $dbColumn = "<fg=green>{$dbColumn}</>";
+            }
+            $apiKey = $apiKeys[$i] ?? '';
+            $rows[] = [$dbColumn, $apiKey];
+        }
+
+        // Exibe a tabela comparativa
+        $this->table(["DB Column: $tableName", "API Key (primeiro objeto)"], $rows);
+
+        // Opcional: exibe as keys extras que estão na API e não na tabela
+        $extraKeys = array_diff($apiKeys, $columns);
+        if (!empty($extraKeys)) {
+            $this->info("Chaves extras da API não existentes em '$tableName': " . implode(', ', $extraKeys));
+        }
+    }
+
+    /**
+    * Exibe em tabela as colunas do DB e as keys do primeiro objeto da resposta da API,
+    * destacando em verde as colunas que são fillable.
+    *
+    * @param  string  $tableName  Nome da tabela do DB, ex.: 'companies'
+    * @param  array   $apiItems   Array de itens da resposta da API
+    */
+    private function compareApiKeysWithTableColumnsColorPro(string $tableName, array $apiItems): void
+    {
+        // Obtém as colunas da tabela via Schema
+        $columns = Schema::getColumnListing($tableName);
+
+        // Verifica se há itens na resposta da API
+        if (empty($apiItems)) {
+            $this->info("Nenhum item retornado da API para comparação.");
+            return;
+        }
+
+        // Obtém as keys do primeiro objeto da API
+        $apiKeys = array_keys($apiItems[0]);
+
+        // Lista completa de models baseada na estrutura do diretório /app/Models
+        $modelClasses = [
+            // Accounting
+            \App\Models\Accounting\Account::class,
+            \App\Models\Accounting\AccountSubtype::class,
+            \App\Models\Accounting\Adjustment::class,
+            \App\Models\Accounting\Bill::class,
+            \App\Models\Accounting\Document::class,
+            \App\Models\Accounting\DocumentLineItem::class,
+            \App\Models\Accounting\Estimate::class,
+            \App\Models\Accounting\Invoice::class,
+            \App\Models\Accounting\JournalEntry::class,
+            \App\Models\Accounting\RecurringInvoice::class,
+            \App\Models\Accounting\Transaction::class,
+            // Banking
+            \App\Models\Banking\BankAccount::class,
+            \App\Models\Banking\ConnectedBankAccount::class,
+            \App\Models\Banking\Institution::class,
+            // Common
+            \App\Models\Common\Address::class,
+            \App\Models\Common\Client::class,
+            \App\Models\Common\Contact::class,
+            \App\Models\Common\Offering::class,
+            \App\Models\Common\Vendor::class,
+            // Diretório raiz
+            \App\Models\Company::class,
+            \App\Models\CompanyInvitation::class,
+            \App\Models\ConnectedAccount::class,
+            \App\Models\Employeeship::class,
+            \App\Models\User::class,
+            // Core
+            \App\Models\Core\Department::class,
+            // Locale
+            \App\Models\Locale\City::class,
+            \App\Models\Locale\Country::class,
+            \App\Models\Locale\Currency::class,
+            \App\Models\Locale\State::class,
+            // Service
+            \App\Models\Service\CurrencyList::class,
+            // Setting
+            \App\Models\Setting\CompanyDefault::class,
+            \App\Models\Setting\CompanyProfile::class,
+            \App\Models\Setting\Currency::class,
+            \App\Models\Setting\DocumentDefault::class,
+            \App\Models\Setting\Localization::class,
+        ];
+
+        // Agrega os campos fillable dos models que correspondem à tabela
+        $fillable = [];
+        
+        foreach ($modelClasses as $modelClass) {
+            $modelInstance = new $modelClass;
+            //dd($modelInstance instanceof Account);//true
+            // Verifica se o nome da tabela do model é igual a $tableName
+            if ($modelInstance->getTable() === $tableName) {
+                // Mescla os fillables (evitando duplicatas, se necessário)
+                $fillable = array_unique(array_merge($fillable, $modelInstance->getFillable()));
+            }
+        }
+
+        // Determina o número máximo de linhas para cobrir todos os elementos
+        $maxCount = max(count($columns), count($apiKeys));
+
+        // Monta as linhas da tabela, exibindo lado a lado a coluna do DB e a key da API (se houver)
+        $rows = [];
+        for ($i = 0; $i < $maxCount; $i++) {
+            $dbColumn = $columns[$i] ?? '';
+            // Se a coluna estiver entre os fillables, marca com formatação de cor verde
+            if (in_array($dbColumn, $fillable)) {
+                $dbColumn = "<fg=green>{$dbColumn}</>";
+            }
+            $apiKey = $apiKeys[$i] ?? '';
+            $rows[] = [$dbColumn, $apiKey];
+        }
+
+        // Exibe a tabela comparativa
+        $this->table(["DB Column: $tableName", "API Key (primeiro objeto)"], $rows);
+
+        // Opcional: exibe as keys extras que estão na API e não na tabela
+        $extraKeys = array_diff($apiKeys, $columns);
+        if (!empty($extraKeys)) {
+            $this->info("Chaves extras da API não existentes em '$tableName': " . implode(', ', $extraKeys));
+        }
+    }
+
+
+    /**
+     * Compara as chaves de um endpoint da API com as colunas de uma tabela do DB.
+     * 
+     * @param  string  $databaseName  Nome da conexão do DB, ex.: 'erpsaas'
+     * @param  array   $endpointTableMappings  Array de mapeamentos de endpoint para tabela
+     */
+    private function compareAndLogApiToDbColumns(
+        string $databaseName,
+        array $endpointTableMappings
+    ): void
+        {
+        // Percorre cada mapeamento
+        foreach ($endpointTableMappings as $mapping) {
+            // 1) Extrai as informações do array
+            $endpoint   = $mapping['endpoint'] ?? null;
+            $tableName  = $mapping['table']    ?? null;
+            $fieldsMap  = $mapping['fields']   ?? [];
+
+            if (!$endpoint || !$tableName) {
+                $this->error("Mapping inválido ou incompleto. Pulei este bloco.");
+                continue;
+            }
+
+            // 2) Chama a API (pode usar fetchPaginated ou fetchSimple, conforme o caso)
+            $this->info("Buscando dados em /$endpoint para comparar com a tabela '$tableName'...");
+            $items = $this->fetchPaginated($endpoint); 
+            // $items deveria ser um array com “items” ou “data”. 
+            // Ajuste se o retorno da sua API for diferente:
+            //   $items = $items['items'] ?? [];
+
+            // 3) Obtém as colunas do DB (usando a conexão e tabela informadas)
+            $dbColumns = Schema::connection($databaseName)->getColumnListing($tableName);
+
+            // 4) Para cada item retornado pela API, vamos exibir uma tabela comparativa
+            foreach ($items as $idx => $item) {
+                // Cabeçalho apenas ilustrativo
+                $this->info("-------------------------------------------------------------------------------------");
+                $this->info("Comparando item #$idx de '/$endpoint' com colunas de '$tableName'...");
+
+                // Monta um array de linhas para exibir de forma tabular:
+                // Cada linha terá:
+                //   1. Nome do campo da API
+                //   2. Valor do item
+                //   3. Qual coluna do DB que mapeia (se existir)
+                //   4. Indica se essa coluna de fato existe na tabela
+                $rows = [];
+                foreach ($fieldsMap as $apiKey => $dbCol) {
+                    $apiValue   = $item[$apiKey] ?? 'N/A';
+                    $columnExists = in_array($dbCol, $dbColumns, true) ? 'SIM' : 'NÃO';
+                    
+                    $rows[] = [
+                        "API Field: $apiKey",
+                        "Value: $apiValue",
+                        "DB Column: $dbCol",
+                        "Existe na tabela? $columnExists"
+                    ];
+                }
+
+                // Exibe em formato de tabela
+                $this->table(
+                    ['API Field', 'Valor da API', 'DB Column', 'Existe?'],
+                    $rows
+                );
+
+                // (Opcional) detectar colunas do DB que não foram mapeadas:
+                //   $unmapped = array_diff($dbColumns, array_values($fieldsMap));
+                //   if (!empty($unmapped)) {
+                //       $this->info("Essas colunas do DB não têm correspondência no fieldsMap: " . implode(', ', $unmapped));
+                //   }
+
+                // (Opcional) detectar campos da API que não estão no $fieldsMap
+                //   $extraApiFields = array_diff(array_keys($item), array_keys($fieldsMap));
+                //   if (! empty($extraApiFields)) {
+                //       $this->info("Estas chaves da API não foram mapeadas em 'fields': " . implode(', ', $extraApiFields));
+                //   }
+            }
         }
     }
 
