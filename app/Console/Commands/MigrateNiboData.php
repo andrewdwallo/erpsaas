@@ -76,8 +76,6 @@ class MigrateNiboData extends Command
         $this->compareApiKeysWithTableColumnsColorPro(
             tableName: 'companies',            // nome da tabela no DB
             apiItems:  $orgs ?? [],   // passa itens para pegar o primeiro.
-            // quero fazer o bind de chaves de um endpoint para uma tabela
-            //companies:   ['name' => 'organizationId', 'personal_company' => 'name'] // organizations
         );
             //users:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
             //:   [' ' => ' ', ' ' => ' '] // mapeamento de chaves :   =>  
