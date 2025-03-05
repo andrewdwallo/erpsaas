@@ -302,6 +302,11 @@ class MigrateNiboData extends Command
         $fillable = [];
         
         foreach ($modelClasses as $modelClass) {
+            $reflection = new \ReflectionClass($modelClass);
+            if ($reflection->isAbstract()) {
+                // Pula classes abstratas
+                continue;
+            }
             $modelInstance = new $modelClass;
             //dd($modelInstance instanceof Account);//true
             // Verifica se o nome da tabela do model é igual a $tableName
