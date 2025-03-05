@@ -5,163 +5,367 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // MODELS
-use App\Models\Banking\BankAccount;
+use App\Models\Company;
 use App\Models\Banking\Institution;
+use App\Models\Banking\BankAccount;
+use App\Models\Accounting\Account;
 use App\Models\Accounting\Transaction;
 use App\Models\Accounting\Bill;
 use App\Models\Accounting\Invoice;
-use App\Models\Accounting\Account;
 use App\Models\Common\Vendor;
 use App\Models\Common\Client as MyClient;
+use App\Models\User;
 
 class MigrateNiboData extends Command
 {
     protected $signature = 'app:migrate-nibo-data';
-    protected $description = 'Migra dados do Nibo (organizational, balance, schedule, payments, receipts, statements) para o ERP.';
+    protected $description = 'Migra dados do Nibo (vários endpoints) para o ERP';
 
-    // Ajuste conforme sua API
-    private string $baseUrl = 'https://api.nibo.com.br/empresas/v1';
-    private ?string $apiToken = null; // Carregado do .env ou config
+    private string $baseUrl   = 'https://api.nibo.com.br/empresas/v1/';
+    private ?string $apiToken = null;
 
-    // Mapeamentos em memória: Nibo IDs => IDs do ERP
+    // Mapeamentos internos (Nibo ID => ID local)
     private array $organizationMap = [];
-    private array $accountMap = [];
-    private array $scheduleMap = [];
-    private array $stakeholderMap = [];
+    private array $accountMap      = [];
+    private array $scheduleMap     = [];
+    private array $stakeholderMap  = [];
+    private array $bankMap         = [];
 
     public function __construct()
     {
         parent::__construct();
-        // Carrega tokens do .env
-        $this->apiToken = env('Tk_B2BF', 'x');
+        $this->apiToken = env('Tk_B2BF', 'chave_invalida');
     }
 
     public function handle()
     {
         $this->info('Iniciando migração de dados do Nibo...');
-        
-        // Se quiser que tudo seja atômico (rollback em falha):
-        DB::transaction(function () {
-            // EXTRACT / TRANSFORM / LOAD
+        $orgs = $this->fetchPaginated('organizations'); // Chamando o endpoint
 
-            // 1) Carregar “Listas” em geral, p. ex. /organizations
-            $this->migrateOrganizations();
+        // Chamada do método genérico
+        $this->compareApiKeysWithTableColumns(
+            tableName: 'companies',            // nome da tabela no DB
+            apiItems:  $orgs['items'] ?? [],   // itens de resposta do endpoint, podem ser dinâmicos então lógica extra é necessária para busca-los
+        );
 
-            // 2) Migrar as contas (endpoint balance) → bank_accounts
-            $this->migrateBalances();
+        // // Se quiser transacionar tudo junto, mantendo atomicidade:
+        // DB::transaction(function () {
+        //     // 1. MIGRAR /organizations
+        //     $this->migrateOrganizations();
 
-            // 3) Migrar schedules → bills ou invoices
-            $this->migrateSchedules();
+        //     // 2. MIGRAR /users (se desejar mapear usuários do Nibo para algum modelo local)
+        //     $this->migrateUsers();
 
-            // 4) Migrar payments → transactions (saída)
-            $this->migratePayments();
+        //     // 3. MIGRAR /banks (caso necessário para popular Institution ou algo similar)
+        //     $this->migrateBanks();
 
-            // 5) Migrar receipts → transactions (entrada)
-            $this->migrateReceipts();
+        //     // 4. MIGRAR /accounts
+        //     $this->migrateAccounts();
 
-            // 6) (Opcional) Migrar extrato detalhado
-            $this->migrateStatements();
-        });
+        //     // 5. MIGRAR /costcenters
+        //     $this->migrateCostCenters();
+
+        //     // 6. MIGRAR /categories
+        //     $this->migrateCategories();
+
+        //     // 7. MIGRAR /schedules (pagamentos, recebimentos, etc.)
+        //     $this->migrateSchedules();
+
+        //     // 8. MIGRAR /payments
+        //     $this->migratePayments();
+
+        //     // 9. MIGRAR /receipts
+        //     $this->migrateReceipts();
+
+        //     // 10. MIGRAR /accounts/transfer
+        //     $this->migrateTransfers();
+
+        //     // 11. MIGRAR /accounts/{accountId}/reconciliation
+        //     $this->migrateReconciliation();
+
+        //     // 12. MIGRAR /nfse, /nfse/serviceprofiles, etc., conforme necessidade
+        //     // $this->migrateNfse();
+
+        //     // ...
+        // });
 
         $this->info('Migração concluída com sucesso!');
     }
 
-    /* -----------------------------------------------------------------------------------------
-       1) MIGRAÇÃO DAS “LISTAS” (ORGANIZATIONS)
-       ----------------------------------------------------------------------------------------- */
+    /**
+     * Exibe em tabela as colunas do DB e as keys do primeiro objeto da resposta da API.
+     *
+     * @param  string  $tableName  Nome da tabela do DB, ex.: 'companies'
+     * @param  array   $apiItems   Array de itens da resposta da API
+     */
+    private function compareApiKeysWithTableColumns(string $tableName, array $apiItems): void
+    {
+        // Obtém as colunas da tabela
+        $columns = Schema::getColumnListing($tableName);
+
+        // Verifica se há itens na resposta da API
+        if (empty($apiItems)) {
+            $this->info("Nenhum item retornado da API para comparação.");
+            return;
+        }
+
+        // Obtém as keys do primeiro objeto da API
+        $apiKeys = array_keys($apiItems[0]);
+
+        // Determina o número máximo de linhas (para cobrir todos os elementos)
+        $maxCount = max(count($columns), count($apiKeys));
+
+        // Monta as linhas da tabela, exibindo lado a lado a coluna do DB e a key da API (se houver)
+        $rows = [];
+        for ($i = 0; $i < $maxCount; $i++) {
+            $dbColumn = $columns[$i] ?? '';   // se não existir, deixa em branco
+            $apiKey   = $apiKeys[$i]   ?? '';   // se não existir, deixa em branco
+            $rows[]   = [$dbColumn, $apiKey];
+        }
+
+        // Exibe a tabela comparativa
+        $this->table(["DB Column: $tableName", "API Key (primeiro objeto)"], $rows);
+
+        // Opcional: exibe as keys extras que estão na API e não na tabela
+        $extraKeys = array_diff($apiKeys, $columns);
+        if (!empty($extraKeys)) {
+            $this->info("Chaves extras da API não existentes em '$tableName': " . implode(', ', $extraKeys));
+        }
+    }
 
     /**
-     * Exemplo para extrair /organizations (Listas), se você quiser armazenar isso como “Company” ou algo do tipo.
+     * EXEMPLO: /organizations => Tabela "companies"
      */
     private function migrateOrganizations()
     {
         $this->info('> Buscando /organizations...');
-        // Se o CSV “MAPA ETL Nibo - Listas.csv” indica que /organizations exige GET sem parâmetros,
-        // podemos chamar um método fetchPaginated ou fetchSimple.
         $endpoint = 'organizations';
-        $orgs = $this->fetchSimple($endpoint);
+        $data = $this->fetchSimple($endpoint);
 
-        // Transform/Load: mapear “organizationId” => “companies” (ou outra tabela)
-        foreach ($orgs['items'] ?? [] as $org) {
-            $orgId = $org['organizationId'];
+        foreach ($data['items'] ?? [] as $org) {
+            $orgId   = $org['organizationId'];
             $orgName = $org['name'] ?? 'Sem nome';
-            $cnpj = $org['cnpj'] ?? null;
+            $cnpj    = $org['cnpj'] ?? null;
 
-            // Exemplo de “firstOrCreate” em “companies” (depende se quiser mapear organizations do Nibo -> Company)
-            // Ajuste para o seu schema real
-            // 
-            // $company = Company::firstOrCreate(
-            //     [ 'nibo_org_id' => $orgId ], // Necessita de uma coluna extra “nibo_org_id”? 
-            //     [
-            //         'name' => $orgName,
-            //         'cnpj' => $cnpj,
-            //         // ...
-            //     ]
-            // );
-            // $this->organizationMap[$orgId] = $company->id;
-        }
-    }
-
-    /* -----------------------------------------------------------------------------------------
-       2) MIGRAÇÃO DE BALANCES (CONTAS BANCÁRIAS)
-       ----------------------------------------------------------------------------------------- */
-
-    private function migrateBalances()
-    {
-        $this->info('> Migrando /accounts/balance...');
-        $endpoint = 'accounts/balance';
-        $balances = $this->fetchPaginated($endpoint);
-
-        foreach ($balances as $item) {
-            // Ex.: $item['accountId'], $item['accountName'], $item['balance']
-            $niboAccountId = $item['accountId'];
-            $bankName = $item['bank']['name'] ?? 'Banco Desconhecido';
-
-            // 1) Localizar/criar Institution
-            $institution = Institution::firstOrCreate(
-                ['name' => $bankName],
-                ['website' => null /* ex. */]
-            );
-
-            // 2) Criar ou localizar conta contábil (Account)
-            $account = Account::firstOrCreate(
+            // Exemplo de persistência
+            $company = Company::firstOrCreate(
+                ['nibo_org_id' => $orgId], // campo adicional na sua tabela companies
                 [
-                    'company_id' => 1,
-                    'name'       => $item['accountName'],
-                ],
-                [
-                    'type'       => 'asset',  // ou outro
-                    'description'=> 'Conta importada do Nibo'
+                    'name' => $orgName,
+                    // 'cnpj' => $cnpj, // se houver campo
                 ]
             );
 
-            // 3) Criar ou localizar a BankAccount
+            $this->organizationMap[$orgId] = $company->id;
+        }
+    }
+
+    /**
+     * EXEMPLO: /users => Tabela "users" ou "employees" etc.
+     * Ajuste conforme a necessidade do seu projeto.
+     */
+    private function migrateUsers()
+    {
+        $this->info('> Buscando /users...');
+        $endpoint = 'users';
+        $data = $this->fetchPaginated($endpoint);
+
+        foreach ($data as $userData) {
+            $niboUserId = $userData['id'] ?? null; 
+            if (!$niboUserId) {
+                continue;
+            }
+
+            // Exemplo de persistência
+            $user = User::firstOrCreate(
+                // Ajuste conforme as colunas que você criou
+                ['nibo_user_id' => $niboUserId],
+                [
+                    'name'  => $userData['name']  ?? 'Sem Nome',
+                    'email' => $userData['email'] ?? null,
+                    // ...
+                ]
+            );
+            // Se quiser guardar mapping
+            // $this->someArrayMap[$niboUserId] = $user->id;
+        }
+    }
+
+    /**
+     * EXEMPLO: /banks => Tabela "institutions" (similar a MIGRAÇÃO DE BALANCES)
+     */
+    private function migrateBanks()
+    {
+        $this->info('> Migrando /banks...');
+        $endpoint = 'banks';
+        $banks = $this->fetchSimple($endpoint);
+
+        foreach ($banks['items'] ?? [] as $bk) {
+            $bankId = $bk['bankId'] ?? null;
+            $name   = $bk['name']   ?? 'Banco Sem Nome';
+
+            $institution = Institution::firstOrCreate(
+                ['nibo_bank_id' => $bankId],
+                ['name' => $name]
+            );
+
+            $this->bankMap[$bankId] = $institution->id;
+        }
+    }
+
+    /**
+     * EXEMPLO: /accounts => Tabela "bank_accounts" e "accounts" contábeis
+     * (Pode ser diferente de /accounts/balance, tudo depende de como a API do Nibo retorna)
+     */
+    private function migrateAccounts()
+    {
+        $this->info('> Migrando /accounts...');
+        $endpoint = 'accounts';
+        $accounts = $this->fetchPaginated($endpoint);
+
+        foreach ($accounts as $acc) {
+            $niboAccountId = $acc['id'] ?? null;
+            if (!$niboAccountId) {
+                continue;
+            }
+            $accountName = $acc['accountName'] ?? 'Conta Desconhecida';
+
+            // 1) Mapeia banco
+            $bankId = $acc['bank']['id'] ?? null;
+            $institutionId = $this->bankMap[$bankId] ?? null;
+
+            // 2) Localizar/criar a Account contábil
+            $account = Account::firstOrCreate(
+                [
+                    'company_id' => 1,
+                    'name'       => $accountName,
+                ],
+                [
+                    'type'        => 'asset',  
+                    'description' => 'Conta importada /accounts Nibo'
+                ]
+            );
+
+            // 3) Localizar/criar BankAccount
             $bankAccount = BankAccount::firstOrCreate(
                 [
                     'company_id' => 1,
                     'account_id' => $account->id,
                 ],
                 [
-                    'institution_id' => $institution->id,
-                    'number'         => $item['accountName'], 
+                    'institution_id' => $institutionId,
+                    'number'         => $acc['accountNumber'] ?? '',
                     'type'           => 'depository',
                     'enabled'        => true,
                 ]
             );
 
-            // 4) Guardar no array de mapeamento
             $this->accountMap[$niboAccountId] = $bankAccount->id;
-
-            // 5) Se quiser transação de “saldo inicial”, crie transaction ou journal entry de abertura
         }
     }
 
-    /* -----------------------------------------------------------------------------------------
-       3) MIGRAÇÃO DE SCHEDULES → BILLS OU INVOICES
-       ----------------------------------------------------------------------------------------- */
+    /**
+     * EXEMPLO: /accounts/transfer
+     */
+    private function migrateTransfers()
+    {
+        $this->info('> Migrando /accounts/transfer...');
+        $endpoint = 'accounts/transfer';
+        $data = $this->fetchPaginated($endpoint);
 
+        foreach ($data as $transfer) {
+            // Exemplo: 
+            $fromAccountId = $transfer['from']['id'] ?? null;
+            $toAccountId   = $transfer['to']['id']   ?? null;
+            $amount        = $transfer['amount']     ?? 0;
+            $date          = $transfer['transferDate'] ?? null;
+
+            $erpFromId = $this->accountMap[$fromAccountId] ?? null;
+            $erpToId   = $this->accountMap[$toAccountId]   ?? null;
+            if (!$erpFromId || !$erpToId) {
+                continue;
+            }
+
+            // Você poderia criar duas Transactions (saída e entrada),
+            // ou uma "transferência" interna, dependendo da sua modelagem.
+            // Exemplo simplificado:
+            Transaction::create([
+                'company_id'      => 1,
+                'bank_account_id' => $erpFromId,
+                'type'            => 'withdrawal',
+                'description'     => 'Transferência de conta X p/ conta Y',
+                'posted_at'       => $this->toDate($date),
+                'amount'          => $this->toInt($amount),
+            ]);
+
+            Transaction::create([
+                'company_id'      => 1,
+                'bank_account_id' => $erpToId,
+                'type'            => 'deposit',
+                'description'     => 'Transferência recebida de conta X',
+                'posted_at'       => $this->toDate($date),
+                'amount'          => $this->toInt($amount),
+            ]);
+        }
+    }
+
+    /**
+     * EXEMPLO: /accounts/{id}/reconciliation
+     */
+    private function migrateReconciliation()
+    {
+        $this->info('> Migrando conciliações /accounts/{accountId}/reconciliation...');
+        foreach ($this->accountMap as $niboAccountId => $erpBankAccountId) {
+            $endpoint = "accounts/{$niboAccountId}/reconciliation";
+            $data = $this->fetchSimple($endpoint);
+
+            foreach ($data['items'] ?? [] as $row) {
+                // Você pode criar/atualizar transações com base nos dados retornados 
+                // (como "description", "amount", "isReconciliated", etc.)
+                // Este passo varia muito conforme a regra que você pretende adotar.
+            }
+        }
+    }
+
+    /**
+     * EXEMPLO: /costcenters => Tabela "departments" ou alguma "cost_centers"
+     */
+    private function migrateCostCenters()
+    {
+        $this->info('> Migrando /costcenters...');
+        $endpoint = 'costcenters';
+        $data = $this->fetchPaginated($endpoint);
+
+        foreach ($data as $row) {
+            // Exemplo: name, code, etc.
+            // $department = Department::firstOrCreate(
+            //     ['nibo_cc_id' => $row['id']],
+            //     ['name' => $row['name']]
+            // );
+        }
+    }
+
+    /**
+     * EXEMPLO: /categories => Tabela "categories" local
+     */
+    private function migrateCategories()
+    {
+        $this->info('> Migrando /categories...');
+        $endpoint = 'categories';
+        $data = $this->fetchPaginated($endpoint);
+
+        // Idem, varia conforme sua tabela de categorias. 
+        foreach ($data as $cat) {
+            // ...
+        }
+    }
+
+    /**
+     * MIGRA /schedules (igual ao exemplo original)
+     */
     private function migrateSchedules()
     {
         $this->info('> Migrando /schedules...');
@@ -169,18 +373,14 @@ class MigrateNiboData extends Command
         $items = $this->fetchPaginated($endpoint);
 
         foreach ($items as $item) {
-            // Ex.: $item['scheduleId'], $item['type'], $item['value'], etc.
             $scheduleId = $item['scheduleId'] ?? null;
             if (!$scheduleId) continue;
 
             $isCredit = ($item['type'] === 'Credit');
-            $isPaid = (bool) ($item['isPaid'] ?? false);
+            $isPaid   = (bool) ($item['isPaid'] ?? false);
 
-            // stakeholder => vendor/client
-            $stakeholder = $item['stakeholder'] ?? null;
-            [$vendorId, $clientId] = $this->resolveStakeholder($stakeholder);
+            [$vendorId, $clientId] = $this->resolveStakeholder($item['stakeholder'] ?? null);
 
-            // Decide se vira “invoice” ou “bill”
             if ($isCredit) {
                 $invoice = Invoice::create([
                     'company_id'   => 1,
@@ -192,7 +392,6 @@ class MigrateNiboData extends Command
                     'amount_paid'  => $isPaid ? $this->toInt($item['value'] ?? 0) : 0,
                     'notes'        => $item['description'] ?? '',
                 ]);
-                // map
                 $this->scheduleMap[$scheduleId] = ['type' => 'invoice', 'id' => $invoice->id];
             } else {
                 $bill = Bill::create([
@@ -210,10 +409,9 @@ class MigrateNiboData extends Command
         }
     }
 
-    /* -----------------------------------------------------------------------------------------
-       4) MIGRAÇÃO DE PAYMENTS → TRANSAÇÕES (SAÍDA)
-       ----------------------------------------------------------------------------------------- */
-
+    /**
+     * MIGRA /payments (igual ao exemplo original)
+     */
     private function migratePayments()
     {
         $this->info('> Migrando /payments...');
@@ -221,16 +419,13 @@ class MigrateNiboData extends Command
         $items = $this->fetchPaginated($endpoint);
 
         foreach ($items as $item) {
-            // Ex.: $item['scheduleId'], $item['account']['id'], $item['value']
-            $scheduleId = $item['scheduleId'] ?? null;
-            $niboBankAccountId = $item['account']['id'] ?? null;
-            $value = $this->toInt($item['value'] ?? 0);
+            $scheduleId         = $item['scheduleId'] ?? null;
+            $niboBankAccountId  = $item['account']['id'] ?? null;
+            $value              = $this->toInt($item['value'] ?? 0);
 
-            // Localiza bankAccount no ERP
             $erpBankAccountId = $this->accountMap[$niboBankAccountId] ?? null;
             if (!$erpBankAccountId) continue;
 
-            // Cria transaction (saída)
             $transaction = Transaction::create([
                 'company_id'      => 1,
                 'bank_account_id' => $erpBankAccountId,
@@ -242,7 +437,7 @@ class MigrateNiboData extends Command
                 'reviewed'        => (bool) $item['isReconciliated'],
             ]);
 
-            // Se o schedule existe, atualizar Bill/Invoice
+            // Ajusta Bill/Invoice vinculado
             if ($scheduleId && isset($this->scheduleMap[$scheduleId])) {
                 $ref = $this->scheduleMap[$scheduleId];
                 if ($ref['type'] === 'bill') {
@@ -268,10 +463,9 @@ class MigrateNiboData extends Command
         }
     }
 
-    /* -----------------------------------------------------------------------------------------
-       5) MIGRAÇÃO DE RECEIPTS → TRANSAÇÕES (ENTRADA)
-       ----------------------------------------------------------------------------------------- */
-
+    /**
+     * MIGRA /receipts (igual ao exemplo original)
+     */
     private function migrateReceipts()
     {
         $this->info('> Migrando /receipts...');
@@ -279,14 +473,13 @@ class MigrateNiboData extends Command
         $items = $this->fetchPaginated($endpoint);
 
         foreach ($items as $item) {
-            $scheduleId = $item['scheduleId'] ?? null;
-            $niboBankAccountId = $item['account']['id'] ?? null;
-            $value = $this->toInt($item['value'] ?? 0);
+            $scheduleId         = $item['scheduleId'] ?? null;
+            $niboBankAccountId  = $item['account']['id'] ?? null;
+            $value              = $this->toInt($item['value'] ?? 0);
 
             $erpBankAccountId = $this->accountMap[$niboBankAccountId] ?? null;
             if (!$erpBankAccountId) continue;
 
-            // Cria transaction (entrada)
             $transaction = Transaction::create([
                 'company_id'      => 1,
                 'bank_account_id' => $erpBankAccountId,
@@ -298,7 +491,6 @@ class MigrateNiboData extends Command
                 'reviewed'        => (bool) $item['isReconciliated'],
             ]);
 
-            // Se tiver schedule => invoice/bill
             if ($scheduleId && isset($this->scheduleMap[$scheduleId])) {
                 $ref = $this->scheduleMap[$scheduleId];
                 if ($ref['type'] === 'invoice') {
@@ -311,7 +503,6 @@ class MigrateNiboData extends Command
                         $invoice->save();
                     }
                 } elseif ($ref['type'] === 'bill') {
-                    // Caso inusitado, mas se fosse “Crédito” num Bill...
                     $bill = Bill::find($ref['id']);
                     if ($bill) {
                         $bill->amount_paid += $value;
@@ -325,36 +516,17 @@ class MigrateNiboData extends Command
         }
     }
 
-    /* -----------------------------------------------------------------------------------------
-       6) MIGRAÇÃO DE STATEMENTS (opcional, /accounts/{id}/views/statement)
-       ----------------------------------------------------------------------------------------- */
+    // Se quiser migrar Notas Fiscais de Serviço
+    // private function migrateNfse() {
+    //     // ...
+    // }
 
-    private function migrateStatements()
-    {
-        $this->info('> Migrando extratos de cada conta...');
-        // Supondo que iremos pegar o range de datas do CSV ou de .env
-        $startDate = '2025-01-01';
-        $endDate   = '2025-02-19';
-
-        foreach ($this->accountMap as $niboAccountId => $erpBankAccountId) {
-            $endpoint = "accounts/{$niboAccountId}/views/statement";
-            $items = $this->fetchStatements($endpoint, $startDate, $endDate);
-
-            // Exemplo: $items["items"] = [ { "entryId": "...", "description": "Saldo Inicial", ... } ]
-            foreach ($items['items'] ?? [] as $stItem) {
-                // A maior parte destas transações já podem estar cobertas por "payments" e "receipts",
-                // mas se precisar criar entradas extras (ex.: "Saldo Inicial" sem scheduleId),
-                // você pode criar transaction. Ou ignorar se duplicaria.
-            }
-        }
-    }
-
-    /* -----------------------------------------------------------------------------------------
-       MÉTODOS AUXILIARES DE EXTRAÇÃO
-       ----------------------------------------------------------------------------------------- */
+    /* =====================================================================
+       MÉTODOS DE EXTRAÇÃO (AUXILIARES)
+    ====================================================================== */
 
     /**
-     * Busca dados simples (sem paginação) – ex.: /organizations 
+     * GET simples sem paginação
      */
     private function fetchSimple(string $endpoint): array
     {
@@ -376,13 +548,18 @@ class MigrateNiboData extends Command
     }
 
     /**
-     * Busca com paginação ($skip, $top), como payments/schedules/receipts/balance.
+     * GET com paginação
      */
-    private function fetchPaginated(string $endpoint, array $query = [], string $orderby = null, int $top = 500): array
+    private function fetchPaginated(
+        string $endpoint,
+        array $query = [],
+        string $orderby = null,
+        int $top = 500
+    ): array
     {
         $client = new Client([
             'base_uri' => $this->baseUrl,
-            'headers' => [
+            'headers'  => [
                 'apitoken' => $this->apiToken,
                 'Accept'   => 'application/json',
             ],
@@ -395,7 +572,7 @@ class MigrateNiboData extends Command
 
         while ($count === null || $skip < $count) {
             $params = array_merge($query, [
-                '$top' => $top,
+                '$top'  => $top,
                 '$skip' => $skip,
             ]);
             if ($orderby) {
@@ -409,9 +586,9 @@ class MigrateNiboData extends Command
 
             $data = json_decode($response->getBody()->getContents(), true);
             if (!isset($data['items'])) {
+                // Se não seguir esse padrão, adapte aqui
                 break;
             }
-
             $items = $data['items'];
             $allItems = array_merge($allItems, $items);
 
@@ -424,43 +601,10 @@ class MigrateNiboData extends Command
         return $allItems;
     }
 
-    /**
-     * Busca statements (extrato) para um accountId específico. 
-     * Normalmente sem paginação, mas se precisar, você pode adaptar.
-     */
-    private function fetchStatements(string $endpoint, string $startDate, string $endDate): array
-    {
-        $client = new Client([
-            'base_uri' => $this->baseUrl,
-            'headers' => [
-                'apitoken' => $this->apiToken,
-                'Accept'   => 'application/json',
-            ],
-            'timeout' => 60,
-        ]);
+    /* =====================================================================
+       FUNÇÕES DE TRANSFORMAÇÃO / AJUDA
+    ====================================================================== */
 
-        $response = $client->request('GET', $endpoint, [
-            'query' => [
-                'startDate' => $startDate,
-                'endDate'   => $endDate
-            ]
-        ]);
-
-        if ($response->getStatusCode() !== 200) {
-            $this->warn("Falha ao consultar statement em $endpoint. Status=".$response->getStatusCode());
-            return [];
-        }
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /* -----------------------------------------------------------------------------------------
-       FUNÇÕES DE TRANSFORMAÇÃO
-       ----------------------------------------------------------------------------------------- */
-
-    /**
-     * Exemplo para converter data (string ISO8601) em formato YYYY-MM-DD.
-     */
     private function toDate(?string $dateStr)
     {
         if (!$dateStr) {
@@ -469,18 +613,11 @@ class MigrateNiboData extends Command
         return \Carbon\Carbon::parse($dateStr)->format('Y-m-d');
     }
 
-    /**
-     * Exemplo para converter valor float em centavos (int).
-     */
     private function toInt(float $value)
     {
         return (int) round($value * 100);
     }
 
-    /**
-     * Resolve se stakeholder é “vendor” ou “client”.
-     * Retorna array [vendor_id, client_id].
-     */
     private function resolveStakeholder(?array $stakeholder): array
     {
         if (!$stakeholder) {
