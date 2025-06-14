@@ -52,53 +52,53 @@ class ViewRecurringInvoice extends ViewRecord
 
     public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema([
-                BannerEntry::make('inactiveAdjustments')
-                    ->label('Inactive adjustments')
-                    ->warning()
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->visible(fn (RecurringInvoice $record) => $record->hasInactiveAdjustments() && $record->canBeApproved())
-                    ->columnSpanFull()
-                    ->description(function (RecurringInvoice $record) {
-                        $inactiveAdjustments = collect();
-
-                        foreach ($record->lineItems as $lineItem) {
-                            foreach ($lineItem->adjustments as $adjustment) {
-                                if ($adjustment->isInactive() && $inactiveAdjustments->doesntContain($adjustment->name)) {
-                                    $inactiveAdjustments->push($adjustment->name);
-                                }
-                            }
-                        }
-
-                        $adjustmentsList = $inactiveAdjustments->map(static function ($name) {
-                            return "<span class='font-medium'>{$name}</span>";
-                        })->join(', ');
-
-                        $output = "<p class='text-sm'>This recurring invoice contains inactive adjustments that need to be addressed before approval: {$adjustmentsList}</p>";
-
-                        return new HtmlString($output);
-                    }),
-                BannerEntry::make('scheduleIsNotSet')
-                    ->info()
-                    ->title('Schedule not set')
-                    ->description('The schedule for this recurring invoice has not been set. You must set a schedule before you can approve this draft and start creating invoices.')
-                    ->visible(fn (RecurringInvoice $record) => ! $record->hasValidStartDate())
-                    ->columnSpanFull()
-                    ->actions([
-                        RecurringInvoice::getManageScheduleAction(Action::class)
-                            ->outlined(),
-                    ]),
-                BannerEntry::make('readyToApprove')
-                    ->info()
-                    ->title('Ready to approve')
-                    ->description('This recurring invoice is ready for approval. Review the details, and approve it when you’re ready to start generating invoices.')
-                    ->visible(fn (RecurringInvoice $record) => $record->canBeApproved() && ! $record->hasInactiveAdjustments())
-                    ->columnSpanFull()
-                    ->actions([
-                        RecurringInvoice::getApproveDraftAction(Action::class)
-                            ->outlined(),
-                    ]),
+                //                BannerEntry::make('inactiveAdjustments')
+                //                    ->label('Inactive adjustments')
+                //                    ->warning()
+                //                    ->icon('heroicon-o-exclamation-triangle')
+                //                    ->visible(fn (RecurringInvoice $record) => $record->hasInactiveAdjustments() && $record->canBeApproved())
+                //                    ->columnSpanFull()
+                //                    ->description(function (RecurringInvoice $record) {
+                //                        $inactiveAdjustments = collect();
+                //
+                //                        foreach ($record->lineItems as $lineItem) {
+                //                            foreach ($lineItem->adjustments as $adjustment) {
+                //                                if ($adjustment->isInactive() && $inactiveAdjustments->doesntContain($adjustment->name)) {
+                //                                    $inactiveAdjustments->push($adjustment->name);
+                //                                }
+                //                            }
+                //                        }
+                //
+                //                        $adjustmentsList = $inactiveAdjustments->map(static function ($name) {
+                //                            return "<span class='font-medium'>{$name}</span>";
+                //                        })->join(', ');
+                //
+                //                        $output = "<p class='text-sm'>This recurring invoice contains inactive adjustments that need to be addressed before approval: {$adjustmentsList}</p>";
+                //
+                //                        return new HtmlString($output);
+                //                    }),
+                //                BannerEntry::make('scheduleIsNotSet')
+                //                    ->info()
+                //                    ->title('Schedule not set')
+                //                    ->description('The schedule for this recurring invoice has not been set. You must set a schedule before you can approve this draft and start creating invoices.')
+                //                    ->visible(fn (RecurringInvoice $record) => ! $record->hasValidStartDate())
+                //                    ->columnSpanFull()
+                //                    ->actions([
+                //                        RecurringInvoice::getManageScheduleAction(Action::class)
+                //                            ->outlined(),
+                //                    ]),
+                //                BannerEntry::make('readyToApprove')
+                //                    ->info()
+                //                    ->title('Ready to approve')
+                //                    ->description('This recurring invoice is ready for approval. Review the details, and approve it when you’re ready to start generating invoices.')
+                //                    ->visible(fn (RecurringInvoice $record) => $record->canBeApproved() && ! $record->hasInactiveAdjustments())
+                //                    ->columnSpanFull()
+                //                    ->actions([
+                //                        RecurringInvoice::getApproveDraftAction(Action::class)
+                //                            ->outlined(),
+                //                    ]),
                 Section::make('Invoice Details')
                     ->columns(4)
                     ->schema([

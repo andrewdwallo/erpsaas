@@ -100,14 +100,14 @@ class ViewTransaction extends ViewRecord
 
     public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema([
-                BannerEntry::make('transactionUncategorized')
-                    ->warning()
-                    ->title('Transaction uncategorized')
-                    ->description('You must categorize this transaction before you can mark it as reviewed.')
-                    ->visible(fn (Transaction $record) => $record->isUncategorized())
-                    ->columnSpanFull(),
+                //                BannerEntry::make('transactionUncategorized')
+                //                    ->warning()
+                //                    ->title('Transaction uncategorized')
+                //                    ->description('You must categorize this transaction before you can mark it as reviewed.')
+                //                    ->visible(fn (Transaction $record) => $record->isUncategorized())
+                //                    ->columnSpanFull(),
                 Section::make('Transaction Details')
                     ->columns(3)
                     ->schema([

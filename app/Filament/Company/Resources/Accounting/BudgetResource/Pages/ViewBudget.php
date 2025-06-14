@@ -38,6 +38,6 @@ class ViewBudget extends ViewRecord
 
     public function infolist(Schema $schema): Schema
     {
-        return $infolist->schema([]);
+        return $schema->schema([]);
     }
 }
