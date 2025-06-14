@@ -233,7 +233,7 @@ abstract class BaseReportPage extends Page
                 ->label('Export')
                 ->button()
                 ->outlined()
-                ->dropdownWidth('max-w-[7rem]')
+                ->dropdownWidth('max-w-28')
                 ->dropdownPlacement('bottom-end')
                 ->icon('heroicon-m-chevron-down')
                 ->iconPosition(IconPosition::After),

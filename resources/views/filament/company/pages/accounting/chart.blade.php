@@ -16,11 +16,11 @@
         @foreach($this->accountCategories as $categoryValue => $accountSubtypes)
             @if($activeTab === $categoryValue)
                 <div
-                    class="es-table__container overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
+                    class="es-table__container overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
                     <div class="es-table__header-ctn"></div>
                     <div class="es-table__content overflow-x-auto">
                         <table
-                            class="es-table w-full min-w-[70rem] divide-y divide-gray-200 text-start text-sm dark:divide-white/5">
+                            class="es-table w-full min-w-280 divide-y divide-gray-200 text-start text-sm dark:divide-white/5">
                             <colgroup>
                                 <col span="1" style="width: 12.5%;">
                                 <col span="1" style="width: 20%;">

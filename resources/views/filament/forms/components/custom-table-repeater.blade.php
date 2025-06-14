@@ -66,7 +66,7 @@
         ]) }}
     >
         @if (count($containers) || $emptyLabel !== false)
-            <div class="table-repeater-container rounded-sm relative ring-1 ring-gray-950/5 dark:ring-white/20">
+            <div class="table-repeater-container rounded-xs relative ring-1 ring-gray-950/5 dark:ring-white/20">
                 <table class="w-full">
                     <thead @class([
                         'table-repeater-header-hidden sr-only' => ! $renderHeader,
@@ -75,7 +75,7 @@
                     <tr class="text-xs md:divide-x rtl:divide-x-reverse md:divide-gray-950/5 dark:md:divide-white/20">
                         {{-- Move actions column to start if reorderAtStart is true --}}
                         @if ($hasActions && count($containers) && $reorderAtStart)
-                            <th class="table-repeater-header-column w-px first:rounded-tl-sm rtl:first:rounded-tr-sm rtl:first:rounded-tl-none p-2 bg-gray-100 dark:bg-gray-900/60">
+                            <th class="table-repeater-header-column w-px first:rounded-tl-sm first:rtl:rounded-tr-sm first:rtl:rounded-tl-none p-2 bg-gray-100 dark:bg-gray-900/60">
                                 <span class="sr-only">
                                     {{ trans('table-repeater::components.repeater.row_actions.label') }}
                                 </span>
@@ -85,7 +85,7 @@
                         @foreach ($headers as $key => $header)
                             <th
                                 @class([
-                                    'table-repeater-header-column p-2 font-medium first:rounded-tl-sm rtl:first:rounded-tr-sm rtl:first:rounded-tl-none last:rounded-tr-sm bg-gray-100 dark:text-gray-300 dark:bg-gray-900/60',
+                                    'table-repeater-header-column p-2 font-medium first:rounded-tl-sm first:rtl:rounded-tr-sm first:rtl:rounded-tl-none last:rounded-tr-sm bg-gray-100 dark:text-gray-300 dark:bg-gray-900/60',
                                     match($header->getAlignment()) {
                                       'center', Alignment::Center => 'text-center',
                                       'right', 'end', Alignment::Right, Alignment::End => 'text-end',
@@ -104,7 +104,7 @@
                         @endforeach
 
                         @if ($hasActions && count($containers))
-                            <th class="table-repeater-header-column w-px last:rounded-tr-sm rtl:last:rounded-tr-none rtl:last:rounded-tl-sm p-2 bg-gray-100 dark:bg-gray-900/60">
+                            <th class="table-repeater-header-column w-px last:rounded-tr-sm last:rtl:rounded-tr-none last:rtl:rounded-tl-sm p-2 bg-gray-100 dark:bg-gray-900/60">
                                 <span class="sr-only">
                                     {{ trans('table-repeater::components.repeater.row_actions.label') }}
                                 </span>

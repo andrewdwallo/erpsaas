@@ -121,7 +121,7 @@
 
                     @if (! $loop->last)
                         @if ($isAddable && $addBetweenAction(['afterItem' => $uuid])->isVisible())
-                            <li class="relative -top-2 !mt-0 h-0">
+                            <li class="relative -top-2 mt-0! h-0">
                                 <div
                                     class="flex w-full justify-center opacity-0 transition duration-75 hover:opacity-100"
                                 >

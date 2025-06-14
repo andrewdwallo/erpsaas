@@ -1,10 +1,10 @@
 <div>
     <div class="grid grid-cols-1 gap-4">
         @forelse($this->connectedInstitutions as $institution)
-            <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+            <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <header class="connected-account-header bg-primary-300/10 px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
                     @if($institution->logo_url === null)
-                        <div class="flex-shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
+                        <div class="shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
                             <x-filament::icon
                                 icon="heroicon-o-building-library"
                                 class="h-6 w-6 text-gray-500 dark:text-gray-400"
@@ -74,7 +74,7 @@
                 @endforeach
             </section>
         @empty
-            <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+            <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <div class="px-6 py-12 text-center">
                     <div class="connected-account-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
                         <div class="connected-account-empty-state-icon-ctn mb-4 rounded-full bg-platinum p-3 dark:bg-gray-500/20">

@@ -1,4 +1,4 @@
-<table class="w-full min-w-[50rem] divide-y divide-gray-200 dark:divide-white/5">
+<table class="w-full min-w-200 divide-y divide-gray-200 dark:divide-white/5">
     <colgroup>
         @if(array_key_exists('account_code', $report->getHeaders()))
             <col span="1" style="width: 20%;">

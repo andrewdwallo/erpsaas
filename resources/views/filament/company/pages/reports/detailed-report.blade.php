@@ -14,7 +14,7 @@
                 />
             @endif
 
-            <div class="inline-flex items-center min-w-0 md:min-w-[9.5rem] justify-end">
+            <div class="inline-flex items-center min-w-0 md:min-w-38 justify-end">
                 {{ $this->applyFiltersAction }}
             </div>
         </div>

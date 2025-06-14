@@ -77,7 +77,7 @@
                 ])>
                     @if ($iconExists)
                         <x-filament::icon :icon="$icon" @class([
-                            'flex-shrink-0',
+                            'shrink-0',
                             match ($iconSize) {
                                 IconSize::Small => $iconSizeSm ?: 'h-8 w-8',
                                 'sm' => $iconSizeSm ?: 'h-8 w-8',

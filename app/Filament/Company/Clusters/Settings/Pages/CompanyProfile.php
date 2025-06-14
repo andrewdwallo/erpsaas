@@ -41,8 +41,6 @@ class CompanyProfile extends Page
 
     protected static ?string $title = 'Company Profile';
 
-    protected string $view = 'filament.company.pages.setting.company-profile';
-
     protected static ?string $cluster = Settings::class;
 
     public ?array $data = [];
@@ -229,10 +227,6 @@ class CompanyProfile extends Page
         $keysToWatch = [
             'logo',
         ];
-
-        if ($record->isDirty($keysToWatch)) {
-            $this->dispatch('companyProfileUpdated');
-        }
 
         $record->save();
 

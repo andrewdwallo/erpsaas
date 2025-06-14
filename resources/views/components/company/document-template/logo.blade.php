@@ -16,7 +16,7 @@
             },
             match ($shape) {
                 'square' => 'rounded-none',
-                'rounded' => 'rounded-md',
+                'rounded-sm' => 'rounded-md',
                 'circle' => 'rounded-full',
                 default => $shape,
             },

@@ -1,6 +1,18 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@config './tailwind.config.js';
+@source '../../../../app/Filament/User';
+@source '../../../../resources/views/filament/user';
+@source '../../../../resources/views/components';
+@source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
+
+@theme {
+  --color-white: #F3F4F6;
+  --color-platinum: #E8E9EB;
+  --color-moonlight: #F6F5F3;
+  --color-translucent: rgba(255, 255, 255, 0.5);
+  --color-translucent-light: rgba(255, 255, 255, 0.5);
+  --color-translucent-dark: rgba(25, 25, 25, 0.5);
+}
 
 .fi-body {
     position: relative;
@@ -53,7 +65,7 @@
 }
 
 .fi-topbar > nav, .fi-sidebar-header {
-    @apply bg-transparent ring-0 shadow-none !important;
+    @apply !bg-transparent !ring-0 !shadow-none;
     transition: background-color 0.3s, top 0.3s;
 }
 

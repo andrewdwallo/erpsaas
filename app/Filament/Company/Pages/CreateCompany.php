@@ -26,8 +26,6 @@ class CreateCompany extends FilamentCreateCompany
 {
     protected bool $hasTopbar = false;
 
-    protected string $view = 'filament.company.pages.create-company';
-
     protected static string $layout = 'components.company.layout.custom-simple';
 
     public function getHeading(): string | Htmlable

@@ -9,7 +9,7 @@
     extract($viewModel->buildViewData(), EXTR_SKIP);
 @endphp
 
-<div class="totals-summary w-full lg:pl-[4rem] lg:pr-[6rem] py-8 lg:py-0">
+<div class="totals-summary w-full lg:pl-16 lg:pr-24 py-8 lg:py-0">
     <table class="w-full text-right table-fixed hidden lg:table">
         <colgroup>
             <col class="w-[30%]"> {{-- Items --}}
