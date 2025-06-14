@@ -81,7 +81,7 @@
             "dist": {
                 "type": "path",
                 "url": "filament-companies",
-                "reference": "b365183b59965a073cf4eb5240378576b9662481"
+                "reference": "d94aeadb6015de3338f8cc092355a0a808a012e0"
             },
             "require": {
                 "ext-json": "*",
