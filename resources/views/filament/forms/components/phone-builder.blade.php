@@ -1,5 +1,5 @@
 @php
-    use Filament\Forms\Components\Actions\Action;
+    use Filament\Actions\Action;
     use Filament\Support\Enums\Alignment;
 
     $containers = $getChildComponentContainers();
@@ -31,6 +31,7 @@
     $collapseAllActionIsVisible = $isCollapsible && $collapseAllAction->isVisible();
     $expandAllActionIsVisible = $isCollapsible && $expandAllAction->isVisible();
 
+    $key = $getKey();
     $statePath = $getStatePath();
 @endphp
 
@@ -72,7 +73,7 @@
             <ul
                 x-sortable
                 data-sortable-animation-duration="{{ $getReorderAnimationDuration() }}"
-                wire:end.stop="{{ 'mountFormComponentAction(\'' . $statePath . '\', \'reorder\', { items: $event.target.sortable.toArray() })' }}"
+                wire:end.stop="mountAction('reorder', { items: $event.target.sortable.toArray() }, { schemaComponent: '{{ $key }}' })'"
                 class="space-y-6"
             >
                 @php
@@ -133,7 +134,7 @@
                                             :after-item="$uuid"
                                             :columns="$blockPickerColumns"
                                             :blocks="$blockPickerBlocks"
-                                            :state-path="$statePath"
+                                            :key="$key"
                                             :width="$blockPickerWidth"
                                         >
                                             <x-slot name="trigger">
@@ -164,7 +165,7 @@
                 :action="$addAction"
                 :blocks="$blockPickerBlocks"
                 :columns="$blockPickerColumns"
-                :state-path="$statePath"
+                :key="$key"
                 :width="$blockPickerWidth"
                 @class([
                     'flex',
