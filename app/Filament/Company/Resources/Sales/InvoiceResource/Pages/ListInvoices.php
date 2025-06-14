@@ -34,48 +34,48 @@ class ListInvoices extends ListRecords
 
     protected string $view = 'filament.company.resources.sales.invoice-resource.pages.list-invoices';
 
-    public function infolist(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                BannerEntry::make('recurringInvoiceFilter')
-                    ->info()
-                    ->title(function () {
-                        if (empty($this->recurringInvoice)) {
-                            return null;
-                        }
-
-                        $recurringInvoice = RecurringInvoice::find($this->recurringInvoice);
-
-                        $clientName = $recurringInvoice?->client?->name;
-
-                        if (! $clientName) {
-                            return 'You are currently viewing invoices created from a recurring invoice';
-                        }
-
-                        $recurringInvoiceUrl = ViewRecurringInvoice::getUrl([
-                            'record' => $recurringInvoice,
-                        ]);
-
-                        $link = Blade::render('filament::components.link', [
-                            'href' => $recurringInvoiceUrl,
-                            'slot' => 'a recurring invoice for ' . $clientName,
-                        ]);
-
-                        return new HtmlString(
-                            "You are currently viewing invoices created from {$link}"
-                        );
-                    })
-                    ->visible(fn () => ! empty($this->recurringInvoice))
-                    ->actions([
-                        Action::make('clearFilter')
-                            ->label('Clear filter')
-                            ->button()
-                            ->outlined()
-                            ->action('clearFilter'),
-                    ]),
-            ]);
-    }
+    //    public function infolist(Schema $schema): Schema
+    //    {
+    //        return $schema
+    //            ->components([
+    //                BannerEntry::make('recurringInvoiceFilter')
+    //                    ->info()
+    //                    ->title(function () {
+    //                        if (empty($this->recurringInvoice)) {
+    //                            return null;
+    //                        }
+    //
+    //                        $recurringInvoice = RecurringInvoice::find($this->recurringInvoice);
+    //
+    //                        $clientName = $recurringInvoice?->client?->name;
+    //
+    //                        if (! $clientName) {
+    //                            return 'You are currently viewing invoices created from a recurring invoice';
+    //                        }
+    //
+    //                        $recurringInvoiceUrl = ViewRecurringInvoice::getUrl([
+    //                            'record' => $recurringInvoice,
+    //                        ]);
+    //
+    //                        $link = Blade::render('filament::components.link', [
+    //                            'href' => $recurringInvoiceUrl,
+    //                            'slot' => 'a recurring invoice for ' . $clientName,
+    //                        ]);
+    //
+    //                        return new HtmlString(
+    //                            "You are currently viewing invoices created from {$link}"
+    //                        );
+    //                    })
+    //                    ->visible(fn () => ! empty($this->recurringInvoice))
+    //                    ->actions([
+    //                        Action::make('clearFilter')
+    //                            ->label('Clear filter')
+    //                            ->button()
+    //                            ->outlined()
+    //                            ->action('clearFilter'),
+    //                    ]),
+    //            ]);
+    //    }
 
     protected function getHeaderActions(): array
     {

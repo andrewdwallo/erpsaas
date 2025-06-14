@@ -28,19 +28,6 @@
     @apply lg:mt-8;
 }
 
-/* Choices.js select field overrides */
-.choices:focus-visible {
-    outline: none;
-}
-
-.choices__group {
-    @apply text-gray-900 dark:text-white font-semibold;
-}
-
-.choices:not(.is-disabled) .choices__item {
-    cursor: pointer;
-}
-
 /* Table Repeater Styles */
 .table-repeater-component:not(.is-spreadsheet) {
     .table-repeater-row {

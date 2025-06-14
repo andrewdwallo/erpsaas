@@ -2,10 +2,9 @@
 
 namespace App\Filament\Tables\Actions;
 
+use App\Concerns\CanReplicateRecords;
 use Closure;
 use Filament\Actions\BulkAction;
-use Filament\Actions\Concerns\CanReplicateRecords;
-use Filament\Actions\Contracts\ReplicatesRecords;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class ReplicateBulkAction extends BulkAction implements ReplicatesRecords
+class ReplicateBulkAction extends BulkAction
 {
     use CanReplicateRecords;
 

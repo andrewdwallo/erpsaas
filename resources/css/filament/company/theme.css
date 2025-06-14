@@ -6,6 +6,7 @@
 @import './report-card.css';
 @import './tooltip.css';
 @import './top-navigation.css';
+@import "tailwindcss";
 
 @source '../../../../app/Filament/Company';
 @source '../../../../resources/views/filament';

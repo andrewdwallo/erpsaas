@@ -6,6 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
         "@tailwindcss/forms": "^0.5.9",
         "@tailwindcss/postcss": "^4.1.10",
         "@tailwindcss/typography": "^0.5.15",

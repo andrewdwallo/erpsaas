@@ -44,14 +44,21 @@ class AddressFields extends Grid
 
     public function softRequired(bool $condition = true): static
     {
-        $this->setSoftRequired($condition);
+        $this->isSoftRequired = $condition;
+
+        // Defer the soft required logic to after component initialization
+        $this->afterStateHydrated(function () use ($condition) {
+            $this->applySoftRequired($condition);
+        });
 
         return $this;
     }
 
-    protected function setSoftRequired(bool $condition): void
+    protected function applySoftRequired(bool $condition): void
     {
-        $this->isSoftRequired = $condition;
+        if (! $this->hasContainer()) {
+            return;
+        }
 
         $childComponents = $this->getChildComponents();
 
@@ -84,5 +91,14 @@ class AddressFields extends Grid
     public function isCountryDisabled(): bool
     {
         return $this->evaluate($this->isCountryDisabled);
+    }
+
+    protected function hasContainer(): bool
+    {
+        try {
+            return isset($this->container);
+        } catch (\Error $e) {
+            return false;
+        }
     }
 }

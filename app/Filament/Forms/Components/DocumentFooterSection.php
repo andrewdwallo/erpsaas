@@ -23,6 +23,7 @@ class DocumentFooterSection extends Section
 
         $this->collapsible();
         $this->collapsed();
+        $this->columnSpanFull();
 
         $this->schema([
             Textarea::make('footer')

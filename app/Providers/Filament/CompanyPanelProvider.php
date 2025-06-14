@@ -284,9 +284,8 @@ class CompanyPanelProvider extends PanelProvider
         });
 
         Table::configureUsing(static function (Table $table): void {
-            $table::$defaultDateDisplayFormat = CompanySettingsService::getDefaultDateFormat(session('current_company_id') ?? auth()->user()->current_company_id);
-
             $table
+                ->defaultDateDisplayFormat(CompanySettingsService::getDefaultDateFormat(session('current_company_id') ?? auth()->user()->current_company_id))
                 ->paginationPageOptions([5, 10, 25, 50, 100])
                 ->filtersFormWidth(Width::Small)
                 ->filtersTriggerAction(

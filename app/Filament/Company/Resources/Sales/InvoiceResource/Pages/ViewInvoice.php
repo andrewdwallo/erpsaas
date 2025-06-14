@@ -54,35 +54,36 @@ class ViewInvoice extends ViewRecord
 
     public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema([
-                BannerEntry::make('inactiveAdjustments')
-                    ->label('Inactive adjustments')
-                    ->warning()
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->visible(fn (Invoice $record) => $record->hasInactiveAdjustments() && $record->canBeApproved())
-                    ->columnSpanFull()
-                    ->description(function (Invoice $record) {
-                        $inactiveAdjustments = collect();
-
-                        foreach ($record->lineItems as $lineItem) {
-                            foreach ($lineItem->adjustments as $adjustment) {
-                                if ($adjustment->isInactive() && $inactiveAdjustments->doesntContain($adjustment->name)) {
-                                    $inactiveAdjustments->push($adjustment->name);
-                                }
-                            }
-                        }
-
-                        $adjustmentsList = $inactiveAdjustments->map(static function ($name) {
-                            return "<span class='font-medium'>{$name}</span>";
-                        })->join(', ');
-
-                        $output = "<p class='text-sm'>This invoice contains inactive adjustments that need to be addressed before approval: {$adjustmentsList}</p>";
-
-                        return new HtmlString($output);
-                    }),
+                //                BannerEntry::make('inactiveAdjustments')
+                //                    ->label('Inactive adjustments')
+                //                    ->warning()
+                //                    ->icon('heroicon-o-exclamation-triangle')
+                //                    ->visible(fn (Invoice $record) => $record->hasInactiveAdjustments() && $record->canBeApproved())
+                //                    ->columnSpanFull()
+                //                    ->description(function (Invoice $record) {
+                //                        $inactiveAdjustments = collect();
+                //
+                //                        foreach ($record->lineItems as $lineItem) {
+                //                            foreach ($lineItem->adjustments as $adjustment) {
+                //                                if ($adjustment->isInactive() && $inactiveAdjustments->doesntContain($adjustment->name)) {
+                //                                    $inactiveAdjustments->push($adjustment->name);
+                //                                }
+                //                            }
+                //                        }
+                //
+                //                        $adjustmentsList = $inactiveAdjustments->map(static function ($name) {
+                //                            return "<span class='font-medium'>{$name}</span>";
+                //                        })->join(', ');
+                //
+                //                        $output = "<p class='text-sm'>This invoice contains inactive adjustments that need to be addressed before approval: {$adjustmentsList}</p>";
+                //
+                //                        return new HtmlString($output);
+                //                    }),
                 Section::make('Invoice Details')
                     ->columns(4)
+                    ->columnSpanFull()
                     ->schema([
                         Grid::make(1)
                             ->schema([
