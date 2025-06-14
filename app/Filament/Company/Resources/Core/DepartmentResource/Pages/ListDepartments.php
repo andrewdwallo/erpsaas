@@ -4,9 +4,9 @@ namespace App\Filament\Company\Resources\Core\DepartmentResource\Pages;
 
 use App\Filament\Company\Resources\Core\DepartmentResource;
 use App\Models\Core\Department;
-use Filament\Actions;
-use Filament\Resources\Components\Tab;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 
 class ListDepartments extends ListRecords
 {
@@ -15,7 +15,7 @@ class ListDepartments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

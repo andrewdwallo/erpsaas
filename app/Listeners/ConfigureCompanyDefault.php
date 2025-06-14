@@ -7,9 +7,8 @@ use App\Services\CompanySettingsService;
 use App\Utilities\Currency\ConfigureCurrencies;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Resources\Components\Tab as ResourcesTab;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs\Tab;
 
 class ConfigureCompanyDefault
 {
@@ -59,7 +58,7 @@ class ConfigureCompanyDefault
             }
         }, isImportant: true);
 
-        ResourcesTab::configureUsing(static function (ResourcesTab $tab): void {
+        Tab::configureUsing(static function (Tab $tab): void {
             $tab->localizeLabel();
         }, isImportant: true);
 

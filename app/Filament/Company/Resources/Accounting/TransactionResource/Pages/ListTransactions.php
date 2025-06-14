@@ -8,10 +8,11 @@ use App\Filament\Actions\CreateTransactionAction;
 use App\Filament\Company\Pages\Service\ConnectedAccount;
 use App\Filament\Company\Resources\Accounting\TransactionResource;
 use App\Services\PlaidService;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\IconPosition;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 
 class ListTransactions extends ListRecords
 {
@@ -19,7 +20,7 @@ class ListTransactions extends ListRecords
 
     protected static string $resource = TransactionResource::class;
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }
@@ -27,7 +28,7 @@ class ListTransactions extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ActionGroup::make([
+            ActionGroup::make([
                 CreateTransactionAction::make('createDeposit')
                     ->label('Deposit')
                     ->type(TransactionType::Deposit),
@@ -46,8 +47,8 @@ class ListTransactions extends ListRecords
                 ->dropdownPlacement('bottom-end')
                 ->icon('heroicon-m-chevron-down')
                 ->iconPosition(IconPosition::After),
-            Actions\ActionGroup::make([
-                Actions\Action::make('connectBank')
+            ActionGroup::make([
+                Action::make('connectBank')
                     ->label('Connect your bank')
                     ->visible(app(PlaidService::class)->isEnabled())
                     ->url(ConnectedAccount::getUrl()),

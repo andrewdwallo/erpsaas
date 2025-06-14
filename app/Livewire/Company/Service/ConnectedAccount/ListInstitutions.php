@@ -70,7 +70,7 @@ class ListInstitutions extends Component implements HasActions, HasForms
             ->stickyModalHeader()
             ->stickyModalFooter()
             ->record(fn (array $arguments) => ConnectedBankAccount::find($arguments['connectedBankAccount']))
-            ->form([
+            ->schema([
                 Placeholder::make('import_from')
                     ->label('Import transactions from')
                     ->content(static fn (ConnectedBankAccount $connectedBankAccount): View => view(
@@ -162,7 +162,7 @@ class ListInstitutions extends Component implements HasActions, HasForms
             ->stickyModalFooter()
             ->modalHeading('Refresh Transactions')
             ->modalSubmitActionLabel('Refresh')
-            ->form([
+            ->schema([
                 Placeholder::make('modalDetails')
                     ->hiddenLabel()
                     ->content('Refreshing transactions will update the selected account with the latest transactions from the bank if there are any new transactions available. This may take a few moments.'),
@@ -203,7 +203,7 @@ class ListInstitutions extends Component implements HasActions, HasForms
             ->stickyModalHeader()
             ->stickyModalFooter()
             ->record(fn (array $arguments) => Institution::find($arguments['institution']))
-            ->form([
+            ->schema([
                 Placeholder::make('modalDetails')
                     ->hiddenLabel()
                     ->content(static fn (Institution $institution): View => view(

@@ -8,15 +8,15 @@ use App\Enums\Accounting\AdjustmentScope;
 use App\Enums\Accounting\AdjustmentStatus;
 use App\Enums\Accounting\AdjustmentType;
 use App\Models\Accounting\Adjustment;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -216,7 +216,7 @@ class CreateAdjustmentSelect extends Select
         return $action
             ->label('Create ' . $label)
             ->slideOver()
-            ->modalWidth(MaxWidth::ExtraLarge)
+            ->modalWidth(Width::ExtraLarge)
             ->modalHeading('Create a new ' . $label);
     }
 }

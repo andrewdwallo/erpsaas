@@ -6,16 +6,17 @@ use App\Concerns\HasTabSpecificColumnToggles;
 use App\Enums\Accounting\InvoiceStatus;
 use App\Filament\Company\Resources\Sales\InvoiceResource;
 use App\Filament\Company\Resources\Sales\InvoiceResource\Widgets;
+use App\Filament\Company\Resources\Sales\InvoiceResource\Widgets\InvoiceOverview;
 use App\Filament\Company\Resources\Sales\RecurringInvoiceResource\Pages\ViewRecurringInvoice;
 use App\Filament\Infolists\Components\BannerEntry;
 use App\Models\Accounting\RecurringInvoice;
-use Filament\Actions;
-use Filament\Infolists\Components\Actions\Action;
-use Filament\Infolists\Infolist;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -31,12 +32,12 @@ class ListInvoices extends ListRecords
     #[Url(except: '')]
     public string $recurringInvoice = '';
 
-    protected static string $view = 'filament.company.resources.sales.invoice-resource.pages.list-invoices';
+    protected string $view = 'filament.company.resources.sales.invoice-resource.pages.list-invoices';
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 BannerEntry::make('recurringInvoiceFilter')
                     ->info()
                     ->title(function () {
@@ -79,17 +80,17 @@ class ListInvoices extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('recordPayments')
+            Action::make('recordPayments')
                 ->outlined()
                 ->url(RecordPayments::getUrl()),
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\InvoiceOverview::make(),
+            InvoiceOverview::make(),
         ];
     }
 
@@ -99,7 +100,7 @@ class ListInvoices extends ListRecords
         $this->tableFilters = []; // Refresh widgets/table
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }

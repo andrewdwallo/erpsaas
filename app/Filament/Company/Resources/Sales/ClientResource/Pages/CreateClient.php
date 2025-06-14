@@ -6,7 +6,7 @@ use App\Concerns\HandlePageRedirect;
 use App\Filament\Company\Resources\Sales\ClientResource;
 use App\Models\Common\Client;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 
 class CreateClient extends CreateRecord
@@ -15,9 +15,9 @@ class CreateClient extends CreateRecord
 
     protected static string $resource = ClientResource::class;
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::FiveExtraLarge;
+        return Width::FiveExtraLarge;
     }
 
     protected function handleRecordCreation(array $data): Model

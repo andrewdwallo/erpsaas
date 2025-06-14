@@ -5,9 +5,9 @@ namespace App\Filament\Company\Resources\Purchases\VendorResource\Pages;
 use App\Concerns\HandlePageRedirect;
 use App\Filament\Company\Resources\Purchases\VendorResource;
 use App\Models\Common\Vendor;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 
 class EditVendor extends EditRecord
@@ -27,12 +27,12 @@ class EditVendor extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::FiveExtraLarge;
+        return Width::FiveExtraLarge;
     }
 }

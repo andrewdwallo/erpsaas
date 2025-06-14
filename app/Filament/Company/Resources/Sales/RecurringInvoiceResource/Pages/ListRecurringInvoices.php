@@ -5,10 +5,10 @@ namespace App\Filament\Company\Resources\Sales\RecurringInvoiceResource\Pages;
 use App\Concerns\HasTabSpecificColumnToggles;
 use App\Enums\Accounting\RecurringInvoiceStatus;
 use App\Filament\Company\Resources\Sales\RecurringInvoiceResource;
-use Filament\Actions;
-use Filament\Resources\Components\Tab;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListRecurringInvoices extends ListRecords
@@ -20,11 +20,11 @@ class ListRecurringInvoices extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }

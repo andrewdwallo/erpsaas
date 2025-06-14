@@ -5,6 +5,7 @@ namespace App\Filament\Company\Resources\Sales\EstimateResource\Widgets;
 use App\Enums\Accounting\EstimateStatus;
 use App\Filament\Company\Resources\Sales\EstimateResource\Pages\ListEstimates;
 use App\Filament\Widgets\EnhancedStatsOverviewWidget;
+use App\Filament\Widgets\EnhancedStatsOverviewWidget\EnhancedStat;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
@@ -33,10 +34,10 @@ class EstimateOverview extends EnhancedStatsOverviewWidget
                 : 0;
 
             return [
-                EnhancedStatsOverviewWidget\EnhancedStat::make('Active Estimates', '-'),
-                EnhancedStatsOverviewWidget\EnhancedStat::make('Accepted Estimates', '-'),
-                EnhancedStatsOverviewWidget\EnhancedStat::make('Converted Estimates', '-'),
-                EnhancedStatsOverviewWidget\EnhancedStat::make('Average Estimate Total', CurrencyConverter::formatCentsToMoney($averageDraftTotal))
+                EnhancedStat::make('Active Estimates', '-'),
+                EnhancedStat::make('Accepted Estimates', '-'),
+                EnhancedStat::make('Converted Estimates', '-'),
+                EnhancedStat::make('Average Estimate Total', CurrencyConverter::formatCentsToMoney($averageDraftTotal))
                     ->suffix(CurrencyAccessor::getDefaultCurrency()),
             ];
         }
@@ -83,19 +84,19 @@ class EstimateOverview extends EnhancedStatsOverviewWidget
         }
 
         return [
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Active Estimates', CurrencyConverter::formatCentsToMoney($totalActiveAmount))
+            EnhancedStat::make('Active Estimates', CurrencyConverter::formatCentsToMoney($totalActiveAmount))
                 ->suffix(CurrencyAccessor::getDefaultCurrency())
                 ->description($totalActiveCount . ' active estimates'),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Accepted Estimates', CurrencyConverter::formatCentsToMoney($totalAcceptedAmount))
+            EnhancedStat::make('Accepted Estimates', CurrencyConverter::formatCentsToMoney($totalAcceptedAmount))
                 ->suffix(CurrencyAccessor::getDefaultCurrency())
                 ->description($totalAcceptedCount . ' accepted'),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Converted Estimates', $percentConverted)
+            EnhancedStat::make('Converted Estimates', $percentConverted)
                 ->suffix($percentConvertedSuffix)
                 ->description($percentConvertedDescription),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Average Estimate Total', CurrencyConverter::formatCentsToMoney($averageEstimateTotal))
+            EnhancedStat::make('Average Estimate Total', CurrencyConverter::formatCentsToMoney($averageEstimateTotal))
                 ->suffix(CurrencyAccessor::getDefaultCurrency())
                 ->description($activeTab === 'all' ? 'Excludes draft estimates' : null),
         ];

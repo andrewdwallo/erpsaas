@@ -12,12 +12,12 @@ use App\Services\ExportService;
 use App\Services\ReportService;
 use App\Support\Column;
 use App\Transformers\AccountTransactionReportTransformer;
-use Filament\Forms\Components\Actions;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
+use Filament\Support\Enums\Width;
 use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AccountTransactions extends BaseReportPage
 {
-    protected static string $view = 'filament.company.pages.reports.account-transactions';
+    protected string $view = 'filament.company.pages.reports.account-transactions';
 
     protected ReportService $reportService;
 
@@ -37,7 +37,7 @@ class AccountTransactions extends BaseReportPage
         $this->exportService = $exportService;
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }
@@ -78,11 +78,11 @@ class AccountTransactions extends BaseReportPage
         ];
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(5)
-            ->schema([
+            ->components([
                 Select::make('selectedAccount')
                     ->label('Account')
                     ->options($this->getAccountOptions())
@@ -101,7 +101,7 @@ class AccountTransactions extends BaseReportPage
                     ->searchable()
                     ->selectablePlaceholder(false),
                 Actions::make([
-                    Actions\Action::make('applyFilters')
+                    Action::make('applyFilters')
                         ->label('Update report')
                         ->action('applyFilters')
                         ->keyBindings(['mod+s'])

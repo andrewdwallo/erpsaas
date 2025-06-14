@@ -5,11 +5,11 @@ namespace App\Filament\Forms\Components;
 use App\Models\Setting\Currency;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Set;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\DB;
 
 class CreateCurrencySelect extends Select
@@ -65,7 +65,7 @@ class CreateCurrencySelect extends Select
         return $action
             ->label('Create currency')
             ->slideOver()
-            ->modalWidth(MaxWidth::Medium)
+            ->modalWidth(Width::Medium)
             ->modalHeading('Create a new currency');
     }
 }

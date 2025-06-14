@@ -3,7 +3,10 @@
 namespace App\Filament\Company\Resources\Sales\ClientResource\Pages;
 
 use App\Filament\Company\Resources\Sales\ClientResource;
-use App\Filament\Company\Resources\Sales\ClientResource\RelationManagers;
+use App\Filament\Company\Resources\Sales\ClientResource\RelationManagers\EstimatesRelationManager;
+use App\Filament\Company\Resources\Sales\ClientResource\RelationManagers\InvoicesRelationManager;
+use App\Filament\Company\Resources\Sales\ClientResource\RelationManagers\RecurringInvoicesRelationManager;
+use App\Filament\Company\Resources\Sales\ClientResource\Widgets\InvoiceOverview;
 use App\Filament\Company\Resources\Sales\EstimateResource\Pages\CreateEstimate;
 use App\Filament\Company\Resources\Sales\InvoiceResource\Pages\CreateInvoice;
 use App\Filament\Company\Resources\Sales\RecurringInvoiceResource\Pages\CreateRecurringInvoice;
@@ -11,10 +14,10 @@ use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -25,9 +28,9 @@ class ViewClient extends ViewRecord
     protected function getAllRelationManagers(): array
     {
         return [
-            RelationManagers\InvoicesRelationManager::class,
-            RelationManagers\RecurringInvoicesRelationManager::class,
-            RelationManagers\EstimatesRelationManager::class,
+            InvoicesRelationManager::class,
+            RecurringInvoicesRelationManager::class,
+            EstimatesRelationManager::class,
         ];
     }
 
@@ -71,11 +74,11 @@ class ViewClient extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            ClientResource\Widgets\InvoiceOverview::class,
+            InvoiceOverview::class,
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([

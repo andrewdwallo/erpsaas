@@ -4,6 +4,7 @@ namespace App\Filament\Company\Resources\Purchases\VendorResource\Widgets;
 
 use App\Enums\Accounting\BillStatus;
 use App\Filament\Widgets\EnhancedStatsOverviewWidget;
+use App\Filament\Widgets\EnhancedStatsOverviewWidget\EnhancedStat;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
 use Illuminate\Database\Eloquent\Model;
@@ -61,17 +62,17 @@ class BillOverview extends EnhancedStatsOverviewWidget
             ->sumMoneyInDefaultCurrency('amount_paid');
 
         return [
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Total To Pay', CurrencyConverter::formatCentsToMoney($amountToPay))
+            EnhancedStat::make('Total To Pay', CurrencyConverter::formatCentsToMoney($amountToPay))
                 ->suffix(CurrencyAccessor::getDefaultCurrency())
                 ->description('Includes ' . CurrencyConverter::formatCentsToMoney($amountOverdue) . ' overdue'),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Due Within 7 Days', CurrencyConverter::formatCentsToMoney($amountDueWithin7Days))
+            EnhancedStat::make('Due Within 7 Days', CurrencyConverter::formatCentsToMoney($amountDueWithin7Days))
                 ->suffix(CurrencyAccessor::getDefaultCurrency()),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Average Payment Time', $averagePaymentTimeFormatted)
+            EnhancedStat::make('Average Payment Time', $averagePaymentTimeFormatted)
                 ->suffix('days'),
 
-            EnhancedStatsOverviewWidget\EnhancedStat::make('Paid Last Month', CurrencyConverter::formatCentsToMoney($lastMonthTotal))
+            EnhancedStat::make('Paid Last Month', CurrencyConverter::formatCentsToMoney($lastMonthTotal))
                 ->suffix(CurrencyAccessor::getDefaultCurrency()),
         ];
     }

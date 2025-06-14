@@ -13,16 +13,24 @@ use App\Models\Common\Client;
 use App\Models\Setting\Currency;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -33,13 +41,13 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
 class RecordPayments extends ListRecords
 {
     protected static string $resource = InvoiceResource::class;
 
-    protected static string $view = 'filament.company.resources.sales.invoice-resource.pages.record-payments';
+    protected string $view = 'filament.company.resources.sales.invoice-resource.pages.record-payments';
 
     public array $paymentAmounts = [];
 
@@ -60,7 +68,7 @@ class RecordPayments extends ListRecords
         return 'Record Payments';
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }
@@ -90,7 +98,7 @@ class RecordPayments extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('processPayments')
+            Action::make('processPayments')
                 ->color('primary')
                 ->requiresConfirmation()
                 ->modalHeading('Confirm payments')
@@ -174,7 +182,7 @@ class RecordPayments extends ListRecords
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|\Filament\Schemas\Schema>
      */
     protected function getForms(): array
     {
@@ -183,14 +191,14 @@ class RecordPayments extends ListRecords
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->live()
-            ->schema([
-                Forms\Components\Grid::make(2) // Changed from 3 to 4
+            ->components([
+                Grid::make(2) // Changed from 3 to 4
                     ->schema([
-                        Forms\Components\Select::make('bank_account_id')
+                        Select::make('bank_account_id')
                             ->label('Account')
                             ->options(static function () {
                                 return Transaction::getBankAccountOptionsFlat();
@@ -199,17 +207,17 @@ class RecordPayments extends ListRecords
                             ->selectablePlaceholder(false)
                             ->searchable()
                             ->softRequired(),
-                        Forms\Components\DatePicker::make('posted_at')
+                        DatePicker::make('posted_at')
                             ->label('Date')
                             ->default(now())
                             ->softRequired(),
-                        Forms\Components\Select::make('payment_method')
+                        Select::make('payment_method')
                             ->label('Payment method')
                             ->selectablePlaceholder(false)
                             ->options(PaymentMethod::class)
                             ->default(PaymentMethod::BankPayment)
                             ->softRequired(),
-                        Forms\Components\TextInput::make('allocation_amount')
+                        TextInput::make('allocation_amount')
                             ->label('Allocate Payment Amount')
                             ->default(array_sum($this->paymentAmounts))
                             ->money($this->getTableFilterState('currency_code')['value'])
@@ -217,7 +225,7 @@ class RecordPayments extends ListRecords
                                 'x-on:keydown.enter.prevent' => '$refs.allocate.click()',
                             ])
                             ->suffixAction(
-                                Forms\Components\Actions\Action::make('allocate')
+                                Action::make('allocate')
                                     ->icon('heroicon-m-calculator')
                                     ->extraAttributes([
                                         'x-ref' => 'allocate',
@@ -257,7 +265,7 @@ class RecordPayments extends ListRecords
                     ->label('Due date')
                     ->defaultDateFormat()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->sortable(),
                 TextColumn::make('amount_due')
@@ -292,7 +300,7 @@ class RecordPayments extends ListRecords
                                 return $activeCurrency && $activeCurrency !== $bankAccountCurrency;
                             }),
                     ]),
-                Tables\Columns\IconColumn::make('applyFullAmountAction')
+                IconColumn::make('applyFullAmountAction')
                     ->icon('heroicon-m-chevron-double-right')
                     ->color('primary')
                     ->label('')
@@ -301,7 +309,7 @@ class RecordPayments extends ListRecords
                     ->width('3rem')
                     ->tooltip('Apply full amount')
                     ->action(
-                        Tables\Actions\Action::make('applyFullPayment')
+                        Action::make('applyFullPayment')
                             ->action(function (Invoice $record) {
                                 $this->paymentAmounts[$record->id] = $record->amount_due;
                             }),
@@ -356,8 +364,8 @@ class RecordPayments extends ListRecords
                             }),
                     ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkAction::make('applyFullAmounts')
+            ->toolbarActions([
+                BulkAction::make('applyFullAmounts')
                     ->label('Apply full amounts')
                     ->icon('heroicon-o-banknotes')
                     ->color('primary')
@@ -367,7 +375,7 @@ class RecordPayments extends ListRecords
                             $this->paymentAmounts[$invoice->id] = $invoice->amount_due;
                         });
                     }),
-                Tables\Actions\BulkAction::make('clearAmounts')
+                BulkAction::make('clearAmounts')
                     ->label('Clear amounts')
                     ->icon('heroicon-o-x-mark')
                     ->color('gray')
@@ -379,7 +387,7 @@ class RecordPayments extends ListRecords
                     }),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('currency_code')
+                SelectFilter::make('currency_code')
                     ->label('Currency')
                     ->selectablePlaceholder(false)
                     ->default(CurrencyAccessor::getDefaultCurrency())
@@ -388,7 +396,7 @@ class RecordPayments extends ListRecords
                     ->resetState([
                         'value' => CurrencyAccessor::getDefaultCurrency(),
                     ])
-                    ->indicateUsing(function (Tables\Filters\SelectFilter $filter, array $state) {
+                    ->indicateUsing(function (SelectFilter $filter, array $state) {
                         if (blank($state['value'] ?? null)) {
                             return [];
                         }
@@ -403,9 +411,9 @@ class RecordPayments extends ListRecords
 
                         $indicator = $filter->getLabel();
 
-                        return Tables\Filters\Indicator::make("{$indicator}: {$label}")->removable(false);
+                        return Indicator::make("{$indicator}: {$label}")->removable(false);
                     }),
-                Tables\Filters\SelectFilter::make('client_id')
+                SelectFilter::make('client_id')
                     ->label('Client')
                     ->selectablePlaceholder(false)
                     ->options(fn () => Client::query()->pluck('name', 'id')->toArray())
@@ -417,17 +425,17 @@ class RecordPayments extends ListRecords
 
                         return $query->where('client_id', $data['value']);
                     }),
-                Tables\Filters\Filter::make('invoice_lookup')
+                Filter::make('invoice_lookup')
                     ->label('Find Invoice')
-                    ->form([
-                        Forms\Components\TextInput::make('invoice_number')
+                    ->schema([
+                        TextInput::make('invoice_number')
                             ->label('Invoice Number')
                             ->placeholder('Enter invoice number')
                             ->suffixAction(
-                                Forms\Components\Actions\Action::make('findInvoice')
+                                Action::make('findInvoice')
                                     ->icon('heroicon-m-magnifying-glass')
                                     ->keyBindings(['enter'])
-                                    ->action(function ($state, Forms\Set $set) {
+                                    ->action(function ($state, Set $set) {
                                         if (blank($state)) {
                                             return;
                                         }
@@ -457,7 +465,7 @@ class RecordPayments extends ListRecords
                     ])
                     ->query(null)
                     ->indicateUsing(null),
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->multiple()
                     ->options(InvoiceStatus::getUnpaidOptions()),
             ]);

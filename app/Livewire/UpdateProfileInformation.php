@@ -4,11 +4,12 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Filament\Facades\Filament;
-use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\View;
@@ -21,7 +22,7 @@ use RuntimeException;
 use Wallo\FilamentCompanies\FilamentCompanies;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
 class UpdateProfileInformation extends Component implements HasForms
 {
@@ -126,11 +127,11 @@ class UpdateProfileInformation extends Component implements HasForms
         return __('filament-companies::default.notifications.profile_information_updated.body');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\FileUpload::make('profile_photo_path')
+        return $schema
+            ->components([
+                FileUpload::make('profile_photo_path')
                     ->label('Photo')
                     ->extraAttributes([
                         'style' => 'width: 6rem; height: 6rem;',
@@ -167,12 +168,12 @@ class UpdateProfileInformation extends Component implements HasForms
                     })
                     ->image()
                     ->nullable(),
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label(__('Name'))
                     ->required()
                     ->maxLength(255)
                     ->autofocus(),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->label(__('Email'))
                     ->email()
                     ->required()

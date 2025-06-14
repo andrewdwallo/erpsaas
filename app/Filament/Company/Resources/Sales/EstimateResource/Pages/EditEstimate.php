@@ -6,9 +6,9 @@ use App\Concerns\HandlePageRedirect;
 use App\Concerns\ManagesLineItems;
 use App\Filament\Company\Resources\Sales\EstimateResource;
 use App\Models\Accounting\Estimate;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 
 class EditEstimate extends EditRecord
@@ -21,13 +21,13 @@ class EditEstimate extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model

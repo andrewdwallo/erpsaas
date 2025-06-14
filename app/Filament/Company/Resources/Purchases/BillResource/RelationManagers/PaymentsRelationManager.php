@@ -10,13 +10,23 @@ use App\Models\Banking\BankAccount;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
 use Closure;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
+use Filament\Support\Enums\Width;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class PaymentsRelationManager extends RelationManager
@@ -34,16 +44,16 @@ class PaymentsRelationManager extends RelationManager
         return false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
-            ->schema([
-                Forms\Components\DatePicker::make('posted_at')
+            ->components([
+                DatePicker::make('posted_at')
                     ->label('Date'),
-                Forms\Components\Grid::make()
+                Grid::make()
                     ->schema([
-                        Forms\Components\Select::make('bank_account_id')
+                        Select::make('bank_account_id')
                             ->label('Account')
                             ->required()
                             ->live()
@@ -63,7 +73,7 @@ class PaymentsRelationManager extends RelationManager
                                     ->toArray();
                             })
                             ->searchable(),
-                        Forms\Components\TextInput::make('amount')
+                        TextInput::make('amount')
                             ->label('Amount')
                             ->required()
                             ->money(function (RelationManager $livewire) {
@@ -109,9 +119,9 @@ class PaymentsRelationManager extends RelationManager
                                 },
                             ]),
                     ])->columns(2),
-                Forms\Components\Placeholder::make('currency_conversion')
+                Placeholder::make('currency_conversion')
                     ->label('Currency Conversion')
-                    ->content(function (Forms\Get $get, RelationManager $livewire) {
+                    ->content(function (Get $get, RelationManager $livewire) {
                         $amount = $get('amount');
                         $bankAccountId = $get('bank_account_id');
 
@@ -147,7 +157,7 @@ class PaymentsRelationManager extends RelationManager
 
                         return "Payment will be recorded as {$formattedBankAmount} in the bank account's currency ({$bankCurrency}).";
                     })
-                    ->hidden(function (Forms\Get $get, RelationManager $livewire) {
+                    ->hidden(function (Get $get, RelationManager $livewire) {
                         $bankAccountId = $get('bank_account_id');
                         if (empty($bankAccountId)) {
                             return true;
@@ -167,11 +177,11 @@ class PaymentsRelationManager extends RelationManager
                         // Hide if currencies are the same
                         return $billCurrency === $bankCurrency;
                     }),
-                Forms\Components\Select::make('payment_method')
+                Select::make('payment_method')
                     ->label('Payment method')
                     ->required()
                     ->options(PaymentMethod::class),
-                Forms\Components\Textarea::make('notes')
+                Textarea::make('notes')
                     ->label('Notes'),
             ]);
     }
@@ -181,27 +191,27 @@ class PaymentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('description')
             ->columns([
-                Tables\Columns\TextColumn::make('posted_at')
+                TextColumn::make('posted_at')
                     ->label('Date')
                     ->sortable()
                     ->defaultDateFormat(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->label('Type')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label('Description')
                     ->limit(30)
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('bankAccount.account.name')
+                TextColumn::make('bankAccount.account.name')
                     ->label('Account')
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('amount')
+                TextColumn::make('amount')
                     ->label('Amount')
                     ->weight(static fn (Transaction $transaction) => $transaction->reviewed ? null : FontWeight::SemiBold)
                     ->color(
                         static fn (Transaction $transaction) => match ($transaction->type) {
-                            TransactionType::Deposit => Color::rgb('rgb(' . Color::Green[700] . ')'),
+                            TransactionType::Deposit => Color::generateV3Palette('rgb(' . Color::Green[700] . ')'),
                             TransactionType::Journal => 'primary',
                             default => null,
                         }
@@ -213,24 +223,24 @@ class PaymentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->label('Record payment')
-                    ->modalHeading(fn (Tables\Actions\CreateAction $action) => $action->getLabel())
+                    ->modalHeading(fn (CreateAction $action) => $action->getLabel())
                     ->slideOver()
-                    ->modalWidth(MaxWidth::TwoExtraLarge)
+                    ->modalWidth(Width::TwoExtraLarge)
                     ->visible(function () {
                         return $this->getOwnerRecord()->canRecordPayment();
                     })
-                    ->mountUsing(function (Form $form) {
+                    ->mountUsing(function (Schema $schema) {
                         $record = $this->getOwnerRecord();
-                        $form->fill([
+                        $schema->fill([
                             'posted_at' => now(),
                             'amount' => $record->amount_due,
                         ]);
                     })
                     ->databaseTransaction()
                     ->successNotificationTitle('Payment recorded')
-                    ->action(function (Tables\Actions\CreateAction $action, array $data) {
+                    ->action(function (CreateAction $action, array $data) {
                         /** @var Bill $record */
                         $record = $this->getOwnerRecord();
 
@@ -241,13 +251,13 @@ class PaymentsRelationManager extends RelationManager
                         $this->dispatch('refresh');
                     }),
             ])
-            ->actions([
-                Tables\Actions\DeleteAction::make()
+            ->recordActions([
+                DeleteAction::make()
                     ->after(fn () => $this->dispatch('refresh')),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

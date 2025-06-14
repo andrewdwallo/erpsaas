@@ -6,7 +6,7 @@ use App\Concerns\HandlePageRedirect;
 use App\Filament\Company\Resources\Purchases\VendorResource;
 use App\Models\Common\Vendor;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 
 class CreateVendor extends CreateRecord
@@ -20,8 +20,8 @@ class CreateVendor extends CreateRecord
         return Vendor::createWithRelations($data);
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::FiveExtraLarge;
+        return Width::FiveExtraLarge;
     }
 }

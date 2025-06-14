@@ -12,10 +12,20 @@ use App\Models\Accounting\Budget;
 use App\Models\Accounting\BudgetAllocation;
 use App\Models\Accounting\BudgetItem;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Wizard\Step;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\CreateRecord\Concerns\HasWizard;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Wizard\Step;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -23,7 +33,7 @@ use Illuminate\Support\Collection;
 
 class CreateBudget extends CreateRecord
 {
-    use CreateRecord\Concerns\HasWizard;
+    use HasWizard;
 
     protected static string $resource = BudgetResource::class;
 
@@ -106,63 +116,63 @@ class CreateBudget extends CreateRecord
                 ->icon('heroicon-o-document-text')
                 ->columns(2)
                 ->schema([
-                    Forms\Components\TextInput::make('name')
+                    TextInput::make('name')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\Select::make('interval_type')
+                    Select::make('interval_type')
                         ->label('Budget Interval')
                         ->options(BudgetIntervalType::class)
                         ->default(BudgetIntervalType::Month->value)
                         ->required()
                         ->live(),
-                    Forms\Components\DatePicker::make('start_date')
+                    DatePicker::make('start_date')
                         ->required()
                         ->default(now()->startOfYear())
                         ->live(),
-                    Forms\Components\DatePicker::make('end_date')
+                    DatePicker::make('end_date')
                         ->required()
                         ->default(now()->endOfYear())
                         ->live()
-                        ->disabled(static fn (Forms\Get $get) => blank($get('start_date')))
-                        ->minDate(fn (Forms\Get $get) => match (BudgetIntervalType::parse($get('interval_type'))) {
+                        ->disabled(static fn (Get $get) => blank($get('start_date')))
+                        ->minDate(fn (Get $get) => match (BudgetIntervalType::parse($get('interval_type'))) {
                             BudgetIntervalType::Month => Carbon::parse($get('start_date'))->addMonth(),
                             BudgetIntervalType::Quarter => Carbon::parse($get('start_date'))->addQuarter(),
                             BudgetIntervalType::Year => Carbon::parse($get('start_date'))->addYear(),
                             default => Carbon::parse($get('start_date'))->addDay(),
                         })
-                        ->maxDate(fn (Forms\Get $get) => Carbon::parse($get('start_date'))->endOfYear()),
+                        ->maxDate(fn (Get $get) => Carbon::parse($get('start_date'))->endOfYear()),
                 ]),
 
             Step::make('Budget Setup & Settings')
                 ->icon('heroicon-o-cog-6-tooth')
                 ->schema([
                     // Prefill configuration
-                    Forms\Components\Toggle::make('prefill_data')
+                    Toggle::make('prefill_data')
                         ->label('Prefill Data')
                         ->helperText('Enable this option to prefill the budget with historical data')
                         ->default(false)
                         ->live(),
 
-                    Forms\Components\Grid::make(1)
+                    Grid::make(1)
                         ->schema([
-                            Forms\Components\Select::make('source_type')
+                            Select::make('source_type')
                                 ->label('Prefill Method')
                                 ->options(BudgetSourceType::class)
                                 ->live()
                                 ->required(),
 
                             // If user selects to copy a previous budget
-                            Forms\Components\Select::make('source_budget_id')
+                            Select::make('source_budget_id')
                                 ->label('Source Budget')
                                 ->options(fn () => Budget::query()
                                     ->orderByDesc('end_date')
                                     ->pluck('name', 'id'))
                                 ->searchable()
                                 ->required()
-                                ->visible(fn (Forms\Get $get) => BudgetSourceType::parse($get('source_type'))?->isBudget()),
+                                ->visible(fn (Get $get) => BudgetSourceType::parse($get('source_type'))?->isBudget()),
 
                             // If user selects to use historical actuals
-                            Forms\Components\Select::make('source_fiscal_year')
+                            Select::make('source_fiscal_year')
                                 ->label('Fiscal Year')
                                 ->options(function () {
                                     $options = [];
@@ -178,7 +188,7 @@ class CreateBudget extends CreateRecord
                                 })
                                 ->required()
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set) {
+                                ->afterStateUpdated(function (Set $set) {
                                     // Clear the cache when the fiscal year changes
                                     $this->accountsCache = [];
 
@@ -191,13 +201,13 @@ class CreateBudget extends CreateRecord
                                     // Update the selected_accounts field to exclude accounts without actuals
                                     $set('selected_accounts', $accountIdsWithoutActuals);
                                 })
-                                ->visible(fn (Forms\Get $get) => BudgetSourceType::parse($get('source_type'))?->isActuals()),
-                        ])->visible(fn (Forms\Get $get) => $get('prefill_data') === true),
+                                ->visible(fn (Get $get) => BudgetSourceType::parse($get('source_type'))?->isActuals()),
+                        ])->visible(fn (Get $get) => $get('prefill_data') === true),
 
                     CustomSection::make('Account Selection')
                         ->contained(false)
                         ->schema([
-                            Forms\Components\Checkbox::make('exclude_accounts_without_actuals')
+                            Checkbox::make('exclude_accounts_without_actuals')
                                 ->label('Exclude all accounts without actuals')
                                 ->helperText(function () {
                                     $count = $this->getAccountsWithoutActuals()->count();
@@ -206,7 +216,7 @@ class CreateBudget extends CreateRecord
                                 })
                                 ->default(true)
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Set $set, $state) {
                                     if ($state) {
                                         // When checked, select all accounts without actuals
                                         $accountsWithoutActuals = $this->getAccountsWithoutActuals()->pluck('id')->toArray();
@@ -217,13 +227,13 @@ class CreateBudget extends CreateRecord
                                     }
                                 }),
 
-                            Forms\Components\CheckboxList::make('selected_accounts')
+                            CheckboxList::make('selected_accounts')
                                 ->label('Select Accounts to Exclude')
                                 ->options(function () {
                                     // Get all budgetable accounts
                                     return $this->getBudgetableAccounts()->pluck('name', 'id')->toArray();
                                 })
-                                ->descriptions(function (Forms\Components\CheckboxList $component) {
+                                ->descriptions(function (CheckboxList $component) {
                                     $fiscalYear = $this->data['source_fiscal_year'] ?? null;
 
                                     if (blank($fiscalYear)) {
@@ -271,7 +281,7 @@ class CreateBudget extends CreateRecord
                                 ->bulkToggleable() // Enable "Select All" / "Deselect All"
                                 ->selectAllAction(fn (Action $action) => $action->label('Exclude all accounts'))
                                 ->deselectAllAction(fn (Action $action) => $action->label('Include all accounts'))
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Set $set, $state) {
                                     // Get all accounts without actuals
                                     $accountsWithoutActuals = $this->getAccountsWithoutActuals()->pluck('id')->toArray();
 
@@ -282,7 +292,7 @@ class CreateBudget extends CreateRecord
                                     $set('exclude_accounts_without_actuals', $allAccountsWithoutActualsSelected);
                                 }),
                         ])
-                        ->visible(function (Forms\Get $get) {
+                        ->visible(function (Get $get) {
                             // Only show when using actuals with valid fiscal year AND accounts without transactions exist
                             $prefillSourceType = BudgetSourceType::parse($get('source_type'));
 
@@ -293,7 +303,7 @@ class CreateBudget extends CreateRecord
                             return $this->getAccountsWithoutActuals()->isNotEmpty();
                         }),
 
-                    Forms\Components\Textarea::make('notes')
+                    Textarea::make('notes')
                         ->label('Notes')
                         ->columnSpanFull(),
                 ]),

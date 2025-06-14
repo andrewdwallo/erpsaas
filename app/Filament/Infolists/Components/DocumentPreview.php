@@ -6,7 +6,7 @@ use App\Enums\Accounting\DocumentType;
 use App\Enums\Setting\Template;
 use App\Models\Setting\DocumentDefault;
 use Closure;
-use Filament\Infolists\Components\Grid;
+use Filament\Schemas\Components\Grid;
 
 class DocumentPreview extends Grid
 {

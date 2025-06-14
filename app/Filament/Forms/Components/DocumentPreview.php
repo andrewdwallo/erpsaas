@@ -4,7 +4,7 @@ namespace App\Filament\Forms\Components;
 
 use App\Enums\Setting\Template;
 use Closure;
-use Filament\Forms\Components\Grid;
+use Filament\Schemas\Components\Grid;
 
 class DocumentPreview extends Grid
 {

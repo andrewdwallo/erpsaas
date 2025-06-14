@@ -3,7 +3,8 @@
 namespace App\Filament\Company\Resources\Accounting;
 
 use App\Enums\Accounting\TransactionType;
-use App\Filament\Company\Resources\Accounting\TransactionResource\Pages;
+use App\Filament\Company\Resources\Accounting\TransactionResource\Pages\ListTransactions;
+use App\Filament\Company\Resources\Accounting\TransactionResource\Pages\ViewTransaction;
 use App\Filament\Forms\Components\DateRangeSelect;
 use App\Filament\Tables\Actions\EditTransactionAction;
 use App\Filament\Tables\Actions\ReplicateBulkAction;
@@ -13,16 +14,26 @@ use App\Models\Accounting\Transaction;
 use App\Models\Common\Client;
 use App\Models\Common\Vendor;
 use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
+use Filament\Support\Enums\Width;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,10 +45,10 @@ class TransactionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'description';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([]);
+        return $schema
+            ->components([]);
     }
 
     public static function table(Table $table): Table
@@ -57,39 +68,39 @@ class TransactionResource extends Resource
             })
             ->columns([
                 Columns::id(),
-                Tables\Columns\TextColumn::make('posted_at')
+                TextColumn::make('posted_at')
                     ->label('Date')
                     ->sortable()
                     ->defaultDateFormat(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->label('Type')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label('Description')
                     ->limit(50)
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('payeeable.name')
+                TextColumn::make('payeeable.name')
                     ->label('Payee')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('bankAccount.account.name')
+                TextColumn::make('bankAccount.account.name')
                     ->label('Account')
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('account.name')
+                TextColumn::make('account.name')
                     ->label('Category')
                     ->prefix(static fn (Transaction $transaction) => $transaction->type->isTransfer() ? 'Transfer to ' : null)
                     ->searchable()
                     ->toggleable()
                     ->state(static fn (Transaction $transaction) => $transaction->account->name ?? 'Journal Entry'),
-                Tables\Columns\TextColumn::make('amount')
+                TextColumn::make('amount')
                     ->label('Amount')
                     ->weight(static fn (Transaction $transaction) => $transaction->reviewed ? null : FontWeight::SemiBold)
                     ->color(
                         static fn (Transaction $transaction) => match ($transaction->type) {
-                            TransactionType::Deposit => Color::rgb('rgb(' . Color::Green[700] . ')'),
+                            TransactionType::Deposit => Color::generateV3Palette('rgb(' . Color::Green[700] . ')'),
                             TransactionType::Journal => 'primary',
                             default => null,
                         }
@@ -99,25 +110,25 @@ class TransactionResource extends Resource
             ])
             ->defaultSort('posted_at', 'desc')
             ->filters([
-                Tables\Filters\SelectFilter::make('bank_account_id')
+                SelectFilter::make('bank_account_id')
                     ->label('Account')
                     ->searchable()
                     ->options(static fn () => Transaction::getBankAccountOptions(excludeArchived: false)),
-                Tables\Filters\SelectFilter::make('account_id')
+                SelectFilter::make('account_id')
                     ->label('Category')
                     ->multiple()
                     ->options(static fn () => Transaction::getChartAccountOptions()),
-                Tables\Filters\TernaryFilter::make('reviewed')
+                TernaryFilter::make('reviewed')
                     ->label('Status')
                     ->trueLabel('Reviewed')
                     ->falseLabel('Not Reviewed'),
-                Tables\Filters\SelectFilter::make('type')
+                SelectFilter::make('type')
                     ->label('Type')
                     ->options(TransactionType::class),
-                Tables\Filters\TernaryFilter::make('is_payment')
+                TernaryFilter::make('is_payment')
                     ->label('Payment')
                     ->default(false),
-                Tables\Filters\SelectFilter::make('payee')
+                SelectFilter::make('payee')
                     ->label('Payee')
                     ->options(static fn () => Transaction::getPayeeOptions())
                     ->searchable()
@@ -154,28 +165,28 @@ class TransactionResource extends Resource
                 $filters['posted_at'],
                 $filters['updated_at'],
             ])
-            ->filtersFormWidth(MaxWidth::ThreeExtraLarge)
-            ->actions([
-                Tables\Actions\Action::make('markAsReviewed')
+            ->filtersFormWidth(Width::ThreeExtraLarge)
+            ->recordActions([
+                Action::make('markAsReviewed')
                     ->label('Mark as reviewed')
                     ->view('filament.company.components.tables.actions.mark-as-reviewed')
                     ->icon(static fn (Transaction $transaction) => $transaction->reviewed ? 'heroicon-s-check-circle' : 'heroicon-o-check-circle')
-                    ->color(static fn (Transaction $transaction, Tables\Actions\Action $action) => match (static::determineTransactionState($transaction, $action)) {
+                    ->color(static fn (Transaction $transaction, Action $action) => match (static::determineTransactionState($transaction, $action)) {
                         'reviewed' => 'primary',
-                        'unreviewed' => Color::rgb('rgb(' . Color::Gray[600] . ')'),
+                        'unreviewed' => Color::generateV3Palette('rgb(' . Color::Gray[600] . ')'),
                         'uncategorized' => 'gray',
                     })
-                    ->tooltip(static fn (Transaction $transaction, Tables\Actions\Action $action) => match (static::determineTransactionState($transaction, $action)) {
+                    ->tooltip(static fn (Transaction $transaction, Action $action) => match (static::determineTransactionState($transaction, $action)) {
                         'reviewed' => 'Reviewed',
                         'unreviewed' => 'Mark as reviewed',
                         'uncategorized' => 'Categorize first to mark as reviewed',
                     })
                     ->disabled(fn (Transaction $transaction): bool => $transaction->isUncategorized())
                     ->action(fn (Transaction $transaction) => $transaction->update(['reviewed' => ! $transaction->reviewed])),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ActionGroup::make([
+                ActionGroup::make([
+                    ActionGroup::make([
                         EditTransactionAction::make(),
-                        Tables\Actions\ReplicateAction::make()
+                        ReplicateAction::make()
                             ->excludeAttributes(['created_by', 'updated_by', 'created_at', 'updated_at'])
                             ->modal(false)
                             ->beforeReplicaSaved(static function (Transaction $replica) {
@@ -192,15 +203,15 @@ class TransactionResource extends Resource
                                 });
                             }),
                     ])->dropdown(false),
-                    Tables\Actions\DeleteAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                     ReplicateBulkAction::make()
                         ->label('Replicate')
-                        ->modalWidth(MaxWidth::Large)
+                        ->modalWidth(Width::Large)
                         ->modalDescription('Replicating transactions will also replicate their journal entries. Are you sure you want to proceed?')
                         ->successNotificationTitle('Transactions replicated successfully')
                         ->failureNotificationTitle('Failed to replicate transactions')
@@ -238,19 +249,19 @@ class TransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTransactions::route('/'),
-            'view' => Pages\ViewTransaction::route('/{record}'),
+            'index' => ListTransactions::route('/'),
+            'view' => ViewTransaction::route('/{record}'),
         ];
     }
 
     /**
      * @throws Exception
      */
-    public static function buildDateRangeFilter(string $fieldPrefix, string $label, bool $hasBottomBorder = false): Tables\Filters\Filter
+    public static function buildDateRangeFilter(string $fieldPrefix, string $label, bool $hasBottomBorder = false): Filter
     {
-        return Tables\Filters\Filter::make($fieldPrefix)
+        return Filter::make($fieldPrefix)
             ->columnSpanFull()
-            ->form([
+            ->schema([
                 Grid::make()
                     ->live()
                     ->schema([
@@ -297,21 +308,21 @@ class TransactionResource extends Resource
         $formattedEndDate = filled($data[$endKey]) ? Carbon::parse($data[$endKey])->toFormattedDateString() : null;
         if ($formattedStartDate && $formattedEndDate) {
             // If both start and end dates are set, show the combined date range as the indicator, no specific field needs to be removed since the entire filter will be removed
-            $indicators[] = Tables\Filters\Indicator::make("{$labelPrefix}: {$formattedStartDate} - {$formattedEndDate}");
+            $indicators[] = Indicator::make("{$labelPrefix}: {$formattedStartDate} - {$formattedEndDate}");
         } else {
             if ($formattedStartDate) {
-                $indicators[] = Tables\Filters\Indicator::make("{$labelPrefix} After: {$formattedStartDate}")
+                $indicators[] = Indicator::make("{$labelPrefix} After: {$formattedStartDate}")
                     ->removeField($startKey);
             }
 
             if ($formattedEndDate) {
-                $indicators[] = Tables\Filters\Indicator::make("{$labelPrefix} Before: {$formattedEndDate}")
+                $indicators[] = Indicator::make("{$labelPrefix} Before: {$formattedEndDate}")
                     ->removeField($endKey);
             }
         }
     }
 
-    protected static function determineTransactionState(Transaction $transaction, Tables\Actions\Action $action): string
+    protected static function determineTransactionState(Transaction $transaction, Action $action): string
     {
         if ($transaction->reviewed) {
             return 'reviewed';

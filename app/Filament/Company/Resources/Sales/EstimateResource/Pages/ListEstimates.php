@@ -4,12 +4,12 @@ namespace App\Filament\Company\Resources\Sales\EstimateResource\Pages;
 
 use App\Enums\Accounting\EstimateStatus;
 use App\Filament\Company\Resources\Sales\EstimateResource;
-use App\Filament\Company\Resources\Sales\EstimateResource\Widgets;
-use Filament\Actions;
+use App\Filament\Company\Resources\Sales\EstimateResource\Widgets\EstimateOverview;
+use Filament\Actions\CreateAction;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListEstimates extends ListRecords
@@ -21,18 +21,18 @@ class ListEstimates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\EstimateOverview::make(),
+            EstimateOverview::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }

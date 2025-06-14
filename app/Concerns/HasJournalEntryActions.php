@@ -4,7 +4,7 @@ namespace App\Concerns;
 
 use App\Enums\Accounting\JournalEntryType;
 use App\Utilities\Currency\CurrencyAccessor;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 
 trait HasJournalEntryActions
 {

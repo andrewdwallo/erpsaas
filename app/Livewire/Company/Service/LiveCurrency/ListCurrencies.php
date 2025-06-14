@@ -3,10 +3,12 @@
 namespace App\Livewire\Company\Service\LiveCurrency;
 
 use App\Models\Service\CurrencyList;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -23,20 +25,20 @@ class ListCurrencies extends Component implements HasForms, HasTable
         return $table
             ->query(CurrencyList::query())
             ->columns([
-                Tables\Columns\TextColumn::make('code')
+                TextColumn::make('code')
                     ->localizeLabel()
                     ->weight(FontWeight::Medium)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->localizeLabel()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('entity')
+                TextColumn::make('entity')
                     ->localizeLabel()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('available')
+                IconColumn::make('available')
                     ->localizeLabel()
                     ->boolean()
                     ->sortable(),
@@ -44,11 +46,11 @@ class ListCurrencies extends Component implements HasForms, HasTable
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 //
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                     //
                 ]),
             ]);

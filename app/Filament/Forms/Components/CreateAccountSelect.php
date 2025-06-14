@@ -7,13 +7,13 @@ use App\Enums\Accounting\AccountType;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountSubtype;
 use App\Utilities\Accounting\AccountCode;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -161,7 +161,7 @@ class CreateAccountSelect extends Select
         return $action
             ->label('Create Account')
             ->slideOver()
-            ->modalWidth(MaxWidth::Large)
+            ->modalWidth(Width::Large)
             ->modalHeading('Create a new account');
     }
 }

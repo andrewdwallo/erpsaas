@@ -5,9 +5,9 @@ namespace App\Filament\Company\Resources\Sales\ClientResource\Pages;
 use App\Concerns\HandlePageRedirect;
 use App\Filament\Company\Resources\Sales\ClientResource;
 use App\Models\Common\Client;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 
 class EditClient extends EditRecord
@@ -19,13 +19,13 @@ class EditClient extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::FiveExtraLarge;
+        return Width::FiveExtraLarge;
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model

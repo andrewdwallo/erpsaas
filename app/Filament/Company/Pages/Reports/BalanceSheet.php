@@ -10,7 +10,7 @@ use App\Services\ExportService;
 use App\Services\ReportService;
 use App\Support\Column;
 use App\Transformers\BalanceSheetReportTransformer;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -18,7 +18,7 @@ class BalanceSheet extends BaseReportPage
 {
     use HasReportTabs;
 
-    protected static string $view = 'filament.company.pages.reports.balance-sheet';
+    protected string $view = 'filament.company.pages.reports.balance-sheet';
 
     protected ReportService $reportService;
 
@@ -46,12 +46,12 @@ class BalanceSheet extends BaseReportPage
         ];
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->inlineLabel()
             ->columns(3)
-            ->schema([
+            ->components([
                 DateRangeSelect::make('dateRange')
                     ->label('As of')
                     ->selectablePlaceholder(false)

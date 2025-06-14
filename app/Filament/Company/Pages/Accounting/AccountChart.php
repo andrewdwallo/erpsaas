@@ -12,16 +12,16 @@ use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Unique;
@@ -34,7 +34,7 @@ class AccountChart extends Page
 
     protected static ?string $slug = 'accounting/chart';
 
-    protected static string $view = 'filament.company.pages.accounting.chart';
+    protected string $view = 'filament.company.pages.accounting.chart';
 
     #[Url]
     public ?string $activeTab = AccountCategory::Asset->value;
@@ -44,7 +44,7 @@ class AccountChart extends Page
         $action
             ->modal()
             ->slideOver()
-            ->modalWidth(MaxWidth::TwoExtraLarge);
+            ->modalWidth(Width::TwoExtraLarge);
     }
 
     #[Computed]
@@ -65,7 +65,7 @@ class AccountChart extends Page
             ->iconButton()
             ->icon('heroicon-m-pencil-square')
             ->record(fn (array $arguments) => Account::find($arguments['account']))
-            ->form(fn (Form $form) => $this->getAccountForm($form)->operation('edit'));
+            ->schema(fn (Schema $schema) => $this->getAccountForm($schema)->operation('edit'));
     }
 
     public function createAccountAction(): Action
@@ -75,7 +75,7 @@ class AccountChart extends Page
             ->model(Account::class)
             ->label('Add a new account')
             ->icon('heroicon-o-plus-circle')
-            ->form(fn (Form $form) => $this->getAccountForm($form)->operation('create'))
+            ->schema(fn (Schema $schema) => $this->getAccountForm($schema)->operation('create'))
             ->fillForm(fn (array $arguments): array => $this->getAccountFormDefaults($arguments['accountSubtype']));
     }
 
@@ -90,10 +90,10 @@ class AccountChart extends Page
         ];
     }
 
-    private function getAccountForm(Form $form, bool $useActiveTab = true): Form
+    private function getAccountForm(Schema $schema, bool $useActiveTab = true): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getTypeFormComponent($useActiveTab),
                 $this->getCodeFormComponent(),
                 $this->getNameFormComponent(),
@@ -301,7 +301,7 @@ class AccountChart extends Page
             CreateAction::make()
                 ->button()
                 ->model(Account::class)
-                ->form(fn (Form $form) => $this->getAccountForm($form, false)->operation('create')),
+                ->schema(fn (Schema $schema) => $this->getAccountForm($schema, false)->operation('create')),
         ];
     }
 

@@ -10,9 +10,9 @@ use App\Models\Accounting\Account;
 use App\Models\Accounting\Transaction;
 use App\Utilities\Currency\ConfigureCurrencies;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\ReplicateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ReplicateAction;
 
 use function Pest\Livewire\livewire;
 

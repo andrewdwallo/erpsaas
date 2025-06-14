@@ -4,14 +4,14 @@ namespace App\Filament\Company\Clusters\Settings\Resources\DocumentDefaultResour
 
 use App\Filament\Company\Clusters\Settings\Resources\DocumentDefaultResource;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 
 class ListDocumentDefaults extends ListRecords
 {
     protected static string $resource = DocumentDefaultResource::class;
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::ScreenTwoExtraLarge;
+        return Width::ScreenTwoExtraLarge;
     }
 }

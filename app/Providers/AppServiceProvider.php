@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Http\Responses\LoginRedirectResponse;
 use App\Services\DateRangeService;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Assets\Js;
 use Filament\Support\Enums\Alignment;

@@ -1,6 +1,8 @@
 <?php
 
-uses(Tests\TestCase::class)
+use Tests\TestCase;
+
+uses(TestCase::class)
     ->in('Feature', 'Unit');
 
 /*

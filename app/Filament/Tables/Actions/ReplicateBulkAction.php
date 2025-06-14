@@ -3,9 +3,9 @@
 namespace App\Filament\Tables\Actions;
 
 use Closure;
+use Filament\Actions\BulkAction;
 use Filament\Actions\Concerns\CanReplicateRecords;
 use Filament\Actions\Contracts\ReplicatesRecords;
-use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

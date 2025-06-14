@@ -7,11 +7,12 @@ use App\Models\Accounting\Budget;
 use App\Models\Accounting\BudgetAllocation;
 use App\Models\Accounting\BudgetItem;
 use App\Utilities\Currency\CurrencyConverter;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\RawJs;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
@@ -66,7 +67,7 @@ class BudgetItemsRelationManager extends RelationManager
 
             try {
                 $startDate = Carbon::createFromFormat('Y_m_d', $column);
-            } catch (\Exception) {
+            } catch (Exception) {
                 continue;
             }
 
@@ -281,7 +282,7 @@ class BudgetItemsRelationManager extends RelationManager
                         );
                 })->toArray(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkAction::make('clearAllocations')
                     ->label('Clear Allocations')
                     ->icon('heroicon-o-trash')

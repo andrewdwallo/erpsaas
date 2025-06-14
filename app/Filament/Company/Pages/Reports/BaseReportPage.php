@@ -14,8 +14,9 @@ use App\Support\Column;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Set;
 use Filament\Pages\Page;
+use Filament\Panel;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -67,7 +68,7 @@ abstract class BaseReportPage extends Page
         return false;
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         $prefix = Reports::getSlug() . '/';
 

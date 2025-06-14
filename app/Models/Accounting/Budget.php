@@ -10,7 +10,6 @@ use App\Enums\Accounting\BudgetStatus;
 use App\Filament\Company\Resources\Accounting\BudgetResource;
 use App\Models\User;
 use Filament\Actions\Action;
-use Filament\Actions\MountableAction;
 use Filament\Actions\ReplicateAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -21,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 class Budget extends Model
 {
@@ -171,7 +171,7 @@ class Budget extends Model
     public function approveDraft(?Carbon $approvedAt = null): void
     {
         if (! $this->canBeApproved()) {
-            throw new \RuntimeException('Budget cannot be approved.');
+            throw new RuntimeException('Budget cannot be approved.');
         }
 
         $approvedAt ??= now();
@@ -188,7 +188,7 @@ class Budget extends Model
     public function close(?Carbon $closedAt = null): void
     {
         if (! $this->canBeClosed()) {
-            throw new \RuntimeException('Budget cannot be closed.');
+            throw new RuntimeException('Budget cannot be closed.');
         }
 
         $closedAt ??= now();
@@ -205,7 +205,7 @@ class Budget extends Model
     public function reopen(): void
     {
         if (! $this->isClosed()) {
-            throw new \RuntimeException('Only closed budgets can be reopened.');
+            throw new RuntimeException('Only closed budgets can be reopened.');
         }
 
         $this->update([
@@ -217,7 +217,7 @@ class Budget extends Model
     /**
      * Get Action for approving a draft budget
      */
-    public static function getApproveDraftAction(string $action = Action::class): MountableAction
+    public static function getApproveDraftAction(string $action = Action::class): Action
     {
         return $action::make('approveDraft')
             ->label('Approve')
@@ -227,7 +227,7 @@ class Budget extends Model
             })
             ->databaseTransaction()
             ->successNotificationTitle('Budget approved')
-            ->action(function (self $record, MountableAction $action) {
+            ->action(function (self $record, Action $action) {
                 $record->approveDraft();
                 $action->success();
             });
@@ -236,7 +236,7 @@ class Budget extends Model
     /**
      * Get Action for closing an active budget
      */
-    public static function getCloseAction(string $action = Action::class): MountableAction
+    public static function getCloseAction(string $action = Action::class): Action
     {
         return $action::make('close')
             ->label('Close')
@@ -248,7 +248,7 @@ class Budget extends Model
             ->requiresConfirmation()
             ->databaseTransaction()
             ->successNotificationTitle('Budget closed')
-            ->action(function (self $record, MountableAction $action) {
+            ->action(function (self $record, Action $action) {
                 $record->close();
                 $action->success();
             });
@@ -257,7 +257,7 @@ class Budget extends Model
     /**
      * Get Action for reopening a closed budget
      */
-    public static function getReopenAction(string $action = Action::class): MountableAction
+    public static function getReopenAction(string $action = Action::class): Action
     {
         return $action::make('reopen')
             ->label('Reopen')
@@ -268,7 +268,7 @@ class Budget extends Model
             ->requiresConfirmation()
             ->databaseTransaction()
             ->successNotificationTitle('Budget reopened')
-            ->action(function (self $record, MountableAction $action) {
+            ->action(function (self $record, Action $action) {
                 $record->reopen();
                 $action->success();
             });
@@ -277,7 +277,7 @@ class Budget extends Model
     /**
      * Get Action for duplicating a budget
      */
-    public static function getReplicateAction(string $action = ReplicateAction::class): MountableAction
+    public static function getReplicateAction(string $action = ReplicateAction::class): Action
     {
         return $action::make()
             ->excludeAttributes([

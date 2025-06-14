@@ -13,15 +13,20 @@ use App\Models\Common\Vendor;
 use App\Models\Setting\Currency;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Collection;
@@ -30,13 +35,13 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
 class PayBills extends ListRecords
 {
     protected static string $resource = BillResource::class;
 
-    protected static string $view = 'filament.company.resources.purchases.bill-resource.pages.pay-bills';
+    protected string $view = 'filament.company.resources.purchases.bill-resource.pages.pay-bills';
 
     public array $paymentAmounts = [];
 
@@ -64,7 +69,7 @@ class PayBills extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('processPayments')
+            Action::make('processPayments')
                 ->color('primary')
                 ->requiresConfirmation()
                 ->modalHeading('Confirm payments')
@@ -124,7 +129,7 @@ class PayBills extends ListRecords
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|\Filament\Schemas\Schema>
      */
     protected function getForms(): array
     {
@@ -133,14 +138,14 @@ class PayBills extends ListRecords
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->live()
-            ->schema([
-                Forms\Components\Grid::make(3)
+            ->components([
+                Grid::make(3)
                     ->schema([
-                        Forms\Components\Select::make('bank_account_id')
+                        Select::make('bank_account_id')
                             ->label('Account')
                             ->options(static function () {
                                 return Transaction::getBankAccountOptionsFlat();
@@ -149,11 +154,11 @@ class PayBills extends ListRecords
                             ->selectablePlaceholder(false)
                             ->searchable()
                             ->softRequired(),
-                        Forms\Components\DatePicker::make('posted_at')
+                        DatePicker::make('posted_at')
                             ->label('Date')
                             ->default(now())
                             ->softRequired(),
-                        Forms\Components\Select::make('payment_method')
+                        Select::make('payment_method')
                             ->label('Payment method')
                             ->selectablePlaceholder(false)
                             ->options(PaymentMethod::class)
@@ -185,7 +190,7 @@ class PayBills extends ListRecords
                     ->label('Due date')
                     ->defaultDateFormat()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->sortable(),
                 TextColumn::make('amount_due')
@@ -220,7 +225,7 @@ class PayBills extends ListRecords
                                 return $activeCurrency && $activeCurrency !== $bankAccountCurrency;
                             }),
                     ]),
-                Tables\Columns\IconColumn::make('applyFullAmountAction')
+                IconColumn::make('applyFullAmountAction')
                     ->icon('heroicon-m-chevron-double-right')
                     ->color('primary')
                     ->label('')
@@ -229,7 +234,7 @@ class PayBills extends ListRecords
                     ->width('3rem')
                     ->tooltip('Apply full amount')
                     ->action(
-                        Tables\Actions\Action::make('applyFullPayment')
+                        Action::make('applyFullPayment')
                             ->action(function (Bill $record) {
                                 $this->paymentAmounts[$record->id] = $record->amount_due;
                             }),
@@ -284,8 +289,8 @@ class PayBills extends ListRecords
                             }),
                     ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkAction::make('applyFullAmounts')
+            ->toolbarActions([
+                BulkAction::make('applyFullAmounts')
                     ->label('Apply full amounts')
                     ->icon('heroicon-o-banknotes')
                     ->color('primary')
@@ -295,7 +300,7 @@ class PayBills extends ListRecords
                             $this->paymentAmounts[$bill->id] = $bill->amount_due;
                         });
                     }),
-                Tables\Actions\BulkAction::make('clearAmounts')
+                BulkAction::make('clearAmounts')
                     ->label('Clear amounts')
                     ->icon('heroicon-o-x-mark')
                     ->color('gray')
@@ -307,7 +312,7 @@ class PayBills extends ListRecords
                     }),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('currency_code')
+                SelectFilter::make('currency_code')
                     ->label('Currency')
                     ->selectablePlaceholder(false)
                     ->default(CurrencyAccessor::getDefaultCurrency())
@@ -316,7 +321,7 @@ class PayBills extends ListRecords
                     ->resetState([
                         'value' => CurrencyAccessor::getDefaultCurrency(),
                     ])
-                    ->indicateUsing(function (Tables\Filters\SelectFilter $filter, array $state) {
+                    ->indicateUsing(function (SelectFilter $filter, array $state) {
                         if (blank($state['value'] ?? null)) {
                             return [];
                         }
@@ -331,13 +336,13 @@ class PayBills extends ListRecords
 
                         $indicator = $filter->getLabel();
 
-                        return Tables\Filters\Indicator::make("{$indicator}: {$label}")->removable(false);
+                        return Indicator::make("{$indicator}: {$label}")->removable(false);
                     }),
-                Tables\Filters\SelectFilter::make('vendor_id')
+                SelectFilter::make('vendor_id')
                     ->label('Vendor')
                     ->options(fn () => Vendor::query()->pluck('name', 'id')->toArray())
                     ->searchable(),
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->multiple()
                     ->options(BillStatus::getUnpaidOptions()),
             ]);

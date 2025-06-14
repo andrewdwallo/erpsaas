@@ -3,12 +3,24 @@
 namespace App\Models;
 
 use App\Enums\Accounting\DocumentType;
+use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountSubtype;
+use App\Models\Accounting\Adjustment;
+use App\Models\Accounting\Bill;
+use App\Models\Accounting\Budget;
+use App\Models\Accounting\BudgetAllocation;
+use App\Models\Accounting\BudgetItem;
+use App\Models\Accounting\Estimate;
+use App\Models\Accounting\Invoice;
+use App\Models\Accounting\RecurringInvoice;
+use App\Models\Accounting\Transaction;
 use App\Models\Banking\BankAccount;
 use App\Models\Banking\ConnectedBankAccount;
+use App\Models\Common\Address;
 use App\Models\Common\Client;
 use App\Models\Common\Contact;
 use App\Models\Common\Offering;
+use App\Models\Common\Vendor;
 use App\Models\Core\Department;
 use App\Models\Setting\CompanyDefault;
 use App\Models\Setting\CompanyProfile;
@@ -70,17 +82,17 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
 
     public function accounts(): HasMany
     {
-        return $this->hasMany(Accounting\Account::class, 'company_id');
+        return $this->hasMany(Account::class, 'company_id');
     }
 
     public function addresses(): HasMany
     {
-        return $this->hasMany(Common\Address::class, 'company_id');
+        return $this->hasMany(Address::class, 'company_id');
     }
 
     public function adjustments(): HasMany
     {
-        return $this->hasMany(Accounting\Adjustment::class, 'company_id');
+        return $this->hasMany(Adjustment::class, 'company_id');
     }
 
     public function bankAccounts(): HasMany
@@ -90,22 +102,22 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
 
     public function bills(): HasMany
     {
-        return $this->hasMany(Accounting\Bill::class, 'company_id');
+        return $this->hasMany(Bill::class, 'company_id');
     }
 
     public function budgets(): HasMany
     {
-        return $this->hasMany(Accounting\Budget::class, 'company_id');
+        return $this->hasMany(Budget::class, 'company_id');
     }
 
     public function budgetItems(): HasMany
     {
-        return $this->hasMany(Accounting\BudgetItem::class, 'company_id');
+        return $this->hasMany(BudgetItem::class, 'company_id');
     }
 
     public function budgetAllocations(): HasMany
     {
-        return $this->hasMany(Accounting\BudgetAllocation::class, 'company_id');
+        return $this->hasMany(BudgetAllocation::class, 'company_id');
     }
 
     public function accountSubtypes(): HasMany
@@ -170,17 +182,17 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
 
     public function estimates(): HasMany
     {
-        return $this->hasMany(Accounting\Estimate::class, 'company_id');
+        return $this->hasMany(Estimate::class, 'company_id');
     }
 
     public function invoices(): HasMany
     {
-        return $this->hasMany(Accounting\Invoice::class, 'company_id');
+        return $this->hasMany(Invoice::class, 'company_id');
     }
 
     public function recurringInvoices(): HasMany
     {
-        return $this->hasMany(Accounting\RecurringInvoice::class, 'company_id');
+        return $this->hasMany(RecurringInvoice::class, 'company_id');
     }
 
     public function locale(): HasOne
@@ -195,7 +207,7 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Accounting\Transaction::class, 'company_id');
+        return $this->hasMany(Transaction::class, 'company_id');
     }
 
     public function offerings(): HasMany
@@ -205,6 +217,6 @@ class Company extends FilamentCompaniesCompany implements HasAvatar
 
     public function vendors(): HasMany
     {
-        return $this->hasMany(Common\Vendor::class, 'company_id');
+        return $this->hasMany(Vendor::class, 'company_id');
     }
 }

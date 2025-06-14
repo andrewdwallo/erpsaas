@@ -4,10 +4,10 @@ namespace App\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Split;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 
 class DocumentHeaderSection extends Section
 {
@@ -37,7 +37,7 @@ class DocumentHeaderSection extends Section
         $this->collapsed();
 
         $this->schema([
-            Split::make([
+            Flex::make([
                 Group::make([
                     FileUpload::make('logo')
                         ->maxSize(1024)

@@ -10,14 +10,14 @@ use App\Services\ExportService;
 use App\Services\ReportService;
 use App\Support\Column;
 use App\Transformers\EntityPaymentPerformanceReportTransformer;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Guava\FilamentClusters\Forms\Cluster;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class BaseEntityPaymentPerformanceReportPage extends BaseReportPage
 {
-    protected static string $view = 'filament.company.pages.reports.detailed-report';
+    protected string $view = 'filament.company.pages.reports.detailed-report';
 
     protected ReportService $reportService;
 
@@ -70,12 +70,12 @@ abstract class BaseEntityPaymentPerformanceReportPage extends BaseReportPage
         ];
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->inlineLabel()
             ->columns()
-            ->schema([
+            ->components([
                 $this->getDateRangeFormComponent(),
                 Cluster::make([
                     $this->getStartDateFormComponent(),

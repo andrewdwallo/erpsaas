@@ -16,7 +16,7 @@ class LiveCurrency extends Page
 
     protected static ?string $slug = 'services/live-currency';
 
-    protected static string $view = 'filament.company.pages.service.live-currency';
+    protected string $view = 'filament.company.pages.service.live-currency';
 
     #[Url]
     public ?string $activeTab = null;

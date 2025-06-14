@@ -5,10 +5,10 @@ namespace App\Filament\Actions;
 use App\Concerns\HasTransactionAction;
 use App\Enums\Accounting\TransactionType;
 use App\Models\Accounting\Transaction;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Actions\StaticAction;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 
 class EditTransactionAction extends EditAction
 {
@@ -31,10 +31,10 @@ class EditTransactionAction extends EditAction
 
         $this->slideOver();
 
-        $this->modalWidth(function (): MaxWidth {
+        $this->modalWidth(function (): Width {
             return match ($this->getTransactionType()) {
-                TransactionType::Journal => MaxWidth::Screen,
-                default => MaxWidth::ThreeExtraLarge,
+                TransactionType::Journal => Width::Screen,
+                default => Width::ThreeExtraLarge,
             };
         });
 
@@ -46,11 +46,11 @@ class EditTransactionAction extends EditAction
             return [];
         });
 
-        $this->form(function (Form $form) {
+        $this->schema(function (Schema $schema) {
             return match ($this->getTransactionType()) {
-                TransactionType::Transfer => $this->transferForm($form),
-                TransactionType::Journal => $this->journalTransactionForm($form),
-                default => $this->transactionForm($form),
+                TransactionType::Transfer => $this->transferForm($schema),
+                TransactionType::Journal => $this->journalTransactionForm($schema),
+                default => $this->transactionForm($schema),
             };
         });
 
@@ -64,7 +64,7 @@ class EditTransactionAction extends EditAction
             }
         });
 
-        $this->modalSubmitAction(function (StaticAction $action) {
+        $this->modalSubmitAction(function (Action $action) {
             if ($this->getTransactionType() === TransactionType::Journal) {
                 $action->disabled(! $this->isJournalEntryBalanced());
             }

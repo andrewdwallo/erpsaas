@@ -5,8 +5,8 @@ namespace App\Filament\Company\Pages\Concerns;
 use App\Support\Column;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Form;
-use Filament\Support\Enums\ActionSize;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Size;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Arr;
 
@@ -46,7 +46,7 @@ trait HasTableColumnToggleForm
         ]);
     }
 
-    public function getTableColumnToggleForm(): Form
+    public function getTableColumnToggleForm(): Schema
     {
         if ((! $this->isCachingForms) && $this->hasCachedForm('toggleTableColumnForm')) {
             return $this->getForm('toggleTableColumnForm');
@@ -99,7 +99,7 @@ trait HasTableColumnToggleForm
         return Action::make('toggleColumns')
             ->label(__('filament-tables::table.actions.toggle_columns.label'))
             ->iconButton()
-            ->size(ActionSize::Large)
+            ->size(Size::Large)
             ->icon(FilamentIcon::resolve('tables::actions.toggle-columns') ?? 'heroicon-m-view-columns')
             ->color('gray')
             ->livewireClickHandlerEnabled(false);

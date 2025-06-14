@@ -2,7 +2,10 @@
 
 namespace App\Filament\Company\Resources\Sales;
 
-use App\Filament\Company\Resources\Sales\ClientResource\Pages;
+use App\Filament\Company\Resources\Sales\ClientResource\Pages\CreateClient;
+use App\Filament\Company\Resources\Sales\ClientResource\Pages\EditClient;
+use App\Filament\Company\Resources\Sales\ClientResource\Pages\ListClients;
+use App\Filament\Company\Resources\Sales\ClientResource\Pages\ViewClient;
 use App\Filament\Forms\Components\AddressFields;
 use App\Filament\Forms\Components\CreateCurrencySelect;
 use App\Filament\Forms\Components\CustomSection;
@@ -11,12 +14,23 @@ use App\Filament\Tables\Columns;
 use App\Models\Common\Address;
 use App\Models\Common\Client;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,25 +38,25 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('General Information')
+        return $schema
+            ->components([
+                Section::make('General Information')
                     ->schema([
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->columns()
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label('Client name')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('account_number')
+                                TextInput::make('account_number')
                                     ->maxLength(255)
                                     ->columnStart(1),
-                                Forms\Components\TextInput::make('website')
+                                TextInput::make('website')
                                     ->maxLength(255),
-                                Forms\Components\Textarea::make('notes')
+                                Textarea::make('notes')
                                     ->columnSpanFull(),
                             ]),
                         CustomSection::make('Primary Contact')
@@ -52,15 +66,15 @@ class ClientResource extends Resource
                             ->dehydrated(true)
                             ->contained(false)
                             ->schema([
-                                Forms\Components\Hidden::make('is_primary')
+                                Hidden::make('is_primary')
                                     ->default(true),
-                                Forms\Components\TextInput::make('first_name')
+                                TextInput::make('first_name')
                                     ->label('First name')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('last_name')
+                                TextInput::make('last_name')
                                     ->label('Last name')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
+                                TextInput::make('email')
                                     ->label('Email')
                                     ->email()
                                     ->columnSpanFull()
@@ -73,27 +87,27 @@ class ClientResource extends Resource
                                     ])
                                     ->columnSpanFull()
                                     ->blocks([
-                                        Forms\Components\Builder\Block::make('primary')
+                                        Block::make('primary')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Phone')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('mobile')
+                                        Block::make('mobile')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Mobile')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('toll_free')
+                                        Block::make('toll_free')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Toll free')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('fax')
+                                        Block::make('fax')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Fax')
                                                     ->live()
                                                     ->maxLength(15),
@@ -104,7 +118,7 @@ class ClientResource extends Resource
                                     ->blockNumbers(false)
                                     ->addActionLabel('Add Phone'),
                             ])->columns(),
-                        Forms\Components\Repeater::make('secondaryContacts')
+                        Repeater::make('secondaryContacts')
                             ->relationship()
                             ->saveRelationshipsUsing(null)
                             ->saveRelationshipsBeforeChildrenUsing(null)
@@ -116,7 +130,7 @@ class ClientResource extends Resource
                             ->columns()
                             ->defaultItems(0)
                             ->maxItems(3)
-                            ->itemLabel(function (Forms\Components\Repeater $component, array $state): ?string {
+                            ->itemLabel(function (Repeater $component, array $state): ?string {
                                 if ($component->getItemsCount() === 1) {
                                     return 'Secondary Contact';
                                 }
@@ -136,15 +150,15 @@ class ClientResource extends Resource
                             })
                             ->addActionLabel('Add Contact')
                             ->schema([
-                                Forms\Components\TextInput::make('first_name')
+                                TextInput::make('first_name')
                                     ->label('First name')
                                     ->live(onBlur: true)
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('last_name')
+                                TextInput::make('last_name')
                                     ->label('Last name')
                                     ->live(onBlur: true)
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
+                                TextInput::make('email')
                                     ->label('Email')
                                     ->email()
                                     ->maxLength(255),
@@ -155,9 +169,9 @@ class ClientResource extends Resource
                                         ['type' => 'primary'],
                                     ])
                                     ->blocks([
-                                        Forms\Components\Builder\Block::make('primary')
+                                        Block::make('primary')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Phone')
                                                     ->maxLength(255),
                                             ])->maxItems(1),
@@ -168,7 +182,7 @@ class ClientResource extends Resource
                                     ->blockNumbers(false),
                             ]),
                     ])->columns(1),
-                Forms\Components\Section::make('Billing')
+                Section::make('Billing')
                     ->schema([
                         CreateCurrencySelect::make('currency_code')
                             ->softRequired(),
@@ -179,33 +193,33 @@ class ClientResource extends Resource
                             ->dehydrated(true)
                             ->contained(false)
                             ->schema([
-                                Forms\Components\Hidden::make('type')
+                                Hidden::make('type')
                                     ->default('billing'),
                                 AddressFields::make(),
                             ])->columns(),
                     ])
                     ->columns(1),
-                Forms\Components\Section::make('Shipping')
+                Section::make('Shipping')
                     ->relationship('shippingAddress')
                     ->saveRelationshipsUsing(null)
                     ->saveRelationshipsBeforeChildrenUsing(null)
                     ->dehydrated(true)
                     ->schema([
-                        Forms\Components\Hidden::make('type')
+                        Hidden::make('type')
                             ->default('shipping'),
-                        Forms\Components\TextInput::make('recipient')
+                        TextInput::make('recipient')
                             ->label('Recipient')
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('phone')
+                        TextInput::make('phone')
                             ->label('Phone')
                             ->maxLength(255),
                         CustomSection::make('Shipping Address')
                             ->contained(false)
                             ->schema([
-                                Forms\Components\Checkbox::make('same_as_billing')
+                                Checkbox::make('same_as_billing')
                                     ->label('Same as billing address')
                                     ->live()
-                                    ->afterStateHydrated(function (?Address $record, Forms\Components\Checkbox $component) {
+                                    ->afterStateHydrated(function (?Address $record, Checkbox $component) {
                                         if (! $record || $record->parent_address_id) {
                                             return $component->state(true);
                                         }
@@ -235,7 +249,7 @@ class ClientResource extends Resource
                                     ->columnSpanFull(),
                                 AddressFields::make()
                                     ->visible(static fn (Get $get) => ! $get('same_as_billing')),
-                                Forms\Components\Textarea::make('notes')
+                                Textarea::make('notes')
                                     ->label('Delivery instructions')
                                     ->maxLength(255)
                                     ->columnSpanFull(),
@@ -249,24 +263,24 @@ class ClientResource extends Resource
         return $table
             ->columns([
                 Columns::id(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable()
                     ->description(static fn (Client $client) => $client->primaryContact?->full_name),
-                Tables\Columns\TextColumn::make('primaryContact.email')
+                TextColumn::make('primaryContact.email')
                     ->label('Email')
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('primaryContact.phones')
+                TextColumn::make('primaryContact.phones')
                     ->label('Phone')
                     ->toggleable()
                     ->state(static fn (Client $client) => $client->primaryContact?->first_available_phone),
-                Tables\Columns\TextColumn::make('billingAddress.address_string')
+                TextColumn::make('billingAddress.address_string')
                     ->label('Billing address')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->listWithLineBreaks(),
-                Tables\Columns\TextColumn::make('balance')
+                TextColumn::make('balance')
                     ->label('Balance')
                     ->getStateUsing(function (Client $client) {
                         return $client->invoices()
@@ -299,16 +313,16 @@ class ClientResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ActionGroup::make([
-                        Tables\Actions\EditAction::make(),
-                        Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ActionGroup::make([
+                    ActionGroup::make([
+                        EditAction::make(),
+                        ViewAction::make(),
                     ])->dropdown(false),
-                    Tables\Actions\DeleteAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ]);
     }
@@ -323,10 +337,10 @@ class ClientResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClients::route('/'),
-            'create' => Pages\CreateClient::route('/create'),
-            'view' => Pages\ViewClient::route('/{record}'),
-            'edit' => Pages\EditClient::route('/{record}/edit'),
+            'index' => ListClients::route('/'),
+            'create' => CreateClient::route('/create'),
+            'view' => ViewClient::route('/{record}'),
+            'edit' => EditClient::route('/{record}/edit'),
         ];
     }
 }

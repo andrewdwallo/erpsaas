@@ -12,17 +12,12 @@
         "ext-bcmath": "*",
         "ext-intl": "*",
         "akaunting/laravel-money": "^5.2",
-        "andrewdwallo/filament-companies": "^4.0",
-        "andrewdwallo/filament-selectify": "^2.0",
+        "andrewdwallo/filament-companies": "5.x-dev",
         "andrewdwallo/transmatic": "^1.1",
-        "awcodes/filament-table-repeater": "^3.0",
         "barryvdh/laravel-snappy": "^1.0",
-        "codewithdennis/filament-simple-alert": "^3.0",
         "fakerphp/faker": "^1.24",
-        "filament/filament": "^3.2",
-        "guava/filament-clusters": "^1.1",
+        "filament/filament": "^4.0",
         "guzzlehttp/guzzle": "^7.8",
-        "jaocero/radio-deck": "^1.2",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -30,6 +25,12 @@
         "squirephp/repository": "^3.4",
         "symfony/intl": "^6.3"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "filament-companies/"
+        }
+    ],
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
         "laravel/pint": "^1.13",
@@ -86,6 +87,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "prefer-stable": true
 }

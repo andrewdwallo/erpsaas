@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Banking\ConnectedBankAccount;
 use App\Services\PlaidService;
+use Exception;
 use Illuminate\Console\Command;
 
 class FirePlaidWebhook extends Command
@@ -34,7 +35,7 @@ class FirePlaidWebhook extends Command
         try {
             $response = $plaidService->fireSandboxWebhook($accessToken, $webhookCode, $webhookType);
             $this->info('Webhook Fired Successfully' . PHP_EOL . json_encode($response, JSON_PRETTY_PRINT));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Failed to Fire Webhook' . PHP_EOL . $e->getMessage());
         }
     }

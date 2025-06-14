@@ -3,8 +3,8 @@
 namespace App\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Section;
 
 class DocumentFooterSection extends Section
 {

@@ -11,8 +11,8 @@ use App\Services\CompanyDefaultService;
 use App\Utilities\Currency\CurrencyAccessor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ class CreateCompany extends FilamentCreateCompany
 {
     protected bool $hasTopbar = false;
 
-    protected static string $view = 'filament.company.pages.create-company';
+    protected string $view = 'filament.company.pages.create-company';
 
     protected static string $layout = 'components.company.layout.custom-simple';
 
@@ -35,9 +35,9 @@ class CreateCompany extends FilamentCreateCompany
         return '';
     }
 
-    public function getMaxWidth(): MaxWidth | string | null
+    public function getMaxWidth(): Width | string | null
     {
-        return MaxWidth::FourExtraLarge;
+        return Width::FourExtraLarge;
     }
 
     public function hasLogo(): bool
@@ -45,10 +45,10 @@ class CreateCompany extends FilamentCreateCompany
         return true;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('filament-companies::default.labels.company_name'))
                     ->autofocus()

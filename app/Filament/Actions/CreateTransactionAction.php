@@ -5,10 +5,10 @@ namespace App\Filament\Actions;
 use App\Concerns\HasTransactionAction;
 use App\Enums\Accounting\TransactionType;
 use App\Models\Accounting\Transaction;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Filament\Actions\StaticAction;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 
 class CreateTransactionAction extends CreateAction
 {
@@ -24,10 +24,10 @@ class CreateTransactionAction extends CreateAction
 
         $this->slideOver();
 
-        $this->modalWidth(function (): MaxWidth {
+        $this->modalWidth(function (): Width {
             return match ($this->getTransactionType()) {
-                TransactionType::Journal => MaxWidth::Screen,
-                default => MaxWidth::ThreeExtraLarge,
+                TransactionType::Journal => Width::Screen,
+                default => Width::ThreeExtraLarge,
             };
         });
 
@@ -48,11 +48,11 @@ class CreateTransactionAction extends CreateAction
 
         $this->fillForm(fn (): array => $this->getFormDefaultsForType($this->getTransactionType()));
 
-        $this->form(function (Form $form) {
+        $this->schema(function (Schema $schema) {
             return match ($this->getTransactionType()) {
-                TransactionType::Transfer => $this->transferForm($form),
-                TransactionType::Journal => $this->journalTransactionForm($form),
-                default => $this->transactionForm($form),
+                TransactionType::Transfer => $this->transferForm($schema),
+                TransactionType::Journal => $this->journalTransactionForm($schema),
+                default => $this->transactionForm($schema),
             };
         });
 
@@ -62,7 +62,7 @@ class CreateTransactionAction extends CreateAction
             }
         });
 
-        $this->modalSubmitAction(function (StaticAction $action) {
+        $this->modalSubmitAction(function (Action $action) {
             if ($this->getTransactionType() === TransactionType::Journal) {
                 $action->disabled(! $this->isJournalEntryBalanced());
             }
@@ -76,7 +76,7 @@ class CreateTransactionAction extends CreateAction
             }
         });
 
-        $this->mutateFormDataUsing(function (array $data) {
+        $this->mutateDataUsing(function (array $data) {
             if ($this->getTransactionType() === TransactionType::Journal) {
                 $data['type'] = TransactionType::Journal;
             }

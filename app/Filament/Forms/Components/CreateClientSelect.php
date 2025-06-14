@@ -4,10 +4,10 @@ namespace App\Filament\Forms\Components;
 
 use App\Filament\Company\Resources\Sales\ClientResource;
 use App\Models\Common\Client;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\DB;
 
 class CreateClientSelect extends Select
@@ -19,7 +19,7 @@ class CreateClientSelect extends Select
         $this
             ->searchable()
             ->preload()
-            ->createOptionForm(fn (Form $form) => $this->createClientForm($form))
+            ->createOptionForm(fn (Schema $schema) => $this->createClientForm($schema))
             ->createOptionAction(fn (Action $action) => $this->createClientAction($action));
 
         $this->relationship('client', 'name');
@@ -33,9 +33,9 @@ class CreateClientSelect extends Select
         });
     }
 
-    protected function createClientForm(Form $form): Form
+    protected function createClientForm(Schema $schema): Schema
     {
-        return ClientResource::form($form);
+        return ClientResource::form($schema);
     }
 
     protected function createClientAction(Action $action): Action
@@ -43,7 +43,7 @@ class CreateClientSelect extends Select
         return $action
             ->label('Create client')
             ->slideOver()
-            ->modalWidth(MaxWidth::ThreeExtraLarge)
+            ->modalWidth(Width::ThreeExtraLarge)
             ->modalHeading('Create a new client');
     }
 }

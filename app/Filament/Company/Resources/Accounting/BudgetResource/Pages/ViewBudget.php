@@ -3,16 +3,16 @@
 namespace App\Filament\Company\Resources\Accounting\BudgetResource\Pages;
 
 use App\Filament\Company\Resources\Accounting\BudgetResource;
-use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
+use App\Filament\Company\Resources\Accounting\BudgetResource\RelationManagers\BudgetItemsRelationManager;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 
 class ViewBudget extends ViewRecord
 {
     protected static string $resource = BudgetResource::class;
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return '8xl';
     }
@@ -27,16 +27,16 @@ class ViewBudget extends ViewRecord
     protected function getAllRelationManagers(): array
     {
         return [
-            BudgetResource\RelationManagers\BudgetItemsRelationManager::class,
+            BudgetItemsRelationManager::class,
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->components([]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist->schema([]);
     }
