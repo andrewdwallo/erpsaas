@@ -59,7 +59,7 @@ class ClientResource extends Resource
                                 Textarea::make('notes')
                                     ->columnSpanFull(),
                             ]),
-                        Section::make('Primary Contact')
+                        CustomSection::make('Primary Contact')
                             ->relationship('primaryContact')
                             ->saveRelationshipsUsing(null)
                             ->saveRelationshipsBeforeChildrenUsing(null)

@@ -1,11 +1,13 @@
+@import "tailwindcss";
+
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 @import './custom-data-table.css';
+@import './custom-section.css' layer(components);
 @import './form-fields.css';
 @import './modal.css';
 @import './report-card.css';
 @import './tooltip.css';
 @import './top-navigation.css';
-@import "tailwindcss";
 
 @source '../../../../app/Filament/Company';
 @source '../../../../resources/views/filament';

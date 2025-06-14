@@ -1,9 +1,13 @@
 @php
     use Filament\Support\Enums\Alignment;
     use Filament\Support\Enums\IconSize;
+    use Filament\Support\View\Components\SectionComponent\IconComponent;
+
+    use function Filament\Support\is_slot_empty;
 @endphp
 
 @props([
+    'afterHeader' => null,
     'aside' => false,
     'collapsed' => false,
     'collapsible' => false,
@@ -11,45 +15,27 @@
     'contained' => true,
     'contentBefore' => false,
     'description' => null,
-    'footerActions' => [],
-    'footerActionsAlignment' => Alignment::Start,
-    'headerActions' => [],
-    'headerEnd' => null,
+    'divided' => false,
+    'footer' => null,
+    'hasContentEl' => true,
     'heading' => null,
+    'headingTag' => 'h2',
     'icon' => null,
     'iconColor' => 'gray',
-    'iconSize' => IconSize::Large,
+    'iconSize' => null,
     'persistCollapsed' => false,
+    'secondary' => false,
 ])
 
 @php
+    if (filled($iconSize) && (! $iconSize instanceof IconSize)) {
+        $iconSize = IconSize::tryFrom($iconSize) ?? $iconSize;
+    }
+
     $hasDescription = filled((string) $description);
     $hasHeading = filled($heading);
     $hasIcon = filled($icon);
-
-    if (is_array($headerActions)) {
-        $headerActions = array_filter(
-            $headerActions,
-            fn ($headerAction): bool => $headerAction->isVisible(),
-        );
-    }
-
-    if (is_array($footerActions)) {
-        $footerActions = array_filter(
-            $footerActions,
-            fn ($footerAction): bool => $footerAction->isVisible(),
-        );
-    }
-
-    $hasHeaderActions = $headerActions instanceof \Illuminate\Contracts\Support\Htmlable
-        ? ! \Filament\Support\is_slot_empty($headerActions)
-        : filled($headerActions);
-
-    $hasFooterActions = $footerActions instanceof \Illuminate\Contracts\Support\Htmlable
-        ? ! \Filament\Support\is_slot_empty($footerActions)
-        : filled($footerActions);
-
-    $hasHeader = $hasIcon || $hasHeading || $hasDescription || $collapsible || $hasHeaderActions || filled((string) $headerEnd);
+    $hasHeader = $hasIcon || $hasHeading || $hasDescription || $collapsible || (! is_slot_empty($afterHeader));
 @endphp
 
 <section
@@ -67,12 +53,14 @@
     {{
         $attributes->class([
             'fi-custom-section',
-            'fi-section-not-contained' => ! $contained,
-            'fi-section-has-content-before' => $contentBefore,
-            'fi-section-has-header' => $hasHeader,
+            'fi-custom-section-not-contained' => ! $contained,
+            'fi-custom-section-has-content-before' => $contentBefore,
+            'fi-custom-section-has-header' => $hasHeader,
             'fi-aside' => $aside,
             'fi-compact' => $compact,
             'fi-collapsible' => $collapsible,
+            'fi-divided' => $divided,
+            'fi-secondary' => $secondary,
         ])
     }}
 >
@@ -81,78 +69,39 @@
             @if ($collapsible)
                 x-on:click="isCollapsed = ! isCollapsed"
             @endif
-            class="fi-section-header"
+            class="fi-custom-section-header"
         >
-            <div class="flex items-center gap-3">
-                @if ($hasIcon)
-                    <x-filament::icon
-                        :icon="$icon"
-                        @class([
-                            'fi-section-header-icon',
-                            match ($iconColor) {
-                                'gray' => null,
-                                default => 'fi-color-custom',
-                            },
-                            is_string($iconColor) ? "fi-color-{$iconColor}" : null,
-                            ($iconSize instanceof IconSize) ? "fi-size-{$iconSize->value}" : (is_string($iconSize) ? $iconSize : null),
-                        ])
-                        @style([
-                            \Filament\Support\get_color_css_variables(
-                                $iconColor,
-                                shades: [400, 500],
-                                alias: 'section.header.icon',
-                            ) => $iconColor !== 'gray',
-                        ])
-                    />
-                @endif
+            {{
+                \Filament\Support\generate_icon_html($icon, attributes: (new \Illuminate\View\ComponentAttributeBag)
+                    ->color(IconComponent::class, $iconColor), size: $iconSize ?? IconSize::Large)
+            }}
 
-                @if ($hasHeading || $hasDescription)
-                    <div class="fi-section-header-text-ctn">
-                        @if ($hasHeading)
-                            <x-filament::section.heading>
-                                {{ $heading }}
-                            </x-filament::section.heading>
-                        @endif
+            @if ($hasHeading || $hasDescription)
+                <div class="fi-custom-section-header-text-ctn">
+                    @if ($hasHeading)
+                        <{{ $headingTag }} class="fi-custom-section-header-heading">
+                            {{ $heading }}
+                        </{{ $headingTag }}>
+                    @endif
 
-                        @if ($hasDescription)
-                            <x-filament::section.description>
-                                {{ $description }}
-                            </x-filament::section.description>
-                        @endif
-                    </div>
-                @endif
-
-                @if ($hasHeaderActions)
-                    <div class="hidden sm:block">
-                        <x-filament::actions
-                            :actions="$headerActions"
-                            :alignment="\Filament\Support\Enums\Alignment::Start"
-                            x-on:click.stop=""
-                        />
-                    </div>
-                @endif
-
-                {{ $headerEnd }}
-
-                @if ($collapsible)
-                    <x-filament::icon-button
-                        color="gray"
-                        icon="heroicon-m-chevron-down"
-                        icon-alias="section.collapse-button"
-                        x-on:click.stop="isCollapsed = ! isCollapsed"
-                        x-bind:class="{ 'rotate-180': ! isCollapsed }"
-                    />
-                @endif
-            </div>
-
-            @if ($hasHeaderActions)
-                <div class="sm:hidden">
-                    <x-filament::actions
-                        :actions="$headerActions"
-                        :alignment="\Filament\Support\Enums\Alignment::Start"
-                        x-on:click.stop=""
-                    />
+                    @if ($hasDescription)
+                        <p class="fi-custom-section-header-description">
+                            {{ $description }}
+                        </p>
+                    @endif
                 </div>
+            @endif
+
+            {{ $afterHeader }}
+
+            @if ($collapsible)
+                <x-filament::icon-button
+                    color="gray"
+                    :icon="\Filament\Support\Icons\Heroicon::ChevronUp"
+                    icon-alias="section.collapse-button"
+                    x-on:click.stop="isCollapsed = ! isCollapsed"
+                    class="fi-custom-section-collapse-btn"
+                />
             @endif
         </header>
     @endif
@@ -164,18 +113,31 @@
                 x-cloak
             @endif
         @endif
-        class="fi-section-content-ctn"
+        class="fi-custom-section-content-ctn"
     >
-        <div class="fi-section-content">
-            {{ $slot }}
-        </div>
+        @if ($hasContentEl)
+            <div class="fi-custom-section-content">
+                @if ($collapsible)
+                    <template x-if="! isCollapsed">
+                        {{ $slot }}
+                    </template>
+                @else
+                    {{ $slot }}
+                @endif
+            </div>
+        @else
+            @if ($collapsible)
+                <template x-if="! isCollapsed">
+                    {{ $slot }}
+                </template>
+            @else
+                {{ $slot }}
+            @endif
+        @endif
 
-        @if ($hasFooterActions)
-            <footer class="fi-section-footer">
-                <x-filament::actions
-                    :actions="$footerActions"
-                    :alignment="$footerActionsAlignment"
-                />
+        @if (! is_slot_empty($footer))
+            <footer class="fi-custom-section-footer">
+                {{ $footer }}
             </footer>
         @endif
     </div>
