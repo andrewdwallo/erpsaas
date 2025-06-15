@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const handleTopbarAndSidebarHover = () => {
-    const topbarNav = document.querySelector('.fi-topbar > nav');
+    const topbarNav = document.querySelector('.fi-topbar');
     const sidebarHeader = document.querySelector('.fi-sidebar-header');
 
     const addHoveredClass = () => {
@@ -31,7 +31,7 @@ const handleTopbarAndSidebarHover = () => {
 };
 
 const handleScroll = () => {
-    const topbarNav = document.querySelector('.fi-topbar > nav');
+    const topbarNav = document.querySelector('.fi-topbar');
     const sidebarHeader = document.querySelector('.fi-sidebar-header');
 
     window.addEventListener('scroll', () => {

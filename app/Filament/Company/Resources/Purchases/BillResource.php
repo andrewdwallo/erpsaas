@@ -52,6 +52,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -63,7 +64,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -108,7 +108,7 @@ class BillResource extends Resource
                                     ->required(),
                                 TextInput::make('order_number')
                                     ->label('P.O/S.O Number'),
-                                Cluster::make([
+                                FusedGroup::make([
                                     DatePicker::make('date')
                                         ->label('Bill date')
                                         ->live()

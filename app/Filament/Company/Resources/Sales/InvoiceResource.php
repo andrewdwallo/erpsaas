@@ -20,7 +20,6 @@ use App\Filament\Forms\Components\CreateAdjustmentSelect;
 use App\Filament\Forms\Components\CreateClientSelect;
 use App\Filament\Forms\Components\CreateCurrencySelect;
 use App\Filament\Forms\Components\CreateOfferingSelect;
-use App\Filament\Forms\Components\CustomTableRepeater;
 use App\Filament\Forms\Components\DocumentFooterSection;
 use App\Filament\Forms\Components\DocumentHeaderSection;
 use App\Filament\Forms\Components\DocumentTotals;
@@ -45,6 +44,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -210,14 +210,13 @@ class InvoiceResource extends Resource
                                     ->live(),
                             ])->grow(true),
                         ])->from('md'),
-                        CustomTableRepeater::make('lineItems')
+                        Repeater::make('lineItems')
                             ->hiddenLabel()
                             ->relationship()
                             ->saveRelationshipsUsing(null)
                             ->dehydrated(true)
                             ->reorderable()
                             ->orderColumn('line_number')
-                            ->reorderAtStart()
                             ->cloneable()
                             ->addActionLabel('Add an item')
                             ->table(function (Get $get) use ($settings) {

@@ -17,7 +17,11 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -25,7 +29,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -174,7 +177,7 @@ class Localization extends Page
                     ->boolean($beforeNumber, $afterNumber, $selectPosition),
                 Group::make()
                     ->schema([
-                        Cluster::make([
+                        FusedGroup::make([
                             Select::make('fiscal_year_end_month')
                                 ->softRequired()
                                 ->options(array_combine(range(1, 12), array_map(static fn ($month) => now()->month($month)->monthName, range(1, 12))))
@@ -196,7 +199,6 @@ class Localization extends Page
                         ])
                             ->columns(3)
                             ->columnSpan(2)
-                            ->required()
                             ->markAsRequired(false)
                             ->label('Fiscal year end'),
                     ])->columns(3),
@@ -250,5 +252,26 @@ class Localization extends Page
         } catch (AuthorizationException $exception) {
             return $exception->toResponse()->allowed();
         }
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getFormContentComponent(),
+            ]);
+    }
+
+    public function getFormContentComponent(): Component
+    {
+        return Form::make([EmbeddedSchema::make('form')])
+            ->id('form')
+            ->livewireSubmitHandler('save')
+            ->footer([
+                Actions::make($this->getFormActions())
+                    ->alignment($this->getFormActionsAlignment())
+                    ->fullWidth($this->hasFullWidthFormActions())
+                    ->sticky($this->areFormActionsSticky()),
+            ]);
     }
 }
