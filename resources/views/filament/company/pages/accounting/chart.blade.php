@@ -35,7 +35,7 @@
                                 <!-- Subtype Name Header Row -->
                                 <tr class="es-table__row--header bg-gray-50 dark:bg-white/5">
                                     <td colspan="6" class="es-table__cell px-4 py-4">
-                                        <div class="es-table__row-content flex items-center space-x-2">
+                                        <div class="es-table__row-content flex items-center space-x-4">
                                             <span
                                                 class="es-table__row-title text-gray-800 dark:text-gray-200 font-semibold tracking-wider">
                                                 {{ $accountSubtype->name }}

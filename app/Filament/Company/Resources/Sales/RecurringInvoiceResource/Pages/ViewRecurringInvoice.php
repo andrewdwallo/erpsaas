@@ -123,7 +123,7 @@ class ViewRecurringInvoice extends ViewRecord
                                     ->date(),
                                 TextEntry::make('schedule')
                                     ->label('Schedule')
-                                    ->getStateUsing(function (RecurringInvoice $record) {
+                                    ->state(function (RecurringInvoice $record) {
                                         return $record->getScheduleDescription();
                                     })
                                     ->helperText(function (RecurringInvoice $record) {
