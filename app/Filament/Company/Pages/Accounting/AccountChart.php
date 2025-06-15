@@ -64,7 +64,13 @@ class AccountChart extends Page
             ->label('Edit account')
             ->iconButton()
             ->icon('heroicon-m-pencil-square')
-            ->record(fn (array $arguments) => Account::find($arguments['account']))
+            ->record(function (array $arguments) {
+                if (! isset($arguments['account'])) {
+                    return null;
+                }
+
+                return Account::find($arguments['account']);
+            })
             ->schema(fn (Schema $schema) => $this->getAccountForm($schema)->operation('edit'));
     }
 
@@ -76,7 +82,13 @@ class AccountChart extends Page
             ->label('Add a new account')
             ->icon('heroicon-o-plus-circle')
             ->schema(fn (Schema $schema) => $this->getAccountForm($schema)->operation('create'))
-            ->fillForm(fn (array $arguments): array => $this->getAccountFormDefaults($arguments['accountSubtype']));
+            ->fillForm(function (array $arguments): array {
+                if (! isset($arguments['accountSubtype'])) {
+                    return [];
+                }
+
+                return $this->getAccountFormDefaults($arguments['accountSubtype']);
+            });
     }
 
     private function getAccountFormDefaults(int $accountSubtypeId): array

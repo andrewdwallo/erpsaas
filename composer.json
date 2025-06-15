@@ -16,7 +16,7 @@
         "andrewdwallo/transmatic": "^1.1",
         "barryvdh/laravel-snappy": "^1.0",
         "fakerphp/faker": "^1.24",
-        "filament/filament": "^4.0",
+        "filament/filament": "*",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
@@ -29,6 +29,10 @@
         {
             "type": "path",
             "url": "filament-companies/"
+        },
+        {
+            "type": "path",
+            "url": "filament/packages/*"
         }
     ],
     "require-dev": {
@@ -87,6 +91,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
