@@ -3,8 +3,8 @@
 namespace App\Filament\Infolists\Components;
 
 use Filament\Infolists\Components\Entry;
-use Filament\Support\Concerns\HasDescription;
-use Filament\Support\Concerns\HasHeading;
+use Filament\Schemas\Components\Concerns\HasDescription;
+use Filament\Schemas\Components\Concerns\HasHeading;
 use Filament\Support\Concerns\HasIcon;
 use Filament\Support\Concerns\HasIconColor;
 

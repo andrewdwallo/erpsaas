@@ -3,7 +3,8 @@
 namespace App\Utilities\Currency;
 
 use App\Facades\Forex;
-use Filament\Forms\Set;
+use Exception;
+use Filament\Schemas\Components\Utilities\Set;
 
 class CurrencyConverter
 {
@@ -105,7 +106,7 @@ class CurrencyConverter
 
         try {
             money($amount, $currency);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 

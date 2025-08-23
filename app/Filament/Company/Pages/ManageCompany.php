@@ -2,6 +2,7 @@
 
 namespace App\Filament\Company\Pages;
 
+use Filament\Panel;
 use Wallo\FilamentCompanies\Pages\Company\CompanySettings;
 
 class ManageCompany extends CompanySettings
@@ -11,7 +12,7 @@ class ManageCompany extends CompanySettings
         return 'Manage Company';
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'manage-company';
     }

@@ -3,7 +3,9 @@
 namespace App\Filament\Company\Resources\Accounting;
 
 use App\Enums\Accounting\BudgetIntervalType;
-use App\Filament\Company\Resources\Accounting\BudgetResource\Pages;
+use App\Filament\Company\Resources\Accounting\BudgetResource\Pages\CreateBudget;
+use App\Filament\Company\Resources\Accounting\BudgetResource\Pages\ListBudgets;
+use App\Filament\Company\Resources\Accounting\BudgetResource\Pages\ViewBudget;
 use App\Filament\Forms\Components\CustomSection;
 use App\Filament\Forms\Components\CustomTableRepeater;
 use App\Models\Accounting\Account;
@@ -12,13 +14,28 @@ use App\Models\Accounting\BudgetAllocation;
 use App\Models\Accounting\BudgetItem;
 use App\Utilities\Currency\CurrencyConverter;
 use Awcodes\TableRepeater\Header;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 
@@ -26,45 +43,45 @@ class BudgetResource extends Resource
 {
     protected static ?string $model = Budget::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static bool $isGloballySearchable = false;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Budget Details')
+        return $schema
+            ->components([
+                Section::make('Budget Details')
                     ->columns()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('interval_type')
+                        Select::make('interval_type')
                             ->label('Budget Interval')
                             ->options(BudgetIntervalType::class)
                             ->default(BudgetIntervalType::Month->value)
                             ->required()
                             ->live(),
-                        Forms\Components\DatePicker::make('start_date')
+                        DatePicker::make('start_date')
                             ->required()
                             ->default(company_today()->startOfYear())
                             ->live(),
-                        Forms\Components\DatePicker::make('end_date')
+                        DatePicker::make('end_date')
                             ->required()
                             ->default(company_today()->endOfYear())
                             ->live()
-                            ->disabled(static fn (Forms\Get $get) => blank($get('start_date')))
-                            ->minDate(fn (Forms\Get $get) => match (BudgetIntervalType::parse($get('interval_type'))) {
+                            ->disabled(static fn (Get $get) => blank($get('start_date')))
+                            ->minDate(fn (Get $get) => match (BudgetIntervalType::parse($get('interval_type'))) {
                                 BudgetIntervalType::Month => Carbon::parse($get('start_date'))->addMonth(),
                                 BudgetIntervalType::Quarter => Carbon::parse($get('start_date'))->addQuarter(),
                                 BudgetIntervalType::Year => Carbon::parse($get('start_date'))->addYear(),
                                 default => Carbon::parse($get('start_date'))->addDay(),
                             })
-                            ->maxDate(fn (Forms\Get $get) => Carbon::parse($get('start_date'))->endOfYear()),
-                        Forms\Components\Textarea::make('notes')
+                            ->maxDate(fn (Get $get) => Carbon::parse($get('start_date'))->endOfYear()),
+                        Textarea::make('notes')
                             ->columnSpanFull(),
                     ]),
 
@@ -213,26 +230,26 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status')
                     ->sortable()
                     ->badge(),
 
-                Tables\Columns\TextColumn::make('interval_type')
+                TextColumn::make('interval_type')
                     ->label('Interval')
                     ->sortable()
                     ->badge(),
 
-                Tables\Columns\TextColumn::make('start_date')
+                TextColumn::make('start_date')
                     ->label('Start Date')
                     ->date()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('end_date')
+                TextColumn::make('end_date')
                     ->label('End Date')
                     ->date()
                     ->sortable(),
@@ -240,19 +257,19 @@ class BudgetResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make('editAllocations')
+            ->recordActions([
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make('editAllocations')
                         ->name('editAllocations')
                         ->url(null)
                         ->label('Edit Allocations')
                         ->icon('heroicon-o-table-cells')
-                        ->modalWidth(MaxWidth::Screen)
+                        ->modalWidth(Width::Screen)
                         ->modalHeading('Edit Budget Allocations')
                         ->modalDescription('Update the allocations for this budget')
                         ->slideOver()
-                        ->form(function (Budget $record) {
+                        ->schema(function (Budget $record) {
                             $periods = $record->getPeriods();
 
                             $headers = [
@@ -282,11 +299,11 @@ class BudgetResource extends Resource
                                     ->hiddenLabel()
                                     ->headers($headers)
                                     ->schema([
-                                        Forms\Components\Placeholder::make('account')
+                                        Placeholder::make('account')
                                             ->hiddenLabel()
                                             ->content(fn (BudgetItem $record) => $record->account->name ?? ''),
 
-                                        Forms\Components\TextInput::make('total')
+                                        TextInput::make('total')
                                             ->hiddenLabel()
                                             ->mask(RawJs::make('$money($input)'))
                                             ->stripCharacters(',')
@@ -302,13 +319,13 @@ class BudgetResource extends Resource
                                             })
                                             ->dehydrated(false),
 
-                                        Forms\Components\Actions::make([
-                                            Forms\Components\Actions\Action::make('disperse')
+                                        Actions::make([
+                                            Action::make('disperse')
                                                 ->label('Disperse')
                                                 ->icon('heroicon-m-chevron-double-right')
                                                 ->color('primary')
                                                 ->iconButton()
-                                                ->action(function (Forms\Set $set, Forms\Get $get, BudgetItem $record, $livewire) use ($periods) {
+                                                ->action(function (Set $set, Get $get, BudgetItem $record, $livewire) use ($periods) {
                                                     $total = CurrencyConverter::convertToCents($get('total'));
                                                     $numPeriods = count($periods);
 
@@ -329,7 +346,7 @@ class BudgetResource extends Resource
 
                                         // Create a field for each period
                                         ...collect($periods)->map(function (BudgetAllocation $period) {
-                                            return Forms\Components\TextInput::make("allocations.{$period->period}")
+                                            return TextInput::make("allocations.{$period->period}")
                                                 ->mask(RawJs::make('$money($input)'))
                                                 ->stripCharacters(',')
                                                 ->numeric()
@@ -351,14 +368,14 @@ class BudgetResource extends Resource
                         }),
                 ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
-    private static function addAllAccounts(Forms\Set $set, Forms\Get $get): void
+    private static function addAllAccounts(Set $set, Get $get): void
     {
         $accounts = Account::query()
             ->budgetable()
@@ -373,7 +390,7 @@ class BudgetResource extends Resource
         $set('budgetItems', $budgetItems);
     }
 
-    private static function addSelectedAccounts(Forms\Set $set, Forms\Get $get, array $data): void
+    private static function addSelectedAccounts(Set $set, Get $get, array $data): void
     {
         $selectedAccountIds = $data['selected_accounts'] ?? [];
 
@@ -411,7 +428,7 @@ class BudgetResource extends Resource
         return collect($labels)->mapWithKeys(static fn ($label) => [$label => 0])->toArray();
     }
 
-    private static function increaseAllocations(Forms\Set $set, Forms\Get $get, array $data): void
+    private static function increaseAllocations(Set $set, Get $get, array $data): void
     {
         $increaseType = $data['increase_type']; // 'percentage' or 'fixed'
         $percentage = $data['percentage'] ?? 0;
@@ -452,7 +469,7 @@ class BudgetResource extends Resource
         }
     }
 
-    private static function disperseTotalAmount(Forms\Set $set, Forms\Get $get, float $totalAmount): void
+    private static function disperseTotalAmount(Set $set, Get $get, float $totalAmount): void
     {
         $startDate = $get('../../start_date');
         $endDate = $get('../../end_date');
@@ -515,7 +532,7 @@ class BudgetResource extends Resource
         $labels = self::generateFormattedLabels($startDate, $endDate, $intervalType);
 
         foreach ($labels as $label) {
-            $fields[] = Forms\Components\TextInput::make("amounts.{$label}")
+            $fields[] = TextInput::make("amounts.{$label}")
                 ->label($label)
                 ->numeric()
                 ->required();
@@ -534,9 +551,9 @@ class BudgetResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBudgets::route('/'),
-            'create' => Pages\CreateBudget::route('/create'),
-            'view' => Pages\ViewBudget::route('/{record}'),
+            'index' => ListBudgets::route('/'),
+            'create' => CreateBudget::route('/create'),
+            'view' => ViewBudget::route('/{record}'),
         ];
     }
 }

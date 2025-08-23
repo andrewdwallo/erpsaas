@@ -4,14 +4,20 @@ namespace App\Filament\Company\Clusters\Settings\Resources;
 
 use App\Facades\Forex;
 use App\Filament\Company\Clusters\Settings;
-use App\Filament\Company\Clusters\Settings\Resources\CurrencyResource\Pages;
+use App\Filament\Company\Clusters\Settings\Resources\CurrencyResource\Pages\CreateCurrency;
+use App\Filament\Company\Clusters\Settings\Resources\CurrencyResource\Pages\EditCurrency;
+use App\Filament\Company\Clusters\Settings\Resources\CurrencyResource\Pages\ListCurrencies;
 use App\Models\Setting\Currency as CurrencyModel;
 use App\Utilities\Currency\CurrencyAccessor;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class CurrencyResource extends Resource
@@ -29,20 +35,20 @@ class CurrencyResource extends Resource
         return translate($modelLabel);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('General')
+        return $schema
+            ->components([
+                Section::make('General')
                     ->schema([
-                        Forms\Components\Select::make('code')
+                        Select::make('code')
                             ->options(CurrencyAccessor::getAvailableCurrencies())
                             ->searchable()
                             ->live()
                             ->required()
                             ->localizeLabel()
                             ->disabledOn('edit')
-                            ->afterStateUpdated(static function (Forms\Set $set, $state) {
+                            ->afterStateUpdated(static function (Set $set, $state) {
                                 if (! $state) {
                                     return;
                                 }
@@ -54,7 +60,7 @@ class CurrencyResource extends Resource
                                     $set('rate', $exchangeRate);
                                 }
                             }),
-                        Forms\Components\TextInput::make('rate')
+                        TextInput::make('rate')
                             ->numeric()
                             ->rule('gt:0')
                             ->live()
@@ -68,7 +74,7 @@ class CurrencyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->localizeLabel()
                     ->weight(FontWeight::Medium)
                     ->icon(static fn (CurrencyModel $record) => $record->isEnabled() ? 'heroicon-o-lock-closed' : null)
@@ -82,15 +88,15 @@ class CurrencyResource extends Resource
                     ->iconPosition('after')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('code')
+                TextColumn::make('code')
                     ->localizeLabel()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('symbol')
+                TextColumn::make('symbol')
                     ->localizeLabel()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('rate')
+                TextColumn::make('rate')
                     ->localizeLabel()
                     ->searchable()
                     ->sortable(),
@@ -98,10 +104,10 @@ class CurrencyResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ]);
     }
@@ -109,9 +115,9 @@ class CurrencyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCurrencies::route('/'),
-            'create' => Pages\CreateCurrency::route('/create'),
-            'edit' => Pages\EditCurrency::route('/{record}/edit'),
+            'index' => ListCurrencies::route('/'),
+            'create' => CreateCurrency::route('/create'),
+            'edit' => EditCurrency::route('/{record}/edit'),
         ];
     }
 }

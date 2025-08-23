@@ -5,7 +5,10 @@ namespace App\Filament\Company\Resources\Purchases;
 use App\Enums\Accounting\BillStatus;
 use App\Enums\Common\ContractorType;
 use App\Enums\Common\VendorType;
-use App\Filament\Company\Resources\Purchases\VendorResource\Pages;
+use App\Filament\Company\Resources\Purchases\VendorResource\Pages\CreateVendor;
+use App\Filament\Company\Resources\Purchases\VendorResource\Pages\EditVendor;
+use App\Filament\Company\Resources\Purchases\VendorResource\Pages\ListVendors;
+use App\Filament\Company\Resources\Purchases\VendorResource\Pages\ViewVendor;
 use App\Filament\Exports\Common\VendorExporter;
 use App\Filament\Forms\Components\AddressFields;
 use App\Filament\Forms\Components\CreateCurrencySelect;
@@ -14,10 +17,23 @@ use App\Filament\Forms\Components\PhoneBuilder;
 use App\Filament\Tables\Columns;
 use App\Models\Common\Vendor;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -25,20 +41,20 @@ class VendorResource extends Resource
 {
     protected static ?string $model = Vendor::class;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('General Information')
+        return $schema
+            ->components([
+                Section::make('General Information')
                     ->schema([
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->columns(2)
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label('Vendor name')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\Radio::make('type')
+                                Radio::make('type')
                                     ->label('Vendor type')
                                     ->required()
                                     ->live()
@@ -47,36 +63,36 @@ class VendorResource extends Resource
                                     ->columnSpanFull(),
                                 CreateCurrencySelect::make('currency_code')
                                     ->softRequired()
-                                    ->visible(static fn (Forms\Get $get) => VendorType::parse($get('type')) === VendorType::Regular),
-                                Forms\Components\Select::make('contractor_type')
+                                    ->visible(static fn (Get $get) => VendorType::parse($get('type')) === VendorType::Regular),
+                                Select::make('contractor_type')
                                     ->label('Contractor type')
                                     ->required()
                                     ->live()
-                                    ->visible(static fn (Forms\Get $get) => VendorType::parse($get('type')) === VendorType::Contractor)
+                                    ->visible(static fn (Get $get) => VendorType::parse($get('type')) === VendorType::Contractor)
                                     ->options(ContractorType::class),
-                                Forms\Components\TextInput::make('ssn')
+                                TextInput::make('ssn')
                                     ->label('Social security number')
                                     ->required()
                                     ->live()
                                     ->mask('999-99-9999')
                                     ->stripCharacters('-')
                                     ->maxLength(11)
-                                    ->visible(static fn (Forms\Get $get) => ContractorType::parse($get('contractor_type')) === ContractorType::Individual)
+                                    ->visible(static fn (Get $get) => ContractorType::parse($get('contractor_type')) === ContractorType::Individual)
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('ein')
+                                TextInput::make('ein')
                                     ->label('Employer identification number')
                                     ->required()
                                     ->live()
                                     ->mask('99-9999999')
                                     ->stripCharacters('-')
                                     ->maxLength(10)
-                                    ->visible(static fn (Forms\Get $get) => ContractorType::parse($get('contractor_type')) === ContractorType::Business)
+                                    ->visible(static fn (Get $get) => ContractorType::parse($get('contractor_type')) === ContractorType::Business)
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('account_number')
+                                TextInput::make('account_number')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('website')
+                                TextInput::make('website')
                                     ->maxLength(255),
-                                Forms\Components\Textarea::make('notes')
+                                Textarea::make('notes')
                                     ->columnSpanFull(),
                             ]),
                         CustomSection::make('Primary Contact')
@@ -86,15 +102,15 @@ class VendorResource extends Resource
                             ->dehydrated(true)
                             ->contained(false)
                             ->schema([
-                                Forms\Components\Hidden::make('is_primary')
+                                Hidden::make('is_primary')
                                     ->default(true),
-                                Forms\Components\TextInput::make('first_name')
+                                TextInput::make('first_name')
                                     ->label('First name')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('last_name')
+                                TextInput::make('last_name')
                                     ->label('Last name')
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
+                                TextInput::make('email')
                                     ->label('Email')
                                     ->email()
                                     ->columnSpanFull()
@@ -107,27 +123,27 @@ class VendorResource extends Resource
                                     ])
                                     ->columnSpanFull()
                                     ->blocks([
-                                        Forms\Components\Builder\Block::make('primary')
+                                        Block::make('primary')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Phone')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('mobile')
+                                        Block::make('mobile')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Mobile')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('toll_free')
+                                        Block::make('toll_free')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Toll free')
                                                     ->maxLength(15),
                                             ])->maxItems(1),
-                                        Forms\Components\Builder\Block::make('fax')
+                                        Block::make('fax')
                                             ->schema([
-                                                Forms\Components\TextInput::make('number')
+                                                TextInput::make('number')
                                                     ->label('Fax')
                                                     ->live()
                                                     ->maxLength(15),
@@ -139,13 +155,13 @@ class VendorResource extends Resource
                                     ->addActionLabel('Add Phone'),
                             ])->columns(),
                     ])->columns(1),
-                Forms\Components\Section::make('Address Information')
+                Section::make('Address Information')
                     ->relationship('address')
                     ->saveRelationshipsUsing(null)
                     ->saveRelationshipsBeforeChildrenUsing(null)
                     ->dehydrated(true)
                     ->schema([
-                        Forms\Components\Hidden::make('type')
+                        Hidden::make('type')
                             ->default('general'),
                         AddressFields::make(),
                     ])
@@ -158,26 +174,26 @@ class VendorResource extends Resource
         return $table
             ->columns([
                 Columns::id(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable()
                     ->description(static fn (Vendor $vendor) => $vendor->contact?->full_name),
-                Tables\Columns\TextColumn::make('contact.email')
+                TextColumn::make('contact.email')
                     ->label('Email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('contact.first_available_phone')
+                TextColumn::make('contact.first_available_phone')
                     ->label('Phone')
                     ->state(static fn (Vendor $vendor) => $vendor->contact?->first_available_phone),
-                Tables\Columns\TextColumn::make('address.address_string')
+                TextColumn::make('address.address_string')
                     ->label('Address')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->listWithLineBreaks(),
-                Tables\Columns\TextColumn::make('payable_balance')
+                TextColumn::make('payable_balance')
                     ->label('Payable balance')
                     ->getStateUsing(function (Vendor $vendor) {
                         return $vendor->bills()
@@ -212,19 +228,19 @@ class VendorResource extends Resource
                 //
             ])
             ->headerActions([
-                Tables\Actions\ExportAction::make()
+                ExportAction::make()
                     ->exporter(VendorExporter::class),
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ActionGroup::make([
-                        Tables\Actions\EditAction::make(),
-                        Tables\Actions\ViewAction::make(),
+            ->recordActions([
+                ActionGroup::make([
+                    ActionGroup::make([
+                        EditAction::make(),
+                        ViewAction::make(),
                     ])->dropdown(false),
-                    Tables\Actions\DeleteAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ]);
     }
@@ -239,10 +255,10 @@ class VendorResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListVendors::route('/'),
-            'create' => Pages\CreateVendor::route('/create'),
-            'view' => Pages\ViewVendor::route('/{record}'),
-            'edit' => Pages\EditVendor::route('/{record}/edit'),
+            'index' => ListVendors::route('/'),
+            'create' => CreateVendor::route('/create'),
+            'view' => ViewVendor::route('/{record}'),
+            'edit' => EditVendor::route('/{record}/edit'),
         ];
     }
 }

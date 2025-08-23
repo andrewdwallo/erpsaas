@@ -3,11 +3,11 @@
 namespace App\Livewire;
 
 use Filament\Facades\Filament;
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\View;
@@ -18,7 +18,7 @@ use Livewire\Component;
 use RuntimeException;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
 class UpdatePassword extends Component implements HasForms
 {
@@ -129,11 +129,11 @@ class UpdatePassword extends Component implements HasForms
         return __('filament-companies::default.notifications.profile_information_updated.body');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('current_password')
+        return $schema
+            ->components([
+                TextInput::make('current_password')
                     ->label(__('filament-companies::default.fields.current_password'))
                     ->password()
                     ->currentPassword()
@@ -143,7 +143,7 @@ class UpdatePassword extends Component implements HasForms
                     ])
                     ->autocomplete('current-password')
                     ->required(),
-                Forms\Components\TextInput::make('password')
+                TextInput::make('password')
                     ->label(__('filament-companies::default.labels.new_password'))
                     ->password()
                     ->revealable()
@@ -153,7 +153,7 @@ class UpdatePassword extends Component implements HasForms
                     ->dehydrated(static fn ($state): bool => filled($state))
                     ->dehydrateStateUsing(static fn ($state): string => Hash::make($state))
                     ->same('password_confirmation'),
-                Forms\Components\TextInput::make('password_confirmation')
+                TextInput::make('password_confirmation')
                     ->label(__('filament-companies::default.labels.password_confirmation'))
                     ->password()
                     ->revealable()

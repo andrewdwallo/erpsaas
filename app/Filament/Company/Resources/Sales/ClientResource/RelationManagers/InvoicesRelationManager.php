@@ -3,8 +3,9 @@
 namespace App\Filament\Company\Resources\Sales\ClientResource\RelationManagers;
 
 use App\Filament\Company\Resources\Sales\InvoiceResource;
+use App\Filament\Company\Resources\Sales\InvoiceResource\Pages\CreateInvoice;
+use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
 use Filament\Tables\Table;
 
 class InvoicesRelationManager extends RelationManager
@@ -22,8 +23,8 @@ class InvoicesRelationManager extends RelationManager
     {
         return InvoiceResource::table($table)
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->url(InvoiceResource\Pages\CreateInvoice::getUrl(['client' => $this->getOwnerRecord()->getKey()])),
+                CreateAction::make()
+                    ->url(CreateInvoice::getUrl(['client' => $this->getOwnerRecord()->getKey()])),
             ]);
     }
 }

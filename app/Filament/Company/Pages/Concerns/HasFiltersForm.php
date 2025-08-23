@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Pages\Concerns;
 
 use Filament\Actions\Action;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Url;
@@ -49,12 +49,12 @@ trait HasFiltersForm
         ];
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
-    public function getFiltersForm(): Form
+    public function getFiltersForm(): Schema
     {
         return $this->filtersForm($this->makeForm()
             ->statePath('deferredFilters'));

@@ -8,12 +8,14 @@ use App\Filament\Company\Resources\Sales\EstimateResource;
 use App\Filament\Infolists\Components\BannerEntry;
 use App\Filament\Infolists\Components\DocumentPreview;
 use App\Models\Accounting\Estimate;
-use Filament\Actions;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Section;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Support\HtmlString;
 
@@ -28,11 +30,11 @@ class ViewEstimate extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()
+            EditAction::make()
                 ->label('Edit estimate')
                 ->outlined(),
-            Actions\ActionGroup::make([
-                Actions\ActionGroup::make([
+            ActionGroup::make([
+                ActionGroup::make([
                     Estimate::getApproveDraftAction(),
                     Estimate::getMarkAsSentAction(),
                     Estimate::getMarkAsAcceptedAction(),
@@ -41,7 +43,7 @@ class ViewEstimate extends ViewRecord
                     Estimate::getReplicateAction(),
                     Estimate::getConvertToInvoiceAction(),
                 ])->dropdown(false),
-                Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
                 ->label('Actions')
                 ->button()
@@ -52,7 +54,7 @@ class ViewEstimate extends ViewRecord
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([

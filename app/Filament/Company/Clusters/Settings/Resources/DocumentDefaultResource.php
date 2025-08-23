@@ -8,16 +8,26 @@ use App\Enums\Setting\Font;
 use App\Enums\Setting\PaymentTerms;
 use App\Enums\Setting\Template;
 use App\Filament\Company\Clusters\Settings;
-use App\Filament\Company\Clusters\Settings\Resources\DocumentDefaultResource\Pages;
+use App\Filament\Company\Clusters\Settings\Resources\DocumentDefaultResource\Pages\EditDocumentDefault;
+use App\Filament\Company\Clusters\Settings\Resources\DocumentDefaultResource\Pages\ListDocumentDefaults;
 use App\Filament\Forms\Components\DocumentPreview;
 use App\Models\Setting\DocumentDefault;
-use Filament\Forms;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class DocumentDefaultResource extends Resource
@@ -28,11 +38,11 @@ class DocumentDefaultResource extends Resource
 
     protected static ?string $modelLabel = 'document template';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->live()
-            ->schema([
+            ->components([
                 self::getGeneralSection(),
                 self::getContentSection(),
                 self::getTemplateSection(),
@@ -40,38 +50,38 @@ class DocumentDefaultResource extends Resource
             ]);
     }
 
-    public static function getGeneralSection(): Forms\Components\Component
+    public static function getGeneralSection(): Component
     {
-        return Forms\Components\Section::make('General')
+        return Section::make('General')
             ->schema([
-                Forms\Components\TextInput::make('number_prefix')
+                TextInput::make('number_prefix')
                     ->localizeLabel()
                     ->nullable(),
-                Forms\Components\Select::make('payment_terms')
+                Select::make('payment_terms')
                     ->softRequired()
                     ->localizeLabel()
                     ->options(PaymentTerms::class),
-                Forms\Components\Select::make('discount_method')
+                Select::make('discount_method')
                     ->softRequired()
                     ->options(DocumentDiscountMethod::class),
             ])->columns();
     }
 
-    public static function getContentSection(): Forms\Components\Component
+    public static function getContentSection(): Component
     {
-        return Forms\Components\Section::make('Content')
+        return Section::make('Content')
             ->hidden(static fn (DocumentDefault $record) => $record->type === DocumentType::Bill)
             ->schema([
-                Forms\Components\TextInput::make('header')
+                TextInput::make('header')
                     ->localizeLabel()
                     ->nullable(),
-                Forms\Components\TextInput::make('subheader')
+                TextInput::make('subheader')
                     ->localizeLabel()
                     ->nullable(),
-                Forms\Components\Textarea::make('terms')
+                Textarea::make('terms')
                     ->localizeLabel()
                     ->nullable(),
-                Forms\Components\Textarea::make('footer')
+                Textarea::make('footer')
                     ->localizeLabel('Footer')
                     ->nullable(),
             ])->columns();
@@ -79,13 +89,13 @@ class DocumentDefaultResource extends Resource
 
     public static function getTemplateSection(): Component
     {
-        return Forms\Components\Section::make('Template')
+        return Section::make('Template')
             ->description('Choose the template and edit the column names.')
             ->hidden(static fn (DocumentDefault $record) => $record->type === DocumentType::Bill)
             ->schema([
-                Forms\Components\Grid::make(1)
+                Grid::make(1)
                     ->schema([
-                        Forms\Components\FileUpload::make('logo')
+                        FileUpload::make('logo')
                             ->maxSize(1024)
                             ->localizeLabel()
                             ->openable()
@@ -99,12 +109,12 @@ class DocumentDefaultResource extends Resource
                             ])
                             ->loadingIndicatorPosition('left')
                             ->removeUploadedFileButtonPosition('right'),
-                        Forms\Components\Checkbox::make('show_logo')
+                        Checkbox::make('show_logo')
                             ->localizeLabel()
                             ->hidden(is_demo_environment()),
-                        Forms\Components\ColorPicker::make('accent_color')
+                        ColorPicker::make('accent_color')
                             ->localizeLabel(),
-                        Forms\Components\Select::make('font')
+                        Select::make('font')
                             ->softRequired()
                             ->localizeLabel()
                             ->allowHtml()
@@ -114,7 +124,7 @@ class DocumentDefaultResource extends Resource
                                         $case->value => "<span style='font-family:{$case->getLabel()}'>{$case->getLabel()}</span>",
                                     ]),
                             ),
-                        Forms\Components\Select::make('template')
+                        Select::make('template')
                             ->softRequired()
                             ->localizeLabel()
                             ->options(Template::class),
@@ -131,7 +141,7 @@ class DocumentDefaultResource extends Resource
 
     public static function getBillColumnLabelsSection(): Component
     {
-        return Forms\Components\Section::make('Column Labels')
+        return Section::make('Column Labels')
             ->visible(static fn (DocumentDefault $record) => $record->type === DocumentType::Bill)
             ->schema(static::getColumnLabelsSchema())->columns();
     }
@@ -139,7 +149,7 @@ class DocumentDefaultResource extends Resource
     public static function getColumnLabelsSchema(): array
     {
         return [
-            Forms\Components\Select::make('item_name.option')
+            Select::make('item_name.option')
                 ->softRequired()
                 ->localizeLabel('Item name')
                 ->options(DocumentDefault::getAvailableItemNameOptions())
@@ -153,14 +163,14 @@ class DocumentDefaultResource extends Resource
                         $set('item_name.custom', $get('item_name.old_custom'));
                     }
                 }),
-            Forms\Components\TextInput::make('item_name.custom')
+            TextInput::make('item_name.custom')
                 ->hiddenLabel()
                 ->extraFieldWrapperAttributes(static fn (DocumentDefault $record) => [
                     'class' => $record->type === DocumentType::Bill ? 'report-hidden-label' : '',
                 ])
                 ->disabled(static fn (callable $get) => $get('item_name.option') !== 'other')
                 ->nullable(),
-            Forms\Components\Select::make('unit_name.option')
+            Select::make('unit_name.option')
                 ->softRequired()
                 ->localizeLabel('Unit name')
                 ->options(DocumentDefault::getAvailableUnitNameOptions())
@@ -174,14 +184,14 @@ class DocumentDefaultResource extends Resource
                         $set('unit_name.custom', $get('unit_name.old_custom'));
                     }
                 }),
-            Forms\Components\TextInput::make('unit_name.custom')
+            TextInput::make('unit_name.custom')
                 ->hiddenLabel()
                 ->extraFieldWrapperAttributes(static fn (DocumentDefault $record) => [
                     'class' => $record->type === DocumentType::Bill ? 'report-hidden-label' : '',
                 ])
                 ->disabled(static fn (callable $get) => $get('unit_name.option') !== 'other')
                 ->nullable(),
-            Forms\Components\Select::make('price_name.option')
+            Select::make('price_name.option')
                 ->softRequired()
                 ->localizeLabel('Price name')
                 ->options(DocumentDefault::getAvailablePriceNameOptions())
@@ -195,14 +205,14 @@ class DocumentDefaultResource extends Resource
                         $set('price_name.custom', $get('price_name.old_custom'));
                     }
                 }),
-            Forms\Components\TextInput::make('price_name.custom')
+            TextInput::make('price_name.custom')
                 ->hiddenLabel()
                 ->extraFieldWrapperAttributes(static fn (DocumentDefault $record) => [
                     'class' => $record->type === DocumentType::Bill ? 'report-hidden-label' : '',
                 ])
                 ->disabled(static fn (callable $get) => $get('price_name.option') !== 'other')
                 ->nullable(),
-            Forms\Components\Select::make('amount_name.option')
+            Select::make('amount_name.option')
                 ->softRequired()
                 ->localizeLabel('Amount name')
                 ->options(DocumentDefault::getAvailableAmountNameOptions())
@@ -216,7 +226,7 @@ class DocumentDefaultResource extends Resource
                         $set('amount_name.custom', $get('amount_name.old_custom'));
                     }
                 }),
-            Forms\Components\TextInput::make('amount_name.custom')
+            TextInput::make('amount_name.custom')
                 ->hiddenLabel()
                 ->extraFieldWrapperAttributes(static fn (DocumentDefault $record) => [
                     'class' => $record->type === DocumentType::Bill ? 'report-hidden-label' : '',
@@ -230,21 +240,21 @@ class DocumentDefaultResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->badge(),
-                Tables\Columns\TextColumn::make('number_prefix'),
-                Tables\Columns\TextColumn::make('template')
+                TextColumn::make('number_prefix'),
+                TextColumn::make('template')
                     ->badge(),
-                Tables\Columns\IconColumn::make('show_logo')
+                IconColumn::make('show_logo')
                     ->boolean(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ]);
     }
@@ -259,8 +269,8 @@ class DocumentDefaultResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDocumentDefaults::route('/'),
-            'edit' => Pages\EditDocumentDefault::route('/{record}/edit'),
+            'index' => ListDocumentDefaults::route('/'),
+            'edit' => EditDocumentDefault::route('/{record}/edit'),
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Filament\Company\Resources\Common\OfferingResource\Pages;
 
 use App\Concerns\HandlePageRedirect;
 use App\Filament\Company\Resources\Common\OfferingResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,7 +17,7 @@ class EditOffering extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

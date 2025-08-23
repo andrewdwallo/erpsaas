@@ -11,14 +11,14 @@ use App\Services\ReportService;
 use App\Support\Column;
 use App\Transformers\AgingReportTransformer;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\RawJs;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class BaseAgingReportPage extends BaseReportPage
 {
-    protected static string $view = 'filament.company.pages.reports.trial-balance';
+    protected string $view = 'filament.company.pages.reports.trial-balance';
 
     protected ReportService $reportService;
 
@@ -77,11 +77,11 @@ abstract class BaseAgingReportPage extends BaseReportPage
         return $columns;
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(4)
-            ->schema([
+            ->components([
                 DateRangeSelect::make('dateRange')
                     ->label('As of')
                     ->selectablePlaceholder(false)

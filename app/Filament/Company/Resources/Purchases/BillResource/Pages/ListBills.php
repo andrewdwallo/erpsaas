@@ -4,11 +4,13 @@ namespace App\Filament\Company\Resources\Purchases\BillResource\Pages;
 
 use App\Enums\Accounting\BillStatus;
 use App\Filament\Company\Resources\Purchases\BillResource;
-use Filament\Actions;
+use App\Filament\Company\Resources\Purchases\BillResource\Widgets\BillOverview;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListBills extends ListRecords
@@ -20,21 +22,21 @@ class ListBills extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('payBills')
+            Action::make('payBills')
                 ->outlined()
                 ->url(PayBills::getUrl()),
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            BillResource\Widgets\BillOverview::class,
+            BillOverview::class,
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }

@@ -18,7 +18,8 @@ use App\Models\Setting\DocumentDefault;
 use App\Observers\BillObserver;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Actions\MountableAction;
+use Exception;
+use Filament\Actions\Action;
 use Filament\Actions\ReplicateAction;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
+use RuntimeException;
 
 #[CollectedBy(DocumentCollection::class)]
 #[ObservedBy(BillObserver::class)]
@@ -168,7 +170,7 @@ class Bill extends Document
         $company ??= auth()->user()?->currentCompany;
 
         if (! $company) {
-            throw new \RuntimeException('No current company is set for the user.');
+            throw new RuntimeException('No current company is set for the user.');
         }
 
         $defaultBillSettings = $company->defaultBill;
@@ -360,7 +362,7 @@ class Bill extends Document
         }
 
         if ($totalDebitsInDefaultCurrency !== $totalCreditsInDefaultCurrency) {
-            throw new \Exception('Journal entries do not balance for Bill #' . $this->bill_number . '. Debits: ' . $totalDebitsInDefaultCurrency . ', Credits: ' . $totalCreditsInDefaultCurrency);
+            throw new Exception('Journal entries do not balance for Bill #' . $this->bill_number . '. Debits: ' . $totalDebitsInDefaultCurrency . ', Credits: ' . $totalCreditsInDefaultCurrency);
         }
 
         // Create the transaction using the sum of debits
@@ -408,7 +410,7 @@ class Bill extends Document
         return $this->convertAmountToDefaultCurrency($amountCents);
     }
 
-    public static function getReplicateAction(string $action = ReplicateAction::class): MountableAction
+    public static function getReplicateAction(string $action = ReplicateAction::class): Action
     {
         return $action::make()
             ->excludeAttributes([

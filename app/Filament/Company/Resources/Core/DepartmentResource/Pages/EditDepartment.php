@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Resources\Core\DepartmentResource\Pages;
 
 use App\Filament\Company\Resources\Core\DepartmentResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditDepartment extends EditRecord
@@ -13,7 +13,7 @@ class EditDepartment extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

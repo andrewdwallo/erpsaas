@@ -4,11 +4,11 @@ namespace App\Filament\Forms\Components;
 
 use App\Filament\Company\Resources\Common\OfferingResource;
 use App\Models\Common\Offering;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 
 class CreateOfferingSelect extends Select
 {
@@ -39,7 +39,7 @@ class CreateOfferingSelect extends Select
         $this
             ->searchable()
             ->preload()
-            ->createOptionForm(fn (Form $form) => $this->createOfferingForm($form))
+            ->createOptionForm(fn (Schema $schema) => $this->createOfferingForm($schema))
             ->createOptionAction(fn (Action $action) => $this->createOfferingAction($action));
 
         $this->relationship(
@@ -47,7 +47,7 @@ class CreateOfferingSelect extends Select
             titleAttribute: 'name'
         );
 
-        $this->createOptionUsing(function (array $data, Form $form) {
+        $this->createOptionUsing(function (array $data, Schema $schema) {
             if ($this->isSellableAndPurchasable()) {
                 $attributes = array_flip($data['attributes'] ?? []);
 
@@ -62,15 +62,15 @@ class CreateOfferingSelect extends Select
 
             $offering = Offering::create($data);
 
-            $form->model($offering)->saveRelationships();
+            $schema->model($offering)->saveRelationships();
 
             return $offering->getKey();
         });
     }
 
-    protected function createOfferingForm(Form $form): Form
+    protected function createOfferingForm(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             OfferingResource::getGeneralSection($this->isSellableAndPurchasable()),
             OfferingResource::getSellableSection()->visible(
                 fn (Get $get) => $this->isSellableAndPurchasable()
@@ -90,7 +90,7 @@ class CreateOfferingSelect extends Select
         return $action
             ->label('Create offering')
             ->slideOver()
-            ->modalWidth(MaxWidth::ThreeExtraLarge)
+            ->modalWidth(Width::ThreeExtraLarge)
             ->modalHeading('Create a new offering');
     }
 

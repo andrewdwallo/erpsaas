@@ -13,6 +13,7 @@ use App\Enums\Accounting\AdjustmentType;
 use App\Models\Common\Offering;
 use App\Observers\AdjustmentObserver;
 use Database\Factories\Accounting\AdjustmentFactory;
+use DateTime;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -137,7 +138,7 @@ class Adjustment extends Model
         return AdjustmentStatus::Active;
     }
 
-    public function pause(?string $reason = null, ?\DateTime $untilDate = null): bool
+    public function pause(?string $reason = null, ?DateTime $untilDate = null): bool
     {
         if (! $this->canBePaused()) {
             return false;

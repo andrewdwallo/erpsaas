@@ -3,10 +3,10 @@
 namespace App\Filament\Company\Resources\Accounting\TransactionResource\RelationManagers;
 
 use App\Utilities\Currency\CurrencyAccessor;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class JournalEntriesRelationManager extends RelationManager
@@ -17,30 +17,30 @@ class JournalEntriesRelationManager extends RelationManager
         'refresh' => '$refresh',
     ];
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([]);
+        return $schema
+            ->components([]);
     }
 
     public function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->label('Type'),
-                Tables\Columns\TextColumn::make('account.name')
+                TextColumn::make('account.name')
                     ->label('Account')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('account.category')
+                TextColumn::make('account.category')
                     ->label('Category')
                     ->badge(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label('Description')
                     ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('amount')
+                TextColumn::make('amount')
                     ->label('Amount')
                     ->weight(FontWeight::SemiBold)
                     ->sortable()
@@ -52,10 +52,10 @@ class JournalEntriesRelationManager extends RelationManager
             ->headerActions([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 //
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 //
             ]);
     }

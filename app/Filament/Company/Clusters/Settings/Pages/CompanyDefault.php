@@ -8,15 +8,15 @@ use App\Models\Banking\BankAccount;
 use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Htmlable;
@@ -27,7 +27,7 @@ use Livewire\Attributes\Locked;
 use function Filament\authorize;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
 class CompanyDefault extends Page
 {
@@ -35,7 +35,7 @@ class CompanyDefault extends Page
 
     protected static ?string $title = 'Default';
 
-    protected static string $view = 'filament.company.pages.setting.company-default';
+    protected string $view = 'filament.company.pages.setting.company-default';
 
     protected static ?string $cluster = Settings::class;
 
@@ -57,9 +57,9 @@ class CompanyDefault extends Page
         return translate(static::$title);
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::ScreenTwoExtraLarge;
+        return Width::ScreenTwoExtraLarge;
     }
 
     public function mount(): void
@@ -101,10 +101,10 @@ class CompanyDefault extends Page
             ->title(__('filament-panels::resources/pages/edit-record.notifications.saved.title'));
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getGeneralSection(),
             ])
             ->model($this->record)

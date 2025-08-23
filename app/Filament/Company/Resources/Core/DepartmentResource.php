@@ -2,13 +2,22 @@
 
 namespace App\Filament\Company\Resources\Core;
 
-use App\Filament\Company\Resources\Core\DepartmentResource\Pages;
+use App\Filament\Company\Resources\Core\DepartmentResource\Pages\CreateDepartment;
+use App\Filament\Company\Resources\Core\DepartmentResource\Pages\EditDepartment;
+use App\Filament\Company\Resources\Core\DepartmentResource\Pages\ListDepartments;
 use App\Filament\Company\Resources\Core\DepartmentResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Core\Department;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -27,18 +36,18 @@ class DepartmentResource extends Resource
         return translate($modelLabel);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('General')
+        return $schema
+            ->components([
+                Section::make('General')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->autofocus()
                             ->required()
                             ->localizeLabel()
                             ->maxLength(100),
-                        Forms\Components\Select::make('manager_id')
+                        Select::make('manager_id')
                             ->relationship(
                                 name: 'manager',
                                 titleAttribute: 'name',
@@ -53,15 +62,15 @@ class DepartmentResource extends Resource
                             ->searchable()
                             ->preload()
                             ->nullable(),
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->schema([
-                                Forms\Components\Select::make('parent_id')
+                                Select::make('parent_id')
                                     ->localizeLabel('Parent department')
                                     ->relationship('parent', 'name')
                                     ->preload()
                                     ->searchable()
                                     ->nullable(),
-                                Forms\Components\Textarea::make('description')
+                                Textarea::make('description')
                                     ->autosize()
                                     ->nullable()
                                     ->localizeLabel(),
@@ -74,16 +83,16 @@ class DepartmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->localizeLabel()
                     ->weight('semibold')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('manager.name')
+                TextColumn::make('manager.name')
                     ->localizeLabel()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('children_count')
+                TextColumn::make('children_count')
                     ->localizeLabel('Children')
                     ->badge()
                     ->counts('children')
@@ -93,12 +102,12 @@ class DepartmentResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -113,9 +122,9 @@ class DepartmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDepartments::route('/'),
-            'create' => Pages\CreateDepartment::route('/create'),
-            'edit' => Pages\EditDepartment::route('/{record}/edit'),
+            'index' => ListDepartments::route('/'),
+            'create' => CreateDepartment::route('/create'),
+            'edit' => EditDepartment::route('/{record}/edit'),
         ];
     }
 }

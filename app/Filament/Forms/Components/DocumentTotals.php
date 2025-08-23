@@ -4,10 +4,10 @@ namespace App\Filament\Forms\Components;
 
 use App\Enums\Accounting\AdjustmentComputation;
 use App\Enums\Accounting\DocumentType;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 
 class DocumentTotals extends Grid
 {

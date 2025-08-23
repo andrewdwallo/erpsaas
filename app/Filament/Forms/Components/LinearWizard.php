@@ -2,7 +2,7 @@
 
 namespace App\Filament\Forms\Components;
 
-use Filament\Forms\Components\Wizard;
+use Filament\Schemas\Components\Wizard;
 
 class LinearWizard extends Wizard
 {

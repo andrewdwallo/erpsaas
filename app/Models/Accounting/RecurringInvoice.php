@@ -25,10 +25,14 @@ use App\Observers\RecurringInvoiceObserver;
 use App\Support\ScheduleHandler;
 use App\Utilities\Localization\Timezone;
 use Filament\Actions\Action;
-use Filament\Actions\MountableAction;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -39,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use RuntimeException;
 
 #[CollectedBy(DocumentCollection::class)]
 #[ObservedBy(RecurringInvoiceObserver::class)]
@@ -390,52 +395,52 @@ class RecurringInvoice extends Document
         };
     }
 
-    public static function getManageScheduleAction(string $action = Action::class): MountableAction
+    public static function getManageScheduleAction(string $action = Action::class): Action
     {
         return $action::make('manageSchedule')
             ->label(fn (self $record) => $record->hasSchedule() ? 'Edit schedule' : 'Set schedule')
             ->icon('heroicon-m-calendar-date-range')
             ->slideOver()
             ->successNotificationTitle('Schedule saved')
-            ->mountUsing(function (self $record, Form $form) {
+            ->mountUsing(function (self $record, Schema $schema) {
                 $data = $record->attributesToArray();
 
                 $data['day_of_month'] ??= DayOfMonth::First;
                 $data['start_date'] ??= company_today()->addMonth()->startOfMonth();
 
-                $form->fill($data);
+                $schema->fill($data);
             })
             ->form([
                 CustomSection::make('Frequency')
                     ->contained(false)
-                    ->schema(function (Forms\Get $get) {
+                    ->schema(function (Get $get) {
                         $frequency = Frequency::parse($get('frequency'));
                         $intervalType = IntervalType::parse($get('interval_type'));
                         $month = Month::parse($get('month'));
                         $dayOfMonth = DayOfMonth::parse($get('day_of_month'));
 
                         return [
-                            Forms\Components\Select::make('frequency')
+                            Select::make('frequency')
                                 ->label('Repeats')
                                 ->options(Frequency::class)
                                 ->softRequired()
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Set $set, $state) {
                                     $handler = new ScheduleHandler($set);
                                     $handler->handleFrequencyChange($state);
                                 }),
 
                             Cluster::make([
-                                Forms\Components\TextInput::make('interval_value')
+                                TextInput::make('interval_value')
                                     ->softRequired()
                                     ->numeric()
                                     ->default(1),
-                                Forms\Components\Select::make('interval_type')
+                                Select::make('interval_type')
                                     ->options(IntervalType::class)
                                     ->softRequired()
                                     ->default(IntervalType::Month)
                                     ->live()
-                                    ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                    ->afterStateUpdated(function (Set $set, $state) {
                                         $handler = new ScheduleHandler($set);
                                         $handler->handleIntervalTypeChange($state);
                                     }),
@@ -446,18 +451,18 @@ class RecurringInvoice extends Document
                                 ->markAsRequired(false)
                                 ->visible($frequency->isCustom()),
 
-                            Forms\Components\Select::make('month')
+                            Select::make('month')
                                 ->label('Month')
                                 ->options(Month::class)
                                 ->softRequired()
                                 ->visible($frequency->isYearly() || $intervalType?->isYear())
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                ->afterStateUpdated(function (Set $set, Get $get, $state) {
                                     $handler = new ScheduleHandler($set, $get);
                                     $handler->handleDateChange('month', $state);
                                 }),
 
-                            Forms\Components\Select::make('day_of_month')
+                            Select::make('day_of_month')
                                 ->label('Day of Month')
                                 ->options(function () use ($month) {
                                     if (! $month) {
@@ -473,7 +478,7 @@ class RecurringInvoice extends Document
                                 ->softRequired()
                                 ->visible(in_array($frequency, [Frequency::Monthly, Frequency::Yearly]) || in_array($intervalType, [IntervalType::Month, IntervalType::Year]))
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                ->afterStateUpdated(function (Set $set, Get $get, $state) {
                                     $handler = new ScheduleHandler($set, $get);
                                     $handler->handleDateChange('day_of_month', $state);
                                 }),
@@ -486,13 +491,13 @@ class RecurringInvoice extends Document
                                 ->columnSpanFull()
                                 ->visible($dayOfMonth?->mayExceedMonthLength() && ($frequency->isMonthly() || $intervalType?->isMonth())),
 
-                            Forms\Components\Select::make('day_of_week')
+                            Select::make('day_of_week')
                                 ->label('Day of Week')
                                 ->options(DayOfWeek::class)
                                 ->softRequired()
                                 ->visible(($frequency->isWeekly() || $intervalType?->isWeek()) ?? false)
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Set $set, $state) {
                                     $handler = new ScheduleHandler($set);
                                     $handler->handleDateChange('day_of_week', $state);
                                 }),
@@ -502,26 +507,26 @@ class RecurringInvoice extends Document
                 CustomSection::make('Dates & Time')
                     ->contained(false)
                     ->schema([
-                        Forms\Components\DatePicker::make('start_date')
+                        DatePicker::make('start_date')
                             ->label('First invoice date')
                             ->softRequired()
                             ->live()
                             ->minDate(company_today())
                             ->closeOnDateSelection()
-                            ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
                                 $handler = new ScheduleHandler($set, $get);
                                 $handler->handleDateChange('start_date', $state);
                             }),
 
-                        Forms\Components\Group::make(function (Forms\Get $get) {
+                        Group::make(function (Get $get) {
                             $components = [];
 
-                            $components[] = Forms\Components\Select::make('end_type')
+                            $components[] = Select::make('end_type')
                                 ->label('End schedule')
                                 ->options(EndType::class)
                                 ->softRequired()
                                 ->live()
-                                ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                ->afterStateUpdated(function (Set $set, $state) {
                                     $endType = EndType::parse($state);
 
                                     $set('max_occurrences', $endType?->isAfter() ? 1 : null);
@@ -531,14 +536,14 @@ class RecurringInvoice extends Document
                             $endType = EndType::parse($get('end_type'));
 
                             if ($endType?->isAfter()) {
-                                $components[] = Forms\Components\TextInput::make('max_occurrences')
+                                $components[] = TextInput::make('max_occurrences')
                                     ->numeric()
                                     ->suffix('invoices')
                                     ->live();
                             }
 
                             if ($endType?->isOn()) {
-                                $components[] = Forms\Components\DatePicker::make('end_date')
+                                $components[] = DatePicker::make('end_date')
                                     ->live();
                             }
 
@@ -550,21 +555,21 @@ class RecurringInvoice extends Document
                             ];
                         }),
 
-                        Forms\Components\Select::make('timezone')
+                        Select::make('timezone')
                             ->options(Timezone::getTimezoneOptions(CompanyProfile::first()->country))
                             ->searchable()
                             ->softRequired(),
                     ])
                     ->columns(2),
             ])
-            ->action(function (self $record, array $data, MountableAction $action) {
+            ->action(function (self $record, array $data, Action $action) {
                 $record->update($data);
 
                 $action->success();
             });
     }
 
-    public static function getApproveDraftAction(string $action = Action::class): MountableAction
+    public static function getApproveDraftAction(string $action = Action::class): Action
     {
         return $action::make('approveDraft')
             ->label('Approve')
@@ -575,7 +580,7 @@ class RecurringInvoice extends Document
             ->requiresConfirmation()
             ->databaseTransaction()
             ->successNotificationTitle('Recurring invoice approved')
-            ->action(function (self $record, MountableAction $action, Component $livewire) {
+            ->action(function (self $record, Action $action, Component $livewire) {
                 if ($record->hasInactiveAdjustments()) {
                     $isViewPage = $livewire instanceof ViewRecurringInvoice;
 
@@ -600,7 +605,7 @@ class RecurringInvoice extends Document
     public function approveDraft(?Carbon $approvedAt = null): void
     {
         if (! $this->isDraft()) {
-            throw new \RuntimeException('Invoice is not in draft status.');
+            throw new RuntimeException('Invoice is not in draft status.');
         }
 
         $approvedAt ??= company_now();

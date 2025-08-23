@@ -3,13 +3,16 @@
 namespace App\Filament\Company\Resources\Purchases\BillResource\Pages;
 
 use App\Filament\Company\Resources\Purchases\BillResource;
+use App\Filament\Company\Resources\Purchases\BillResource\RelationManagers\PaymentsRelationManager;
 use App\Filament\Company\Resources\Purchases\VendorResource;
 use App\Models\Accounting\Bill;
-use Filament\Actions;
-use Filament\Infolists\Components\Section;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
 
 class ViewBill extends ViewRecord
@@ -23,14 +26,14 @@ class ViewBill extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()
+            EditAction::make()
                 ->label('Edit bill')
                 ->outlined(),
-            Actions\ActionGroup::make([
-                Actions\ActionGroup::make([
+            ActionGroup::make([
+                ActionGroup::make([
                     Bill::getReplicateAction(),
                 ])->dropdown(false),
-                Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
                 ->label('Actions')
                 ->button()
@@ -41,7 +44,7 @@ class ViewBill extends ViewRecord
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([
@@ -78,7 +81,7 @@ class ViewBill extends ViewRecord
     protected function getAllRelationManagers(): array
     {
         return [
-            BillResource\RelationManagers\PaymentsRelationManager::class,
+            PaymentsRelationManager::class,
         ];
     }
 }

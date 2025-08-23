@@ -4,8 +4,8 @@ namespace App\Filament\Forms\Components;
 
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Closure;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 
@@ -94,7 +94,7 @@ class CustomTableRepeater extends TableRepeater
 
         $this->minItems(1);
 
-        $this->stackAt(MaxWidth::Large);
+        $this->stackAt(Width::Large);
 
         $this->extraAttributes(function (): array {
             $attributes = [];

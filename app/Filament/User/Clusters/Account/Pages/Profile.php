@@ -3,7 +3,7 @@
 namespace App\Filament\User\Clusters\Account\Pages;
 
 use App\Filament\User\Clusters\Account;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Wallo\FilamentCompanies\Pages\User\Profile as BaseProfile;
 
 class Profile extends BaseProfile
@@ -14,8 +14,8 @@ class Profile extends BaseProfile
 
     protected static ?int $navigationSort = 10;
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::ScreenTwoExtraLarge;
+        return Width::ScreenTwoExtraLarge;
     }
 }

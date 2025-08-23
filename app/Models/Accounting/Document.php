@@ -7,7 +7,6 @@ use App\Concerns\CompanyOwned;
 use App\Enums\Accounting\DocumentType;
 use App\Models\Setting\Currency;
 use Filament\Actions\Action;
-use Filament\Actions\MountableAction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,7 +43,7 @@ abstract class Document extends Model
         });
     }
 
-    public static function getPrintDocumentAction(string $action = Action::class): MountableAction
+    public static function getPrintDocumentAction(string $action = Action::class): Action
     {
         return $action::make('printPdf')
             ->label('Print')

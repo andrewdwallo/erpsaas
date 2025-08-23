@@ -11,6 +11,8 @@ use App\Enums\Accounting\InvoiceStatus;
 use App\Enums\Accounting\JournalEntryType;
 use App\Enums\Accounting\TransactionType;
 use App\Filament\Company\Resources\Sales\InvoiceResource;
+use App\Filament\Company\Resources\Sales\InvoiceResource\Pages\EditInvoice;
+use App\Filament\Company\Resources\Sales\InvoiceResource\Pages\ViewInvoice;
 use App\Models\Banking\BankAccount;
 use App\Models\Common\Client;
 use App\Models\Company;
@@ -18,10 +20,9 @@ use App\Models\Setting\DocumentDefault;
 use App\Observers\InvoiceObserver;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
+use Exception;
 use Filament\Actions\Action;
-use Filament\Actions\MountableAction;
 use Filament\Actions\ReplicateAction;
-use Filament\Actions\StaticAction;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
@@ -37,6 +38,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
+use RuntimeException;
 
 #[CollectedBy(DocumentCollection::class)]
 #[ObservedBy(InvoiceObserver::class)]
@@ -290,7 +292,7 @@ class Invoice extends Document
         $company ??= auth()->user()?->currentCompany;
 
         if (! $company) {
-            throw new \RuntimeException('No current company is set for the user.');
+            throw new RuntimeException('No current company is set for the user.');
         }
 
         $defaultInvoiceSettings = $company->defaultInvoice;
@@ -368,7 +370,7 @@ class Invoice extends Document
     public function approveDraft(?Carbon $approvedAt = null): void
     {
         if (! $this->isDraft()) {
-            throw new \RuntimeException('Invoice is not in draft status.');
+            throw new RuntimeException('Invoice is not in draft status.');
         }
 
         $this->createApprovalTransaction();
@@ -479,7 +481,7 @@ class Invoice extends Document
         }
 
         if ($totalDebitsInDefaultCurrency !== $totalCreditsInDefaultCurrency) {
-            throw new \Exception('Journal entries do not balance for Invoice #' . $this->invoice_number . '. Debits: ' . $totalDebitsInDefaultCurrency . ', Credits: ' . $totalCreditsInDefaultCurrency);
+            throw new Exception('Journal entries do not balance for Invoice #' . $this->invoice_number . '. Debits: ' . $totalDebitsInDefaultCurrency . ', Credits: ' . $totalCreditsInDefaultCurrency);
         }
 
         // Create the transaction using the sum of debits
@@ -528,7 +530,7 @@ class Invoice extends Document
     }
 
     // TODO: Potentially handle this another way
-    public static function getBlockedApproveAction(string $action = Action::class): MountableAction
+    public static function getBlockedApproveAction(string $action = Action::class): Action
     {
         return $action::make('blockedApprove')
             ->label('Approve')
@@ -560,13 +562,13 @@ class Invoice extends Document
 
                 return new HtmlString($output);
             })
-            ->modalSubmitAction(function (StaticAction $action, self $record) {
+            ->modalSubmitAction(function (Action $action, self $record) {
                 $action->label('Edit Invoice')
-                    ->url(InvoiceResource\Pages\EditInvoice::getUrl(['record' => $record->id]));
+                    ->url(EditInvoice::getUrl(['record' => $record->id]));
             });
     }
 
-    public static function getApproveDraftAction(string $action = Action::class): MountableAction
+    public static function getApproveDraftAction(string $action = Action::class): Action
     {
         return $action::make('approveDraft')
             ->label('Approve')
@@ -577,12 +579,12 @@ class Invoice extends Document
             ->requiresConfirmation()
             ->databaseTransaction()
             ->successNotificationTitle('Invoice approved')
-            ->action(function (self $record, MountableAction $action, Component $livewire) {
+            ->action(function (self $record, Action $action, Component $livewire) {
                 if ($record->hasInactiveAdjustments()) {
-                    $isViewPage = $livewire instanceof InvoiceResource\Pages\ViewInvoice;
+                    $isViewPage = $livewire instanceof ViewInvoice;
 
                     if (! $isViewPage) {
-                        redirect(InvoiceResource\Pages\ViewInvoice::getUrl(['record' => $record->id]));
+                        redirect(ViewInvoice::getUrl(['record' => $record->id]));
                     } else {
                         Notification::make()
                             ->warning()
@@ -599,7 +601,7 @@ class Invoice extends Document
             });
     }
 
-    public static function getMarkAsSentAction(string $action = Action::class): MountableAction
+    public static function getMarkAsSentAction(string $action = Action::class): Action
     {
         return $action::make('markAsSent')
             ->label('Mark as sent')
@@ -608,7 +610,7 @@ class Invoice extends Document
                 return $record->canBeMarkedAsSent();
             })
             ->successNotificationTitle('Invoice sent')
-            ->action(function (self $record, MountableAction $action) {
+            ->action(function (self $record, Action $action) {
                 $record->markAsSent();
 
                 $action->success();
@@ -635,7 +637,7 @@ class Invoice extends Document
         ]);
     }
 
-    public static function getReplicateAction(string $action = ReplicateAction::class): MountableAction
+    public static function getReplicateAction(string $action = ReplicateAction::class): Action
     {
         return $action::make()
             ->excludeAttributes([

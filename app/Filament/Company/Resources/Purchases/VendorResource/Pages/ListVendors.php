@@ -3,9 +3,9 @@
 namespace App\Filament\Company\Resources\Purchases\VendorResource\Pages;
 
 use App\Filament\Company\Resources\Purchases\VendorResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 
 class ListVendors extends ListRecords
 {
@@ -14,11 +14,11 @@ class ListVendors extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
         return 'max-w-8xl';
     }

@@ -6,7 +6,7 @@ use App\Services\PlaidService;
 use Filament\Actions\Action;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
 
 class ConnectedAccount extends Page
@@ -15,7 +15,7 @@ class ConnectedAccount extends Page
 
     protected static ?string $slug = 'services/connected-accounts';
 
-    protected static string $view = 'filament.company.pages.service.connected-account';
+    protected string $view = 'filament.company.pages.service.connected-account';
 
     public static function canAccess(): bool
     {
@@ -61,8 +61,8 @@ class ConnectedAccount extends Page
         ];
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::ScreenLarge;
+        return Width::ScreenLarge;
     }
 }

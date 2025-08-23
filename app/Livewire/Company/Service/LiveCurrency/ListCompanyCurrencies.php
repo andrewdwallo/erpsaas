@@ -3,12 +3,16 @@
 namespace App\Livewire\Company\Service\LiveCurrency;
 
 use App\Models\Setting\Currency;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -16,8 +20,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
-class ListCompanyCurrencies extends Component implements HasForms, HasTable
+class ListCompanyCurrencies extends Component implements HasActions, HasForms, HasTable
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -34,7 +39,7 @@ class ListCompanyCurrencies extends Component implements HasForms, HasTable
             ->query(Currency::query())
             ->modelLabel($this->getTableModelLabel())
             ->columns([
-                Tables\Columns\TextColumn::make('code')
+                TextColumn::make('code')
                     ->localizeLabel()
                     ->weight(FontWeight::Medium)
                     ->icon(static fn (Currency $record) => $record->isEnabled() ? 'heroicon-o-lock-closed' : null)
@@ -52,15 +57,15 @@ class ListCompanyCurrencies extends Component implements HasForms, HasTable
                     ->iconPosition(IconPosition::After)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->localizeLabel()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('rate')
+                TextColumn::make('rate')
                     ->localizeLabel()
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('live_rate')
+                TextColumn::make('live_rate')
                     ->localizeLabel()
                     ->sortable()
                     ->searchable(),
@@ -68,8 +73,8 @@ class ListCompanyCurrencies extends Component implements HasForms, HasTable
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\Action::make('update_rate')
+            ->recordActions([
+                Action::make('update_rate')
                     ->label('Update rate')
                     ->icon('heroicon-o-arrow-path')
                     ->hidden(static fn (Currency $record): bool => $record->isEnabled() || ($record->rate === $record->live_rate))
@@ -90,8 +95,8 @@ class ListCompanyCurrencies extends Component implements HasForms, HasTable
                         }
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkAction::make('update_rate')
+            ->toolbarActions([
+                BulkAction::make('update_rate')
                     ->label('Update rate')
                     ->icon('heroicon-o-arrow-path')
                     ->requiresConfirmation()

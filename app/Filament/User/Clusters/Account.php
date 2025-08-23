@@ -7,7 +7,7 @@ use Filament\Navigation\NavigationItem;
 
 class Account extends Cluster
 {
-    protected static ?string $navigationIcon = 'heroicon-s-user';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-s-user';
 
     protected static ?string $navigationLabel = 'My Account';
 

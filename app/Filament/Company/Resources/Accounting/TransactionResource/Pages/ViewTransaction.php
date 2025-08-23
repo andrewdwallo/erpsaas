@@ -4,6 +4,7 @@ namespace App\Filament\Company\Resources\Accounting\TransactionResource\Pages;
 
 use App\Filament\Actions\EditTransactionAction;
 use App\Filament\Company\Resources\Accounting\TransactionResource;
+use App\Filament\Company\Resources\Accounting\TransactionResource\RelationManagers\JournalEntriesRelationManager;
 use App\Filament\Company\Resources\Purchases\BillResource\Pages\ViewBill;
 use App\Filament\Company\Resources\Purchases\VendorResource;
 use App\Filament\Company\Resources\Sales\ClientResource;
@@ -16,12 +17,16 @@ use App\Models\Accounting\Transaction;
 use App\Models\Common\Client;
 use App\Models\Common\Vendor;
 use App\Utilities\Currency\CurrencyAccessor;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
 
 use function Filament\Support\get_model_label;
@@ -40,7 +45,7 @@ class ViewTransaction extends ViewRecord
             EditTransactionAction::make()
                 ->outlined()
                 ->after(fn () => $this->dispatch('refresh')),
-            Actions\ViewAction::make('viewAssociatedDocument')
+            ViewAction::make('viewAssociatedDocument')
                 ->outlined()
                 ->icon('heroicon-o-document-text')
                 ->hidden(static fn (Transaction $record): bool => ! $record->transactionable_id)
@@ -58,14 +63,14 @@ class ViewTransaction extends ViewRecord
                         default => null,
                     };
                 }),
-            Actions\ActionGroup::make([
-                Actions\ActionGroup::make([
-                    Actions\Action::make('markAsReviewed')
+            ActionGroup::make([
+                ActionGroup::make([
+                    Action::make('markAsReviewed')
                         ->label(static fn (Transaction $record) => $record->reviewed ? 'Mark as unreviewed' : 'Mark as reviewed')
                         ->icon(static fn (Transaction $record) => $record->reviewed ? 'heroicon-s-check-circle' : 'heroicon-o-check-circle')
                         ->hidden(fn (Transaction $record): bool => $record->isUncategorized())
                         ->action(fn (Transaction $record) => $record->update(['reviewed' => ! $record->reviewed])),
-                    Actions\ReplicateAction::make()
+                    ReplicateAction::make()
                         ->excludeAttributes(['created_by', 'updated_by', 'created_at', 'updated_at'])
                         ->modal(false)
                         ->beforeReplicaSaved(static function (Transaction $replica) {
@@ -82,7 +87,7 @@ class ViewTransaction extends ViewRecord
                             });
                         }),
                 ])->dropdown(false),
-                Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
                 ->label('Actions')
                 ->button()
@@ -93,7 +98,7 @@ class ViewTransaction extends ViewRecord
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([
@@ -156,7 +161,7 @@ class ViewTransaction extends ViewRecord
     protected function getAllRelationManagers(): array
     {
         return [
-            TransactionResource\RelationManagers\JournalEntriesRelationManager::class,
+            JournalEntriesRelationManager::class,
         ];
     }
 }

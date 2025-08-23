@@ -9,13 +9,15 @@ use App\Filament\Company\Resources\Sales\RecurringInvoiceResource;
 use App\Filament\Infolists\Components\BannerEntry;
 use App\Filament\Infolists\Components\DocumentPreview;
 use App\Models\Accounting\RecurringInvoice;
-use Filament\Actions;
-use Filament\Infolists\Components\Actions\Action;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Section;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Support\HtmlString;
@@ -28,16 +30,16 @@ class ViewRecurringInvoice extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()
+            EditAction::make()
                 ->label('Edit recurring invoice')
                 ->outlined(),
-            Actions\ActionGroup::make([
-                Actions\ActionGroup::make([
+            ActionGroup::make([
+                ActionGroup::make([
                     RecurringInvoice::getManageScheduleAction(),
                     RecurringInvoice::getApproveDraftAction(),
                     RecurringInvoice::getPrintDocumentAction(),
                 ])->dropdown(false),
-                Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
                 ->label('Actions')
                 ->button()
@@ -48,7 +50,7 @@ class ViewRecurringInvoice extends ViewRecord
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([

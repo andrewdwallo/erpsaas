@@ -4,8 +4,8 @@ namespace App\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Field;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 
 class AddressFields extends Grid
 {

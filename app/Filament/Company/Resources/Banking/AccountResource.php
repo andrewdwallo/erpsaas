@@ -4,16 +4,26 @@ namespace App\Filament\Company\Resources\Banking;
 
 use App\Enums\Accounting\AccountCategory;
 use App\Enums\Banking\BankAccountType;
-use App\Filament\Company\Resources\Banking\AccountResource\Pages;
+use App\Filament\Company\Resources\Banking\AccountResource\Pages\CreateAccount;
+use App\Filament\Company\Resources\Banking\AccountResource\Pages\EditAccount;
+use App\Filament\Company\Resources\Banking\AccountResource\Pages\ListAccounts;
 use App\Filament\Forms\Components\CreateCurrencySelect;
 use App\Models\Accounting\AccountSubtype;
 use App\Models\Banking\BankAccount;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -34,13 +44,13 @@ class AccountResource extends Resource
         return translate($modelLabel);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Account Information')
+        return $schema
+            ->components([
+                Section::make('Account Information')
                     ->schema([
-                        Forms\Components\Select::make('type')
+                        Select::make('type')
                             ->options(BankAccountType::class)
                             ->localizeLabel()
                             ->searchable()
@@ -48,7 +58,7 @@ class AccountResource extends Resource
                             ->disabledOn('edit')
                             ->default(BankAccountType::DEFAULT)
                             ->live()
-                            ->afterStateUpdated(static function (Forms\Set $set, $state, ?BankAccount $bankAccount, string $operation) {
+                            ->afterStateUpdated(static function (Set $set, $state, ?BankAccount $bankAccount, string $operation) {
                                 if ($operation === 'create') {
                                     $set('account.subtype_id', null);
                                 } elseif ($operation === 'edit' && $bankAccount !== null) {
@@ -60,38 +70,38 @@ class AccountResource extends Resource
                                 }
                             })
                             ->required(),
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->columnStart([
                                 'default' => 1,
                                 'lg' => 2,
                             ])
                             ->relationship('account')
                             ->schema([
-                                Forms\Components\Select::make('subtype_id')
-                                    ->options(static fn (Forms\Get $get) => static::groupSubtypesBySubtypeType(BankAccountType::parse($get('data.type', true))))
+                                Select::make('subtype_id')
+                                    ->options(static fn (Get $get) => static::groupSubtypesBySubtypeType(BankAccountType::parse($get('data.type', true))))
                                     ->disabledOn('edit')
                                     ->localizeLabel()
                                     ->searchable()
                                     ->live()
                                     ->required(),
                             ]),
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->relationship('account')
                             ->columns()
                             ->columnSpanFull()
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->maxLength(100)
                                     ->localizeLabel()
                                     ->required(),
                                 CreateCurrencySelect::make('currency_code')
                                     ->disabledOn('edit'),
                             ]),
-                        Forms\Components\Group::make()
+                        Group::make()
                             ->columns()
                             ->columnSpanFull()
                             ->schema([
-                                Forms\Components\TextInput::make('number')
+                                TextInput::make('number')
                                     ->localizeLabel('Account number')
                                     ->unique(ignoreRecord: true, modifyRuleUsing: static function (Unique $rule, $state) {
                                         $companyId = Auth::user()->currentCompany->id;
@@ -117,7 +127,7 @@ class AccountResource extends Resource
                 ]);
             })
             ->columns([
-                Tables\Columns\TextColumn::make('account.name')
+                TextColumn::make('account.name')
                     ->localizeLabel('Account')
                     ->searchable()
                     ->weight(FontWeight::Medium)
@@ -125,11 +135,11 @@ class AccountResource extends Resource
                     ->tooltip(static fn (BankAccount $record) => $record->isEnabled() ? 'Default Account' : null)
                     ->iconPosition('after')
                     ->description(static fn (BankAccount $record) => $record->mask ?? null),
-                Tables\Columns\TextColumn::make('account.subtype.name')
+                TextColumn::make('account.subtype.name')
                     ->localizeLabel('Subtype')
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('account.ending_balance')
+                TextColumn::make('account.ending_balance')
                     ->localizeLabel('Ending balance')
                     ->state(static fn (BankAccount $record) => $record->account->ending_balance->convert()->formatWithCode())
                     ->toggleable()
@@ -138,12 +148,12 @@ class AccountResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
                         ->requiresConfirmation()
                         ->modalDescription('Are you sure you want to delete the selected accounts? All transactions associated with the accounts will be deleted as well.')
                         ->hidden(function (Table $table) {
@@ -159,9 +169,9 @@ class AccountResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAccounts::route('/'),
-            'create' => Pages\CreateAccount::route('/create'),
-            'edit' => Pages\EditAccount::route('/{record}/edit'),
+            'index' => ListAccounts::route('/'),
+            'create' => CreateAccount::route('/create'),
+            'edit' => EditAccount::route('/{record}/edit'),
         ];
     }
 

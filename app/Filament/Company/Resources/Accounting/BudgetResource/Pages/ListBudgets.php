@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Resources\Accounting\BudgetResource\Pages;
 
 use App\Filament\Company\Resources\Accounting\BudgetResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListBudgets extends ListRecords
@@ -13,7 +13,7 @@ class ListBudgets extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }

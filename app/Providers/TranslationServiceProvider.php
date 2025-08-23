@@ -5,7 +5,7 @@ namespace App\Providers;
 use Closure;
 use Filament\Forms\Components\Field;
 use Filament\Navigation\NavigationGroup;
-use Filament\Resources\Components\Tab;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\Column;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\ServiceProvider;

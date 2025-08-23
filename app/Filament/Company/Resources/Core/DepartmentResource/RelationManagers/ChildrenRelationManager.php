@@ -2,10 +2,18 @@
 
 namespace App\Filament\Company\Resources\Core\DepartmentResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\AssociateAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -15,16 +23,16 @@ class ChildrenRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
-            ->schema([
-                Forms\Components\TextInput::make('name')
+            ->components([
+                TextInput::make('name')
                     ->localizeLabel()
                     ->required()
                     ->maxLength(100),
-                Forms\Components\Select::make('manager_id')
+                Select::make('manager_id')
                     ->localizeLabel()
                     ->relationship(
                         name: 'manager',
@@ -39,7 +47,7 @@ class ChildrenRelationManager extends RelationManager
                     ->searchable()
                     ->preload()
                     ->nullable(),
-                Forms\Components\MarkdownEditor::make('description')->required(),
+                MarkdownEditor::make('description')->required(),
             ]);
     }
 
@@ -49,12 +57,12 @@ class ChildrenRelationManager extends RelationManager
             ->modelLabel(translate('Department'))
             ->inverseRelationship('parent')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->localizeLabel()
                     ->weight('semibold')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('manager.name')
+                TextColumn::make('manager.name')
                     ->localizeLabel()
                     ->searchable()
                     ->sortable(),
@@ -63,8 +71,8 @@ class ChildrenRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
-                Tables\Actions\AssociateAction::make()
+                CreateAction::make(),
+                AssociateAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectOptionsQuery(function (Builder $query) {
                         $existingChildren = $this->getRelationship()->pluck('id')->toArray();
@@ -73,13 +81,13 @@ class ChildrenRelationManager extends RelationManager
                             ->whereNotNull('parent_id');
                     }),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

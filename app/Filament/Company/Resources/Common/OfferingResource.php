@@ -7,15 +7,24 @@ use App\Enums\Accounting\AccountType;
 use App\Enums\Accounting\AdjustmentCategory;
 use App\Enums\Accounting\AdjustmentType;
 use App\Enums\Common\OfferingType;
-use App\Filament\Company\Resources\Common\OfferingResource\Pages;
+use App\Filament\Company\Resources\Common\OfferingResource\Pages\CreateOffering;
+use App\Filament\Company\Resources\Common\OfferingResource\Pages\EditOffering;
+use App\Filament\Company\Resources\Common\OfferingResource\Pages\ListOfferings;
 use App\Filament\Forms\Components\Banner;
 use App\Filament\Forms\Components\CreateAccountSelect;
 use App\Filament\Forms\Components\CreateAdjustmentSelect;
 use App\Models\Common\Offering;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
@@ -26,12 +35,12 @@ class OfferingResource extends Resource
 {
     protected static ?string $model = Offering::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Banner::make('inactiveAdjustments')
                     ->label('Inactive adjustments')
                     ->warning()
@@ -63,9 +72,9 @@ class OfferingResource extends Resource
             ])->columns();
     }
 
-    public static function getGeneralSection(bool $hasAttributeChoices = true): Forms\Components\Section
+    public static function getGeneralSection(bool $hasAttributeChoices = true): Section
     {
-        return Forms\Components\Section::make('General')
+        return Section::make('General')
             ->schema([
                 RadioDeck::make('type')
                     ->options(OfferingType::class)
@@ -74,19 +83,19 @@ class OfferingResource extends Resource
                     ->color('primary')
                     ->columns()
                     ->required(),
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->autofocus()
                     ->required()
                     ->columnStart(1)
                     ->maxLength(255),
-                Forms\Components\TextInput::make('price')
+                TextInput::make('price')
                     ->required()
                     ->money(),
-                Forms\Components\Textarea::make('description')
+                Textarea::make('description')
                     ->label('Description')
                     ->columnSpan(2)
                     ->rows(3),
-                Forms\Components\CheckboxList::make('attributes')
+                CheckboxList::make('attributes')
                     ->options([
                         'Sellable' => 'Sellable',
                         'Purchasable' => 'Purchasable',
@@ -102,9 +111,9 @@ class OfferingResource extends Resource
             ])->columns();
     }
 
-    public static function getSellableSection(): Forms\Components\Section
+    public static function getSellableSection(): Section
     {
-        return Forms\Components\Section::make('Sale Information')
+        return Section::make('Sale Information')
             ->schema([
                 CreateAccountSelect::make('income_account_id')
                     ->label('Income account')
@@ -126,12 +135,12 @@ class OfferingResource extends Resource
                     ->multiple(),
             ])
             ->columns()
-            ->visible(static fn (Forms\Get $get) => in_array('Sellable', $get('attributes') ?? []));
+            ->visible(static fn (Get $get) => in_array('Sellable', $get('attributes') ?? []));
     }
 
-    public static function getPurchasableSection(): Forms\Components\Section
+    public static function getPurchasableSection(): Section
     {
-        return Forms\Components\Section::make('Purchase Information')
+        return Section::make('Purchase Information')
             ->schema([
                 CreateAccountSelect::make('expense_account_id')
                     ->label('Expense account')
@@ -153,7 +162,7 @@ class OfferingResource extends Resource
                     ->multiple(),
             ])
             ->columns()
-            ->visible(static fn (Forms\Get $get) => in_array('Purchasable', $get('attributes') ?? []));
+            ->visible(static fn (Get $get) => in_array('Purchasable', $get('attributes') ?? []));
     }
 
     public static function table(Table $table): Table
@@ -169,14 +178,14 @@ class OfferingResource extends Resource
                     ");
             })
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Name'),
-                Tables\Columns\TextColumn::make('attributes')
+                TextColumn::make('attributes')
                     ->label('Attributes')
                     ->badge(),
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->currency()
                     ->sortable()
                     ->description(function (Offering $record) {
@@ -196,12 +205,12 @@ class OfferingResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -216,9 +225,9 @@ class OfferingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOfferings::route('/'),
-            'create' => Pages\CreateOffering::route('/create'),
-            'edit' => Pages\EditOffering::route('/{record}/edit'),
+            'index' => ListOfferings::route('/'),
+            'create' => CreateOffering::route('/create'),
+            'edit' => EditOffering::route('/{record}/edit'),
         ];
     }
 }

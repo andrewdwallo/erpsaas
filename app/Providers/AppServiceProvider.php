@@ -9,7 +9,7 @@ use App\Models\Notification;
 use App\Services\DateRangeService;
 use Filament\Actions\Exports\Models\Export as BaseExport;
 use Filament\Actions\Imports\Models\Import as BaseImport;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Assets\Js;
 use Filament\Support\Enums\Alignment;

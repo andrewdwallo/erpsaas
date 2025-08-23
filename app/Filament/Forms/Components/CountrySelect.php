@@ -4,7 +4,7 @@ namespace App\Filament\Forms\Components;
 
 use App\Models\Locale\Country;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Utilities\Set;
 
 class CountrySelect extends Select
 {

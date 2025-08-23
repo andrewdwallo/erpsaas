@@ -7,7 +7,7 @@ use App\Filament\Company\Resources\Sales\RecurringInvoiceResource;
 use App\Models\Accounting\RecurringInvoice;
 use App\Models\Common\Client;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Url;
 
@@ -33,9 +33,9 @@ class CreateRecurringInvoice extends CreateRecord
         }
     }
 
-    public function getMaxContentWidth(): MaxWidth | string | null
+    public function getMaxContentWidth(): Width | string | null
     {
-        return MaxWidth::Full;
+        return Width::Full;
     }
 
     protected function handleRecordCreation(array $data): Model

@@ -13,6 +13,7 @@ use App\Utilities\Currency\CurrencyConverter;
 use BackedEnum;
 use Carbon\CarbonInterface;
 use Closure;
+use Exception;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Field;
@@ -522,7 +523,7 @@ class MacroServiceProvider extends ServiceProvider
 
                 try {
                     return Carbon::parse($state)->toDateString();
-                } catch (\Exception) {
+                } catch (Exception) {
                     return null;
                 }
             });
@@ -538,7 +539,7 @@ class MacroServiceProvider extends ServiceProvider
 
                 try {
                     return Carbon::parse($state)->toDateTimeString();
-                } catch (\Exception) {
+                } catch (Exception) {
                     return null;
                 }
             });

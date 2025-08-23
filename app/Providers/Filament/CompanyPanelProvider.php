@@ -44,8 +44,13 @@ use App\Models\Company;
 use App\Services\CompanySettingsService;
 use App\Support\FilamentComponentConfigurator;
 use Exception;
-use Filament\Actions;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -57,8 +62,9 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables;
+use Filament\Support\Enums\Width;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -268,36 +274,36 @@ class CompanyPanelProvider extends PanelProvider
     {
         $this->configureSelect();
 
-        Forms\Components\FileUpload::configureUsing(function (Forms\Components\FileUpload $component): void {
+        FileUpload::configureUsing(function (FileUpload $component): void {
             $component
                 ->hidden(is_demo_environment());
         });
 
-        Actions\CreateAction::configureUsing(static fn (Actions\CreateAction $action) => FilamentComponentConfigurator::configureActionModals($action));
-        Actions\EditAction::configureUsing(static fn (Actions\EditAction $action) => FilamentComponentConfigurator::configureActionModals($action));
-        Actions\DeleteAction::configureUsing(static fn (Actions\DeleteAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
-        Tables\Actions\EditAction::configureUsing(static fn (Tables\Actions\EditAction $action) => FilamentComponentConfigurator::configureActionModals($action));
-        Tables\Actions\CreateAction::configureUsing(static fn (Tables\Actions\CreateAction $action) => FilamentComponentConfigurator::configureActionModals($action));
-        Tables\Actions\DeleteAction::configureUsing(static fn (Tables\Actions\DeleteAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
-        Tables\Actions\DeleteBulkAction::configureUsing(static fn (Tables\Actions\DeleteBulkAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
+        CreateAction::configureUsing(static fn (CreateAction $action) => FilamentComponentConfigurator::configureActionModals($action));
+        EditAction::configureUsing(static fn (EditAction $action) => FilamentComponentConfigurator::configureActionModals($action));
+        DeleteAction::configureUsing(static fn (DeleteAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
+        EditAction::configureUsing(static fn (EditAction $action) => FilamentComponentConfigurator::configureActionModals($action));
+        CreateAction::configureUsing(static fn (CreateAction $action) => FilamentComponentConfigurator::configureActionModals($action));
+        DeleteAction::configureUsing(static fn (DeleteAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
+        DeleteBulkAction::configureUsing(static fn (DeleteBulkAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
 
-        Tables\Table::configureUsing(static function (Tables\Table $table): void {
+        Table::configureUsing(static function (Table $table): void {
             $table::$defaultDateDisplayFormat = CompanySettingsService::getDefaultDateFormat();
             $table::$defaultTimeDisplayFormat = CompanySettingsService::getDefaultTimeFormat();
             $table::$defaultDateTimeDisplayFormat = CompanySettingsService::getDefaultDateTimeFormat();
 
             $table
                 ->paginationPageOptions([5, 10, 25, 50, 100])
-                ->filtersFormWidth(MaxWidth::Small)
+                ->filtersFormWidth(Width::Small)
                 ->filtersTriggerAction(
-                    fn (Tables\Actions\Action $action) => $action
+                    fn (Action $action) => $action
                         ->button()
                         ->label('Filters')
                         ->slideOver()
                 );
         });
 
-        Tables\Columns\TextColumn::configureUsing(function (Tables\Columns\TextColumn $column): void {
+        TextColumn::configureUsing(function (TextColumn $column): void {
             $column->placeholder('–');
         });
 
@@ -305,7 +311,7 @@ class CompanyPanelProvider extends PanelProvider
             $component->placeholder('–');
         });
 
-        Tables\Actions\ExportAction::configureUsing(function (Tables\Actions\ExportAction $action) {
+        ExportAction::configureUsing(function (ExportAction $action) {
             $action
                 ->color('primary')
                 ->slideOver();

@@ -4,15 +4,16 @@ namespace App\Filament\Company\Resources\Purchases\VendorResource\Pages;
 
 use App\Filament\Company\Resources\Purchases\BillResource\Pages\CreateBill;
 use App\Filament\Company\Resources\Purchases\VendorResource;
-use App\Filament\Company\Resources\Purchases\VendorResource\RelationManagers;
+use App\Filament\Company\Resources\Purchases\VendorResource\RelationManagers\BillsRelationManager;
+use App\Filament\Company\Resources\Purchases\VendorResource\Widgets\BillOverview;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
 
 class ViewVendor extends ViewRecord
@@ -22,7 +23,7 @@ class ViewVendor extends ViewRecord
     protected function getAllRelationManagers(): array
     {
         return [
-            RelationManagers\BillsRelationManager::class,
+            BillsRelationManager::class,
         ];
     }
 
@@ -58,11 +59,11 @@ class ViewVendor extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            VendorResource\Widgets\BillOverview::class,
+            BillOverview::class,
         ];
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         return $infolist
             ->schema([
