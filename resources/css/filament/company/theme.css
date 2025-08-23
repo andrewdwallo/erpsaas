@@ -15,6 +15,7 @@
 @source '../../../../resources/views/components';
 @source '../../../../resources/views/vendor';
 @source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
+@source '../../../../vendor/andrewdwallo/filament-selectify/resources/views';
 
 @theme {
   --color-white: #f3f4f6;

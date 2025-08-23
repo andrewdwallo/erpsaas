@@ -12,7 +12,8 @@
         "ext-bcmath": "*",
         "ext-intl": "*",
         "akaunting/laravel-money": "^5.2",
-        "andrewdwallo/filament-companies": "5.x-dev",
+        "andrewdwallo/filament-companies": "^5.0",
+        "andrewdwallo/filament-selectify": "^3.0",
         "andrewdwallo/transmatic": "^1.1",
         "barryvdh/laravel-snappy": "^1.0",
         "fakerphp/faker": "^1.24",
@@ -26,10 +27,6 @@
         "symfony/intl": "^6.3"
     },
     "repositories": [
-        {
-            "type": "path",
-            "url": "filament-companies/"
-        },
         {
             "type": "path",
             "url": "filament/packages/*"
