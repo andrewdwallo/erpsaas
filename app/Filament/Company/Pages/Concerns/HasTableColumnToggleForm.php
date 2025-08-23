@@ -48,11 +48,7 @@ trait HasTableColumnToggleForm
 
     public function getTableColumnToggleForm(): Schema
     {
-        if ((! $this->isCachingForms) && $this->hasCachedForm('toggleTableColumnForm')) {
-            return $this->getForm('toggleTableColumnForm');
-        }
-
-        return $this->makeForm()
+        return $this->makeSchema()
             ->schema($this->getTableColumnToggleFormSchema())
             ->statePath('toggledTableColumns')
             ->live();

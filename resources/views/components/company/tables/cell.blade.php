@@ -8,7 +8,7 @@
 
 <td
     @class([
-        $alignmentClass,
+        is_array($alignmentClass) ? call_user_func($alignmentClass) : $alignmentClass,
         'last-of-type:pe-1 sm:last-of-type:pe-3',
         'ps-4 sm:first-of-type:ps-7' => $indent,
         'p-0 first-of-type:ps-1 sm:first-of-type:ps-3' => ! $indent,
