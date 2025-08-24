@@ -1,11 +1,11 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import 'custom-data-table.css';
-@import 'custom-section.css';
-@import 'form-fields.css';
-@import 'modal.css';
-@import 'report-card.css';
-@import 'tooltip.css';
-@import 'top-navigation.css';
+@import './custom-data-table.css';
+@import './custom-section.css';
+@import './form-fields.css';
+@import './modal.css';
+@import './report-card.css';
+@import './tooltip.css';
+@import './top-navigation.css';
 
 @source '../../../../app/Filament';
 @source '../../../../resources/views/filament';
@@ -18,8 +18,8 @@
 @source '../../../../vendor/codewithdennis/filament-simple-alert/resources';
 
 @theme {
-  --color-white: #F3F4F6;
-  --color-platinum: #E8E9EB;
+  --color-white: #f3f4f6;
+  --color-platinum: #e8e9eb;
 
   --max-width-8xl: 88rem;
 

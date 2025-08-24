@@ -7,7 +7,7 @@
     $iconPosition = \Filament\Support\Enums\IconPosition::After;
 @endphp
 
-<table class="w-full table-auto min-w-[50rem] divide-y divide-gray-200 dark:divide-white/5">
+<table class="w-full table-auto min-w-200 divide-y divide-gray-200 dark:divide-white/5">
     <x-company.tables.header :headers="$report->getHeaders()" :alignmentClass="[$report, 'getAlignmentClass']"/>
     @foreach($report->getCategories() as $categoryIndex => $category)
         <tbody class="divide-y divide-gray-200 dark:divide-white/5">

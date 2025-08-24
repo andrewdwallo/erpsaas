@@ -19,13 +19,13 @@
 
     <x-company.document-template.metadata class="classic-template-metadata space-y-4">
         <div class="items-center flex">
-            <hr class="grow-[2] py-0.5 border-solid border-y-2" style="border-color: {{ $document->accentColor }};">
+            <hr class="grow-2 py-0.5 border-solid border-y-2" style="border-color: {{ $document->accentColor }};">
             <x-icons.document-header-decoration
                 color="{{ $document->accentColor }}"
                 text="{{ $document->header }}"
                 class="w-60"
             />
-            <hr class="grow-[2] py-0.5 border-solid border-y-2" style="border-color: {{ $document->accentColor }};">
+            <hr class="grow-2 py-0.5 border-solid border-y-2" style="border-color: {{ $document->accentColor }};">
         </div>
         @if ($document->subheader)
             <p class="text-sm text-center text-gray-600">{{ $document->subheader }}</p>

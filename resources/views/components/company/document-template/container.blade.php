@@ -11,8 +11,8 @@
         <div
             @class([
                 'doc-template-paper bg-[#ffffff] overflow-y-auto',
-                'w-[51.25rem] h-[64rem]' => ! $preview,
-                'w-[48rem] min-h-[61.75rem] preview' => $preview,
+                'w-205 h-256' => ! $preview,
+                'w-3xl min-h-247 preview' => $preview,
             ])
         >
             {{ $slot }}

@@ -3,7 +3,7 @@
         @if($connectedBankAccount->institution->logo_url)
             <img src="{{ $connectedBankAccount->institution->logo_url }}" alt="{{ $connectedBankAccount->institution->name }}" class="h-10">
         @else
-            <div class="flex-shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
+            <div class="shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
                 <x-filament::icon
                     icon="heroicon-o-building-library"
                     class="h-6 w-6 text-gray-500 dark:text-gray-400"

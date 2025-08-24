@@ -4,7 +4,7 @@
             <section class="connected-account-section overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <header class="connected-account-header bg-primary-300/10 px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
                     @if($institution->logo_url === null)
-                        <div class="flex-shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
+                        <div class="shrink-0 bg-platinum p-2 rounded-full dark:bg-gray-500/20">
                             <x-filament::icon
                                 icon="heroicon-o-building-library"
                                 class="h-6 w-6 text-gray-500 dark:text-gray-400"
