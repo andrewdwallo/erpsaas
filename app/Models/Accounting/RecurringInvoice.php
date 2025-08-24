@@ -16,7 +16,7 @@ use App\Enums\Accounting\InvoiceStatus;
 use App\Enums\Accounting\Month;
 use App\Enums\Accounting\RecurringInvoiceStatus;
 use App\Enums\Setting\PaymentTerms;
-use App\Filament\Company\Resources\Sales\RecurringInvoiceResource\Pages\ViewRecurringInvoice;
+use App\Filament\Company\Resources\Sales\RecurringInvoices\Pages\ViewRecurringInvoice;
 use App\Filament\Forms\Components\Banner;
 use App\Filament\Forms\Components\CustomSection;
 use App\Models\Common\Client;

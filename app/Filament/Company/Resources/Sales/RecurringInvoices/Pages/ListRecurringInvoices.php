@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Filament\Company\Resources\Sales\RecurringInvoices\Pages;
+
+use App\Concerns\HasTabSpecificColumnToggles;
+use App\Enums\Accounting\RecurringInvoiceStatus;
+use App\Filament\Company\Resources\Sales\RecurringInvoices\RecurringInvoiceResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Enums\Width;
+use Illuminate\Database\Eloquent\Builder;
+
+class ListRecurringInvoices extends ListRecords
+{
+    use HasTabSpecificColumnToggles;
+
+    protected static string $resource = RecurringInvoiceResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
+
+    public function getMaxContentWidth(): Width | string | null
+    {
+        return 'max-w-8xl';
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make()
+                ->label('All'),
+
+            'active' => Tab::make()
+                ->label('Active')
+                ->modifyQueryUsing(function (Builder $query) {
+                    $query->where('status', RecurringInvoiceStatus::Active);
+                }),
+
+            'draft' => Tab::make()
+                ->label('Draft')
+                ->modifyQueryUsing(function (Builder $query) {
+                    $query->where('status', RecurringInvoiceStatus::Draft);
+                }),
+        ];
+    }
+}

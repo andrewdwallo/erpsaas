@@ -2,7 +2,7 @@
 
 use App\Enums\Accounting\JournalEntryType;
 use App\Enums\Accounting\TransactionType;
-use App\Filament\Company\Resources\Accounting\TransactionResource\Pages\ListTransactions;
+use App\Filament\Company\Resources\Accounting\Transactions\Pages\ListTransactions;
 use App\Filament\Forms\Components\JournalEntryRepeater;
 use App\Filament\Tables\Actions\EditTransactionAction;
 use App\Filament\Tables\Actions\ReplicateBulkAction;
@@ -10,9 +10,9 @@ use App\Models\Accounting\Account;
 use App\Models\Accounting\Transaction;
 use App\Utilities\Currency\ConfigureCurrencies;
 use App\Utilities\Currency\CurrencyConverter;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\ReplicateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ReplicateAction;
 
 use function Pest\Livewire\livewire;
 

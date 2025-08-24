@@ -2,7 +2,7 @@
 
 namespace App\Filament\Forms\Components;
 
-use App\Filament\Company\Resources\Purchases\VendorResource;
+use App\Filament\Company\Resources\Purchases\Vendors\VendorResource;
 use App\Models\Common\Vendor;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;

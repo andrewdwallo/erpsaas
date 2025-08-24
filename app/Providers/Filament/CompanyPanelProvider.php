@@ -17,26 +17,26 @@ use App\Actions\FilamentCompanies\UpdateCompanyName;
 use App\Actions\FilamentCompanies\UpdateConnectedAccount;
 use App\Actions\FilamentCompanies\UpdateUserPassword;
 use App\Actions\FilamentCompanies\UpdateUserProfileInformation;
-use App\Filament\Company\Clusters\Settings;
+use App\Filament\Company\Clusters\Settings\SettingsCluster;
 use App\Filament\Company\Pages\Accounting\AccountChart;
 use App\Filament\Company\Pages\CreateCompany;
 use App\Filament\Company\Pages\ManageCompany;
 use App\Filament\Company\Pages\Reports;
 use App\Filament\Company\Pages\Service\ConnectedAccount;
 use App\Filament\Company\Pages\Service\LiveCurrency;
-use App\Filament\Company\Resources\Accounting\BudgetResource;
-use App\Filament\Company\Resources\Accounting\TransactionResource;
-use App\Filament\Company\Resources\Banking\AccountResource;
-use App\Filament\Company\Resources\Common\OfferingResource;
-use App\Filament\Company\Resources\Purchases\BillResource;
-use App\Filament\Company\Resources\Purchases\VendorResource;
-use App\Filament\Company\Resources\Sales\ClientResource;
-use App\Filament\Company\Resources\Sales\EstimateResource;
-use App\Filament\Company\Resources\Sales\InvoiceResource;
-use App\Filament\Company\Resources\Sales\RecurringInvoiceResource;
+use App\Filament\Company\Resources\Accounting\Budgets\BudgetResource;
+use App\Filament\Company\Resources\Accounting\Transactions\TransactionResource;
+use App\Filament\Company\Resources\Banking\Accounts\AccountResource;
+use App\Filament\Company\Resources\Common\Offerings\OfferingResource;
+use App\Filament\Company\Resources\Purchases\Bills\BillResource;
+use App\Filament\Company\Resources\Purchases\Vendors\VendorResource;
+use App\Filament\Company\Resources\Sales\Clients\ClientResource;
+use App\Filament\Company\Resources\Sales\Estimates\EstimateResource;
+use App\Filament\Company\Resources\Sales\Invoices\InvoiceResource;
+use App\Filament\Company\Resources\Sales\RecurringInvoices\RecurringInvoiceResource;
 use App\Filament\Components\PanelShiftDropdown;
 use App\Filament\Pages\Auth\Login;
-use App\Filament\User\Clusters\Account;
+use App\Filament\User\Clusters\Account\AccountCluster;
 use App\Http\Middleware\ConfigureCurrentCompany;
 use App\Livewire\UpdatePassword;
 use App\Livewire\UpdateProfileInformation;
@@ -126,7 +126,7 @@ class CompanyPanelProvider extends PanelProvider
                     ->companySettings()
                     ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                         return $builder
-                            ->items(Account::getNavigationItems());
+                            ->items(AccountCluster::getNavigationItems());
                     }),
             ])
             ->colors([
@@ -136,7 +136,7 @@ class CompanyPanelProvider extends PanelProvider
                 return $builder
                     ->items([
                         ...Reports::getNavigationItems(),
-                        ...Settings::getNavigationItems(),
+                        ...SettingsCluster::getNavigationItems(),
                         ...OfferingResource::getNavigationItems(),
                     ])
                     ->groups([
@@ -288,11 +288,10 @@ class CompanyPanelProvider extends PanelProvider
         DeleteBulkAction::configureUsing(static fn (DeleteBulkAction $action) => FilamentComponentConfigurator::configureDeleteAction($action));
 
         Table::configureUsing(static function (Table $table): void {
-            $table::$defaultDateDisplayFormat = CompanySettingsService::getDefaultDateFormat();
-            $table::$defaultTimeDisplayFormat = CompanySettingsService::getDefaultTimeFormat();
-            $table::$defaultDateTimeDisplayFormat = CompanySettingsService::getDefaultDateTimeFormat();
-
             $table
+                ->defaultDateDisplayFormat(CompanySettingsService::getDefaultDateFormat())
+                ->defaultTimeDisplayFormat(CompanySettingsService::getDefaultTimeFormat())
+                ->defaultDateTimeDisplayFormat(CompanySettingsService::getDefaultDateTimeFormat())
                 ->paginationPageOptions([5, 10, 25, 50, 100])
                 ->filtersFormWidth(Width::Small)
                 ->filtersTriggerAction(

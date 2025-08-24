@@ -3,7 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Components\PanelShiftDropdown;
-use App\Filament\User\Clusters\Account;
+use App\Filament\User\Clusters\Account\AccountCluster;
 use App\Http\Middleware\Authenticate;
 use Exception;
 use Filament\Facades\Filament;
@@ -43,7 +43,7 @@ class UserPanelProvider extends PanelProvider
                     ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                         return $builder
                             ->items([
-                                ...Account::getNavigationItems(),
+                                ...AccountCluster::getNavigationItems(),
                                 NavigationItem::make('company')
                                     ->label('Company Dashboard')
                                     ->icon('heroicon-s-building-office-2')

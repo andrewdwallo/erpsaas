@@ -10,7 +10,7 @@ use App\Enums\Accounting\DocumentDiscountMethod;
 use App\Enums\Accounting\DocumentType;
 use App\Enums\Accounting\JournalEntryType;
 use App\Enums\Accounting\TransactionType;
-use App\Filament\Company\Resources\Purchases\BillResource;
+use App\Filament\Company\Resources\Purchases\Bills\BillResource;
 use App\Models\Banking\BankAccount;
 use App\Models\Common\Vendor;
 use App\Models\Company;

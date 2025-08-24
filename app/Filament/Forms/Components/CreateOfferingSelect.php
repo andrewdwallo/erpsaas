@@ -2,7 +2,7 @@
 
 namespace App\Filament\Forms\Components;
 
-use App\Filament\Company\Resources\Common\OfferingResource;
+use App\Filament\Company\Resources\Common\Offerings\OfferingResource;
 use App\Models\Common\Offering;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;

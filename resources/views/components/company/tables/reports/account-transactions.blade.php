@@ -1,8 +1,8 @@
 @php
     use App\Models\Accounting\Bill;
-    use App\Filament\Company\Resources\Accounting\TransactionResource;
-    use App\Filament\Company\Resources\Purchases\BillResource\Pages\ViewBill;
-    use App\Filament\Company\Resources\Sales\InvoiceResource\Pages\ViewInvoice;
+    use App\Filament\Company\Resources\Accounting\Transactions\TransactionResource;
+    use App\Filament\Company\Resources\Purchases\Bills\Pages\ViewBill;
+    use App\Filament\Company\Resources\Sales\Invoices\Pages\ViewInvoice;
 
     $iconPosition = \Filament\Support\Enums\IconPosition::After;
 @endphp

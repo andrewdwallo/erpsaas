@@ -4,7 +4,7 @@ namespace App\Filament\Company\Pages\Reports;
 
 use App\Contracts\ExportableReport;
 use App\DTO\ReportDTO;
-use App\Filament\Company\Resources\Accounting\TransactionResource;
+use App\Filament\Company\Resources\Accounting\Transactions\TransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Common\Client;
 use App\Models\Common\Vendor;

@@ -2,13 +2,13 @@
 
 namespace App\Filament\User\Clusters\Account\Pages;
 
-use App\Filament\User\Clusters\Account;
+use App\Filament\User\Clusters\Account\AccountCluster;
 use Filament\Support\Enums\Width;
 use Wallo\FilamentCompanies\Pages\User\PersonalAccessTokens as BasePersonalAccessTokens;
 
 class PersonalAccessTokens extends BasePersonalAccessTokens
 {
-    protected static ?string $cluster = Account::class;
+    protected static ?string $cluster = AccountCluster::class;
 
     protected static bool $shouldRegisterNavigation = true;
 

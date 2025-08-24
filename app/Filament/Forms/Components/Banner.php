@@ -2,7 +2,7 @@
 
 namespace App\Filament\Forms\Components;
 
-use CodeWithDennis\SimpleAlert\Components\Forms\SimpleAlert;
+use CodeWithDennis\SimpleAlert\Components\SimpleAlert;
 
 class Banner extends SimpleAlert
 {

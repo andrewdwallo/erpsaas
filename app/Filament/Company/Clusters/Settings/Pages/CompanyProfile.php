@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Clusters\Settings\Pages;
 
 use App\Enums\Setting\EntityType;
-use App\Filament\Company\Clusters\Settings;
+use App\Filament\Company\Clusters\Settings\SettingsCluster;
 use App\Filament\Forms\Components\AddressFields;
 use App\Filament\Forms\Components\Banner;
 use App\Models\Setting\CompanyProfile as CompanyProfileModel;
@@ -43,7 +43,7 @@ class CompanyProfile extends Page
 
     protected string $view = 'filament.company.pages.setting.company-profile';
 
-    protected static ?string $cluster = Settings::class;
+    protected static ?string $cluster = SettingsCluster::class;
 
     public ?array $data = [];
 

@@ -6,7 +6,7 @@ use App\Enums\Setting\DateFormat;
 use App\Enums\Setting\NumberFormat;
 use App\Enums\Setting\TimeFormat;
 use App\Enums\Setting\WeekStart;
-use App\Filament\Company\Clusters\Settings;
+use App\Filament\Company\Clusters\Settings\SettingsCluster;
 use App\Models\Setting\CompanyProfile as CompanyProfileModel;
 use App\Models\Setting\Localization as LocalizationModel;
 use App\Services\CompanySettingsService;
@@ -44,7 +44,7 @@ class Localization extends Page
 
     protected string $view = 'filament.company.pages.setting.localization';
 
-    protected static ?string $cluster = Settings::class;
+    protected static ?string $cluster = SettingsCluster::class;
 
     public ?array $data = [];
 

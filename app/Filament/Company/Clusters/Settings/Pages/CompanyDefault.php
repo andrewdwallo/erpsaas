@@ -3,7 +3,7 @@
 namespace App\Filament\Company\Clusters\Settings\Pages;
 
 use App\Events\CompanyDefaultUpdated;
-use App\Filament\Company\Clusters\Settings;
+use App\Filament\Company\Clusters\Settings\SettingsCluster;
 use App\Models\Banking\BankAccount;
 use App\Models\Setting\CompanyDefault as CompanyDefaultModel;
 use Filament\Actions\Action;
@@ -37,7 +37,7 @@ class CompanyDefault extends Page
 
     protected string $view = 'filament.company.pages.setting.company-default';
 
-    protected static ?string $cluster = Settings::class;
+    protected static ?string $cluster = SettingsCluster::class;
 
     /**
      * @var array<string, mixed> | null

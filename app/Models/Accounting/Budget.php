@@ -7,7 +7,7 @@ use App\Concerns\CompanyOwned;
 use App\Enums\Accounting\BudgetIntervalType;
 use App\Enums\Accounting\BudgetSourceType;
 use App\Enums\Accounting\BudgetStatus;
-use App\Filament\Company\Resources\Accounting\BudgetResource;
+use App\Filament\Company\Resources\Accounting\Budgets\BudgetResource;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ReplicateAction;
