@@ -9,9 +9,9 @@ use App\Services\ExportService;
 use App\Services\ReportService;
 use App\Support\Column;
 use App\Transformers\CashFlowStatementReportTransformer;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
-use Guava\FilamentClusters\Forms\Cluster;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CashFlowStatement extends BaseReportPage
@@ -53,7 +53,7 @@ class CashFlowStatement extends BaseReportPage
             ->columns()
             ->components([
                 $this->getDateRangeFormComponent(),
-                Cluster::make([
+                FusedGroup::make([
                     $this->getStartDateFormComponent(),
                     $this->getEndDateFormComponent(),
                 ])->hiddenLabel(),

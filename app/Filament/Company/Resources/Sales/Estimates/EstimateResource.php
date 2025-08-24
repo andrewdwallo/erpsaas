@@ -54,6 +54,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -63,7 +64,6 @@ use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -110,7 +110,7 @@ class EstimateResource extends Resource
                                     ->default(static fn () => Estimate::getNextDocumentNumber()),
                                 TextInput::make('reference_number')
                                     ->label('Reference number'),
-                                Cluster::make([
+                                FusedGroup::make([
                                     DatePicker::make('date')
                                         ->label('Estimate date')
                                         ->live()

@@ -29,11 +29,11 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Database\Eloquent\Attributes\CollectedBy;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -430,7 +430,7 @@ class RecurringInvoice extends Document
                                     $handler->handleFrequencyChange($state);
                                 }),
 
-                            Cluster::make([
+                            FusedGroup::make([
                                 TextInput::make('interval_value')
                                     ->softRequired()
                                     ->numeric()
@@ -548,7 +548,7 @@ class RecurringInvoice extends Document
                             }
 
                             return [
-                                Cluster::make($components)
+                                FusedGroup::make($components)
                                     ->label('Schedule ends')
                                     ->required()
                                     ->markAsRequired(false),

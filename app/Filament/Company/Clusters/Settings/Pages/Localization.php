@@ -18,6 +18,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -25,7 +26,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -174,7 +174,7 @@ class Localization extends Page
                     ->boolean($beforeNumber, $afterNumber, $selectPosition),
                 Group::make()
                     ->schema([
-                        Cluster::make([
+                        FusedGroup::make([
                             Select::make('fiscal_year_end_month')
                                 ->softRequired()
                                 ->options(array_combine(range(1, 12), array_map(static fn ($month) => company_today()->month($month)->monthName, range(1, 12))))

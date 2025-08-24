@@ -15,10 +15,10 @@ use App\Transformers\AccountTransactionReportTransformer;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Width;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -89,7 +89,7 @@ class AccountTransactions extends BaseReportPage
                     ->selectablePlaceholder(false)
                     ->searchable(),
                 $this->getDateRangeFormComponent(),
-                Cluster::make([
+                FusedGroup::make([
                     $this->getStartDateFormComponent(),
                     $this->getEndDateFormComponent(),
                 ])->extraFieldWrapperAttributes([

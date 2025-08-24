@@ -55,6 +55,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -66,7 +67,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Guava\FilamentClusters\Forms\Cluster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -117,7 +117,7 @@ class InvoiceResource extends Resource
                                     ->default(static fn () => Invoice::getNextDocumentNumber()),
                                 TextInput::make('order_number')
                                     ->label('P.O/S.O Number'),
-                                Cluster::make([
+                                FusedGroup::make([
                                     DatePicker::make('date')
                                         ->label('Invoice date')
                                         ->live()
