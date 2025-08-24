@@ -7,13 +7,11 @@ use App\Filament\Company\Resources\Accounting\Budgets\Pages\CreateBudget;
 use App\Filament\Company\Resources\Accounting\Budgets\Pages\ListBudgets;
 use App\Filament\Company\Resources\Accounting\Budgets\Pages\ViewBudget;
 use App\Filament\Forms\Components\CustomSection;
-use App\Filament\Forms\Components\CustomTableRepeater;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Budget;
 use App\Models\Accounting\BudgetAllocation;
 use App\Models\Accounting\BudgetItem;
 use App\Utilities\Currency\CurrencyConverter;
-use Awcodes\TableRepeater\Header;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -22,17 +20,18 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\Width;
 use Filament\Support\RawJs;
 use Filament\Tables\Columns\TextColumn;
@@ -273,35 +272,31 @@ class BudgetResource extends Resource
                             $periods = $record->getPeriods();
 
                             $headers = [
-                                Header::make('Account')
-                                    ->label('Account')
+                                TableColumn::make('Account')
                                     ->width('200px'),
-                                Header::make('total')
-                                    ->label('Total')
+                                TableColumn::make('Total')
                                     ->width('120px')
-                                    ->align(Alignment::Right),
-                                Header::make('action')
-                                    ->label('')
+                                    ->alignEnd(),
+                                TableColumn::make('')
                                     ->width('40px')
-                                    ->align(Alignment::Center),
+                                    ->alignCenter(),
                             ];
 
                             foreach ($periods as $period) {
-                                $headers[] = Header::make($period->period)
-                                    ->label($period->period)
+                                $headers[] = TableColumn::make($period->period)
                                     ->width('120px')
-                                    ->align(Alignment::Right);
+                                    ->alignEnd();
                             }
 
                             return [
-                                CustomTableRepeater::make('budgetItems')
+                                Repeater::make('budgetItems')
                                     ->relationship()
                                     ->hiddenLabel()
-                                    ->headers($headers)
+                                    ->table($headers)
                                     ->schema([
-                                        Placeholder::make('account')
+                                        TextEntry::make('account')
                                             ->hiddenLabel()
-                                            ->content(fn (BudgetItem $record) => $record->account->name ?? ''),
+                                            ->state(fn (BudgetItem $record) => $record->account->name ?? ''),
 
                                         TextInput::make('total')
                                             ->hiddenLabel()

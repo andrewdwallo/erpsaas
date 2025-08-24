@@ -10,10 +10,11 @@ use App\Models\Accounting\Transaction;
 use App\Models\Banking\BankAccount;
 use App\Utilities\Currency\CurrencyAccessor;
 use App\Utilities\Currency\CurrencyConverter;
-use Awcodes\TableRepeater\Header;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -222,18 +223,17 @@ trait HasTransactionAction
             ]);
     }
 
-    protected function getJournalEntriesTableRepeater(): CustomTableRepeater
+    protected function getJournalEntriesTableRepeater(): Repeater
     {
         return CustomTableRepeater::make('journalEntries')
             ->relationship('journalEntries')
             ->hiddenLabel()
-            ->columns(4)
-            ->headers($this->getJournalEntriesTableRepeaterHeaders())
+            ->table($this->getJournalEntriesTableRepeaterHeaders())
             ->schema($this->getJournalEntriesTableRepeaterSchema())
-            ->deletable(fn (CustomTableRepeater $repeater) => $repeater->getItemsCount() > 2)
+            ->minItems(2)
             ->deleteAction(function (Action $action) {
                 return $action
-                    ->action(function (array $arguments, CustomTableRepeater $component): void {
+                    ->action(function (array $arguments, Repeater $component): void {
                         $items = $component->getState();
 
                         $amount = $items[$arguments['item']]['amount'];
@@ -308,18 +308,15 @@ trait HasTransactionAction
     protected function getJournalEntriesTableRepeaterHeaders(): array
     {
         return [
-            Header::make('type')
-                ->width('150px')
-                ->label('Type'),
-            Header::make('description')
-                ->width('320px')
-                ->label('Description'),
-            Header::make('account_id')
-                ->width('320px')
-                ->label('Account'),
-            Header::make('amount')
+            TableColumn::make('Type')
+                ->width('150px'),
+            TableColumn::make('Description')
+                ->width('320px'),
+            TableColumn::make('Account')
+                ->width('320px'),
+            TableColumn::make('Amount')
                 ->width('192px')
-                ->label('Amount'),
+                ->alignEnd(),
         ];
     }
 
