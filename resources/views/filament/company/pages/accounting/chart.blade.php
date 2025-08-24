@@ -16,7 +16,7 @@
         @foreach($this->accountCategories as $categoryValue => $accountSubtypes)
             @if($activeTab === $categoryValue)
                 <div
-                    class="es-table__container overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
+                    class="es-table__container overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
                     <div class="es-table__header-ctn"></div>
                     <div class="es-table__content overflow-x-auto">
                         <table
@@ -35,7 +35,7 @@
                                 <!-- Subtype Name Header Row -->
                                 <tr class="es-table__row--header bg-gray-50 dark:bg-white/5">
                                     <td colspan="6" class="es-table__cell px-4 py-4">
-                                        <div class="es-table__row-content flex items-center space-x-2">
+                                        <div class="es-table__row-content flex items-center space-x-4">
                                             <span
                                                 class="es-table__row-title text-gray-800 dark:text-gray-200 font-semibold tracking-wider">
                                                 {{ $accountSubtype->name }}
