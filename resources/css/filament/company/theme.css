@@ -1,5 +1,4 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
-@import '/vendor/awcodes/filament-table-repeater/resources/css/plugin.css';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 @import 'custom-data-table.css';
 @import 'custom-section.css';
 @import 'form-fields.css';
@@ -8,7 +7,24 @@
 @import 'tooltip.css';
 @import 'top-navigation.css';
 
-@config 'tailwind.config.js';
+@source '../../../../app/Filament';
+@source '../../../../resources/views/filament';
+@source '../../../../resources/views/livewire/company';
+@source '../../../../resources/views/components';
+@source '../../../../resources/views/vendor';
+@source '../../../../vendor/andrewdwallo/filament-companies/resources/views';
+@source '../../../../vendor/andrewdwallo/filament-selectify/resources/views';
+@source '../../../../vendor/jaocero/radio-deck/resources/views';
+@source '../../../../vendor/codewithdennis/filament-simple-alert/resources';
+
+@theme {
+  --color-white: #F3F4F6;
+  --color-platinum: #E8E9EB;
+
+  --max-width-8xl: 88rem;
+
+  --timing-ease-smooth: cubic-bezier(0.08, 0.52, 0.52, 1);
+}
 
 .es-file-upload.document-logo > div {
     @apply w-48;
