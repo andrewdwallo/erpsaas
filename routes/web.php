@@ -6,7 +6,11 @@ use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect(Filament::getDefaultPanel()->getUrl());
+    if (auth()->check() && $company = auth()->user()->primaryCompany()) {
+        return redirect(Filament::getDefaultPanel()->getUrl(tenant: $company));
+    }
+
+    return redirect(Filament::getDefaultPanel()->getLoginUrl());
 });
 
 Route::middleware(['auth'])->group(function () {

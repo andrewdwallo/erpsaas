@@ -88,11 +88,11 @@
     }
 
     .fi-ta-summary-row-heading {
-        @apply px-3 py-3 !important;
+        @apply !px-3 !py-3;
     }
 
     .fi-ta-text-summary {
-        @apply px-3 py-3 !important;
+        @apply !px-3 !py-3;
 
         > span {
             @apply font-medium text-gray-950 dark:text-white;
@@ -100,26 +100,26 @@
     }
 
     .fi-ta-text {
-        @apply px-3 py-0 !important;
+        @apply !px-3 !py-0;
     }
 
     .fi-ta-text-input {
-        @apply px-0 py-0 !important;
+        @apply !px-0 !py-0;
     }
 
     .fi-ta-icon {
-        @apply px-3 py-0 !important;
+        @apply !px-3 !py-0;
     }
 
     .fi-ta-text-input {
         .fi-input-wrp,
         .fi-input {
-            @apply ring-0 bg-transparent shadow-none rounded-none !important;
+            @apply !ring-0 !bg-transparent !shadow-none !rounded-none;
         }
     }
 
     .fi-ta-cell:has(.fi-ta-text-input):focus-within {
-        outline: 2px solid #2563eb;
+        outline: 2px solid #2563eb !important;
         outline-offset: -2px;
         z-index: 1;
     }

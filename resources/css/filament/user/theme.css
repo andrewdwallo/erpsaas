@@ -66,7 +66,7 @@
 }
 
 .fi-topbar > nav, .fi-sidebar-header {
-    @apply bg-transparent ring-0 shadow-none !important;
+    @apply !bg-transparent !ring-0 !shadow-none;
     transition: background-color 0.3s, top 0.3s;
 }
 

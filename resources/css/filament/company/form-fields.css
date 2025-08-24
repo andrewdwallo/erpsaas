@@ -28,19 +28,6 @@
     @apply lg:mt-8;
 }
 
-/* Choices.js select field overrides */
-.choices:focus-visible {
-    outline: none;
-}
-
-.choices__group {
-    @apply text-gray-900 dark:text-white font-semibold;
-}
-
-.choices:not(.is-disabled) .choices__item {
-    cursor: pointer;
-}
-
 /* Table Repeater Styles */
 .table-repeater-component:not(.is-spreadsheet) {
     .table-repeater-row {
@@ -56,7 +43,7 @@
     }
 
     .table-repeater-row {
-        @apply divide-x-0 !important;
+        @apply !divide-x-0;
     }
 
     .table-repeater-header tr {
@@ -100,7 +87,7 @@
     .table-repeater-container {
         border: 1px solid #e5e7eb !important;
         border-radius: 0 !important;
-        @apply ring-0 !important;
+        @apply !ring-0;
     }
 
     .table-repeater-header {
@@ -130,11 +117,11 @@
 
     .fi-input-wrp,
     .fi-fo-file-upload .filepond--root {
-        @apply ring-0 bg-transparent shadow-none rounded-none !important;
+        @apply !ring-0 !bg-transparent !shadow-none !rounded-none;
     }
 
     .fi-input-wrp input {
-        @apply bg-transparent !important;
+        @apply !bg-transparent;
     }
 
     .table-repeater-column:focus-within {
@@ -146,7 +133,7 @@
     input:focus,
     select:focus,
     textarea:focus {
-        @apply ring-0 shadow-none !important;
+        @apply !ring-0 !shadow-none;
         outline: none !important;
     }
 
@@ -157,15 +144,14 @@
     .fi-fo-field-wrp:has(.fi-fo-checkbox-list),
     .fi-fo-field-wrp:has(.fi-checkbox-input),
     .fi-fo-field-wrp:has(.fi-fo-radio) {
-        @apply py-2 px-3 !important;
+        @apply !py-2 !px-3;
     }
 
     .fi-fo-field-wrp:has(.fi-fo-toggle) {
-        @apply inline-block mt-1 !important;
+        @apply !inline-block !mt-1;
     }
 }
 
 .is-spreadsheet .table-repeater-column .fi-input-wrp-suffix {
     padding-right: 0 !important;
 }
-
