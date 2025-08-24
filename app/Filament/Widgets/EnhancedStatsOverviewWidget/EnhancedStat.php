@@ -3,14 +3,12 @@
 namespace App\Filament\Widgets\EnhancedStatsOverviewWidget;
 
 use Closure;
-use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Contracts\View\View;
 
 class EnhancedStat extends Stat
 {
-    use EvaluatesClosures;
+    protected string $view = 'filament.widgets.enhanced-stats-overview-widget.enhanced-stat';
 
     protected string | Htmlable | Closure | null $prefixLabel = null;
 
@@ -38,10 +36,5 @@ class EnhancedStat extends Stat
     public function getSuffixLabel(): string | Htmlable | null
     {
         return $this->evaluate($this->suffixLabel);
-    }
-
-    public function render(): View
-    {
-        return view('filament.widgets.enhanced-stats-overview-widget.enhanced-stat', $this->data());
     }
 }
