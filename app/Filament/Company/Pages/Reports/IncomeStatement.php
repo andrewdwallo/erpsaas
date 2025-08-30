@@ -56,7 +56,9 @@ class IncomeStatement extends BaseReportPage
                 FusedGroup::make([
                     $this->getStartDateFormComponent(),
                     $this->getEndDateFormComponent(),
-                ])->hiddenLabel(),
+                ])
+                    ->columns(2)
+                    ->hiddenLabel(),
             ]);
     }
 
