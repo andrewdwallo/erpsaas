@@ -55,8 +55,13 @@ trait HasDeferredFiltersForm
 
     public function getFiltersForm(): Schema
     {
-        return $this->filtersForm($this->makeForm()
-            ->statePath('deferredFilters'));
+        if ((! $this->isCachingSchemas) && $this->hasCachedSchema('filtersForm')) {
+            return $this->getSchema('filtersForm');
+        }
+
+        return $this->filtersForm($this->makeSchema()
+            ->statePath('deferredFilters')
+            ->partiallyRender());
     }
 
     public function updatedFilters(): void

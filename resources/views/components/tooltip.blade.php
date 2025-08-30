@@ -23,6 +23,12 @@
                 strategy: 'fixed',
                 modifiers: [
                     {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 18],
+                        }
+                    },
+                    {
                         name: 'flip',
                         enabled: true,
                         options: {

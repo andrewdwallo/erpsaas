@@ -4,11 +4,11 @@
     <tfoot>
     <tr class="bg-gray-50 dark:bg-white/5">
         @foreach($totals as $totalIndex => $totalCell)
-            <x-filament-tables::cell class="{{ $alignmentClass($totalIndex) }}">
+            <x-company.tables.cell :alignment-class="call_user_func($alignmentClass, $totalIndex)">
                 <div class="px-3 py-3.5 text-sm font-semibold leading-6 text-gray-950 dark:text-white">
                     {{ $totalCell }}
                 </div>
-            </x-filament-tables::cell>
+            </x-company.tables.cell>
         @endforeach
     </tr>
     </tfoot>

@@ -11,7 +11,7 @@
             <!-- Grouping Button and Column Toggle -->
             @if($this->hasToggleableColumns())
                 <div class="shrink-0 lg:mb-1 mr-4">
-                    <x-filament-tables::column-toggle.dropdown
+                    <x-company.tables.column-toggle.dropdown
                         :form="$this->getTableColumnToggleForm()"
                         :trigger-action="$this->getToggleColumnsTriggerAction()"
                     />
