@@ -102,7 +102,7 @@ class QrSlip extends Component
             ->setDisplayScissors(false)
             ->setPositionScissorsAtBottom(false);
 
-        if ($qrBill->getViolations()) {
+        if (count($qrBill->getViolations()) > 0) {
             dd($qrBill->getViolations());
         }
         $this->qrPaymentSlip = $output
