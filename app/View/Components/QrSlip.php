@@ -75,7 +75,7 @@ class QrSlip extends Component
         $qrBill->setPaymentAmountInformation(
             QrBill\DataGroup\Element\PaymentAmountInformation::create(
                 $this->currency,
-                $this->amount
+                $this->amount * 100
             )
         );
 
@@ -88,11 +88,11 @@ class QrSlip extends Component
             )
         );
 
-        // $qrBill->setAdditionalInformation(
-        //     QrBill\DataGroup\Element\AdditionalInformation::create(
-        //         $this->reference
-        //     )
-        // );
+        $qrBill->setAdditionalInformation(
+            QrBill\DataGroup\Element\AdditionalInformation::create(
+                $this->reference
+            )
+        );
 
         $output = new HtmlOutput($qrBill, "de");
         $displayOptions = new DisplayOptions();
