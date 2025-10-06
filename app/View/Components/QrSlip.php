@@ -75,7 +75,7 @@ class QrSlip extends Component
         $qrBill->setPaymentAmountInformation(
             QrBill\DataGroup\Element\PaymentAmountInformation::create(
                 $this->currency,
-                $this->amount * 100
+                $this->amount * 1000
             )
         );
 
