@@ -133,10 +133,12 @@
 
     <!-- Footer Notes -->
     <x-company.document-template.footer class="default-template-footer flex flex-col text-sm p-6">
+        @if($document->terms && $document->terms != "")
         <div>
             <h4 class="font-semibold mb-2">Terms & Conditions</h4>
             <p class="break-words line-clamp-4">{{ $document->terms }}</p>
         </div>
+        @endif
 
         @if($document->footer)
             <div class="mt-auto text-center py-4">
@@ -144,4 +146,12 @@
             </div>
         @endif
     </x-company.document-template.footer>
+    <x-qr-slip
+        :client="$document->client"
+        :company="$document->company"
+        :amount="$document->amountDue ?? $document->total"
+        :currency="$document->currencyCode"
+        :number="$document->number"
+        :reference="$document->referenceNumber"
+    />
 </x-company.document-template.container>
