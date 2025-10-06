@@ -48,11 +48,11 @@ class QrSlip extends Component
         $qrBill->setCreditor(
             QrBill\DataGroup\Element\StructuredAddress::createWithStreet(
                 $this->company->name,
-                $this->company->addressLine1,
-                $this->company->addressLine2,
+                "",
+                "",
                 $this->company->postalCode,
                 $this->company->city,
-                Country::where("name", $this->company->country)->first()->iso_code_2 ?? die("Country not found: " . $this->company->country)
+                Country::where("native_name", $this->company->country)->first()->iso_code_2 ?? die("Country not found: " . $this->company->country)
             )
         );
         $qrBill->setCreditorInformation(
@@ -68,7 +68,7 @@ class QrSlip extends Component
                 $this->client->addressLine2,
                 $this->client->postalCode,
                 $this->client->city,
-                Country::where("name", $this->client->country)->first()->iso_code_2 ?? die("Country not found: " . $this->client->country)
+                Country::where("native_name", $this->client->country)->first()->iso_code_2 ?? die("Country not found: " . $this->client->country)
             )
         );
 

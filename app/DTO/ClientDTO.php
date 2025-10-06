@@ -41,9 +41,9 @@ readonly class ClientDTO
             $this->addressLine1,
             $this->addressLine2,
             implode(', ', array_filter([
+                $this->postalCode,
                 $this->city,
                 $this->state,
-                $this->postalCode,
             ])),
             $this->country,
         ]);

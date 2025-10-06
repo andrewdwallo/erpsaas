@@ -29,7 +29,7 @@
         <div class="flex justify-between items-end">
             <!-- Billing Details -->
             <div class="text-sm">
-                <h3 class="text-gray-600 font-medium mb-1">BILL TO</h3>
+                <h3 class="text-gray-600 font-medium mb-1">Rechnungsadresse</h3>
                 <p class="text-sm font-bold">{{ $document->client?->name ?? 'Client Not Found' }}</p>
                 @if($document->client && ($formattedAddress = $document->client->getFormattedAddressHtml()))
                     {!! $formattedAddress !!}
