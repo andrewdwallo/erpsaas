@@ -9,6 +9,8 @@ enum AddressType: string implements HasLabel
     case General = 'general';
     case Billing = 'billing';
     case Shipping = 'shipping';
+    case Home = 'home';
+    case Work = 'work';
 
     public function getLabel(): string
     {

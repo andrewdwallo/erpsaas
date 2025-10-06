@@ -202,5 +202,10 @@
     "Entity": "Entität",
     "Custom": "Benutzerdefiniert",
     "Budget Allocations": "Budgetzuweisungen",
-    "Account Selection": "Kontoauswahl"
+    "Account Selection": "Kontoauswahl",
+    "Human Resources": "Human Resources",
+    "Contact Details": "Contact Details",
+    "Address Details": "Address Details",
+    "Wohnadresse": "Wohnadresse",
+    "Arbeitsadresse": "Arbeitsadresse"
 }

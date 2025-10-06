@@ -28,6 +28,7 @@ use App\Filament\Company\Resources\Accounting\BudgetResource;
 use App\Filament\Company\Resources\Accounting\TransactionResource;
 use App\Filament\Company\Resources\Banking\AccountResource;
 use App\Filament\Company\Resources\Common\OfferingResource;
+use App\Filament\Company\Resources\Hr\EmployeeResource;
 use App\Filament\Company\Resources\Purchases\BillResource;
 use App\Filament\Company\Resources\Purchases\VendorResource;
 use App\Filament\Company\Resources\Sales\ClientResource;
@@ -158,6 +159,13 @@ class CompanyPanelProvider extends PanelProvider
                                 // ...BudgetResource::getNavigationItems(),
                                 ...AccountChart::getNavigationItems(),
                                 ...TransactionResource::getNavigationItems(),
+                            ]),
+                        NavigationGroup::make('Human Resources')
+                            ->localizeLabel()
+                            ->icon('heroicon-o-user-group')
+                            ->extraSidebarAttributes(['class' => 'es-sidebar-group'])
+                            ->items([
+                                ...EmployeeResource::getNavigationItems()
                             ]),
                         NavigationGroup::make('Banking')
                             ->localizeLabel()

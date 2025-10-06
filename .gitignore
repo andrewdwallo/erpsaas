@@ -25,3 +25,5 @@ Thumbs.db
 /public/css/
 /public/js/
 .DS_Store
+
+.vemto_settings
