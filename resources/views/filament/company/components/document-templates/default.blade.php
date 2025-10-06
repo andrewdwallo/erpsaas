@@ -40,21 +40,21 @@
                 <table class="min-w-full">
                     <tbody>
                     <tr>
-                        <td class="font-semibold text-right pr-2">{{ $document->label->number }}:</td>
+                        <td class="font-semibold text-right pr-2">Rechnungsnummer:</td>
                         <td class="text-left pl-2">{{ $document->number }}</td>
                     </tr>
                     @if($document->referenceNumber)
                         <tr>
-                            <td class="font-semibold text-right pr-2">{{ $document->label->referenceNumber }}:</td>
+                            <td class="font-semibold text-right pr-2">Rechnungsreferenz:</td>
                             <td class="text-left pl-2">{{ $document->referenceNumber }}</td>
                         </tr>
                     @endif
                     <tr>
-                        <td class="font-semibold text-right pr-2">{{ $document->label->date }}:</td>
+                        <td class="font-semibold text-right pr-2">Rechnungsdatum:</td>
                         <td class="text-left pl-2">{{ $document->date }}</td>
                     </tr>
                     <tr>
-                        <td class="font-semibold text-right pr-2">{{ $document->label->dueDate }}:</td>
+                        <td class="font-semibold text-right pr-2">Fälligkeitsdatum:</td>
                         <td class="text-left pl-2">{{ $document->dueDate }}</td>
                     </tr>
                     </tbody>
