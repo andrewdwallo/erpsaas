@@ -14,6 +14,7 @@ enum AccountType: string implements HasLabel
     case ContraLiability = 'contra_liability';
     case Equity = 'equity';
     case ContraEquity = 'contra_equity';
+    case OpeningClosing = 'opening_closing';
     case OperatingRevenue = 'operating_revenue';
     case NonOperatingRevenue = 'non_operating_revenue';
     case ContraRevenue = 'contra_revenue';
@@ -34,6 +35,7 @@ enum AccountType: string implements HasLabel
             self::ContraLiability => 'Contra Liability',
             self::Equity => 'Equity',
             self::ContraEquity => 'Contra Equity',
+            self::OpeningClosing => 'Opening/Closing',
             self::OperatingRevenue => 'Operating Revenue',
             self::NonOperatingRevenue => 'Non-Operating Revenue',
             self::ContraRevenue => 'Contra Revenue',
@@ -56,6 +58,7 @@ enum AccountType: string implements HasLabel
             self::ContraLiability => 'Contra Liabilities',
             self::Equity => 'Equity',
             self::ContraEquity => 'Contra Equity',
+            self::OpeningClosing => 'Opening/Closing',
             self::OperatingRevenue => 'Operating Revenue',
             self::NonOperatingRevenue => 'Non-Operating Revenue',
             self::ContraRevenue => 'Contra Revenue',
@@ -72,7 +75,7 @@ enum AccountType: string implements HasLabel
         return match ($this) {
             self::CurrentAsset, self::NonCurrentAsset, self::ContraAsset => AccountCategory::Asset,
             self::CurrentLiability, self::NonCurrentLiability, self::ContraLiability => AccountCategory::Liability,
-            self::Equity, self::ContraEquity => AccountCategory::Equity,
+            self::Equity, self::ContraEquity, self::OpeningClosing => AccountCategory::Equity,
             self::OperatingRevenue, self::NonOperatingRevenue, self::ContraRevenue, self::UncategorizedRevenue => AccountCategory::Revenue,
             self::OperatingExpense, self::NonOperatingExpense, self::ContraExpense, self::UncategorizedExpense => AccountCategory::Expense,
         };
