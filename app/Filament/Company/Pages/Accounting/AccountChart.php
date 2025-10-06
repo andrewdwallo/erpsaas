@@ -55,6 +55,7 @@ class AccountChart extends Page
                 $query->withLastTransactionDate()->with('adjustment');
             }])
             ->get()
+            ->sortBy("code")
             ->groupBy('category');
     }
 
