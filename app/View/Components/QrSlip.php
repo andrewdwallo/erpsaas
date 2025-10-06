@@ -32,8 +32,19 @@ class QrSlip extends Component
         $this->company = $company;
         $companyModel = Company::where("name", $company->name)->first();
         $this->accountNumber = $companyModel->bankAccounts->where("enabled", true)->load("account")->whereNotNull("account.description")?->first()->account->description ?? die("No bank account found for company " . $company->name);
-        $this->amount = (float) filter_var($amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $this->currency = $currency;
+        switch ($this->currency) {
+            case "CHF":
+                // Remove the first three characters (e.g. "Fr. ") and convert to float
+                $this->amount = (float) filter_var(substr($amount, 3), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                break;
+            case "EUR":
+                // Remove the first three characters (e.g. "€ ") and convert to float
+                $this->amount = (float) filter_var(substr($amount, 2), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                break;
+            default:
+                die("Currency not supported for QR Payment Slip: " . $this->currency);
+        }
         $this->number = $number;
         $this->reference = $reference;
         $this->generateQrPaymentSlip();
@@ -75,7 +86,7 @@ class QrSlip extends Component
         $qrBill->setPaymentAmountInformation(
             QrBill\DataGroup\Element\PaymentAmountInformation::create(
                 $this->currency,
-                $this->amount * 1000
+                $this->amount
             )
         );
 

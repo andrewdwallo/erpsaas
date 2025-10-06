@@ -121,7 +121,7 @@
             @if($document->amountDue)
                 <tr>
                     <td class="pl-6 py-2" colspan="2"></td>
-                    <td class="text-right font-semibold border-t-4 border-double py-2">{{ $document->label->amountDue }}
+                    <td class="text-right font-semibold border-t-4 border-double py-2">Fälliger Betrag
                         ({{ $document->currencyCode }}):
                     </td>
                     <td class="text-right border-t-4 border-double pr-6 py-2">{{ $document->amountDue }}</td>
