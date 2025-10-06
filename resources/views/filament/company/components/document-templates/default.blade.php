@@ -17,9 +17,8 @@
                 </div>
                 <div class="text-sm">
                     <strong class="text-sm block">{{ $document->company->name }}</strong>
-                    @if($formattedAddress = $document->company->getFormattedAddressHtml())
-                        {!! $formattedAddress !!}
-                    @endif
+                    <p>{{$document->company->postalCode}} {{$document->company->city}}</p>
+                    <p>{{$document->company->country}}</p>
                 </div>
             </div>
         </div>
