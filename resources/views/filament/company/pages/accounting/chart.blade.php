@@ -51,7 +51,7 @@
                                 </tr>
 
                                 <!-- Chart Rows -->
-                                @forelse($accountSubtype->accounts as $account)
+                                @forelse($accountSubtype->accounts->sortBy('code') as $account)
                                     <tr class="es-table__row">
                                         <td colspan="1" class="es-table__cell px-4 py-4">{{ $account->code }}</td>
                                         <td colspan="1" class="es-table__cell px-4 py-4">

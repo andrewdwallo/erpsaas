@@ -115,7 +115,6 @@ class AccountResource extends Resource
                     'account',
                     'account.subtype',
                 ]);
-                $query->orderBy('account.code', 'asc');
             })
             ->columns([
                 Tables\Columns\TextColumn::make('account.name')
