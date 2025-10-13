@@ -69,4 +69,20 @@ class DocumentPrintController extends Controller
             'invoice' => $invoice,
         ]);
     }
+    
+    public function qrPaymentSlipRecurring(Request $request, int $id)
+    {
+        $recurringInvoice = RecurringInvoice::findOrFail($id);
+        
+        $qrBillHtml = app(\App\Services\Billing\QrBillBuilder::class)->renderHtmlForInvoice($recurringInvoice);
+        
+        if (! $qrBillHtml) {
+            abort(404, 'QR Payment Slip not available for this recurring invoice');
+        }
+
+        return view('qr-payment-slip', [
+            'qrBillHtml' => $qrBillHtml,
+            'invoice' => $recurringInvoice, // Keep same variable name for view compatibility
+        ]);
+    }
 }

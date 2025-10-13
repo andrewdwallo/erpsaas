@@ -2,6 +2,7 @@
 
 namespace App\Services\Billing;
 
+use App\Models\Accounting\Document;
 use App\Models\Accounting\Invoice;
 use App\Models\Setting\CompanyProfile;
 use Sprain\SwissQrBill\QrBill;
@@ -17,17 +18,17 @@ use kmukku\Iso11649\Generator as Iso11649Generator;
 
 class QrBillBuilder
 {
-    public function renderHtmlForInvoice(Invoice $invoice): ?string
+    public function renderHtmlForInvoice(Document $document): ?string
     {
-        $company = $invoice->company;
+        $company = $document->company;
         $profile = $company->profile;
 
-        if (! $this->isEnabledAndEligible($invoice, $profile)) {
+        if (! $this->isEnabledAndEligible($document, $profile)) {
             return null;
         }
 
-        $currency = $invoice->currency_code;
-        $amount = max(0, (int) $invoice->amountDue());
+        $currency = $document->currency_code;
+        $amount = max(0, (int) $document->amountDue());
         if ($amount <= 0) {
             return null;
         }
@@ -53,7 +54,7 @@ class QrBillBuilder
         );
 
         // Ultimate Debtor (client) - only if complete billing address is available
-        $client = $invoice->client;
+        $client = $document->client;
         if ($client && $client->billingAddress && !$client->billingAddress->isIncomplete()) {
             $qrBill->setUltimateDebtor(
                 StructuredAddress::createWithStreet(
@@ -76,7 +77,7 @@ class QrBillBuilder
         );
 
         // Reference
-        [$referenceType, $referenceValue] = $this->resolveReference($invoice, $profile);
+        [$referenceType, $referenceValue] = $this->resolveReference($document, $profile);
         $qrBill->setPaymentReference(
             PaymentReference::create(
                 $referenceType === 'QRR' ? PaymentReference::TYPE_QR : ($referenceType === 'SCOR' ? PaymentReference::TYPE_SCOR : PaymentReference::TYPE_NON),
@@ -85,7 +86,7 @@ class QrBillBuilder
         );
 
         // Additional info
-        $unstructured = $this->getUnstructuredMessage($invoice, $profile);
+        $unstructured = $this->getUnstructuredMessage($document, $profile);
         if ($unstructured) {
             $qrBill->setAdditionalInformation(
                 AdditionalInformation::create($unstructured)
@@ -95,7 +96,8 @@ class QrBillBuilder
         // Validate before rendering
         if (!$qrBill->isValid()) {
             \Log::error('QR Bill validation failed', [
-                'invoice_id' => $invoice->id,
+                'document_id' => $document->id,
+                'document_type' => get_class($document),
                 'violations' => array_map(fn($v) => $v->getMessage(), iterator_to_array($qrBill->getViolations()))
             ]);
             
@@ -112,20 +114,21 @@ class QrBillBuilder
             return $output->getPaymentPart();
         } catch (\Exception $e) {
             \Log::error('QR Bill generation failed', [
-                'invoice_id' => $invoice->id,
+                'document_id' => $document->id,
+                'document_type' => get_class($document),
                 'error' => $e->getMessage()
             ]);
             return null;
         }
     }
 
-    protected function isEnabledAndEligible(Invoice $invoice, CompanyProfile $profile): bool
+    protected function isEnabledAndEligible(Document $document, CompanyProfile $profile): bool
     {
         if (! $profile->qr_bill_enabled) {
             return false;
         }
 
-        $currency = strtoupper($invoice->currency_code ?? '');
+        $currency = strtoupper($document->currency_code ?? '');
         if (! in_array($currency, ['CHF', 'EUR'], true)) {
             return false;
         }
@@ -148,13 +151,13 @@ class QrBillBuilder
         return $clearingNumber >= 30000 && $clearingNumber <= 31999;
     }
 
-    protected function resolveReference(Invoice $invoice, CompanyProfile $profile): array
+    protected function resolveReference(Document $document, CompanyProfile $profile): array
     {
-        // If stored on invoice, reuse
-        if (! empty($invoice->payment_reference)) {
+        // If stored on document (only invoices have payment_reference), reuse
+        if ($document instanceof Invoice && ! empty($document->payment_reference)) {
             // Determine type based on profile mode and IBAN
             $type = $this->determineReferenceType($profile);
-            return [$type, $invoice->payment_reference];
+            return [$type, $document->payment_reference];
         }
 
         $iban = $profile->qr_bill_iban ?? '';
@@ -171,13 +174,14 @@ class QrBillBuilder
             // QR-IBAN mode: Generate QR reference based on pattern
             if (!$this->isQrIban($iban)) {
                 \Log::warning('QR-IBAN mode selected but provided IBAN is not a QR-IBAN', [
-                    'invoice_id' => $invoice->id,
+                    'document_id' => $document->id,
+                    'document_type' => get_class($document),
                     'iban' => $iban
                 ]);
                 return ['NON', ''];
             }
             
-            $referenceString = $this->generateReferenceFromPattern($invoice, $profile);
+            $referenceString = $this->generateReferenceFromPattern($document, $profile);
             $reference = QrPaymentReferenceGenerator::generate(null, $referenceString);
             return ['QRR', $reference];
         }
@@ -194,19 +198,20 @@ class QrBillBuilder
         return 'NON';
     }
     
-    protected function generateReferenceFromPattern(Invoice $invoice, CompanyProfile $profile): string
+    protected function generateReferenceFromPattern(Document $document, CompanyProfile $profile): string
     {
-        $pattern = $profile->qr_bill_reference_pattern ?? '{invoice_id}';
+        $pattern = $profile->qr_bill_reference_pattern ?? '{document_id}';
         
         // Available placeholders - extract only numbers for QR reference
         $placeholders = [
-            '{invoice_id}' => (string) $invoice->id,
-            '{invoice_number}' => preg_replace('/[^0-9]/', '', $invoice->invoice_number ?? ''),
-            '{account_number}' => preg_replace('/[^0-9]/', '', $invoice->client?->account_number ?? ''),
+            '{document_id}' => (string) $document->id,
+            '{invoice_id}' => (string) $document->id, // Alias for backward compatibility
+            '{invoice_number}' => $document instanceof Invoice ? preg_replace('/[^0-9]/', '', $document->invoice_number ?? '') : '',
+            '{account_number}' => preg_replace('/[^0-9]/', '', $document->client?->account_number ?? ''),
             '{client_name}' => '', // Not suitable for QR reference (letters not allowed)
-            '{date_y}' => $invoice->date ? $invoice->date->format('Y') : date('Y'),
-            '{date_m}' => $invoice->date ? $invoice->date->format('m') : date('m'),
-            '{date_d}' => $invoice->date ? $invoice->date->format('d') : date('d'),
+            '{date_y}' => $this->getDocumentDate($document)->format('Y'),
+            '{date_m}' => $this->getDocumentDate($document)->format('m'),
+            '{date_d}' => $this->getDocumentDate($document)->format('d'),
         ];
         
         // Replace placeholders in pattern
@@ -225,17 +230,28 @@ class QrBillBuilder
         return $referenceString;
     }
     
-    protected function getUnstructuredMessage(Invoice $invoice, CompanyProfile $profile): ?string
+    protected function getUnstructuredMessage(Document $document, CompanyProfile $profile): ?string
     {
         $mode = $profile->qr_bill_mode ?? 'iban';
         
         if ($mode === 'iban') {
-            // IBAN mode: Use invoice-specific custom message
-            return $invoice->qr_custom_message ?: null;
+            // IBAN mode: Use document-specific custom message (only available for Invoices)
+            return $document instanceof Invoice ? ($document->qr_custom_message ?: null) : null;
         } else {
             // QR-IBAN mode: No unstructured message (reference handles identification)
             return null;
         }
+    }
+    
+    protected function getDocumentDate(Document $document): \Carbon\Carbon
+    {
+        if ($document instanceof Invoice && $document->date) {
+            return $document->date;
+        } elseif ($document instanceof \App\Models\Accounting\RecurringInvoice && $document->start_date) {
+            return $document->start_date;
+        }
+        
+        return now(); // Fallback to current date
     }
 
 }

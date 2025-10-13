@@ -17,4 +17,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('documents/invoice/{id}/qr-payment-slip', [DocumentPrintController::class, 'qrPaymentSlip'])
         ->middleware(AllowSameOriginFrame::class)
         ->name('documents.qr-payment-slip');
+    
+    Route::get('documents/recurring_invoice/{id}/qr-payment-slip', [DocumentPrintController::class, 'qrPaymentSlipRecurring'])
+        ->middleware(AllowSameOriginFrame::class)
+        ->name('documents.recurring-qr-payment-slip');
 });
