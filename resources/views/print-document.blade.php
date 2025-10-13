@@ -20,6 +20,22 @@
             font-family: '{{ $document->font->getLabel() }}', sans-serif;
         }
 
+        .page-break-before { page-break-before: always; }
+        
+        /* QR Payment Slip positioning at bottom of page */
+        .qr-payment-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .qr-payment-part {
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
         @media print {
             body {
                 print-color-adjust: exact !important;
@@ -29,12 +45,28 @@
             }
 
             @page {
-                size: auto;
+                size: A4;
                 margin: 7.5mm 0;
             }
 
             @page:first {
                 margin-top: 0;
+            }
+            
+            /* QR payment slip page styling */
+            .qr-payment-page {
+                min-height: calc(100vh - 15mm); /* Account for page margins */
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                page-break-inside: avoid;
+            }
+            
+            .qr-payment-part {
+                width: 210mm;
+                max-width: 100%;
+                margin: 0 auto;
+                page-break-inside: avoid;
             }
 
             .doc-template-container {
@@ -80,5 +112,13 @@
         'document' => $document,
         'preview' => false,
     ])
+
+    @if(!empty($qrBillHtml))
+        <div class="page-break-before qr-payment-page">
+            <div class="qr-payment-part">
+                {!! $qrBillHtml !!}
+            </div>
+        </div>
+    @endif
 </body>
 </html>

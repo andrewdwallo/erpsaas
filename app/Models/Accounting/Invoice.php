@@ -72,6 +72,8 @@ class Invoice extends Document
         'amount_paid',
         'terms',
         'footer',
+        'payment_reference',
+        'qr_custom_message',
         'created_by',
         'updated_by',
     ];
