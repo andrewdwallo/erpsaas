@@ -36,6 +36,7 @@ class ViewInvoice extends ViewRecord
                     Invoice::getApproveDraftAction(),
                     Invoice::getMarkAsSentAction(),
                     Invoice::getPrintDocumentAction(),
+                    $this->getQrPaymentSlipAction(),
                     Invoice::getReplicateAction(),
                 ])->dropdown(false),
                 Actions\DeleteAction::make(),
@@ -47,6 +48,22 @@ class ViewInvoice extends ViewRecord
                 ->icon('heroicon-m-chevron-down')
                 ->iconPosition(IconPosition::After),
         ];
+    }
+
+    protected function getQrPaymentSlipAction(): Actions\Action
+    {
+        return Actions\Action::make('downloadQrPaymentSlip')
+            ->label('QR Payment Slip')
+            ->icon('heroicon-m-qr-code')
+            ->visible(function (Invoice $record) {
+                $profile = $record->company->profile;
+                return $profile->qr_bill_enabled && 
+                       !empty($profile->qr_bill_iban) && 
+                       in_array(strtoupper($record->currency_code ?? ''), ['CHF', 'EUR']) &&
+                       $record->amountDue() > 0;
+            })
+            ->url(fn (Invoice $record) => route('documents.qr-payment-slip', ['id' => $record->id]))
+            ->openUrlInNewTab();
     }
 
     public function infolist(Infolist $infolist): Infolist

@@ -26,8 +26,8 @@ class DocumentPrintController extends Controller
         }
 
         $modelClass = $this->documentModels[$documentType];
-        $document = $modelClass::findOrFail($id);
-        $documentTypeEnum = $document::documentType();
+        $docModel = $modelClass::findOrFail($id);
+        $documentTypeEnum = $docModel::documentType();
 
         if ($documentTypeEnum === DocumentType::RecurringInvoice) {
             $documentTypeEnum = DocumentType::Invoice;
@@ -38,11 +38,51 @@ class DocumentPrintController extends Controller
             ->first();
 
         $template = $defaults?->template ?? Template::Default;
-        $document = DocumentDTO::fromModel($document);
+
+        $qrBillHtml = null;
+        if ($documentTypeEnum === DocumentType::Invoice) {
+            // Only for invoices generate QR payment part
+            $qrBillHtml = app(\App\Services\Billing\QrBillBuilder::class)->renderHtmlForInvoice($docModel);
+        }
+
+        $docDto = DocumentDTO::fromModel($docModel);
 
         return view('print-document', [
-            'document' => $document,
+            'document' => $docDto,
             'template' => $template,
+            'qrBillHtml' => $qrBillHtml,
+        ]);
+    }
+
+    public function qrPaymentSlip(Request $request, int $id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        
+        $qrBillHtml = app(\App\Services\Billing\QrBillBuilder::class)->renderHtmlForInvoice($invoice);
+        
+        if (! $qrBillHtml) {
+            abort(404, 'QR Payment Slip not available for this invoice');
+        }
+
+        return view('qr-payment-slip', [
+            'qrBillHtml' => $qrBillHtml,
+            'invoice' => $invoice,
+        ]);
+    }
+    
+    public function qrPaymentSlipRecurring(Request $request, int $id)
+    {
+        $recurringInvoice = RecurringInvoice::findOrFail($id);
+        
+        $qrBillHtml = app(\App\Services\Billing\QrBillBuilder::class)->renderHtmlForInvoice($recurringInvoice);
+        
+        if (! $qrBillHtml) {
+            abort(404, 'QR Payment Slip not available for this recurring invoice');
+        }
+
+        return view('qr-payment-slip', [
+            'qrBillHtml' => $qrBillHtml,
+            'invoice' => $recurringInvoice, // Keep same variable name for view compatibility
         ]);
     }
 }

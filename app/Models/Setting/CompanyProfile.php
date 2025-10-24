@@ -31,10 +31,20 @@ class CompanyProfile extends Model
         'entity_type',
         'created_by',
         'updated_by',
+        // Swiss QR Bill fields
+        'qr_bill_enabled',
+        'qr_bill_iban',
+        'qr_bill_mode',
+        'qr_bill_reference_pattern',
+        'qr_bill_reference_prefix', // Keep old field for backward compatibility
+        'unstructured_message',
+        'bill_information',
+        'layout_mode',
     ];
 
     protected $casts = [
         'entity_type' => EntityType::class,
+        'qr_bill_enabled' => 'boolean',
     ];
 
     protected $appends = [

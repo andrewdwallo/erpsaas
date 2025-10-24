@@ -138,6 +138,7 @@ class CompanyProfile extends Page
                 $this->getIdentificationSection(),
                 $this->getNeedsAddressCompletionAlert(),
                 $this->getLocationDetailsSection(),
+                $this->getSwissQrBillSection(),
                 $this->getLegalAndComplianceSection(),
             ])
             ->model($this->record)
@@ -220,6 +221,114 @@ class CompanyProfile extends Page
                     ->localizeLabel('Tax ID')
                     ->maxLength(50),
             ])->columns();
+    }
+
+    protected function getSwissQrBillSection(): Component
+    {
+        return Section::make('Swiss QR Bill')
+            ->description('Enable Swiss QR payment slips for your invoices')
+            ->schema([
+                \Filament\Forms\Components\Toggle::make('qr_bill_enabled')
+                    ->label('Enable Swiss QR Bill')
+                    ->reactive()
+                    ->columnSpanFull(),
+                
+                Group::make()
+                    ->schema([
+                        \Filament\Forms\Components\Radio::make('qr_bill_mode')
+                            ->label('QR Bill Modus')
+                            ->options([
+                                'iban' => 'Normale IBAN ohne Referenz (Details pro Rechnung)',
+                                'qr_iban' => 'QR-IBAN mit automatischer Referenz (Schema konfiguriert)',
+                            ])
+                            ->descriptions([
+                                'iban' => 'Verwende normale IBAN. Zahlungsreferenz wird bei jeder Rechnung individuell angegeben.',
+                                'qr_iban' => 'Verwende QR-IBAN. Zahlungsreferenz wird automatisch nach konfigurierbarem Schema generiert.',
+                            ])
+                            ->default('iban')
+                            ->inline(false)
+                            ->required(fn (\Filament\Forms\Get $get) => $get('qr_bill_enabled'))
+                            ->reactive()
+                            ->columnSpanFull(),
+                            
+                        TextInput::make('qr_bill_iban')
+                            ->label(fn (\Filament\Forms\Get $get) => $get('qr_bill_mode') === 'qr_iban' ? 'QR-IBAN' : 'IBAN')
+                            ->placeholder(fn (\Filament\Forms\Get $get) => $get('qr_bill_mode') === 'qr_iban' ? 'CH61 3078 2005 4610 0410 1 (QR-IBAN)' : 'CH93 0076 2011 6238 5295 7 (normale IBAN)')
+                            ->maxLength(34)
+                            ->required(fn (\Filament\Forms\Get $get) => $get('qr_bill_enabled'))
+                            ->rules([
+                                'nullable', 'string', 'max:34',
+                                function (\Filament\Forms\Get $get) {
+                                    return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                        if (!$value) return;
+                                        
+                                        $cleanIban = preg_replace('/\s+/', '', $value);
+                                        $mode = $get('qr_bill_mode');
+                                        
+                                        // Basic IBAN format check
+                                        if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]+$/', $cleanIban)) {
+                                            $fail('Die IBAN hat ein ungültiges Format.');
+                                            return;
+                                        }
+                                        
+                                        // Check if it's a Swiss IBAN
+                                        if (!str_starts_with($cleanIban, 'CH')) {
+                                            $fail('Nur Schweizer IBANs werden unterstützt.');
+                                            return;
+                                        }
+                                        
+                                        // Extract clearing number (positions 5-9)
+                                        if (strlen($cleanIban) < 21) {
+                                            $fail('Die IBAN ist zu kurz (mindestens 21 Zeichen erforderlich).');
+                                            return;
+                                        }
+                                        
+                                        $clearingNumber = (int) substr($cleanIban, 4, 5);
+                                        $isQrIban = $clearingNumber >= 30000 && $clearingNumber <= 31999;
+                                        
+                                        if ($mode === 'qr_iban' && !$isQrIban) {
+                                            $fail('Für QR-IBAN Modus wird eine QR-IBAN benötigt (Clearing-Nummer 30000-31999). Ihre IBAN hat Clearing-Nummer ' . $clearingNumber . '.');
+                                        } elseif ($mode === 'iban' && $isQrIban) {
+                                            $fail('Für IBAN Modus sollte eine normale IBAN verwendet werden. Ihre IBAN ist eine QR-IBAN (Clearing-Nummer ' . $clearingNumber . ').');
+                                        }
+                                    };
+                                }
+                            ])
+                            ->live()
+                            ->dehydrateStateUsing(fn ($state) => $state ? preg_replace('/\s+/', '', $state) : null)
+                            ->hint('ℹ️')
+                            ->hintAction(
+                                \Filament\Forms\Components\Actions\Action::make('ibanInfo')
+                                    ->icon('heroicon-m-information-circle')
+                                    ->modalHeading('IBAN vs QR-IBAN')
+                                    ->modalContent(view('filament.info-modals.iban-info'))
+                                    ->modalSubmitAction(false)
+                                    ->modalCancelActionLabel('Schließen')
+                            )
+                            ->helperText(fn (\Filament\Forms\Get $get) => $get('qr_bill_mode') === 'qr_iban' ? 'QR-IBAN mit Clearing-Nummer 30000-31999' : 'Normale IBAN für Zahlungen ohne automatische Referenz')
+                            ->columnSpanFull(),
+                            
+                        TextInput::make('qr_bill_reference_pattern')
+                            ->label('Referenz-Schema')
+                            ->placeholder('{invoice_id} oder {account_number}-{invoice_number}')
+                            ->maxLength(100)
+                            ->required(fn (\Filament\Forms\Get $get) => $get('qr_bill_enabled') && $get('qr_bill_mode') === 'qr_iban')
+                            ->hint('ℹ️')
+                            ->hintAction(
+                                \Filament\Forms\Components\Actions\Action::make('patternInfo')
+                                    ->icon('heroicon-m-information-circle')
+                                    ->modalHeading('Referenz-Schema Platzhalter')
+                                    ->modalContent(view('filament.info-modals.reference-pattern-info'))
+                                    ->modalSubmitAction(false)
+                                    ->modalCancelActionLabel('Schließen')
+                            )
+                            ->helperText('Schema für automatische Referenz-Generierung. Platzhalter: {invoice_id}, {invoice_number}, {account_number}, {date_y}, {date_m}, {date_d} (nur Zahlen werden extrahiert)')
+                            ->visible(fn (\Filament\Forms\Get $get) => $get('qr_bill_mode') === 'qr_iban')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->visible(fn (\Filament\Forms\Get $get) => $get('qr_bill_enabled')),
+            ]);
     }
 
     protected function handleRecordUpdate(CompanyProfileModel $record, array $data): CompanyProfileModel

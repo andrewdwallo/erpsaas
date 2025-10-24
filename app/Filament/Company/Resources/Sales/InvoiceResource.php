@@ -374,6 +374,17 @@ class InvoiceResource extends Resource
                         Forms\Components\Textarea::make('terms')
                             ->default($settings->terms)
                             ->columnSpanFull(),
+                        Forms\Components\TextInput::make('qr_custom_message')
+                            ->label('QR Payment Message')
+                            ->placeholder('Custom payment message for QR bill')
+                            ->maxLength(140)
+                            ->helperText('Only used when QR Bill is enabled with normal IBAN mode (max 140 characters)')
+                            ->visible(function () {
+                                $company = Auth::user()->currentCompany;
+                                $profile = $company->profile;
+                                return $profile->qr_bill_enabled && $profile->qr_bill_mode === 'iban';
+                            })
+                            ->columnSpanFull(),
                     ]),
                 DocumentFooterSection::make('Invoice Footer')
                     ->defaultFooter($settings->footer),

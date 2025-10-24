@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: erpsaas_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - erpsaas
+    depends_on:
+      - db
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: erpsaas_webserver
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - erpsaas
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: erpsaas_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-erpsaas}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_USER: ${DB_USERNAME:-erpsaas}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - erpsaas
+
+  redis:
+    image: redis:alpine
+    container_name: erpsaas_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - erpsaas
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: erpsaas_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work --sleep=3 --tries=3
+    volumes:
+      - ./:/var/www
+    networks:
+      - erpsaas
+    depends_on:
+      - app
+      - db
+      - redis
+
+  npm:
+    image: node:20-alpine
+    container_name: erpsaas_npm
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - erpsaas
+    command: sh -c "npm install && npm run build"
+
+networks:
+  erpsaas:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
