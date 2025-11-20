@@ -7,15 +7,15 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
         "@tailwindcss/forms": "^0.5.9",
-        "@tailwindcss/postcss": "^4.1.10",
+        "@tailwindcss/postcss": "^4.1.17",
         "@tailwindcss/typography": "^0.5.15",
+        "@tailwindcss/vite": "^4.1.17",
         "axios": "^1.7.8",
         "laravel-vite-plugin": "^1.1",
         "postcss": "^8.4.49",
         "postcss-nesting": "^13.0.1",
-        "tailwindcss": "^4.1.10",
+        "tailwindcss": "^4.1.17",
         "vite": "^6.0"
     }
 }

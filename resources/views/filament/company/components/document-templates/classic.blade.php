@@ -148,6 +148,6 @@
     <!-- Footer -->
     <x-company.document-template.footer class="classic-template-footer p-6 text-sm">
         <h4 class="font-semibold mb-2">Terms & Conditions</h4>
-        <p class="break-words line-clamp-4">{{ $document->terms }}</p>
+        <p class="wrap-break-word line-clamp-4">{{ $document->terms }}</p>
     </x-company.document-template.footer>
 </x-company.document-template.container>

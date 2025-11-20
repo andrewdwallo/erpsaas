@@ -140,8 +140,8 @@
         </h4>
         <span class="border-t-2 my-2 border-gray-300 block w-full"></span>
         <div class="flex justify-between space-x-4 px-6 text-sm">
-            <p class="w-1/2 break-words line-clamp-4">{{ $document->terms }}</p>
-            <p class="w-1/2 break-words line-clamp-4">{{ $document->footer }}</p>
+            <p class="w-1/2 wrap-break-word line-clamp-4">{{ $document->terms }}</p>
+            <p class="w-1/2 wrap-break-word line-clamp-4">{{ $document->footer }}</p>
         </div>
     </x-company.document-template.footer>
 </x-company.document-template.container>

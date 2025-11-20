@@ -135,7 +135,7 @@
     <x-company.document-template.footer class="default-template-footer flex flex-col text-sm p-6">
         <div>
             <h4 class="font-semibold mb-2">Terms & Conditions</h4>
-            <p class="break-words line-clamp-4">{{ $document->terms }}</p>
+            <p class="wrap-break-word line-clamp-4">{{ $document->terms }}</p>
         </div>
 
         @if($document->footer)
