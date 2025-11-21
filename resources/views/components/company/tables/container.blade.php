@@ -3,7 +3,7 @@
 ])
 
 <div
-    class="es-table__container overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
+    class="fi-ta-ctn">
     <div class="es-table__header-ctn"></div>
     <div
         class="relative divide-y divide-gray-200 overflow-x-auto dark:divide-white/10 dark:border-t-white/10 min-h-40">
