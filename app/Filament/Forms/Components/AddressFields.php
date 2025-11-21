@@ -44,15 +44,18 @@ class AddressFields extends Grid
 
     public function softRequired(bool $condition = true): static
     {
-        $this->setSoftRequired($condition);
+        $this->isSoftRequired = $condition;
+
+        // Defer the soft required logic until the component is configured
+        $this->afterStateHydrated(function () use ($condition) {
+            $this->applySoftRequired($condition);
+        });
 
         return $this;
     }
 
-    protected function setSoftRequired(bool $condition): void
+    protected function applySoftRequired(bool $condition): void
     {
-        $this->isSoftRequired = $condition;
-
         $childComponents = $this->getChildComponents();
 
         foreach ($childComponents as $component) {
