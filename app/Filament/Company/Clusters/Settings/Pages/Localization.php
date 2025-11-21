@@ -199,7 +199,6 @@ class Localization extends Page
                         ])
                             ->columns(3)
                             ->columnSpan(2)
-                            ->required()
                             ->markAsRequired(false)
                             ->label('Fiscal year end'),
                     ])->columns(3),
