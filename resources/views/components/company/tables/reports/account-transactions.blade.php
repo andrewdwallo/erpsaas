@@ -13,7 +13,7 @@
         <tbody class="divide-y divide-gray-200 dark:divide-white/5">
         <!-- Category Header -->
         <tr class="bg-gray-50 dark:bg-white/5">
-            <x-filament-tables::cell tag="th" colspan="{{ count($report->getHeaders()) }}" class="text-left">
+            <th colspan="{{ count($report->getHeaders()) }}" class="fi-ta-cell text-left">
                 <div class="px-3 py-3.5">
                     @foreach ($category->header as $headerRow)
                         <div
@@ -26,7 +26,7 @@
                         </div>
                     @endforeach
                 </div>
-            </x-filament-tables::cell>
+            </th>
         </tr>
         <!-- Transactions Data -->
         @foreach($category->data as $dataIndex => $transaction)
@@ -36,8 +36,9 @@
                 ])
             >
                 @foreach($transaction as $cellIndex => $cell)
-                    <x-filament-tables::cell
+                    <td
                         @class([
+                           'fi-ta-cell',
                            $report->getAlignmentClass($cellIndex),
                            'whitespace-normal' => $cellIndex === 1,
                        ])
@@ -56,7 +57,7 @@
                                         color="primary"
                                         icon="heroicon-o-arrow-top-right-on-square"
                                         :icon-position="$iconPosition"
-                                        icon-size="w-4 h-4 min-w-4 min-h-4"
+                                        :icon-size="\Filament\Support\Enums\IconSize::Small"
                                     >
                                         {{ $cell['description'] }}
                                     </x-filament::link>
@@ -67,7 +68,7 @@
                                 {{ $cell }}
                             @endif
                         </div>
-                    </x-filament-tables::cell>
+                    </td>
                 @endforeach
             </tr>
         @endforeach
