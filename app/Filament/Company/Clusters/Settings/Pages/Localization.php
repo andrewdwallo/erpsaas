@@ -17,7 +17,10 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -252,5 +255,26 @@ class Localization extends Page
         } catch (AuthorizationException $exception) {
             return $exception->toResponse()->allowed();
         }
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getFormContentComponent(),
+            ]);
+    }
+
+    public function getFormContentComponent(): Component
+    {
+        return Form::make([EmbeddedSchema::make('form')])
+            ->id('form')
+            ->livewireSubmitHandler('save')
+            ->footer([
+                Actions::make($this->getFormActions())
+                    ->alignment($this->getFormActionsAlignment())
+                    ->fullWidth($this->hasFullWidthFormActions())
+                    ->sticky($this->areFormActionsSticky()),
+            ]);
     }
 }
