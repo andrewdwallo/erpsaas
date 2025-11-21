@@ -2,7 +2,8 @@
     use Filament\Actions\Action;
     use Filament\Support\Enums\Alignment;
 
-    $containers = $getChildComponentContainers();
+    $fieldWrapperView = $getFieldWrapperView();
+    $items = $getItems();
     $blockPickerBlocks = $getBlockPickerBlocks();
     $blockPickerColumns = $getBlockPickerColumns();
     $blockPickerWidth = $getBlockPickerWidth();
@@ -10,6 +11,7 @@
     $hasInteractiveBlockPreviews = $hasInteractiveBlockPreviews();
 
     $addAction = $getAction($getAddActionName());
+    $addActionAlignment = $getAddActionAlignment();
     $addBetweenAction = $getAction($getAddBetweenActionName());
     $cloneAction = $getAction($getCloneActionName());
     $collapseAllAction = $getAction($getCollapseAllActionName());
@@ -31,23 +33,28 @@
     $collapseAllActionIsVisible = $isCollapsible && $collapseAllAction->isVisible();
     $expandAllActionIsVisible = $isCollapsible && $expandAllAction->isVisible();
 
+    $key = $getKey();
     $statePath = $getStatePath();
+
+    $labelBetweenItems = $getLabelBetweenItems();
 @endphp
 
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
+<x-dynamic-component :component="$fieldWrapperView" :field="$field">
     <div
-        x-data="{}"
         {{
             $attributes
                 ->merge($getExtraAttributes(), escape: false)
-                ->class(['fi-fo-builder grid gap-y-4'])
+                ->class([
+                    'fi-fo-builder',
+                    'fi-collapsible' => $isCollapsible,
+                ])
         }}
     >
         @if ($collapseAllActionIsVisible || $expandAllActionIsVisible)
             <div
                 @class([
-                    'flex gap-x-3',
-                    'hidden' => count($containers) < 2,
+                    'fi-fo-builder-actions',
+                    'fi-hidden' => count($items) < 2,
                 ])
             >
                 @if ($collapseAllActionIsVisible)
@@ -68,12 +75,12 @@
             </div>
         @endif
 
-        @if (count($containers))
+        @if (count($items))
             <ul
                 x-sortable
                 data-sortable-animation-duration="{{ $getReorderAnimationDuration() }}"
-                wire:end.stop="{{ 'mountFormComponentAction(\'' . $statePath . '\', \'reorder\', { items: $event.target.sortable.toArray() })' }}"
-                class="space-y-6"
+                wire:end.stop="mountAction('reorder', { items: $event.target.sortable.toArray() }, { schemaComponent: '{{ $key }}' })"
+                class="fi-fo-builder-items space-y-6"
             >
                 @php
                     $hasBlockLabels = $hasBlockLabels();
@@ -81,28 +88,28 @@
                     $hasBlockNumbers = $hasBlockNumbers();
                 @endphp
 
-                @foreach ($containers as $uuid => $item)
+                @foreach ($items as $itemKey => $item)
                     @php
                         $visibleExtraItemActions = array_filter(
                             $extraItemActions,
-                            fn (Action $action): bool => $action(['item' => $uuid])->isVisible(),
+                            fn (Action $action): bool => $action(['item' => $itemKey])->isVisible(),
                         );
-                        $cloneAction = $cloneAction(['item' => $uuid]);
+                        $cloneAction = $cloneAction(['item' => $itemKey]);
                         $cloneActionIsVisible = $isCloneable && $cloneAction->isVisible();
-                        $deleteAction = $deleteAction(['item' => $uuid]);
+                        $deleteAction = $deleteAction(['item' => $itemKey]);
                         $deleteActionIsVisible = $isDeletable && $deleteAction->isVisible();
-                        $editAction = $editAction(['item' => $uuid]);
+                        $editAction = $editAction(['item' => $itemKey]);
                         $editActionIsVisible = $hasBlockPreviews && $editAction->isVisible();
-                        $moveDownAction = $moveDownAction(['item' => $uuid])->disabled($loop->last);
+                        $moveDownAction = $moveDownAction(['item' => $itemKey])->disabled($loop->last);
                         $moveDownActionIsVisible = $isReorderableWithButtons && $moveDownAction->isVisible();
-                        $moveUpAction = $moveUpAction(['item' => $uuid])->disabled($loop->first);
+                        $moveUpAction = $moveUpAction(['item' => $itemKey])->disabled($loop->first);
                         $moveUpActionIsVisible = $isReorderableWithButtons && $moveUpAction->isVisible();
                         $reorderActionIsVisible = $isReorderableWithDragAndDrop && $reorderAction->isVisible();
                     @endphp
 
                     <li
-                        wire:key="{{ $this->getId() }}.{{ $item->getStatePath() }}.{{ $field::class }}.item"
-                        x-sortable-item="{{ $uuid }}"
+                        wire:key="{{ $item->getLivewireKey() }}.item"
+                        x-sortable-item="{{ $itemKey }}"
                         class="flex items-center gap-x-4"
                     >
                         <!-- Input Field -->
@@ -120,36 +127,32 @@
 
 
                     @if (! $loop->last)
-                        @if ($isAddable && $addBetweenAction(['afterItem' => $uuid])->isVisible())
-                            <li class="relative -top-2 mt-0! h-0">
+                        @if ($isAddable && $addBetweenAction(['afterItem' => $itemKey])->isVisible())
+                            <li class="fi-fo-builder-add-between-items-ctn relative -top-2 mt-0! h-0">
                                 <div
-                                    class="flex w-full justify-center opacity-0 transition duration-75 hover:opacity-100"
+                                    class="fi-fo-builder-add-between-items flex w-full justify-center opacity-0 transition duration-75 hover:opacity-100"
                                 >
                                     <div
                                         class="fi-fo-builder-block-picker-ctn rounded-lg bg-white dark:bg-gray-900"
                                     >
                                         <x-filament-forms::builder.block-picker
                                             :action="$addBetweenAction"
-                                            :after-item="$uuid"
+                                            :after-item="$itemKey"
                                             :columns="$blockPickerColumns"
                                             :blocks="$blockPickerBlocks"
-                                            :state-path="$statePath"
+                                            :key="$key"
                                             :width="$blockPickerWidth"
                                         >
                                             <x-slot name="trigger">
-                                                {{ $addBetweenAction(['afterItem' => $uuid]) }}
+                                                {{ $addBetweenAction(['afterItem' => $itemKey]) }}
                                             </x-slot>
                                         </x-filament-forms::builder.block-picker>
                                     </div>
                                 </div>
                             </li>
-                        @elseif (filled($labelBetweenItems = $getLabelBetweenItems()))
-                            <li
-                                class="relative border-t border-gray-200 dark:border-white/10"
-                            >
-                                <span
-                                    class="absolute -top-3 left-3 px-1 text-sm font-medium"
-                                >
+                        @elseif (filled($labelBetweenItems))
+                            <li class="fi-fo-builder-label-between-items-ctn">
+                                <span class="fi-fo-builder-label-between-items">
                                     {{ $labelBetweenItems }}
                                 </span>
                             </li>
@@ -164,17 +167,9 @@
                 :action="$addAction"
                 :blocks="$blockPickerBlocks"
                 :columns="$blockPickerColumns"
-                :state-path="$statePath"
+                :key="$key"
                 :width="$blockPickerWidth"
-                @class([
-                    'flex',
-                    match ($getAddActionAlignment()) {
-                        Alignment::Start, Alignment::Left => 'justify-start',
-                        Alignment::Center, null => 'justify-center',
-                        Alignment::End, Alignment::Right => 'justify-end',
-                        default => $alignment,
-                    },
-                ])
+                :class="($addActionAlignment instanceof Alignment) ? ('fi-align-' . $addActionAlignment->value) : $addActionAlignment"
             >
                 <x-slot name="trigger">
                     {{ $addAction }}

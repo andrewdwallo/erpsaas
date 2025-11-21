@@ -9,7 +9,6 @@ use App\Filament\Company\Resources\Sales\Clients\Pages\ViewClient;
 use App\Filament\Exports\Common\ClientExporter;
 use App\Filament\Forms\Components\AddressFields;
 use App\Filament\Forms\Components\CreateCurrencySelect;
-use App\Filament\Forms\Components\CustomSection;
 use App\Filament\Forms\Components\PhoneBuilder;
 use App\Filament\Tables\Columns;
 use App\Models\Common\Address;
@@ -61,7 +60,7 @@ class ClientResource extends Resource
                                 Textarea::make('notes')
                                     ->columnSpanFull(),
                             ]),
-                        CustomSection::make('Primary Contact')
+                        Section::make('Primary Contact')
                             ->relationship('primaryContact')
                             ->saveRelationshipsUsing(null)
                             ->saveRelationshipsBeforeChildrenUsing(null)
@@ -115,6 +114,7 @@ class ClientResource extends Resource
                                                     ->maxLength(15),
                                             ])->maxItems(1),
                                     ])
+                                    ->addable(fn (PhoneBuilder $builder) => $builder->getItemsCount() < 4)
                                     ->deletable(fn (PhoneBuilder $builder) => $builder->getItemsCount() > 1)
                                     ->reorderable(false)
                                     ->blockNumbers(false)
@@ -188,7 +188,7 @@ class ClientResource extends Resource
                     ->schema([
                         CreateCurrencySelect::make('currency_code')
                             ->softRequired(),
-                        CustomSection::make('Billing Address')
+                        Section::make('Billing Address')
                             ->relationship('billingAddress')
                             ->saveRelationshipsUsing(null)
                             ->saveRelationshipsBeforeChildrenUsing(null)
@@ -215,7 +215,7 @@ class ClientResource extends Resource
                         TextInput::make('phone')
                             ->label('Phone')
                             ->maxLength(255),
-                        CustomSection::make('Shipping Address')
+                        Section::make('Shipping Address')
                             ->contained(false)
                             ->schema([
                                 Checkbox::make('same_as_billing')
