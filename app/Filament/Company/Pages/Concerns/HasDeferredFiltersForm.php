@@ -20,6 +20,11 @@ trait HasDeferredFiltersForm
      */
     public ?array $deferredFilters = null;
 
+    public function bootedHasDeferredFiltersForm(): void
+    {
+        $this->cacheSchema('filtersForm', $this->getFiltersForm());
+    }
+
     public function mountHasDeferredFiltersForm(): void
     {
         $this->initializeDefaultFilters();
@@ -60,8 +65,7 @@ trait HasDeferredFiltersForm
         }
 
         return $this->filtersForm($this->makeSchema()
-            ->statePath('deferredFilters')
-            ->partiallyRender());
+            ->statePath('deferredFilters'));
     }
 
     public function updatedFilters(): void
