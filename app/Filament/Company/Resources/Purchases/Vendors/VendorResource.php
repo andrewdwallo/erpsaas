@@ -12,7 +12,6 @@ use App\Filament\Company\Resources\Purchases\Vendors\Pages\ViewVendor;
 use App\Filament\Exports\Common\VendorExporter;
 use App\Filament\Forms\Components\AddressFields;
 use App\Filament\Forms\Components\CreateCurrencySelect;
-use App\Filament\Forms\Components\CustomSection;
 use App\Filament\Forms\Components\PhoneBuilder;
 use App\Filament\Tables\Columns;
 use App\Models\Common\Vendor;
@@ -95,7 +94,7 @@ class VendorResource extends Resource
                                 Textarea::make('notes')
                                     ->columnSpanFull(),
                             ]),
-                        CustomSection::make('Primary Contact')
+                        Section::make('Primary Contact')
                             ->relationship('contact')
                             ->saveRelationshipsUsing(null)
                             ->saveRelationshipsBeforeChildrenUsing(null)
@@ -149,6 +148,7 @@ class VendorResource extends Resource
                                                     ->maxLength(15),
                                             ])->maxItems(1),
                                     ])
+                                    ->addable(fn (PhoneBuilder $builder) => $builder->getItemsCount() < 4)
                                     ->deletable(fn (PhoneBuilder $builder) => $builder->getItemsCount() > 1)
                                     ->reorderable(false)
                                     ->blockNumbers(false)
