@@ -5,6 +5,7 @@ namespace App\Support;
 use Filament\Support\Components\Component;
 use Filament\Support\Concerns\HasAlignment;
 use Filament\Support\Enums\Alignment;
+use Filament\Tables\Columns\Concerns\BelongsToGroup;
 use Filament\Tables\Columns\Concerns\CanBeHidden;
 use Filament\Tables\Columns\Concerns\CanBeToggled;
 use Filament\Tables\Columns\Concerns\HasLabel;
@@ -12,6 +13,7 @@ use Filament\Tables\Columns\Concerns\HasName;
 
 class Column extends Component
 {
+    use BelongsToGroup;
     use CanBeHidden;
     use CanBeToggled;
     use HasAlignment;
