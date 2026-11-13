@@ -8,21 +8,21 @@ const handleTopbarAndSidebarHover = () => {
     const sidebarHeader = document.querySelector('.fi-sidebar-header');
 
     const addHoveredClass = () => {
-        topbarNav.classList.add('topbar-hovered');
+        topbarNav?.classList.add('topbar-hovered');
         if (sidebarHeader) {
             sidebarHeader.classList.add('topbar-hovered');
         }
     };
 
     const removeHoveredClass = () => {
-        topbarNav.classList.remove('topbar-hovered');
+        topbarNav?.classList.remove('topbar-hovered');
         if (sidebarHeader) {
             sidebarHeader.classList.remove('topbar-hovered');
         }
     };
 
-    topbarNav.addEventListener('mouseenter', addHoveredClass);
-    topbarNav.addEventListener('mouseleave', removeHoveredClass);
+    topbarNav?.addEventListener('mouseenter', addHoveredClass);
+    topbarNav?.addEventListener('mouseleave', removeHoveredClass);
 
     if (sidebarHeader) {
         sidebarHeader.addEventListener('mouseenter', addHoveredClass);
@@ -36,12 +36,12 @@ const handleScroll = () => {
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 0) {
-            topbarNav.classList.add('topbar-scrolled');
+            topbarNav?.classList.add('topbar-scrolled');
             if (sidebarHeader) {
                 sidebarHeader.classList.add('topbar-scrolled');
             }
         } else {
-            topbarNav.classList.remove('topbar-scrolled');
+            topbarNav?.classList.remove('topbar-scrolled');
             if (sidebarHeader) {
                 sidebarHeader.classList.remove('topbar-scrolled');
             }
