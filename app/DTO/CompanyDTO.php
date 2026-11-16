@@ -50,7 +50,7 @@ readonly class CompanyDTO
         ]);
 
         return collect($lines)
-            ->map(static fn ($line) => "<p>{$line}</p>")
+            ->map(static fn ($line) => '<p>' . e($line) . '</p>')
             ->join('');
     }
 }
